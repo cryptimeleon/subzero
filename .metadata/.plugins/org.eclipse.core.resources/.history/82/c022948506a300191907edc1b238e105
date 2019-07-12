@@ -1,0 +1,12 @@
+package de.upb.crypto.zeroknowledge.helpers;
+
+public enum Type {
+	BOOLEAN,
+	GROUP_ELEMENT,
+	EXPONENT,
+	UNKNOWN
+	
+	public static convert(String type) {
+		switch
+	}
+}

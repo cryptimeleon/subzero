@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="checkAlge"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="checkAlge"/>
+			<item value=".hasFunctionCall"/>
+			<item value="checkAlgebrai"/>
+			<item value="ComparisonOr"/>
+			<item value="hasComparisonOr"/>
+			<item value=";"/>
+			<item value="boolean "/>
+			<item value="isIllegallyNested"/>
+			<item value="checkValidFunctionCallPosition"/>
+			<item value="checkValidComparison"/>
+			<item value="checkValid"/>
+			<item value="isIlle"/>
+			<item value="checkValidFunctionCa"/>
+			<item value="checkString"/>
+			<item value="state.get"/>
+		</list>
+		<list key="replacehistory">
+			<item value=" = false;"/>
+			<item value="this."/>
+			<item value="Power"/>
+			<item value="Product"/>
+			<item value="Sum"/>
+			<item value="Comparison"/>
+			<item value="Disjunction"/>
+			<item value="Conjunction"/>
+			<item value="FunctionDefinition"/>
+			<item value="ModelHelper.hasSum"/>
+			<item value="Any"/>
+			<item value="Brackets"/>
+			<item value="def dispatch String generateCode"/>
+			<item value="firstParameter"/>
+			<item value="firstItem"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="1601"/>
+		<item key="DIALOG_Y_ORIGIN" value="260"/>
+		<item key="DIALOG_WIDTH" value="327"/>
+		<item key="DIALOG_HEIGHT" value="436"/>
+		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-30|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="653"/>
+		<item key="DIALOG_Y_ORIGIN" value="365"/>
+	</section>
+</section>

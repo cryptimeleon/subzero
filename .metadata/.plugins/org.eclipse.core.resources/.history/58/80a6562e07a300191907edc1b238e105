@@ -1,0 +1,17 @@
+package de.upb.crypto.zeroknowledge.helpers
+
+enum Type {
+	BOOLEAN,
+	GROUP_ELEMENT,
+	EXPONENT,
+	UNKNOWN
+	
+	def  Type convert(String type) {
+		switch(type) {
+			case "boolean": return Type.BOOLEAN;
+			case "GroupElement": return Type.GROUP_ELEMENT;
+			case "Exponent": return Type.EXPONENT;
+			default: return Type.UNKNOWN
+		}
+	}
+}

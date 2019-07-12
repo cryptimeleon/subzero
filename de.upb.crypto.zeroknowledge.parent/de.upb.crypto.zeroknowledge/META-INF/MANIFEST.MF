@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: de.upb.crypto.zeroknowledge
+Bundle-ManifestVersion: 2
+Bundle-Name: de.upb.crypto.zeroknowledge
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: de.upb.crypto.zeroknowledge; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.eclipse.xtend.lib;bundle-version="2.14.0",
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: de.upb.crypto.zeroknowledge.serializer,
+ de.upb.crypto.zeroknowledge.scoping,
+ de.upb.crypto.zeroknowledge.services,
+ de.upb.crypto.zeroknowledge.generator,
+ de.upb.crypto.zeroknowledge.validation,
+ de.upb.crypto.zeroknowledge.zeroKnowledge,
+ de.upb.crypto.zeroknowledge.zeroKnowledge.impl,
+ de.upb.crypto.zeroknowledge.parser.antlr.internal,
+ de.upb.crypto.zeroknowledge,
+ de.upb.crypto.zeroknowledge.parser.antlr,
+ de.upb.crypto.zeroknowledge.zeroKnowledge.util,
+ de.upb.crypto.zeroknowledge.formatting2
+Import-Package: org.apache.log4j
