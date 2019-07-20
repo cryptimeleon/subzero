@@ -1,6 +1,7 @@
 package de.upb.crypto.zeroknowledge.helpers;
 
 import de.upb.crypto.zeroknowledge.helpers.BranchState;
+import de.upb.crypto.zeroknowledge.helpers.ModelMapControl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
@@ -68,5 +69,26 @@ public class ModelMap {
       ModelMap.postorderWithState(child, state, function);
     }
     function.apply(node, state);
+  }
+  
+  public static void preorderWithControl(final EObject node, final Procedure2<? super EObject, ? super ModelMapControl> function) {
+    final ModelMapControl controller = new ModelMapControl();
+    ModelMap.preorderWithControlHelper(node, controller, function);
+  }
+  
+  public static void preorderWithControlHelper(final EObject node, final ModelMapControl controller, final Procedure2<? super EObject, ? super ModelMapControl> function) {
+    boolean _triggerBreak = controller.triggerBreak();
+    if (_triggerBreak) {
+      return;
+    }
+    function.apply(node, controller);
+    boolean _triggerContinue = controller.triggerContinue();
+    if (_triggerContinue) {
+      return;
+    }
+    EList<EObject> _eContents = node.eContents();
+    for (final EObject child : _eContents) {
+      ModelMap.preorderWithControlHelper(child, controller, function);
+    }
   }
 }

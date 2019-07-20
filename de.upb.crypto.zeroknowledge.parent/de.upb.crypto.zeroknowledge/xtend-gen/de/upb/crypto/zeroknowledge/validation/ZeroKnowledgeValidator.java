@@ -8,7 +8,6 @@ import de.upb.crypto.zeroknowledge.helpers.BranchState;
 import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
 import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
 import de.upb.crypto.zeroknowledge.helpers.ModelMap;
-import de.upb.crypto.zeroknowledge.helpers.ModelPrinter;
 import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper;
 import de.upb.crypto.zeroknowledge.helpers.Type;
 import de.upb.crypto.zeroknowledge.validation.AbstractZeroKnowledgeValidator;
@@ -45,6 +44,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
 /**
@@ -64,7 +64,6 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   
   @Check
   public void checkModel(final Model model) {
-    ModelPrinter.print(model);
     this.userFunctions = this.fetchUserFunctions(model);
     this.witnessNames = this.fetchWitnessNames(model);
     BranchState _branchState = new BranchState();
@@ -106,7 +105,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     this.checkFunctionNameFormat(function);
     this.checkFunctionNameIsNotPredefined(function);
     this.checkFunctionIsCalled(function);
-    this.checkParametersAreUsed(function);
+    this.checkFunctionParametersAreUsed(function);
     System.out.println("function");
     return;
   }
@@ -155,19 +154,19 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   protected void _checkNode(final Sum sum, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(sum, state);
+    this.checkValidAlgebraicPosition(sum, state);
     System.out.println("sum");
     return;
   }
   
   protected void _checkNode(final Product product, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(product, state);
+    this.checkValidAlgebraicPosition(product, state);
     System.out.println("product");
     return;
   }
   
   protected void _checkNode(final Power power, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(power, state);
+    this.checkValidAlgebraicPosition(power, state);
     System.out.println("power");
     return;
   }
@@ -179,13 +178,13 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   protected void _checkNode(final Tuple tuple, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(tuple, state);
+    this.checkValidAlgebraicPosition(tuple, state);
     System.out.println("tuple");
     return;
   }
   
   protected void _checkNode(final Negative negative, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(negative, state);
+    this.checkValidAlgebraicPosition(negative, state);
     System.out.println("negative");
     return;
   }
@@ -193,25 +192,26 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   protected void _checkNode(final FunctionCall call, final BranchState state) {
     this.checkValidFunctionCall(call);
     this.checkFunctionHasNoUserFunctionCalls(call, state);
-    this.checkAlgebraicIsInComparisonOrFunction(call, state);
+    this.checkValidAlgebraicPosition(call, state);
     return;
   }
   
   protected void _checkNode(final Variable variable, final BranchState state) {
     this.checkVariableNameFormat(variable);
-    this.checkAlgebraicIsInComparisonOrFunction(variable, state);
+    this.checkValidAlgebraicPosition(variable, state);
     System.out.println("variable");
     return;
   }
   
-  protected void _checkNode(final NumberLiteral number, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(number, state);
+  protected void _checkNode(final NumberLiteral numberLiteral, final BranchState state) {
+    this.checkValidAlgebraicPosition(numberLiteral, state);
+    this.checkNumberLiteralIsExponentLiteral(numberLiteral, state);
     System.out.println("number");
     return;
   }
   
   protected void _checkNode(final Brackets brackets, final BranchState state) {
-    this.checkAlgebraicIsInComparisonOrFunction(brackets, state);
+    this.checkValidAlgebraicPosition(brackets, state);
     System.out.println("brackets");
     return;
   }
@@ -249,7 +249,10 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   private void checkParameterNameFormat(final Parameter parameter) {
     List<String> name_errors = this.nameFormatErrors(parameter.getName(), "Parameter");
     for (final String name_error : name_errors) {
-      this.error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+      {
+        System.out.println("NAMEERRORFOUND");
+        this.error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+      }
     }
   }
   
@@ -355,7 +358,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     }
   }
   
-  private void checkParametersAreUsed(final FunctionDefinition function) {
+  private void checkFunctionParametersAreUsed(final FunctionDefinition function) {
     EList<Parameter> _parameters = function.getParameterList().getParameters();
     for (final Parameter parameter : _parameters) {
       final Function1<EObject, Boolean> _function = (EObject node) -> {
@@ -376,8 +379,8 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
         _builder.append("Parameter \'");
         String _name = parameter.getName();
         _builder.append(_name);
-        _builder.append("\' is not used within the function definition");
-        this.warning(_builder.toString(), parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+        _builder.append("\' must be used within the function definition");
+        this.error(_builder.toString(), parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
       }
     }
   }
@@ -524,7 +527,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     return this.hasComparisonBeforePropositional(node.eContainer());
   }
   
-  private void checkAlgebraicIsInComparisonOrFunction(final EObject object, final BranchState state) {
+  private void checkValidAlgebraicPosition(final EObject object, final BranchState state) {
     boolean _not = (!((state.hasComparisonAncestor() || state.hasFunctionDefinitionAncestor()) || state.hasFunctionCallAncestor()));
     if (_not) {
       this.error("Algebraic expressions must be nested within a comparison expression", null);
@@ -532,14 +535,21 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   @Check
-  public void checkNumberLiteralIsExponent(final NumberLiteral literal) {
-    boolean _hasSumOrPowerAncestor = ModelHelper.hasSumOrPowerAncestor(literal);
-    boolean _not = (!_hasSumOrPowerAncestor);
+  private void checkNumberLiteralIsExponentLiteral(final NumberLiteral numberLiteral, final BranchState state) {
+    boolean _not = (!(state.hasSumAncestor() || state.isInPowerRightBranch()));
     if (_not) {
       this.error(
-        "Number literals must be contained within a sum expression or the right operand of a power expression", 
+        "Number literals must be contained within a sum expression or the right operand of a power expression", numberLiteral, 
         ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE);
     }
+  }
+  
+  @Check
+  public void checking(final Model model) {
+    final Procedure1<EObject> _function = (EObject node) -> {
+      System.out.println(node.toString());
+    };
+    ModelMap.preorder(model.getProof(), _function);
   }
   
   public void checkNode(final EObject brackets, final BranchState state) {

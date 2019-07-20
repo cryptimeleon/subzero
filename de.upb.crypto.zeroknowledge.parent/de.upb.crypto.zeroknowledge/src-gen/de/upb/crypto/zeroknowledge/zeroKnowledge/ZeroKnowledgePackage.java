@@ -253,22 +253,13 @@ public interface ZeroKnowledgePackage extends EPackage
   int WITNESS__NAME = 0;
 
   /**
-   * The feature id for the '<em><b>Testing</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int WITNESS__TESTING = 1;
-
-  /**
    * The number of structural features of the '<em>Witness</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int WITNESS_FEATURE_COUNT = 2;
+  int WITNESS_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ExpressionImpl <em>Expression</em>}' class.
@@ -734,6 +725,34 @@ public interface ZeroKnowledgePackage extends EPackage
   int FUNCTION_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
+   * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.LocalVariableImpl <em>Local Variable</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.LocalVariableImpl
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getLocalVariable()
+   * @generated
+   */
+  int LOCAL_VARIABLE = 19;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_VARIABLE__NAME = VARIABLE__NAME;
+
+  /**
+   * The number of structural features of the '<em>Local Variable</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
+
+  /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.BracketsImpl <em>Brackets</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -741,7 +760,7 @@ public interface ZeroKnowledgePackage extends EPackage
    * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getBrackets()
    * @generated
    */
-  int BRACKETS = 19;
+  int BRACKETS = 20;
 
   /**
    * The feature id for the '<em><b>Content</b></em>' containment reference.
@@ -931,17 +950,6 @@ public interface ZeroKnowledgePackage extends EPackage
    * @generated
    */
   EAttribute getWitness_Name();
-
-  /**
-   * Returns the meta object for the attribute '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Witness#isTesting <em>Testing</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Testing</em>'.
-   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.Witness#isTesting()
-   * @see #getWitness()
-   * @generated
-   */
-  EAttribute getWitness_Testing();
 
   /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Expression <em>Expression</em>}'.
@@ -1338,6 +1346,16 @@ public interface ZeroKnowledgePackage extends EPackage
   EReference getFunctionCall_Arguments();
 
   /**
+   * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable <em>Local Variable</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Local Variable</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
+   * @generated
+   */
+  EClass getLocalVariable();
+
+  /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets <em>Brackets</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1520,14 +1538,6 @@ public interface ZeroKnowledgePackage extends EPackage
      * @generated
      */
     EAttribute WITNESS__NAME = eINSTANCE.getWitness_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Testing</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute WITNESS__TESTING = eINSTANCE.getWitness_Testing();
 
     /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ExpressionImpl <em>Expression</em>}' class.
@@ -1850,6 +1860,16 @@ public interface ZeroKnowledgePackage extends EPackage
      * @generated
      */
     EReference FUNCTION_CALL__ARGUMENTS = eINSTANCE.getFunctionCall_Arguments();
+
+    /**
+     * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.LocalVariableImpl <em>Local Variable</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.LocalVariableImpl
+     * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getLocalVariable()
+     * @generated
+     */
+    EClass LOCAL_VARIABLE = eINSTANCE.getLocalVariable();
 
     /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.BracketsImpl <em>Brackets</em>}' class.

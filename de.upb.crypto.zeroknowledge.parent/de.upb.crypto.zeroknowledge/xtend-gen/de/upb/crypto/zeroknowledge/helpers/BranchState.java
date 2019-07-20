@@ -68,12 +68,24 @@ public class BranchState {
     this.inPowerRightBranch = false;
     this.inNegative = false;
     this.inFunctionCall = false;
+    this.comparisonBeforePropositional = false;
   }
   
   public BranchState(final BranchState state) {
     this.depth = state.depth;
     this.parent = state.parent;
-    this.exponentContext = state.exponentContext;
+    this.inProof = state.inProof;
+    this.inFunctionDefinition = state.inFunctionDefinition;
+    this.inConjunction = state.inConjunction;
+    this.inDisjunction = state.inDisjunction;
+    this.inComparison = state.inComparison;
+    this.inSum = state.inSum;
+    this.inProduct = state.inProduct;
+    this.inPower = state.inPower;
+    this.inPowerRightBranch = state.inPowerRightBranch;
+    this.inNegative = state.inNegative;
+    this.inFunctionCall = state.inFunctionCall;
+    this.comparisonBeforePropositional = state.comparisonBeforePropositional;
   }
   
   public int getDepth() {
@@ -133,7 +145,7 @@ public class BranchState {
   }
   
   public boolean hasFunctionCallAncestor() {
-    return this.hasFunctionCallAncestor();
+    return this.inFunctionCall;
   }
   
   public void setProofAncestor(final boolean inProof) {

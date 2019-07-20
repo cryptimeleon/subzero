@@ -1,0 +1,23 @@
+package de.upb.crypto.zeroknowledge.helpers
+
+class ModelMapControl {
+	
+	boolean breakMapTraversal;
+	boolean continueMapIter;
+	
+	new() {
+		this.breakTraversal = false;
+		this.continueTraversal= false;
+	}
+	
+	def void breakMap() {
+		this.breakTraversal = true;
+	}
+	
+	// Stops traversal of the current branch, but continues traversal elsewhere
+	def void continueTraversal() {
+		this.continueIteration();
+	}
+	
+	
+}

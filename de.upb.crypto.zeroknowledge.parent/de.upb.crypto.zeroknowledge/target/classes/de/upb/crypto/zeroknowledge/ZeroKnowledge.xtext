@@ -8,7 +8,7 @@ Model returns Model:
   functions+=(FunctionDefinition)* witnessList=WitnessList ';'? proof=Expression ';'?;
 
 FunctionDefinition returns FunctionDefinition:
-  name=IDENTIFIER parameterList=ParameterList '{' body=Expression '}' ';'?;
+  name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
 
 ParameterList returns ParameterList:
   '(' (parameters+=Parameter (',' parameters+=Parameter)*)? ')';
@@ -63,6 +63,9 @@ FunctionCall returns Expression:
 
 Variable returns Variable:
   name=IDENTIFIER;
+  
+LocalVariable returns Variable:
+  {LocalVariable} name=IDENTIFIER;
 
 NumberLiteral returns NumberLiteral:
   value=INT;

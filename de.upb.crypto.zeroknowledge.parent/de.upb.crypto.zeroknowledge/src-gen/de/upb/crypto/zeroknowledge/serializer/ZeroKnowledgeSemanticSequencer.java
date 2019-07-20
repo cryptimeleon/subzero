@@ -11,6 +11,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Disjunction;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Negative;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
@@ -66,6 +67,9 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 				return; 
 			case ZeroKnowledgePackage.FUNCTION_DEFINITION:
 				sequence_FunctionDefinition(context, (FunctionDefinition) semanticObject); 
+				return; 
+			case ZeroKnowledgePackage.LOCAL_VARIABLE:
+				sequence_LocalVariable(context, (LocalVariable) semanticObject); 
 				return; 
 			case ZeroKnowledgePackage.MODEL:
 				sequence_Model(context, (Model) semanticObject); 
@@ -288,6 +292,24 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 		feeder.accept(grammarAccess.getFunctionDefinitionAccess().getNameIDENTIFIERTerminalRuleCall_0_0(), semanticObject.getName());
 		feeder.accept(grammarAccess.getFunctionDefinitionAccess().getParameterListParameterListParserRuleCall_1_0(), semanticObject.getParameterList());
 		feeder.accept(grammarAccess.getFunctionDefinitionAccess().getBodyExpressionParserRuleCall_3_0(), semanticObject.getBody());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     LocalVariable returns LocalVariable
+	 *
+	 * Constraint:
+	 *     name=IDENTIFIER
+	 */
+	protected void sequence_LocalVariable(ISerializationContext context, LocalVariable semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.VARIABLE__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.VARIABLE__NAME));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getLocalVariableAccess().getNameIDENTIFIERTerminalRuleCall_1_0(), semanticObject.getName());
 		feeder.finish();
 	}
 	
@@ -638,10 +660,16 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     Witness returns Witness
 	 *
 	 * Constraint:
-	 *     (name=IDENTIFIER testing?='?'?)
+	 *     name=IDENTIFIER
 	 */
 	protected void sequence_Witness(ISerializationContext context, Witness semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.WITNESS__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.WITNESS__NAME));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0(), semanticObject.getName());
+		feeder.finish();
 	}
 	
 	

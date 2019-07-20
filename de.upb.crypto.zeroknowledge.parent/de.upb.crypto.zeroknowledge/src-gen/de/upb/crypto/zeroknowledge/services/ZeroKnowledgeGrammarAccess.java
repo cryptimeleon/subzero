@@ -75,14 +75,15 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cBodyAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final RuleCall cBodyExpressionParserRuleCall_3_0 = (RuleCall)cBodyAssignment_3.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Keyword cSemicolonKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//FunctionDefinition:
-		//	name=IDENTIFIER parameterList=ParameterList '{' body=Expression '}' ';'?;
+		//	name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//name=IDENTIFIER parameterList=ParameterList '{' body=Expression '}' ';'?
+		//name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?
 		public Group getGroup() { return cGroup; }
 		
 		//name=IDENTIFIER
@@ -106,11 +107,14 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		//Expression
 		public RuleCall getBodyExpressionParserRuleCall_3_0() { return cBodyExpressionParserRuleCall_3_0; }
 		
+		//';'?
+		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
+		
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_4() { return cRightCurlyBracketKeyword_4; }
+		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
 		
 		//';'?
-		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
+		public Keyword getSemicolonKeyword_6() { return cSemicolonKeyword_6; }
 	}
 	public class ParameterListElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.ParameterList");
@@ -219,30 +223,18 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	public class WitnessElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameIDENTIFIERTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
-		private final Assignment cTestingAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final Keyword cTestingQuestionMarkKeyword_1_0 = (Keyword)cTestingAssignment_1.eContents().get(0);
+		private final Assignment cNameAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cNameIDENTIFIERTerminalRuleCall_0 = (RuleCall)cNameAssignment.eContents().get(0);
 		
 		//Witness:
-		//	name=IDENTIFIER testing?="?"?;
+		//	name=IDENTIFIER;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//name=IDENTIFIER testing?="?"?
-		public Group getGroup() { return cGroup; }
-		
 		//name=IDENTIFIER
-		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+		public Assignment getNameAssignment() { return cNameAssignment; }
 		
 		//IDENTIFIER
-		public RuleCall getNameIDENTIFIERTerminalRuleCall_0_0() { return cNameIDENTIFIERTerminalRuleCall_0_0; }
-		
-		//testing?="?"?
-		public Assignment getTestingAssignment_1() { return cTestingAssignment_1; }
-		
-		//"?"
-		public Keyword getTestingQuestionMarkKeyword_1_0() { return cTestingQuestionMarkKeyword_1_0; }
+		public RuleCall getNameIDENTIFIERTerminalRuleCall_0() { return cNameIDENTIFIERTerminalRuleCall_0; }
 	}
 	public class ExpressionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.Expression");
@@ -894,6 +886,29 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		//IDENTIFIER
 		public RuleCall getNameIDENTIFIERTerminalRuleCall_0() { return cNameIDENTIFIERTerminalRuleCall_0; }
 	}
+	public class LocalVariableElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.LocalVariable");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cLocalVariableAction_0 = (Action)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameIDENTIFIERTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		
+		//LocalVariable Variable:
+		//	{LocalVariable} name=IDENTIFIER;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{LocalVariable} name=IDENTIFIER
+		public Group getGroup() { return cGroup; }
+		
+		//{LocalVariable}
+		public Action getLocalVariableAction_0() { return cLocalVariableAction_0; }
+		
+		//name=IDENTIFIER
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		
+		//IDENTIFIER
+		public RuleCall getNameIDENTIFIERTerminalRuleCall_1_0() { return cNameIDENTIFIERTerminalRuleCall_1_0; }
+	}
 	public class NumberLiteralElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.NumberLiteral");
 		private final Assignment cValueAssignment = (Assignment)rule.eContents().get(1);
@@ -954,6 +969,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	private final ValueElements pValue;
 	private final FunctionCallElements pFunctionCall;
 	private final VariableElements pVariable;
+	private final LocalVariableElements pLocalVariable;
 	private final NumberLiteralElements pNumberLiteral;
 	private final BracketsElements pBrackets;
 	private final TerminalRule tINT;
@@ -988,6 +1004,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		this.pValue = new ValueElements();
 		this.pFunctionCall = new FunctionCallElements();
 		this.pVariable = new VariableElements();
+		this.pLocalVariable = new LocalVariableElements();
 		this.pNumberLiteral = new NumberLiteralElements();
 		this.pBrackets = new BracketsElements();
 		this.tINT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.INT");
@@ -1032,7 +1049,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//FunctionDefinition:
-	//	name=IDENTIFIER parameterList=ParameterList '{' body=Expression '}' ';'?;
+	//	name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
 	public FunctionDefinitionElements getFunctionDefinitionAccess() {
 		return pFunctionDefinition;
 	}
@@ -1072,7 +1089,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Witness:
-	//	name=IDENTIFIER testing?="?"?;
+	//	name=IDENTIFIER;
 	public WitnessElements getWitnessAccess() {
 		return pWitness;
 	}
@@ -1221,6 +1238,16 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getVariableRule() {
 		return getVariableAccess().getRule();
+	}
+	
+	//LocalVariable Variable:
+	//	{LocalVariable} name=IDENTIFIER;
+	public LocalVariableElements getLocalVariableAccess() {
+		return pLocalVariable;
+	}
+	
+	public ParserRule getLocalVariableRule() {
+		return getLocalVariableAccess().getRule();
 	}
 	
 	//NumberLiteral:

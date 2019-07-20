@@ -218,6 +218,15 @@ public class ZeroKnowledgeSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ZeroKnowledgePackage.LOCAL_VARIABLE:
+      {
+        LocalVariable localVariable = (LocalVariable)theEObject;
+        T result = caseLocalVariable(localVariable);
+        if (result == null) result = caseVariable(localVariable);
+        if (result == null) result = caseExpression(localVariable);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ZeroKnowledgePackage.BRACKETS:
       {
         Brackets brackets = (Brackets)theEObject;
@@ -530,6 +539,22 @@ public class ZeroKnowledgeSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseFunctionCall(FunctionCall object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Local Variable</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Local Variable</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLocalVariable(LocalVariable object)
   {
     return null;
   }

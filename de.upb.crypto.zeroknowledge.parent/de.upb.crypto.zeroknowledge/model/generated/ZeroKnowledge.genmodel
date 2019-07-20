@@ -27,7 +27,6 @@
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Witness">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//Witness/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//Witness/testing"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Expression"/>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//StringLiteral">
@@ -78,6 +77,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//FunctionCall/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//FunctionCall/arguments"/>
     </genClasses>
+    <genClasses ecoreClass="ZeroKnowledge.ecore#//LocalVariable"/>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Brackets">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Brackets/content"/>
     </genClasses>

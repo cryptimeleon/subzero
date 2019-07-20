@@ -31,7 +31,6 @@ public class InternalZeroKnowledgeLexer extends Lexer {
     public static final int T__27=27;
     public static final int T__28=28;
     public static final int RULE_INT=6;
-    public static final int T__29=29;
     public static final int T__22=22;
     public static final int RULE_ML_COMMENT=7;
     public static final int T__23=23;
@@ -218,10 +217,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__18;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:19:7: ( '?' )
-            // InternalZeroKnowledge.g:19:9: '?'
+            // InternalZeroKnowledge.g:19:7: ( '&' )
+            // InternalZeroKnowledge.g:19:9: '&'
             {
-            match('?'); 
+            match('&'); 
 
             }
 
@@ -238,10 +237,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__19;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:20:7: ( '&' )
-            // InternalZeroKnowledge.g:20:9: '&'
+            // InternalZeroKnowledge.g:20:7: ( '|' )
+            // InternalZeroKnowledge.g:20:9: '|'
             {
-            match('&'); 
+            match('|'); 
 
             }
 
@@ -258,10 +257,11 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__20;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:21:7: ( '|' )
-            // InternalZeroKnowledge.g:21:9: '|'
+            // InternalZeroKnowledge.g:21:7: ( '!=' )
+            // InternalZeroKnowledge.g:21:9: '!='
             {
-            match('|'); 
+            match("!="); 
+
 
             }
 
@@ -278,11 +278,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__21;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:22:7: ( '!=' )
-            // InternalZeroKnowledge.g:22:9: '!='
+            // InternalZeroKnowledge.g:22:7: ( '=' )
+            // InternalZeroKnowledge.g:22:9: '='
             {
-            match("!="); 
-
+            match('='); 
 
             }
 
@@ -299,10 +298,11 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__22;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:23:7: ( '=' )
-            // InternalZeroKnowledge.g:23:9: '='
+            // InternalZeroKnowledge.g:23:7: ( '>=' )
+            // InternalZeroKnowledge.g:23:9: '>='
             {
-            match('='); 
+            match(">="); 
+
 
             }
 
@@ -319,10 +319,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__23;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:24:7: ( '>=' )
-            // InternalZeroKnowledge.g:24:9: '>='
+            // InternalZeroKnowledge.g:24:7: ( '<=' )
+            // InternalZeroKnowledge.g:24:9: '<='
             {
-            match(">="); 
+            match("<="); 
 
 
             }
@@ -340,11 +340,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__24;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:25:7: ( '<=' )
-            // InternalZeroKnowledge.g:25:9: '<='
+            // InternalZeroKnowledge.g:25:7: ( '>' )
+            // InternalZeroKnowledge.g:25:9: '>'
             {
-            match("<="); 
-
+            match('>'); 
 
             }
 
@@ -361,10 +360,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__25;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:26:7: ( '>' )
-            // InternalZeroKnowledge.g:26:9: '>'
+            // InternalZeroKnowledge.g:26:7: ( '<' )
+            // InternalZeroKnowledge.g:26:9: '<'
             {
-            match('>'); 
+            match('<'); 
 
             }
 
@@ -381,10 +380,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__26;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:27:7: ( '<' )
-            // InternalZeroKnowledge.g:27:9: '<'
+            // InternalZeroKnowledge.g:27:7: ( '+' )
+            // InternalZeroKnowledge.g:27:9: '+'
             {
-            match('<'); 
+            match('+'); 
 
             }
 
@@ -401,10 +400,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__27;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:28:7: ( '+' )
-            // InternalZeroKnowledge.g:28:9: '+'
+            // InternalZeroKnowledge.g:28:7: ( '*' )
+            // InternalZeroKnowledge.g:28:9: '*'
             {
-            match('+'); 
+            match('*'); 
 
             }
 
@@ -421,28 +420,8 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = T__28;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:29:7: ( '*' )
-            // InternalZeroKnowledge.g:29:9: '*'
-            {
-            match('*'); 
-
-            }
-
-            state.type = _type;
-            state.channel = _channel;
-        }
-        finally {
-        }
-    }
-    // $ANTLR end "T__28"
-
-    // $ANTLR start "T__29"
-    public final void mT__29() throws RecognitionException {
-        try {
-            int _type = T__29;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:30:7: ( '/' )
-            // InternalZeroKnowledge.g:30:9: '/'
+            // InternalZeroKnowledge.g:29:7: ( '/' )
+            // InternalZeroKnowledge.g:29:9: '/'
             {
             match('/'); 
 
@@ -454,17 +433,17 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "T__29"
+    // $ANTLR end "T__28"
 
     // $ANTLR start "RULE_INT"
     public final void mRULE_INT() throws RecognitionException {
         try {
             int _type = RULE_INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:4261:10: ( ( '0' .. '9' )+ )
-            // InternalZeroKnowledge.g:4261:12: ( '0' .. '9' )+
+            // InternalZeroKnowledge.g:4215:10: ( ( '0' .. '9' )+ )
+            // InternalZeroKnowledge.g:4215:12: ( '0' .. '9' )+
             {
-            // InternalZeroKnowledge.g:4261:12: ( '0' .. '9' )+
+            // InternalZeroKnowledge.g:4215:12: ( '0' .. '9' )+
             int cnt1=0;
             loop1:
             do {
@@ -478,7 +457,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:4261:13: '0' .. '9'
+            	    // InternalZeroKnowledge.g:4215:13: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -510,12 +489,12 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = RULE_ML_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:4263:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // InternalZeroKnowledge.g:4263:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // InternalZeroKnowledge.g:4217:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // InternalZeroKnowledge.g:4217:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // InternalZeroKnowledge.g:4263:24: ( options {greedy=false; } : . )*
+            // InternalZeroKnowledge.g:4217:24: ( options {greedy=false; } : . )*
             loop2:
             do {
                 int alt2=2;
@@ -540,7 +519,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
 
                 switch (alt2) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:4263:52: .
+            	    // InternalZeroKnowledge.g:4217:52: .
             	    {
             	    matchAny(); 
 
@@ -570,12 +549,12 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = RULE_SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:4265:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // InternalZeroKnowledge.g:4265:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // InternalZeroKnowledge.g:4219:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // InternalZeroKnowledge.g:4219:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // InternalZeroKnowledge.g:4265:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // InternalZeroKnowledge.g:4219:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop3:
             do {
                 int alt3=2;
@@ -588,7 +567,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
 
                 switch (alt3) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:4265:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // InternalZeroKnowledge.g:4219:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -608,7 +587,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
                 }
             } while (true);
 
-            // InternalZeroKnowledge.g:4265:40: ( ( '\\r' )? '\\n' )?
+            // InternalZeroKnowledge.g:4219:40: ( ( '\\r' )? '\\n' )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -617,9 +596,9 @@ public class InternalZeroKnowledgeLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // InternalZeroKnowledge.g:4265:41: ( '\\r' )? '\\n'
+                    // InternalZeroKnowledge.g:4219:41: ( '\\r' )? '\\n'
                     {
-                    // InternalZeroKnowledge.g:4265:41: ( '\\r' )?
+                    // InternalZeroKnowledge.g:4219:41: ( '\\r' )?
                     int alt4=2;
                     int LA4_0 = input.LA(1);
 
@@ -628,7 +607,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
                     }
                     switch (alt4) {
                         case 1 :
-                            // InternalZeroKnowledge.g:4265:41: '\\r'
+                            // InternalZeroKnowledge.g:4219:41: '\\r'
                             {
                             match('\r'); 
 
@@ -660,10 +639,10 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = RULE_WHITESPACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:4267:17: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // InternalZeroKnowledge.g:4267:19: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // InternalZeroKnowledge.g:4221:17: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // InternalZeroKnowledge.g:4221:19: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // InternalZeroKnowledge.g:4267:19: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // InternalZeroKnowledge.g:4221:19: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt6=0;
             loop6:
             do {
@@ -717,8 +696,8 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = RULE_IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:4269:17: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\\'' )* )
-            // InternalZeroKnowledge.g:4269:19: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\\'' )*
+            // InternalZeroKnowledge.g:4223:17: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\\'' )* )
+            // InternalZeroKnowledge.g:4223:19: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\\'' )*
             {
             if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
@@ -729,7 +708,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // InternalZeroKnowledge.g:4269:39: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\\'' )*
+            // InternalZeroKnowledge.g:4223:39: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '\\'' )*
             loop7:
             do {
                 int alt7=2;
@@ -778,11 +757,11 @@ public class InternalZeroKnowledgeLexer extends Lexer {
         try {
             int _type = RULE_STRING_LITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // InternalZeroKnowledge.g:4271:21: ( '\"' ( '\\\\' . | ~ ( ( '\\\\' | '\"' ) ) )* '\"' )
-            // InternalZeroKnowledge.g:4271:23: '\"' ( '\\\\' . | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
+            // InternalZeroKnowledge.g:4225:21: ( '\"' ( '\\\\' . | ~ ( ( '\\\\' | '\"' ) ) )* '\"' )
+            // InternalZeroKnowledge.g:4225:23: '\"' ( '\\\\' . | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
             {
             match('\"'); 
-            // InternalZeroKnowledge.g:4271:27: ( '\\\\' . | ~ ( ( '\\\\' | '\"' ) ) )*
+            // InternalZeroKnowledge.g:4225:27: ( '\\\\' . | ~ ( ( '\\\\' | '\"' ) ) )*
             loop8:
             do {
                 int alt8=3;
@@ -798,7 +777,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:4271:28: '\\\\' .
+            	    // InternalZeroKnowledge.g:4225:28: '\\\\' .
             	    {
             	    match('\\'); 
             	    matchAny(); 
@@ -806,7 +785,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
             	    }
             	    break;
             	case 2 :
-            	    // InternalZeroKnowledge.g:4271:35: ~ ( ( '\\\\' | '\"' ) )
+            	    // InternalZeroKnowledge.g:4225:35: ~ ( ( '\\\\' | '\"' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -839,8 +818,8 @@ public class InternalZeroKnowledgeLexer extends Lexer {
     // $ANTLR end "RULE_STRING_LITERAL"
 
     public void mTokens() throws RecognitionException {
-        // InternalZeroKnowledge.g:1:8: ( T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | RULE_INT | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WHITESPACE | RULE_IDENTIFIER | RULE_STRING_LITERAL )
-        int alt9=26;
+        // InternalZeroKnowledge.g:1:8: ( T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | RULE_INT | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WHITESPACE | RULE_IDENTIFIER | RULE_STRING_LITERAL )
+        int alt9=25;
         alt9 = dfa9.predict(input);
         switch (alt9) {
             case 1 :
@@ -977,49 +956,42 @@ public class InternalZeroKnowledgeLexer extends Lexer {
                 }
                 break;
             case 20 :
-                // InternalZeroKnowledge.g:1:124: T__29
-                {
-                mT__29(); 
-
-                }
-                break;
-            case 21 :
-                // InternalZeroKnowledge.g:1:130: RULE_INT
+                // InternalZeroKnowledge.g:1:124: RULE_INT
                 {
                 mRULE_INT(); 
 
                 }
                 break;
-            case 22 :
-                // InternalZeroKnowledge.g:1:139: RULE_ML_COMMENT
+            case 21 :
+                // InternalZeroKnowledge.g:1:133: RULE_ML_COMMENT
                 {
                 mRULE_ML_COMMENT(); 
 
                 }
                 break;
-            case 23 :
-                // InternalZeroKnowledge.g:1:155: RULE_SL_COMMENT
+            case 22 :
+                // InternalZeroKnowledge.g:1:149: RULE_SL_COMMENT
                 {
                 mRULE_SL_COMMENT(); 
 
                 }
                 break;
-            case 24 :
-                // InternalZeroKnowledge.g:1:171: RULE_WHITESPACE
+            case 23 :
+                // InternalZeroKnowledge.g:1:165: RULE_WHITESPACE
                 {
                 mRULE_WHITESPACE(); 
 
                 }
                 break;
-            case 25 :
-                // InternalZeroKnowledge.g:1:187: RULE_IDENTIFIER
+            case 24 :
+                // InternalZeroKnowledge.g:1:181: RULE_IDENTIFIER
                 {
                 mRULE_IDENTIFIER(); 
 
                 }
                 break;
-            case 26 :
-                // InternalZeroKnowledge.g:1:203: RULE_STRING_LITERAL
+            case 25 :
+                // InternalZeroKnowledge.g:1:197: RULE_STRING_LITERAL
                 {
                 mRULE_STRING_LITERAL(); 
 
@@ -1033,19 +1005,19 @@ public class InternalZeroKnowledgeLexer extends Lexer {
 
     protected DFA9 dfa9 = new DFA9(this);
     static final String DFA9_eotS =
-        "\16\uffff\1\30\1\32\2\uffff\1\35\13\uffff";
+        "\15\uffff\1\27\1\31\2\uffff\1\34\13\uffff";
     static final String DFA9_eofS =
-        "\36\uffff";
+        "\35\uffff";
     static final String DFA9_minS =
-        "\1\11\15\uffff\2\75\2\uffff\1\52\13\uffff";
+        "\1\11\14\uffff\2\75\2\uffff\1\52\13\uffff";
     static final String DFA9_maxS =
-        "\1\175\15\uffff\2\75\2\uffff\1\57\13\uffff";
+        "\1\175\14\uffff\2\75\2\uffff\1\57\13\uffff";
     static final String DFA9_acceptS =
-        "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15\2\uffff\1\22\1\23\1\uffff\1\25\1\30\1\31\1\32\1\16\1\20\1\17\1\21\1\26\1\27\1\24";
+        "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13\1\14\2\uffff\1\21\1\22\1\uffff\1\24\1\27\1\30\1\31\1\15\1\17\1\16\1\20\1\25\1\26\1\23";
     static final String DFA9_specialS =
-        "\36\uffff}>";
+        "\35\uffff}>";
     static final String[] DFA9_transitionS = {
-            "\2\24\2\uffff\1\24\22\uffff\1\24\1\14\1\26\3\uffff\1\12\1\uffff\1\4\1\5\1\21\1\20\1\6\1\10\1\uffff\1\22\12\23\1\uffff\1\1\1\17\1\15\1\16\1\11\1\uffff\32\25\3\uffff\1\7\2\uffff\32\25\1\2\1\13\1\3",
+            "\2\23\2\uffff\1\23\22\uffff\1\23\1\13\1\25\3\uffff\1\11\1\uffff\1\4\1\5\1\20\1\17\1\6\1\10\1\uffff\1\21\12\22\1\uffff\1\1\1\16\1\14\1\15\2\uffff\32\24\3\uffff\1\7\2\uffff\32\24\1\2\1\12\1\3",
             "",
             "",
             "",
@@ -1058,12 +1030,11 @@ public class InternalZeroKnowledgeLexer extends Lexer {
             "",
             "",
             "",
+            "\1\26",
+            "\1\30",
             "",
-            "\1\27",
-            "\1\31",
             "",
-            "",
-            "\1\33\4\uffff\1\34",
+            "\1\32\4\uffff\1\33",
             "",
             "",
             "",
@@ -1107,7 +1078,7 @@ public class InternalZeroKnowledgeLexer extends Lexer {
             this.transition = DFA9_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | RULE_INT | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WHITESPACE | RULE_IDENTIFIER | RULE_STRING_LITERAL );";
+            return "1:1: Tokens : ( T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | RULE_INT | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WHITESPACE | RULE_IDENTIFIER | RULE_STRING_LITERAL );";
         }
     }
  

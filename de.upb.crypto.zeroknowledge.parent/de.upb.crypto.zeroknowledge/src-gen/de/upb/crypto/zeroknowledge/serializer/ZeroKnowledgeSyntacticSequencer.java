@@ -20,14 +20,16 @@ import org.eclipse.xtext.serializer.sequencer.AbstractSyntacticSequencer;
 public class ZeroKnowledgeSyntacticSequencer extends AbstractSyntacticSequencer {
 
 	protected ZeroKnowledgeGrammarAccess grammarAccess;
-	protected AbstractElementAlias match_FunctionDefinition_SemicolonKeyword_5_q;
+	protected AbstractElementAlias match_FunctionDefinition_SemicolonKeyword_4_q;
+	protected AbstractElementAlias match_FunctionDefinition_SemicolonKeyword_6_q;
 	protected AbstractElementAlias match_Model_SemicolonKeyword_2_q;
 	protected AbstractElementAlias match_Model_SemicolonKeyword_4_q;
 	
 	@Inject
 	protected void init(IGrammarAccess access) {
 		grammarAccess = (ZeroKnowledgeGrammarAccess) access;
-		match_FunctionDefinition_SemicolonKeyword_5_q = new TokenAlias(false, true, grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_5());
+		match_FunctionDefinition_SemicolonKeyword_4_q = new TokenAlias(false, true, grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_4());
+		match_FunctionDefinition_SemicolonKeyword_6_q = new TokenAlias(false, true, grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_6());
 		match_Model_SemicolonKeyword_2_q = new TokenAlias(false, true, grammarAccess.getModelAccess().getSemicolonKeyword_2());
 		match_Model_SemicolonKeyword_4_q = new TokenAlias(false, true, grammarAccess.getModelAccess().getSemicolonKeyword_4());
 	}
@@ -44,8 +46,10 @@ public class ZeroKnowledgeSyntacticSequencer extends AbstractSyntacticSequencer 
 		List<INode> transitionNodes = collectNodes(fromNode, toNode);
 		for (AbstractElementAlias syntax : transition.getAmbiguousSyntaxes()) {
 			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
-			if (match_FunctionDefinition_SemicolonKeyword_5_q.equals(syntax))
-				emit_FunctionDefinition_SemicolonKeyword_5_q(semanticObject, getLastNavigableState(), syntaxNodes);
+			if (match_FunctionDefinition_SemicolonKeyword_4_q.equals(syntax))
+				emit_FunctionDefinition_SemicolonKeyword_4_q(semanticObject, getLastNavigableState(), syntaxNodes);
+			else if (match_FunctionDefinition_SemicolonKeyword_6_q.equals(syntax))
+				emit_FunctionDefinition_SemicolonKeyword_6_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else if (match_Model_SemicolonKeyword_2_q.equals(syntax))
 				emit_Model_SemicolonKeyword_2_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else if (match_Model_SemicolonKeyword_4_q.equals(syntax))
@@ -59,9 +63,20 @@ public class ZeroKnowledgeSyntacticSequencer extends AbstractSyntacticSequencer 
 	 *     ';'?
 	 *
 	 * This ambiguous syntax occurs at:
-	 *     body=Expression '}' (ambiguity) (rule end)
+	 *     body=Expression (ambiguity) '}' ';'? (rule end)
 	 */
-	protected void emit_FunctionDefinition_SemicolonKeyword_5_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_FunctionDefinition_SemicolonKeyword_4_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+		acceptNodes(transition, nodes);
+	}
+	
+	/**
+	 * Ambiguous syntax:
+	 *     ';'?
+	 *
+	 * This ambiguous syntax occurs at:
+	 *     body=Expression ';'? '}' (ambiguity) (rule end)
+	 */
+	protected void emit_FunctionDefinition_SemicolonKeyword_6_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	

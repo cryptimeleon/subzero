@@ -171,6 +171,11 @@ public class ZeroKnowledgeAdapterFactory extends AdapterFactoryImpl
         return createFunctionCallAdapter();
       }
       @Override
+      public Adapter caseLocalVariable(LocalVariable object)
+      {
+        return createLocalVariableAdapter();
+      }
+      @Override
       public Adapter caseBrackets(Brackets object)
       {
         return createBracketsAdapter();
@@ -478,6 +483,21 @@ public class ZeroKnowledgeAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createFunctionCallAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable <em>Local Variable</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
+   * @generated
+   */
+  public Adapter createLocalVariableAdapter()
   {
     return null;
   }

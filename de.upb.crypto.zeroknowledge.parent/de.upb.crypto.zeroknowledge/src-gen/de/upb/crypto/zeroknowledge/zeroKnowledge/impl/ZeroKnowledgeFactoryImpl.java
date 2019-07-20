@@ -84,6 +84,7 @@ public class ZeroKnowledgeFactoryImpl extends EFactoryImpl implements ZeroKnowle
       case ZeroKnowledgePackage.TUPLE: return createTuple();
       case ZeroKnowledgePackage.NEGATIVE: return createNegative();
       case ZeroKnowledgePackage.FUNCTION_CALL: return createFunctionCall();
+      case ZeroKnowledgePackage.LOCAL_VARIABLE: return createLocalVariable();
       case ZeroKnowledgePackage.BRACKETS: return createBrackets();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -316,6 +317,18 @@ public class ZeroKnowledgeFactoryImpl extends EFactoryImpl implements ZeroKnowle
   {
     FunctionCallImpl functionCall = new FunctionCallImpl();
     return functionCall;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public LocalVariable createLocalVariable()
+  {
+    LocalVariableImpl localVariable = new LocalVariableImpl();
+    return localVariable;
   }
 
   /**

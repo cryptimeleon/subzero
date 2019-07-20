@@ -24,6 +24,9 @@ class ModelPrinter {
 				className = className.substring(periodIndex + 1);
 			}
 			System.out.print(className.substring(0, className.length() - 4));
+			if (TypeResolution.getTypes() !== null && TypeResolution.getTypes().containsKey(node)) {
+				System.out.print(" - " + TypeResolution.getTypes().get(node).toString());
+			}
 			
 			switch node {
 				FunctionDefinition: System.out.println(" - " + node.getName().toString())

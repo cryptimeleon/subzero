@@ -23,7 +23,7 @@ import java.util.HashMap;
 @SuppressWarnings("all")
 public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_IDENTIFIER", "RULE_STRING_LITERAL", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WHITESPACE", "';'", "'{'", "'}'", "'('", "')'", "','", "'^'", "'-'", "'?'", "'&'", "'|'", "'!='", "'='", "'>='", "'<='", "'>'", "'<'", "'+'", "'*'", "'/'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_IDENTIFIER", "RULE_STRING_LITERAL", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WHITESPACE", "';'", "'{'", "'}'", "'('", "')'", "','", "'^'", "'-'", "'&'", "'|'", "'!='", "'='", "'>='", "'<='", "'>'", "'<'", "'+'", "'*'", "'/'"
     };
     public static final int RULE_IDENTIFIER=4;
     public static final int RULE_STRING_LITERAL=5;
@@ -44,7 +44,6 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
     public static final int T__27=27;
     public static final int T__28=28;
     public static final int RULE_INT=6;
-    public static final int T__29=29;
     public static final int T__22=22;
     public static final int RULE_ML_COMMENT=7;
     public static final int T__23=23;
@@ -548,26 +547,26 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "ruleWitness"
-    // InternalZeroKnowledge.g:188:1: ruleWitness : ( ( rule__Witness__Group__0 ) ) ;
+    // InternalZeroKnowledge.g:188:1: ruleWitness : ( ( rule__Witness__NameAssignment ) ) ;
     public final void ruleWitness() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:192:2: ( ( ( rule__Witness__Group__0 ) ) )
-            // InternalZeroKnowledge.g:193:2: ( ( rule__Witness__Group__0 ) )
+            // InternalZeroKnowledge.g:192:2: ( ( ( rule__Witness__NameAssignment ) ) )
+            // InternalZeroKnowledge.g:193:2: ( ( rule__Witness__NameAssignment ) )
             {
-            // InternalZeroKnowledge.g:193:2: ( ( rule__Witness__Group__0 ) )
-            // InternalZeroKnowledge.g:194:3: ( rule__Witness__Group__0 )
+            // InternalZeroKnowledge.g:193:2: ( ( rule__Witness__NameAssignment ) )
+            // InternalZeroKnowledge.g:194:3: ( rule__Witness__NameAssignment )
             {
             if ( state.backtracking==0 ) {
-               before(grammarAccess.getWitnessAccess().getGroup()); 
+               before(grammarAccess.getWitnessAccess().getNameAssignment()); 
             }
-            // InternalZeroKnowledge.g:195:3: ( rule__Witness__Group__0 )
-            // InternalZeroKnowledge.g:195:4: rule__Witness__Group__0
+            // InternalZeroKnowledge.g:195:3: ( rule__Witness__NameAssignment )
+            // InternalZeroKnowledge.g:195:4: rule__Witness__NameAssignment
             {
             pushFollow(FOLLOW_2);
-            rule__Witness__Group__0();
+            rule__Witness__NameAssignment();
 
             state._fsp--;
             if (state.failed) return ;
@@ -575,7 +574,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             }
 
             if ( state.backtracking==0 ) {
-               after(grammarAccess.getWitnessAccess().getGroup()); 
+               after(grammarAccess.getWitnessAccess().getNameAssignment()); 
             }
 
             }
@@ -1962,32 +1961,32 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             // InternalZeroKnowledge.g:607:1: ( ( ( rule__Comparison__Group_1_0_0__0 ) ) | ( ( rule__Comparison__Group_1_0_1__0 ) ) | ( ( rule__Comparison__Group_1_0_2__0 ) ) | ( ( rule__Comparison__Group_1_0_3__0 ) ) | ( ( rule__Comparison__Group_1_0_4__0 ) ) | ( ( rule__Comparison__Group_1_0_5__0 ) ) )
             int alt1=6;
             switch ( input.LA(1) ) {
-            case 21:
+            case 20:
                 {
                 alt1=1;
                 }
                 break;
-            case 22:
+            case 21:
                 {
                 alt1=2;
                 }
                 break;
-            case 23:
+            case 22:
                 {
                 alt1=3;
                 }
                 break;
-            case 24:
+            case 23:
                 {
                 alt1=4;
                 }
                 break;
-            case 25:
+            case 24:
                 {
                 alt1=5;
                 }
                 break;
-            case 26:
+            case 25:
                 {
                 alt1=6;
                 }
@@ -2203,7 +2202,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             int alt2=2;
             int LA2_0 = input.LA(1);
 
-            if ( (LA2_0==27) ) {
+            if ( (LA2_0==26) ) {
                 alt2=1;
             }
             else if ( (LA2_0==17) ) {
@@ -2303,10 +2302,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             int alt3=2;
             int LA3_0 = input.LA(1);
 
-            if ( (LA3_0==28) ) {
+            if ( (LA3_0==27) ) {
                 alt3=1;
             }
-            else if ( (LA3_0==29) ) {
+            else if ( (LA3_0==28) ) {
                 alt3=2;
             }
             else {
@@ -2642,11 +2641,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
                 {
                 int LA6_1 = input.LA(2);
 
-                if ( (LA6_1==13) ) {
-                    alt6=1;
-                }
-                else if ( (LA6_1==EOF||LA6_1==10||LA6_1==12||(LA6_1>=14 && LA6_1<=17)||(LA6_1>=19 && LA6_1<=29)) ) {
+                if ( (LA6_1==EOF||LA6_1==10||LA6_1==12||(LA6_1>=14 && LA6_1<=28)) ) {
                     alt6=2;
+                }
+                else if ( (LA6_1==13) ) {
+                    alt6=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return ;}
@@ -3619,7 +3618,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             // InternalZeroKnowledge.g:1018:1: ( rule__FunctionDefinition__Group__4__Impl rule__FunctionDefinition__Group__5 )
             // InternalZeroKnowledge.g:1019:2: rule__FunctionDefinition__Group__4__Impl rule__FunctionDefinition__Group__5
             {
-            pushFollow(FOLLOW_6);
+            pushFollow(FOLLOW_8);
             rule__FunctionDefinition__Group__4__Impl();
 
             state._fsp--;
@@ -3648,24 +3647,41 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionDefinition__Group__4__Impl"
-    // InternalZeroKnowledge.g:1026:1: rule__FunctionDefinition__Group__4__Impl : ( '}' ) ;
+    // InternalZeroKnowledge.g:1026:1: rule__FunctionDefinition__Group__4__Impl : ( ( ';' )? ) ;
     public final void rule__FunctionDefinition__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1030:1: ( ( '}' ) )
-            // InternalZeroKnowledge.g:1031:1: ( '}' )
+            // InternalZeroKnowledge.g:1030:1: ( ( ( ';' )? ) )
+            // InternalZeroKnowledge.g:1031:1: ( ( ';' )? )
             {
-            // InternalZeroKnowledge.g:1031:1: ( '}' )
-            // InternalZeroKnowledge.g:1032:2: '}'
+            // InternalZeroKnowledge.g:1031:1: ( ( ';' )? )
+            // InternalZeroKnowledge.g:1032:2: ( ';' )?
             {
             if ( state.backtracking==0 ) {
-               before(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_4()); 
+               before(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_4()); 
             }
-            match(input,12,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:1033:2: ( ';' )?
+            int alt10=2;
+            int LA10_0 = input.LA(1);
+
+            if ( (LA10_0==10) ) {
+                alt10=1;
+            }
+            switch (alt10) {
+                case 1 :
+                    // InternalZeroKnowledge.g:1033:3: ';'
+                    {
+                    match(input,10,FOLLOW_2); if (state.failed) return ;
+
+                    }
+                    break;
+
+            }
+
             if ( state.backtracking==0 ) {
-               after(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_4()); 
+               after(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_4()); 
             }
 
             }
@@ -3689,17 +3705,22 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionDefinition__Group__5"
-    // InternalZeroKnowledge.g:1041:1: rule__FunctionDefinition__Group__5 : rule__FunctionDefinition__Group__5__Impl ;
+    // InternalZeroKnowledge.g:1041:1: rule__FunctionDefinition__Group__5 : rule__FunctionDefinition__Group__5__Impl rule__FunctionDefinition__Group__6 ;
     public final void rule__FunctionDefinition__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1045:1: ( rule__FunctionDefinition__Group__5__Impl )
-            // InternalZeroKnowledge.g:1046:2: rule__FunctionDefinition__Group__5__Impl
+            // InternalZeroKnowledge.g:1045:1: ( rule__FunctionDefinition__Group__5__Impl rule__FunctionDefinition__Group__6 )
+            // InternalZeroKnowledge.g:1046:2: rule__FunctionDefinition__Group__5__Impl rule__FunctionDefinition__Group__6
             {
-            pushFollow(FOLLOW_2);
+            pushFollow(FOLLOW_6);
             rule__FunctionDefinition__Group__5__Impl();
+
+            state._fsp--;
+            if (state.failed) return ;
+            pushFollow(FOLLOW_2);
+            rule__FunctionDefinition__Group__6();
 
             state._fsp--;
             if (state.failed) return ;
@@ -3722,41 +3743,24 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionDefinition__Group__5__Impl"
-    // InternalZeroKnowledge.g:1052:1: rule__FunctionDefinition__Group__5__Impl : ( ( ';' )? ) ;
+    // InternalZeroKnowledge.g:1053:1: rule__FunctionDefinition__Group__5__Impl : ( '}' ) ;
     public final void rule__FunctionDefinition__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1056:1: ( ( ( ';' )? ) )
-            // InternalZeroKnowledge.g:1057:1: ( ( ';' )? )
+            // InternalZeroKnowledge.g:1057:1: ( ( '}' ) )
+            // InternalZeroKnowledge.g:1058:1: ( '}' )
             {
-            // InternalZeroKnowledge.g:1057:1: ( ( ';' )? )
-            // InternalZeroKnowledge.g:1058:2: ( ';' )?
+            // InternalZeroKnowledge.g:1058:1: ( '}' )
+            // InternalZeroKnowledge.g:1059:2: '}'
             {
             if ( state.backtracking==0 ) {
-               before(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_5()); 
+               before(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_5()); 
             }
-            // InternalZeroKnowledge.g:1059:2: ( ';' )?
-            int alt10=2;
-            int LA10_0 = input.LA(1);
-
-            if ( (LA10_0==10) ) {
-                alt10=1;
-            }
-            switch (alt10) {
-                case 1 :
-                    // InternalZeroKnowledge.g:1059:3: ';'
-                    {
-                    match(input,10,FOLLOW_2); if (state.failed) return ;
-
-                    }
-                    break;
-
-            }
-
+            match(input,12,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
-               after(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_5()); 
+               after(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_5()); 
             }
 
             }
@@ -3779,15 +3783,106 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
     // $ANTLR end "rule__FunctionDefinition__Group__5__Impl"
 
 
+    // $ANTLR start "rule__FunctionDefinition__Group__6"
+    // InternalZeroKnowledge.g:1068:1: rule__FunctionDefinition__Group__6 : rule__FunctionDefinition__Group__6__Impl ;
+    public final void rule__FunctionDefinition__Group__6() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+        	
+        try {
+            // InternalZeroKnowledge.g:1072:1: ( rule__FunctionDefinition__Group__6__Impl )
+            // InternalZeroKnowledge.g:1073:2: rule__FunctionDefinition__Group__6__Impl
+            {
+            pushFollow(FOLLOW_2);
+            rule__FunctionDefinition__Group__6__Impl();
+
+            state._fsp--;
+            if (state.failed) return ;
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__FunctionDefinition__Group__6"
+
+
+    // $ANTLR start "rule__FunctionDefinition__Group__6__Impl"
+    // InternalZeroKnowledge.g:1079:1: rule__FunctionDefinition__Group__6__Impl : ( ( ';' )? ) ;
+    public final void rule__FunctionDefinition__Group__6__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+        	
+        try {
+            // InternalZeroKnowledge.g:1083:1: ( ( ( ';' )? ) )
+            // InternalZeroKnowledge.g:1084:1: ( ( ';' )? )
+            {
+            // InternalZeroKnowledge.g:1084:1: ( ( ';' )? )
+            // InternalZeroKnowledge.g:1085:2: ( ';' )?
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_6()); 
+            }
+            // InternalZeroKnowledge.g:1086:2: ( ';' )?
+            int alt11=2;
+            int LA11_0 = input.LA(1);
+
+            if ( (LA11_0==10) ) {
+                alt11=1;
+            }
+            switch (alt11) {
+                case 1 :
+                    // InternalZeroKnowledge.g:1086:3: ';'
+                    {
+                    match(input,10,FOLLOW_2); if (state.failed) return ;
+
+                    }
+                    break;
+
+            }
+
+            if ( state.backtracking==0 ) {
+               after(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_6()); 
+            }
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__FunctionDefinition__Group__6__Impl"
+
+
     // $ANTLR start "rule__ParameterList__Group__0"
-    // InternalZeroKnowledge.g:1068:1: rule__ParameterList__Group__0 : rule__ParameterList__Group__0__Impl rule__ParameterList__Group__1 ;
+    // InternalZeroKnowledge.g:1095:1: rule__ParameterList__Group__0 : rule__ParameterList__Group__0__Impl rule__ParameterList__Group__1 ;
     public final void rule__ParameterList__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1072:1: ( rule__ParameterList__Group__0__Impl rule__ParameterList__Group__1 )
-            // InternalZeroKnowledge.g:1073:2: rule__ParameterList__Group__0__Impl rule__ParameterList__Group__1
+            // InternalZeroKnowledge.g:1099:1: ( rule__ParameterList__Group__0__Impl rule__ParameterList__Group__1 )
+            // InternalZeroKnowledge.g:1100:2: rule__ParameterList__Group__0__Impl rule__ParameterList__Group__1
             {
             pushFollow(FOLLOW_9);
             rule__ParameterList__Group__0__Impl();
@@ -3818,17 +3913,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group__0__Impl"
-    // InternalZeroKnowledge.g:1080:1: rule__ParameterList__Group__0__Impl : ( '(' ) ;
+    // InternalZeroKnowledge.g:1107:1: rule__ParameterList__Group__0__Impl : ( '(' ) ;
     public final void rule__ParameterList__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1084:1: ( ( '(' ) )
-            // InternalZeroKnowledge.g:1085:1: ( '(' )
+            // InternalZeroKnowledge.g:1111:1: ( ( '(' ) )
+            // InternalZeroKnowledge.g:1112:1: ( '(' )
             {
-            // InternalZeroKnowledge.g:1085:1: ( '(' )
-            // InternalZeroKnowledge.g:1086:2: '('
+            // InternalZeroKnowledge.g:1112:1: ( '(' )
+            // InternalZeroKnowledge.g:1113:2: '('
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getLeftParenthesisKeyword_0()); 
@@ -3859,14 +3954,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group__1"
-    // InternalZeroKnowledge.g:1095:1: rule__ParameterList__Group__1 : rule__ParameterList__Group__1__Impl rule__ParameterList__Group__2 ;
+    // InternalZeroKnowledge.g:1122:1: rule__ParameterList__Group__1 : rule__ParameterList__Group__1__Impl rule__ParameterList__Group__2 ;
     public final void rule__ParameterList__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1099:1: ( rule__ParameterList__Group__1__Impl rule__ParameterList__Group__2 )
-            // InternalZeroKnowledge.g:1100:2: rule__ParameterList__Group__1__Impl rule__ParameterList__Group__2
+            // InternalZeroKnowledge.g:1126:1: ( rule__ParameterList__Group__1__Impl rule__ParameterList__Group__2 )
+            // InternalZeroKnowledge.g:1127:2: rule__ParameterList__Group__1__Impl rule__ParameterList__Group__2
             {
             pushFollow(FOLLOW_9);
             rule__ParameterList__Group__1__Impl();
@@ -3897,31 +3992,31 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group__1__Impl"
-    // InternalZeroKnowledge.g:1107:1: rule__ParameterList__Group__1__Impl : ( ( rule__ParameterList__Group_1__0 )? ) ;
+    // InternalZeroKnowledge.g:1134:1: rule__ParameterList__Group__1__Impl : ( ( rule__ParameterList__Group_1__0 )? ) ;
     public final void rule__ParameterList__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1111:1: ( ( ( rule__ParameterList__Group_1__0 )? ) )
-            // InternalZeroKnowledge.g:1112:1: ( ( rule__ParameterList__Group_1__0 )? )
+            // InternalZeroKnowledge.g:1138:1: ( ( ( rule__ParameterList__Group_1__0 )? ) )
+            // InternalZeroKnowledge.g:1139:1: ( ( rule__ParameterList__Group_1__0 )? )
             {
-            // InternalZeroKnowledge.g:1112:1: ( ( rule__ParameterList__Group_1__0 )? )
-            // InternalZeroKnowledge.g:1113:2: ( rule__ParameterList__Group_1__0 )?
+            // InternalZeroKnowledge.g:1139:1: ( ( rule__ParameterList__Group_1__0 )? )
+            // InternalZeroKnowledge.g:1140:2: ( rule__ParameterList__Group_1__0 )?
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:1114:2: ( rule__ParameterList__Group_1__0 )?
-            int alt11=2;
-            int LA11_0 = input.LA(1);
+            // InternalZeroKnowledge.g:1141:2: ( rule__ParameterList__Group_1__0 )?
+            int alt12=2;
+            int LA12_0 = input.LA(1);
 
-            if ( (LA11_0==RULE_IDENTIFIER) ) {
-                alt11=1;
+            if ( (LA12_0==RULE_IDENTIFIER) ) {
+                alt12=1;
             }
-            switch (alt11) {
+            switch (alt12) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1114:3: rule__ParameterList__Group_1__0
+                    // InternalZeroKnowledge.g:1141:3: rule__ParameterList__Group_1__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__ParameterList__Group_1__0();
@@ -3959,14 +4054,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group__2"
-    // InternalZeroKnowledge.g:1122:1: rule__ParameterList__Group__2 : rule__ParameterList__Group__2__Impl ;
+    // InternalZeroKnowledge.g:1149:1: rule__ParameterList__Group__2 : rule__ParameterList__Group__2__Impl ;
     public final void rule__ParameterList__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1126:1: ( rule__ParameterList__Group__2__Impl )
-            // InternalZeroKnowledge.g:1127:2: rule__ParameterList__Group__2__Impl
+            // InternalZeroKnowledge.g:1153:1: ( rule__ParameterList__Group__2__Impl )
+            // InternalZeroKnowledge.g:1154:2: rule__ParameterList__Group__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__ParameterList__Group__2__Impl();
@@ -3992,17 +4087,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group__2__Impl"
-    // InternalZeroKnowledge.g:1133:1: rule__ParameterList__Group__2__Impl : ( ')' ) ;
+    // InternalZeroKnowledge.g:1160:1: rule__ParameterList__Group__2__Impl : ( ')' ) ;
     public final void rule__ParameterList__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1137:1: ( ( ')' ) )
-            // InternalZeroKnowledge.g:1138:1: ( ')' )
+            // InternalZeroKnowledge.g:1164:1: ( ( ')' ) )
+            // InternalZeroKnowledge.g:1165:1: ( ')' )
             {
-            // InternalZeroKnowledge.g:1138:1: ( ')' )
-            // InternalZeroKnowledge.g:1139:2: ')'
+            // InternalZeroKnowledge.g:1165:1: ( ')' )
+            // InternalZeroKnowledge.g:1166:2: ')'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getRightParenthesisKeyword_2()); 
@@ -4033,14 +4128,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1__0"
-    // InternalZeroKnowledge.g:1149:1: rule__ParameterList__Group_1__0 : rule__ParameterList__Group_1__0__Impl rule__ParameterList__Group_1__1 ;
+    // InternalZeroKnowledge.g:1176:1: rule__ParameterList__Group_1__0 : rule__ParameterList__Group_1__0__Impl rule__ParameterList__Group_1__1 ;
     public final void rule__ParameterList__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1153:1: ( rule__ParameterList__Group_1__0__Impl rule__ParameterList__Group_1__1 )
-            // InternalZeroKnowledge.g:1154:2: rule__ParameterList__Group_1__0__Impl rule__ParameterList__Group_1__1
+            // InternalZeroKnowledge.g:1180:1: ( rule__ParameterList__Group_1__0__Impl rule__ParameterList__Group_1__1 )
+            // InternalZeroKnowledge.g:1181:2: rule__ParameterList__Group_1__0__Impl rule__ParameterList__Group_1__1
             {
             pushFollow(FOLLOW_10);
             rule__ParameterList__Group_1__0__Impl();
@@ -4071,23 +4166,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:1161:1: rule__ParameterList__Group_1__0__Impl : ( ( rule__ParameterList__ParametersAssignment_1_0 ) ) ;
+    // InternalZeroKnowledge.g:1188:1: rule__ParameterList__Group_1__0__Impl : ( ( rule__ParameterList__ParametersAssignment_1_0 ) ) ;
     public final void rule__ParameterList__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1165:1: ( ( ( rule__ParameterList__ParametersAssignment_1_0 ) ) )
-            // InternalZeroKnowledge.g:1166:1: ( ( rule__ParameterList__ParametersAssignment_1_0 ) )
+            // InternalZeroKnowledge.g:1192:1: ( ( ( rule__ParameterList__ParametersAssignment_1_0 ) ) )
+            // InternalZeroKnowledge.g:1193:1: ( ( rule__ParameterList__ParametersAssignment_1_0 ) )
             {
-            // InternalZeroKnowledge.g:1166:1: ( ( rule__ParameterList__ParametersAssignment_1_0 ) )
-            // InternalZeroKnowledge.g:1167:2: ( rule__ParameterList__ParametersAssignment_1_0 )
+            // InternalZeroKnowledge.g:1193:1: ( ( rule__ParameterList__ParametersAssignment_1_0 ) )
+            // InternalZeroKnowledge.g:1194:2: ( rule__ParameterList__ParametersAssignment_1_0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getParametersAssignment_1_0()); 
             }
-            // InternalZeroKnowledge.g:1168:2: ( rule__ParameterList__ParametersAssignment_1_0 )
-            // InternalZeroKnowledge.g:1168:3: rule__ParameterList__ParametersAssignment_1_0
+            // InternalZeroKnowledge.g:1195:2: ( rule__ParameterList__ParametersAssignment_1_0 )
+            // InternalZeroKnowledge.g:1195:3: rule__ParameterList__ParametersAssignment_1_0
             {
             pushFollow(FOLLOW_2);
             rule__ParameterList__ParametersAssignment_1_0();
@@ -4122,14 +4217,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1__1"
-    // InternalZeroKnowledge.g:1176:1: rule__ParameterList__Group_1__1 : rule__ParameterList__Group_1__1__Impl ;
+    // InternalZeroKnowledge.g:1203:1: rule__ParameterList__Group_1__1 : rule__ParameterList__Group_1__1__Impl ;
     public final void rule__ParameterList__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1180:1: ( rule__ParameterList__Group_1__1__Impl )
-            // InternalZeroKnowledge.g:1181:2: rule__ParameterList__Group_1__1__Impl
+            // InternalZeroKnowledge.g:1207:1: ( rule__ParameterList__Group_1__1__Impl )
+            // InternalZeroKnowledge.g:1208:2: rule__ParameterList__Group_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__ParameterList__Group_1__1__Impl();
@@ -4155,35 +4250,35 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:1187:1: rule__ParameterList__Group_1__1__Impl : ( ( rule__ParameterList__Group_1_1__0 )* ) ;
+    // InternalZeroKnowledge.g:1214:1: rule__ParameterList__Group_1__1__Impl : ( ( rule__ParameterList__Group_1_1__0 )* ) ;
     public final void rule__ParameterList__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1191:1: ( ( ( rule__ParameterList__Group_1_1__0 )* ) )
-            // InternalZeroKnowledge.g:1192:1: ( ( rule__ParameterList__Group_1_1__0 )* )
+            // InternalZeroKnowledge.g:1218:1: ( ( ( rule__ParameterList__Group_1_1__0 )* ) )
+            // InternalZeroKnowledge.g:1219:1: ( ( rule__ParameterList__Group_1_1__0 )* )
             {
-            // InternalZeroKnowledge.g:1192:1: ( ( rule__ParameterList__Group_1_1__0 )* )
-            // InternalZeroKnowledge.g:1193:2: ( rule__ParameterList__Group_1_1__0 )*
+            // InternalZeroKnowledge.g:1219:1: ( ( rule__ParameterList__Group_1_1__0 )* )
+            // InternalZeroKnowledge.g:1220:2: ( rule__ParameterList__Group_1_1__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getGroup_1_1()); 
             }
-            // InternalZeroKnowledge.g:1194:2: ( rule__ParameterList__Group_1_1__0 )*
-            loop12:
+            // InternalZeroKnowledge.g:1221:2: ( rule__ParameterList__Group_1_1__0 )*
+            loop13:
             do {
-                int alt12=2;
-                int LA12_0 = input.LA(1);
+                int alt13=2;
+                int LA13_0 = input.LA(1);
 
-                if ( (LA12_0==15) ) {
-                    alt12=1;
+                if ( (LA13_0==15) ) {
+                    alt13=1;
                 }
 
 
-                switch (alt12) {
+                switch (alt13) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:1194:3: rule__ParameterList__Group_1_1__0
+            	    // InternalZeroKnowledge.g:1221:3: rule__ParameterList__Group_1_1__0
             	    {
             	    pushFollow(FOLLOW_11);
             	    rule__ParameterList__Group_1_1__0();
@@ -4195,7 +4290,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             	    break;
 
             	default :
-            	    break loop12;
+            	    break loop13;
                 }
             } while (true);
 
@@ -4224,14 +4319,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1_1__0"
-    // InternalZeroKnowledge.g:1203:1: rule__ParameterList__Group_1_1__0 : rule__ParameterList__Group_1_1__0__Impl rule__ParameterList__Group_1_1__1 ;
+    // InternalZeroKnowledge.g:1230:1: rule__ParameterList__Group_1_1__0 : rule__ParameterList__Group_1_1__0__Impl rule__ParameterList__Group_1_1__1 ;
     public final void rule__ParameterList__Group_1_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1207:1: ( rule__ParameterList__Group_1_1__0__Impl rule__ParameterList__Group_1_1__1 )
-            // InternalZeroKnowledge.g:1208:2: rule__ParameterList__Group_1_1__0__Impl rule__ParameterList__Group_1_1__1
+            // InternalZeroKnowledge.g:1234:1: ( rule__ParameterList__Group_1_1__0__Impl rule__ParameterList__Group_1_1__1 )
+            // InternalZeroKnowledge.g:1235:2: rule__ParameterList__Group_1_1__0__Impl rule__ParameterList__Group_1_1__1
             {
             pushFollow(FOLLOW_12);
             rule__ParameterList__Group_1_1__0__Impl();
@@ -4262,17 +4357,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1_1__0__Impl"
-    // InternalZeroKnowledge.g:1215:1: rule__ParameterList__Group_1_1__0__Impl : ( ',' ) ;
+    // InternalZeroKnowledge.g:1242:1: rule__ParameterList__Group_1_1__0__Impl : ( ',' ) ;
     public final void rule__ParameterList__Group_1_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1219:1: ( ( ',' ) )
-            // InternalZeroKnowledge.g:1220:1: ( ',' )
+            // InternalZeroKnowledge.g:1246:1: ( ( ',' ) )
+            // InternalZeroKnowledge.g:1247:1: ( ',' )
             {
-            // InternalZeroKnowledge.g:1220:1: ( ',' )
-            // InternalZeroKnowledge.g:1221:2: ','
+            // InternalZeroKnowledge.g:1247:1: ( ',' )
+            // InternalZeroKnowledge.g:1248:2: ','
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getCommaKeyword_1_1_0()); 
@@ -4303,14 +4398,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1_1__1"
-    // InternalZeroKnowledge.g:1230:1: rule__ParameterList__Group_1_1__1 : rule__ParameterList__Group_1_1__1__Impl ;
+    // InternalZeroKnowledge.g:1257:1: rule__ParameterList__Group_1_1__1 : rule__ParameterList__Group_1_1__1__Impl ;
     public final void rule__ParameterList__Group_1_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1234:1: ( rule__ParameterList__Group_1_1__1__Impl )
-            // InternalZeroKnowledge.g:1235:2: rule__ParameterList__Group_1_1__1__Impl
+            // InternalZeroKnowledge.g:1261:1: ( rule__ParameterList__Group_1_1__1__Impl )
+            // InternalZeroKnowledge.g:1262:2: rule__ParameterList__Group_1_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__ParameterList__Group_1_1__1__Impl();
@@ -4336,23 +4431,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__Group_1_1__1__Impl"
-    // InternalZeroKnowledge.g:1241:1: rule__ParameterList__Group_1_1__1__Impl : ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) ) ;
+    // InternalZeroKnowledge.g:1268:1: rule__ParameterList__Group_1_1__1__Impl : ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) ) ;
     public final void rule__ParameterList__Group_1_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1245:1: ( ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) ) )
-            // InternalZeroKnowledge.g:1246:1: ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) )
+            // InternalZeroKnowledge.g:1272:1: ( ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) ) )
+            // InternalZeroKnowledge.g:1273:1: ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) )
             {
-            // InternalZeroKnowledge.g:1246:1: ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) )
-            // InternalZeroKnowledge.g:1247:2: ( rule__ParameterList__ParametersAssignment_1_1_1 )
+            // InternalZeroKnowledge.g:1273:1: ( ( rule__ParameterList__ParametersAssignment_1_1_1 ) )
+            // InternalZeroKnowledge.g:1274:2: ( rule__ParameterList__ParametersAssignment_1_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getParametersAssignment_1_1_1()); 
             }
-            // InternalZeroKnowledge.g:1248:2: ( rule__ParameterList__ParametersAssignment_1_1_1 )
-            // InternalZeroKnowledge.g:1248:3: rule__ParameterList__ParametersAssignment_1_1_1
+            // InternalZeroKnowledge.g:1275:2: ( rule__ParameterList__ParametersAssignment_1_1_1 )
+            // InternalZeroKnowledge.g:1275:3: rule__ParameterList__ParametersAssignment_1_1_1
             {
             pushFollow(FOLLOW_2);
             rule__ParameterList__ParametersAssignment_1_1_1();
@@ -4387,14 +4482,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__0"
-    // InternalZeroKnowledge.g:1257:1: rule__WitnessList__Group__0 : rule__WitnessList__Group__0__Impl rule__WitnessList__Group__1 ;
+    // InternalZeroKnowledge.g:1284:1: rule__WitnessList__Group__0 : rule__WitnessList__Group__0__Impl rule__WitnessList__Group__1 ;
     public final void rule__WitnessList__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1261:1: ( rule__WitnessList__Group__0__Impl rule__WitnessList__Group__1 )
-            // InternalZeroKnowledge.g:1262:2: rule__WitnessList__Group__0__Impl rule__WitnessList__Group__1
+            // InternalZeroKnowledge.g:1288:1: ( rule__WitnessList__Group__0__Impl rule__WitnessList__Group__1 )
+            // InternalZeroKnowledge.g:1289:2: rule__WitnessList__Group__0__Impl rule__WitnessList__Group__1
             {
             pushFollow(FOLLOW_13);
             rule__WitnessList__Group__0__Impl();
@@ -4425,17 +4520,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__0__Impl"
-    // InternalZeroKnowledge.g:1269:1: rule__WitnessList__Group__0__Impl : ( '(' ) ;
+    // InternalZeroKnowledge.g:1296:1: rule__WitnessList__Group__0__Impl : ( '(' ) ;
     public final void rule__WitnessList__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1273:1: ( ( '(' ) )
-            // InternalZeroKnowledge.g:1274:1: ( '(' )
+            // InternalZeroKnowledge.g:1300:1: ( ( '(' ) )
+            // InternalZeroKnowledge.g:1301:1: ( '(' )
             {
-            // InternalZeroKnowledge.g:1274:1: ( '(' )
-            // InternalZeroKnowledge.g:1275:2: '('
+            // InternalZeroKnowledge.g:1301:1: ( '(' )
+            // InternalZeroKnowledge.g:1302:2: '('
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getLeftParenthesisKeyword_0()); 
@@ -4466,14 +4561,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__1"
-    // InternalZeroKnowledge.g:1284:1: rule__WitnessList__Group__1 : rule__WitnessList__Group__1__Impl rule__WitnessList__Group__2 ;
+    // InternalZeroKnowledge.g:1311:1: rule__WitnessList__Group__1 : rule__WitnessList__Group__1__Impl rule__WitnessList__Group__2 ;
     public final void rule__WitnessList__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1288:1: ( rule__WitnessList__Group__1__Impl rule__WitnessList__Group__2 )
-            // InternalZeroKnowledge.g:1289:2: rule__WitnessList__Group__1__Impl rule__WitnessList__Group__2
+            // InternalZeroKnowledge.g:1315:1: ( rule__WitnessList__Group__1__Impl rule__WitnessList__Group__2 )
+            // InternalZeroKnowledge.g:1316:2: rule__WitnessList__Group__1__Impl rule__WitnessList__Group__2
             {
             pushFollow(FOLLOW_13);
             rule__WitnessList__Group__1__Impl();
@@ -4504,31 +4599,31 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__1__Impl"
-    // InternalZeroKnowledge.g:1296:1: rule__WitnessList__Group__1__Impl : ( ( rule__WitnessList__WitnessesAssignment_1 )? ) ;
+    // InternalZeroKnowledge.g:1323:1: rule__WitnessList__Group__1__Impl : ( ( rule__WitnessList__WitnessesAssignment_1 )? ) ;
     public final void rule__WitnessList__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1300:1: ( ( ( rule__WitnessList__WitnessesAssignment_1 )? ) )
-            // InternalZeroKnowledge.g:1301:1: ( ( rule__WitnessList__WitnessesAssignment_1 )? )
+            // InternalZeroKnowledge.g:1327:1: ( ( ( rule__WitnessList__WitnessesAssignment_1 )? ) )
+            // InternalZeroKnowledge.g:1328:1: ( ( rule__WitnessList__WitnessesAssignment_1 )? )
             {
-            // InternalZeroKnowledge.g:1301:1: ( ( rule__WitnessList__WitnessesAssignment_1 )? )
-            // InternalZeroKnowledge.g:1302:2: ( rule__WitnessList__WitnessesAssignment_1 )?
+            // InternalZeroKnowledge.g:1328:1: ( ( rule__WitnessList__WitnessesAssignment_1 )? )
+            // InternalZeroKnowledge.g:1329:2: ( rule__WitnessList__WitnessesAssignment_1 )?
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getWitnessesAssignment_1()); 
             }
-            // InternalZeroKnowledge.g:1303:2: ( rule__WitnessList__WitnessesAssignment_1 )?
-            int alt13=2;
-            int LA13_0 = input.LA(1);
+            // InternalZeroKnowledge.g:1330:2: ( rule__WitnessList__WitnessesAssignment_1 )?
+            int alt14=2;
+            int LA14_0 = input.LA(1);
 
-            if ( (LA13_0==RULE_IDENTIFIER) ) {
-                alt13=1;
+            if ( (LA14_0==RULE_IDENTIFIER) ) {
+                alt14=1;
             }
-            switch (alt13) {
+            switch (alt14) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1303:3: rule__WitnessList__WitnessesAssignment_1
+                    // InternalZeroKnowledge.g:1330:3: rule__WitnessList__WitnessesAssignment_1
                     {
                     pushFollow(FOLLOW_2);
                     rule__WitnessList__WitnessesAssignment_1();
@@ -4566,14 +4661,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__2"
-    // InternalZeroKnowledge.g:1311:1: rule__WitnessList__Group__2 : rule__WitnessList__Group__2__Impl rule__WitnessList__Group__3 ;
+    // InternalZeroKnowledge.g:1338:1: rule__WitnessList__Group__2 : rule__WitnessList__Group__2__Impl rule__WitnessList__Group__3 ;
     public final void rule__WitnessList__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1315:1: ( rule__WitnessList__Group__2__Impl rule__WitnessList__Group__3 )
-            // InternalZeroKnowledge.g:1316:2: rule__WitnessList__Group__2__Impl rule__WitnessList__Group__3
+            // InternalZeroKnowledge.g:1342:1: ( rule__WitnessList__Group__2__Impl rule__WitnessList__Group__3 )
+            // InternalZeroKnowledge.g:1343:2: rule__WitnessList__Group__2__Impl rule__WitnessList__Group__3
             {
             pushFollow(FOLLOW_13);
             rule__WitnessList__Group__2__Impl();
@@ -4604,35 +4699,35 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__2__Impl"
-    // InternalZeroKnowledge.g:1323:1: rule__WitnessList__Group__2__Impl : ( ( rule__WitnessList__Group_2__0 )* ) ;
+    // InternalZeroKnowledge.g:1350:1: rule__WitnessList__Group__2__Impl : ( ( rule__WitnessList__Group_2__0 )* ) ;
     public final void rule__WitnessList__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1327:1: ( ( ( rule__WitnessList__Group_2__0 )* ) )
-            // InternalZeroKnowledge.g:1328:1: ( ( rule__WitnessList__Group_2__0 )* )
+            // InternalZeroKnowledge.g:1354:1: ( ( ( rule__WitnessList__Group_2__0 )* ) )
+            // InternalZeroKnowledge.g:1355:1: ( ( rule__WitnessList__Group_2__0 )* )
             {
-            // InternalZeroKnowledge.g:1328:1: ( ( rule__WitnessList__Group_2__0 )* )
-            // InternalZeroKnowledge.g:1329:2: ( rule__WitnessList__Group_2__0 )*
+            // InternalZeroKnowledge.g:1355:1: ( ( rule__WitnessList__Group_2__0 )* )
+            // InternalZeroKnowledge.g:1356:2: ( rule__WitnessList__Group_2__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getGroup_2()); 
             }
-            // InternalZeroKnowledge.g:1330:2: ( rule__WitnessList__Group_2__0 )*
-            loop14:
+            // InternalZeroKnowledge.g:1357:2: ( rule__WitnessList__Group_2__0 )*
+            loop15:
             do {
-                int alt14=2;
-                int LA14_0 = input.LA(1);
+                int alt15=2;
+                int LA15_0 = input.LA(1);
 
-                if ( (LA14_0==15) ) {
-                    alt14=1;
+                if ( (LA15_0==15) ) {
+                    alt15=1;
                 }
 
 
-                switch (alt14) {
+                switch (alt15) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:1330:3: rule__WitnessList__Group_2__0
+            	    // InternalZeroKnowledge.g:1357:3: rule__WitnessList__Group_2__0
             	    {
             	    pushFollow(FOLLOW_11);
             	    rule__WitnessList__Group_2__0();
@@ -4644,7 +4739,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             	    break;
 
             	default :
-            	    break loop14;
+            	    break loop15;
                 }
             } while (true);
 
@@ -4673,14 +4768,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__3"
-    // InternalZeroKnowledge.g:1338:1: rule__WitnessList__Group__3 : rule__WitnessList__Group__3__Impl ;
+    // InternalZeroKnowledge.g:1365:1: rule__WitnessList__Group__3 : rule__WitnessList__Group__3__Impl ;
     public final void rule__WitnessList__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1342:1: ( rule__WitnessList__Group__3__Impl )
-            // InternalZeroKnowledge.g:1343:2: rule__WitnessList__Group__3__Impl
+            // InternalZeroKnowledge.g:1369:1: ( rule__WitnessList__Group__3__Impl )
+            // InternalZeroKnowledge.g:1370:2: rule__WitnessList__Group__3__Impl
             {
             pushFollow(FOLLOW_2);
             rule__WitnessList__Group__3__Impl();
@@ -4706,17 +4801,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group__3__Impl"
-    // InternalZeroKnowledge.g:1349:1: rule__WitnessList__Group__3__Impl : ( ')' ) ;
+    // InternalZeroKnowledge.g:1376:1: rule__WitnessList__Group__3__Impl : ( ')' ) ;
     public final void rule__WitnessList__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1353:1: ( ( ')' ) )
-            // InternalZeroKnowledge.g:1354:1: ( ')' )
+            // InternalZeroKnowledge.g:1380:1: ( ( ')' ) )
+            // InternalZeroKnowledge.g:1381:1: ( ')' )
             {
-            // InternalZeroKnowledge.g:1354:1: ( ')' )
-            // InternalZeroKnowledge.g:1355:2: ')'
+            // InternalZeroKnowledge.g:1381:1: ( ')' )
+            // InternalZeroKnowledge.g:1382:2: ')'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getRightParenthesisKeyword_3()); 
@@ -4747,14 +4842,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group_2__0"
-    // InternalZeroKnowledge.g:1365:1: rule__WitnessList__Group_2__0 : rule__WitnessList__Group_2__0__Impl rule__WitnessList__Group_2__1 ;
+    // InternalZeroKnowledge.g:1392:1: rule__WitnessList__Group_2__0 : rule__WitnessList__Group_2__0__Impl rule__WitnessList__Group_2__1 ;
     public final void rule__WitnessList__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1369:1: ( rule__WitnessList__Group_2__0__Impl rule__WitnessList__Group_2__1 )
-            // InternalZeroKnowledge.g:1370:2: rule__WitnessList__Group_2__0__Impl rule__WitnessList__Group_2__1
+            // InternalZeroKnowledge.g:1396:1: ( rule__WitnessList__Group_2__0__Impl rule__WitnessList__Group_2__1 )
+            // InternalZeroKnowledge.g:1397:2: rule__WitnessList__Group_2__0__Impl rule__WitnessList__Group_2__1
             {
             pushFollow(FOLLOW_12);
             rule__WitnessList__Group_2__0__Impl();
@@ -4785,17 +4880,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group_2__0__Impl"
-    // InternalZeroKnowledge.g:1377:1: rule__WitnessList__Group_2__0__Impl : ( ',' ) ;
+    // InternalZeroKnowledge.g:1404:1: rule__WitnessList__Group_2__0__Impl : ( ',' ) ;
     public final void rule__WitnessList__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1381:1: ( ( ',' ) )
-            // InternalZeroKnowledge.g:1382:1: ( ',' )
+            // InternalZeroKnowledge.g:1408:1: ( ( ',' ) )
+            // InternalZeroKnowledge.g:1409:1: ( ',' )
             {
-            // InternalZeroKnowledge.g:1382:1: ( ',' )
-            // InternalZeroKnowledge.g:1383:2: ','
+            // InternalZeroKnowledge.g:1409:1: ( ',' )
+            // InternalZeroKnowledge.g:1410:2: ','
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getCommaKeyword_2_0()); 
@@ -4826,14 +4921,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group_2__1"
-    // InternalZeroKnowledge.g:1392:1: rule__WitnessList__Group_2__1 : rule__WitnessList__Group_2__1__Impl ;
+    // InternalZeroKnowledge.g:1419:1: rule__WitnessList__Group_2__1 : rule__WitnessList__Group_2__1__Impl ;
     public final void rule__WitnessList__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1396:1: ( rule__WitnessList__Group_2__1__Impl )
-            // InternalZeroKnowledge.g:1397:2: rule__WitnessList__Group_2__1__Impl
+            // InternalZeroKnowledge.g:1423:1: ( rule__WitnessList__Group_2__1__Impl )
+            // InternalZeroKnowledge.g:1424:2: rule__WitnessList__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__WitnessList__Group_2__1__Impl();
@@ -4859,23 +4954,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__Group_2__1__Impl"
-    // InternalZeroKnowledge.g:1403:1: rule__WitnessList__Group_2__1__Impl : ( ( rule__WitnessList__WitnessesAssignment_2_1 ) ) ;
+    // InternalZeroKnowledge.g:1430:1: rule__WitnessList__Group_2__1__Impl : ( ( rule__WitnessList__WitnessesAssignment_2_1 ) ) ;
     public final void rule__WitnessList__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1407:1: ( ( ( rule__WitnessList__WitnessesAssignment_2_1 ) ) )
-            // InternalZeroKnowledge.g:1408:1: ( ( rule__WitnessList__WitnessesAssignment_2_1 ) )
+            // InternalZeroKnowledge.g:1434:1: ( ( ( rule__WitnessList__WitnessesAssignment_2_1 ) ) )
+            // InternalZeroKnowledge.g:1435:1: ( ( rule__WitnessList__WitnessesAssignment_2_1 ) )
             {
-            // InternalZeroKnowledge.g:1408:1: ( ( rule__WitnessList__WitnessesAssignment_2_1 ) )
-            // InternalZeroKnowledge.g:1409:2: ( rule__WitnessList__WitnessesAssignment_2_1 )
+            // InternalZeroKnowledge.g:1435:1: ( ( rule__WitnessList__WitnessesAssignment_2_1 ) )
+            // InternalZeroKnowledge.g:1436:2: ( rule__WitnessList__WitnessesAssignment_2_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getWitnessesAssignment_2_1()); 
             }
-            // InternalZeroKnowledge.g:1410:2: ( rule__WitnessList__WitnessesAssignment_2_1 )
-            // InternalZeroKnowledge.g:1410:3: rule__WitnessList__WitnessesAssignment_2_1
+            // InternalZeroKnowledge.g:1437:2: ( rule__WitnessList__WitnessesAssignment_2_1 )
+            // InternalZeroKnowledge.g:1437:3: rule__WitnessList__WitnessesAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__WitnessList__WitnessesAssignment_2_1();
@@ -4909,201 +5004,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
     // $ANTLR end "rule__WitnessList__Group_2__1__Impl"
 
 
-    // $ANTLR start "rule__Witness__Group__0"
-    // InternalZeroKnowledge.g:1419:1: rule__Witness__Group__0 : rule__Witness__Group__0__Impl rule__Witness__Group__1 ;
-    public final void rule__Witness__Group__0() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-        	
-        try {
-            // InternalZeroKnowledge.g:1423:1: ( rule__Witness__Group__0__Impl rule__Witness__Group__1 )
-            // InternalZeroKnowledge.g:1424:2: rule__Witness__Group__0__Impl rule__Witness__Group__1
-            {
-            pushFollow(FOLLOW_14);
-            rule__Witness__Group__0__Impl();
-
-            state._fsp--;
-            if (state.failed) return ;
-            pushFollow(FOLLOW_2);
-            rule__Witness__Group__1();
-
-            state._fsp--;
-            if (state.failed) return ;
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__Witness__Group__0"
-
-
-    // $ANTLR start "rule__Witness__Group__0__Impl"
-    // InternalZeroKnowledge.g:1431:1: rule__Witness__Group__0__Impl : ( ( rule__Witness__NameAssignment_0 ) ) ;
-    public final void rule__Witness__Group__0__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-        	
-        try {
-            // InternalZeroKnowledge.g:1435:1: ( ( ( rule__Witness__NameAssignment_0 ) ) )
-            // InternalZeroKnowledge.g:1436:1: ( ( rule__Witness__NameAssignment_0 ) )
-            {
-            // InternalZeroKnowledge.g:1436:1: ( ( rule__Witness__NameAssignment_0 ) )
-            // InternalZeroKnowledge.g:1437:2: ( rule__Witness__NameAssignment_0 )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getWitnessAccess().getNameAssignment_0()); 
-            }
-            // InternalZeroKnowledge.g:1438:2: ( rule__Witness__NameAssignment_0 )
-            // InternalZeroKnowledge.g:1438:3: rule__Witness__NameAssignment_0
-            {
-            pushFollow(FOLLOW_2);
-            rule__Witness__NameAssignment_0();
-
-            state._fsp--;
-            if (state.failed) return ;
-
-            }
-
-            if ( state.backtracking==0 ) {
-               after(grammarAccess.getWitnessAccess().getNameAssignment_0()); 
-            }
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__Witness__Group__0__Impl"
-
-
-    // $ANTLR start "rule__Witness__Group__1"
-    // InternalZeroKnowledge.g:1446:1: rule__Witness__Group__1 : rule__Witness__Group__1__Impl ;
-    public final void rule__Witness__Group__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-        	
-        try {
-            // InternalZeroKnowledge.g:1450:1: ( rule__Witness__Group__1__Impl )
-            // InternalZeroKnowledge.g:1451:2: rule__Witness__Group__1__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__Witness__Group__1__Impl();
-
-            state._fsp--;
-            if (state.failed) return ;
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__Witness__Group__1"
-
-
-    // $ANTLR start "rule__Witness__Group__1__Impl"
-    // InternalZeroKnowledge.g:1457:1: rule__Witness__Group__1__Impl : ( ( rule__Witness__TestingAssignment_1 )? ) ;
-    public final void rule__Witness__Group__1__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-        	
-        try {
-            // InternalZeroKnowledge.g:1461:1: ( ( ( rule__Witness__TestingAssignment_1 )? ) )
-            // InternalZeroKnowledge.g:1462:1: ( ( rule__Witness__TestingAssignment_1 )? )
-            {
-            // InternalZeroKnowledge.g:1462:1: ( ( rule__Witness__TestingAssignment_1 )? )
-            // InternalZeroKnowledge.g:1463:2: ( rule__Witness__TestingAssignment_1 )?
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getWitnessAccess().getTestingAssignment_1()); 
-            }
-            // InternalZeroKnowledge.g:1464:2: ( rule__Witness__TestingAssignment_1 )?
-            int alt15=2;
-            int LA15_0 = input.LA(1);
-
-            if ( (LA15_0==18) ) {
-                alt15=1;
-            }
-            switch (alt15) {
-                case 1 :
-                    // InternalZeroKnowledge.g:1464:3: rule__Witness__TestingAssignment_1
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__Witness__TestingAssignment_1();
-
-                    state._fsp--;
-                    if (state.failed) return ;
-
-                    }
-                    break;
-
-            }
-
-            if ( state.backtracking==0 ) {
-               after(grammarAccess.getWitnessAccess().getTestingAssignment_1()); 
-            }
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__Witness__Group__1__Impl"
-
-
     // $ANTLR start "rule__Conjunction__Group__0"
-    // InternalZeroKnowledge.g:1473:1: rule__Conjunction__Group__0 : rule__Conjunction__Group__0__Impl rule__Conjunction__Group__1 ;
+    // InternalZeroKnowledge.g:1446:1: rule__Conjunction__Group__0 : rule__Conjunction__Group__0__Impl rule__Conjunction__Group__1 ;
     public final void rule__Conjunction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1477:1: ( rule__Conjunction__Group__0__Impl rule__Conjunction__Group__1 )
-            // InternalZeroKnowledge.g:1478:2: rule__Conjunction__Group__0__Impl rule__Conjunction__Group__1
+            // InternalZeroKnowledge.g:1450:1: ( rule__Conjunction__Group__0__Impl rule__Conjunction__Group__1 )
+            // InternalZeroKnowledge.g:1451:2: rule__Conjunction__Group__0__Impl rule__Conjunction__Group__1
             {
-            pushFollow(FOLLOW_15);
+            pushFollow(FOLLOW_14);
             rule__Conjunction__Group__0__Impl();
 
             state._fsp--;
@@ -5132,17 +5043,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group__0__Impl"
-    // InternalZeroKnowledge.g:1485:1: rule__Conjunction__Group__0__Impl : ( ruleDisjunction ) ;
+    // InternalZeroKnowledge.g:1458:1: rule__Conjunction__Group__0__Impl : ( ruleDisjunction ) ;
     public final void rule__Conjunction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1489:1: ( ( ruleDisjunction ) )
-            // InternalZeroKnowledge.g:1490:1: ( ruleDisjunction )
+            // InternalZeroKnowledge.g:1462:1: ( ( ruleDisjunction ) )
+            // InternalZeroKnowledge.g:1463:1: ( ruleDisjunction )
             {
-            // InternalZeroKnowledge.g:1490:1: ( ruleDisjunction )
-            // InternalZeroKnowledge.g:1491:2: ruleDisjunction
+            // InternalZeroKnowledge.g:1463:1: ( ruleDisjunction )
+            // InternalZeroKnowledge.g:1464:2: ruleDisjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getDisjunctionParserRuleCall_0()); 
@@ -5177,14 +5088,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group__1"
-    // InternalZeroKnowledge.g:1500:1: rule__Conjunction__Group__1 : rule__Conjunction__Group__1__Impl ;
+    // InternalZeroKnowledge.g:1473:1: rule__Conjunction__Group__1 : rule__Conjunction__Group__1__Impl ;
     public final void rule__Conjunction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1504:1: ( rule__Conjunction__Group__1__Impl )
-            // InternalZeroKnowledge.g:1505:2: rule__Conjunction__Group__1__Impl
+            // InternalZeroKnowledge.g:1477:1: ( rule__Conjunction__Group__1__Impl )
+            // InternalZeroKnowledge.g:1478:2: rule__Conjunction__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Conjunction__Group__1__Impl();
@@ -5210,37 +5121,37 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group__1__Impl"
-    // InternalZeroKnowledge.g:1511:1: rule__Conjunction__Group__1__Impl : ( ( rule__Conjunction__Group_1__0 )* ) ;
+    // InternalZeroKnowledge.g:1484:1: rule__Conjunction__Group__1__Impl : ( ( rule__Conjunction__Group_1__0 )* ) ;
     public final void rule__Conjunction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1515:1: ( ( ( rule__Conjunction__Group_1__0 )* ) )
-            // InternalZeroKnowledge.g:1516:1: ( ( rule__Conjunction__Group_1__0 )* )
+            // InternalZeroKnowledge.g:1488:1: ( ( ( rule__Conjunction__Group_1__0 )* ) )
+            // InternalZeroKnowledge.g:1489:1: ( ( rule__Conjunction__Group_1__0 )* )
             {
-            // InternalZeroKnowledge.g:1516:1: ( ( rule__Conjunction__Group_1__0 )* )
-            // InternalZeroKnowledge.g:1517:2: ( rule__Conjunction__Group_1__0 )*
+            // InternalZeroKnowledge.g:1489:1: ( ( rule__Conjunction__Group_1__0 )* )
+            // InternalZeroKnowledge.g:1490:2: ( rule__Conjunction__Group_1__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:1518:2: ( rule__Conjunction__Group_1__0 )*
+            // InternalZeroKnowledge.g:1491:2: ( rule__Conjunction__Group_1__0 )*
             loop16:
             do {
                 int alt16=2;
                 int LA16_0 = input.LA(1);
 
-                if ( (LA16_0==19) ) {
+                if ( (LA16_0==18) ) {
                     alt16=1;
                 }
 
 
                 switch (alt16) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:1518:3: rule__Conjunction__Group_1__0
+            	    // InternalZeroKnowledge.g:1491:3: rule__Conjunction__Group_1__0
             	    {
-            	    pushFollow(FOLLOW_16);
+            	    pushFollow(FOLLOW_15);
             	    rule__Conjunction__Group_1__0();
 
             	    state._fsp--;
@@ -5279,16 +5190,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group_1__0"
-    // InternalZeroKnowledge.g:1527:1: rule__Conjunction__Group_1__0 : rule__Conjunction__Group_1__0__Impl rule__Conjunction__Group_1__1 ;
+    // InternalZeroKnowledge.g:1500:1: rule__Conjunction__Group_1__0 : rule__Conjunction__Group_1__0__Impl rule__Conjunction__Group_1__1 ;
     public final void rule__Conjunction__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1531:1: ( rule__Conjunction__Group_1__0__Impl rule__Conjunction__Group_1__1 )
-            // InternalZeroKnowledge.g:1532:2: rule__Conjunction__Group_1__0__Impl rule__Conjunction__Group_1__1
+            // InternalZeroKnowledge.g:1504:1: ( rule__Conjunction__Group_1__0__Impl rule__Conjunction__Group_1__1 )
+            // InternalZeroKnowledge.g:1505:2: rule__Conjunction__Group_1__0__Impl rule__Conjunction__Group_1__1
             {
-            pushFollow(FOLLOW_15);
+            pushFollow(FOLLOW_14);
             rule__Conjunction__Group_1__0__Impl();
 
             state._fsp--;
@@ -5317,23 +5228,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:1539:1: rule__Conjunction__Group_1__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:1512:1: rule__Conjunction__Group_1__0__Impl : ( () ) ;
     public final void rule__Conjunction__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1543:1: ( ( () ) )
-            // InternalZeroKnowledge.g:1544:1: ( () )
+            // InternalZeroKnowledge.g:1516:1: ( ( () ) )
+            // InternalZeroKnowledge.g:1517:1: ( () )
             {
-            // InternalZeroKnowledge.g:1544:1: ( () )
-            // InternalZeroKnowledge.g:1545:2: ()
+            // InternalZeroKnowledge.g:1517:1: ( () )
+            // InternalZeroKnowledge.g:1518:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getConjunctionLeftAction_1_0()); 
             }
-            // InternalZeroKnowledge.g:1546:2: ()
-            // InternalZeroKnowledge.g:1546:3: 
+            // InternalZeroKnowledge.g:1519:2: ()
+            // InternalZeroKnowledge.g:1519:3: 
             {
             }
 
@@ -5358,14 +5269,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group_1__1"
-    // InternalZeroKnowledge.g:1554:1: rule__Conjunction__Group_1__1 : rule__Conjunction__Group_1__1__Impl rule__Conjunction__Group_1__2 ;
+    // InternalZeroKnowledge.g:1527:1: rule__Conjunction__Group_1__1 : rule__Conjunction__Group_1__1__Impl rule__Conjunction__Group_1__2 ;
     public final void rule__Conjunction__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1558:1: ( rule__Conjunction__Group_1__1__Impl rule__Conjunction__Group_1__2 )
-            // InternalZeroKnowledge.g:1559:2: rule__Conjunction__Group_1__1__Impl rule__Conjunction__Group_1__2
+            // InternalZeroKnowledge.g:1531:1: ( rule__Conjunction__Group_1__1__Impl rule__Conjunction__Group_1__2 )
+            // InternalZeroKnowledge.g:1532:2: rule__Conjunction__Group_1__1__Impl rule__Conjunction__Group_1__2
             {
             pushFollow(FOLLOW_5);
             rule__Conjunction__Group_1__1__Impl();
@@ -5396,23 +5307,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:1566:1: rule__Conjunction__Group_1__1__Impl : ( ( rule__Conjunction__OperationAssignment_1_1 ) ) ;
+    // InternalZeroKnowledge.g:1539:1: rule__Conjunction__Group_1__1__Impl : ( ( rule__Conjunction__OperationAssignment_1_1 ) ) ;
     public final void rule__Conjunction__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1570:1: ( ( ( rule__Conjunction__OperationAssignment_1_1 ) ) )
-            // InternalZeroKnowledge.g:1571:1: ( ( rule__Conjunction__OperationAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:1543:1: ( ( ( rule__Conjunction__OperationAssignment_1_1 ) ) )
+            // InternalZeroKnowledge.g:1544:1: ( ( rule__Conjunction__OperationAssignment_1_1 ) )
             {
-            // InternalZeroKnowledge.g:1571:1: ( ( rule__Conjunction__OperationAssignment_1_1 ) )
-            // InternalZeroKnowledge.g:1572:2: ( rule__Conjunction__OperationAssignment_1_1 )
+            // InternalZeroKnowledge.g:1544:1: ( ( rule__Conjunction__OperationAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:1545:2: ( rule__Conjunction__OperationAssignment_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getOperationAssignment_1_1()); 
             }
-            // InternalZeroKnowledge.g:1573:2: ( rule__Conjunction__OperationAssignment_1_1 )
-            // InternalZeroKnowledge.g:1573:3: rule__Conjunction__OperationAssignment_1_1
+            // InternalZeroKnowledge.g:1546:2: ( rule__Conjunction__OperationAssignment_1_1 )
+            // InternalZeroKnowledge.g:1546:3: rule__Conjunction__OperationAssignment_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Conjunction__OperationAssignment_1_1();
@@ -5447,14 +5358,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group_1__2"
-    // InternalZeroKnowledge.g:1581:1: rule__Conjunction__Group_1__2 : rule__Conjunction__Group_1__2__Impl ;
+    // InternalZeroKnowledge.g:1554:1: rule__Conjunction__Group_1__2 : rule__Conjunction__Group_1__2__Impl ;
     public final void rule__Conjunction__Group_1__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1585:1: ( rule__Conjunction__Group_1__2__Impl )
-            // InternalZeroKnowledge.g:1586:2: rule__Conjunction__Group_1__2__Impl
+            // InternalZeroKnowledge.g:1558:1: ( rule__Conjunction__Group_1__2__Impl )
+            // InternalZeroKnowledge.g:1559:2: rule__Conjunction__Group_1__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Conjunction__Group_1__2__Impl();
@@ -5480,23 +5391,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__Group_1__2__Impl"
-    // InternalZeroKnowledge.g:1592:1: rule__Conjunction__Group_1__2__Impl : ( ( rule__Conjunction__RightAssignment_1_2 ) ) ;
+    // InternalZeroKnowledge.g:1565:1: rule__Conjunction__Group_1__2__Impl : ( ( rule__Conjunction__RightAssignment_1_2 ) ) ;
     public final void rule__Conjunction__Group_1__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1596:1: ( ( ( rule__Conjunction__RightAssignment_1_2 ) ) )
-            // InternalZeroKnowledge.g:1597:1: ( ( rule__Conjunction__RightAssignment_1_2 ) )
+            // InternalZeroKnowledge.g:1569:1: ( ( ( rule__Conjunction__RightAssignment_1_2 ) ) )
+            // InternalZeroKnowledge.g:1570:1: ( ( rule__Conjunction__RightAssignment_1_2 ) )
             {
-            // InternalZeroKnowledge.g:1597:1: ( ( rule__Conjunction__RightAssignment_1_2 ) )
-            // InternalZeroKnowledge.g:1598:2: ( rule__Conjunction__RightAssignment_1_2 )
+            // InternalZeroKnowledge.g:1570:1: ( ( rule__Conjunction__RightAssignment_1_2 ) )
+            // InternalZeroKnowledge.g:1571:2: ( rule__Conjunction__RightAssignment_1_2 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getRightAssignment_1_2()); 
             }
-            // InternalZeroKnowledge.g:1599:2: ( rule__Conjunction__RightAssignment_1_2 )
-            // InternalZeroKnowledge.g:1599:3: rule__Conjunction__RightAssignment_1_2
+            // InternalZeroKnowledge.g:1572:2: ( rule__Conjunction__RightAssignment_1_2 )
+            // InternalZeroKnowledge.g:1572:3: rule__Conjunction__RightAssignment_1_2
             {
             pushFollow(FOLLOW_2);
             rule__Conjunction__RightAssignment_1_2();
@@ -5531,16 +5442,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group__0"
-    // InternalZeroKnowledge.g:1608:1: rule__Disjunction__Group__0 : rule__Disjunction__Group__0__Impl rule__Disjunction__Group__1 ;
+    // InternalZeroKnowledge.g:1581:1: rule__Disjunction__Group__0 : rule__Disjunction__Group__0__Impl rule__Disjunction__Group__1 ;
     public final void rule__Disjunction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1612:1: ( rule__Disjunction__Group__0__Impl rule__Disjunction__Group__1 )
-            // InternalZeroKnowledge.g:1613:2: rule__Disjunction__Group__0__Impl rule__Disjunction__Group__1
+            // InternalZeroKnowledge.g:1585:1: ( rule__Disjunction__Group__0__Impl rule__Disjunction__Group__1 )
+            // InternalZeroKnowledge.g:1586:2: rule__Disjunction__Group__0__Impl rule__Disjunction__Group__1
             {
-            pushFollow(FOLLOW_17);
+            pushFollow(FOLLOW_16);
             rule__Disjunction__Group__0__Impl();
 
             state._fsp--;
@@ -5569,17 +5480,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group__0__Impl"
-    // InternalZeroKnowledge.g:1620:1: rule__Disjunction__Group__0__Impl : ( ruleComparison ) ;
+    // InternalZeroKnowledge.g:1593:1: rule__Disjunction__Group__0__Impl : ( ruleComparison ) ;
     public final void rule__Disjunction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1624:1: ( ( ruleComparison ) )
-            // InternalZeroKnowledge.g:1625:1: ( ruleComparison )
+            // InternalZeroKnowledge.g:1597:1: ( ( ruleComparison ) )
+            // InternalZeroKnowledge.g:1598:1: ( ruleComparison )
             {
-            // InternalZeroKnowledge.g:1625:1: ( ruleComparison )
-            // InternalZeroKnowledge.g:1626:2: ruleComparison
+            // InternalZeroKnowledge.g:1598:1: ( ruleComparison )
+            // InternalZeroKnowledge.g:1599:2: ruleComparison
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getComparisonParserRuleCall_0()); 
@@ -5614,14 +5525,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group__1"
-    // InternalZeroKnowledge.g:1635:1: rule__Disjunction__Group__1 : rule__Disjunction__Group__1__Impl ;
+    // InternalZeroKnowledge.g:1608:1: rule__Disjunction__Group__1 : rule__Disjunction__Group__1__Impl ;
     public final void rule__Disjunction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1639:1: ( rule__Disjunction__Group__1__Impl )
-            // InternalZeroKnowledge.g:1640:2: rule__Disjunction__Group__1__Impl
+            // InternalZeroKnowledge.g:1612:1: ( rule__Disjunction__Group__1__Impl )
+            // InternalZeroKnowledge.g:1613:2: rule__Disjunction__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Disjunction__Group__1__Impl();
@@ -5647,37 +5558,37 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group__1__Impl"
-    // InternalZeroKnowledge.g:1646:1: rule__Disjunction__Group__1__Impl : ( ( rule__Disjunction__Group_1__0 )* ) ;
+    // InternalZeroKnowledge.g:1619:1: rule__Disjunction__Group__1__Impl : ( ( rule__Disjunction__Group_1__0 )* ) ;
     public final void rule__Disjunction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1650:1: ( ( ( rule__Disjunction__Group_1__0 )* ) )
-            // InternalZeroKnowledge.g:1651:1: ( ( rule__Disjunction__Group_1__0 )* )
+            // InternalZeroKnowledge.g:1623:1: ( ( ( rule__Disjunction__Group_1__0 )* ) )
+            // InternalZeroKnowledge.g:1624:1: ( ( rule__Disjunction__Group_1__0 )* )
             {
-            // InternalZeroKnowledge.g:1651:1: ( ( rule__Disjunction__Group_1__0 )* )
-            // InternalZeroKnowledge.g:1652:2: ( rule__Disjunction__Group_1__0 )*
+            // InternalZeroKnowledge.g:1624:1: ( ( rule__Disjunction__Group_1__0 )* )
+            // InternalZeroKnowledge.g:1625:2: ( rule__Disjunction__Group_1__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:1653:2: ( rule__Disjunction__Group_1__0 )*
+            // InternalZeroKnowledge.g:1626:2: ( rule__Disjunction__Group_1__0 )*
             loop17:
             do {
                 int alt17=2;
                 int LA17_0 = input.LA(1);
 
-                if ( (LA17_0==20) ) {
+                if ( (LA17_0==19) ) {
                     alt17=1;
                 }
 
 
                 switch (alt17) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:1653:3: rule__Disjunction__Group_1__0
+            	    // InternalZeroKnowledge.g:1626:3: rule__Disjunction__Group_1__0
             	    {
-            	    pushFollow(FOLLOW_18);
+            	    pushFollow(FOLLOW_17);
             	    rule__Disjunction__Group_1__0();
 
             	    state._fsp--;
@@ -5716,16 +5627,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group_1__0"
-    // InternalZeroKnowledge.g:1662:1: rule__Disjunction__Group_1__0 : rule__Disjunction__Group_1__0__Impl rule__Disjunction__Group_1__1 ;
+    // InternalZeroKnowledge.g:1635:1: rule__Disjunction__Group_1__0 : rule__Disjunction__Group_1__0__Impl rule__Disjunction__Group_1__1 ;
     public final void rule__Disjunction__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1666:1: ( rule__Disjunction__Group_1__0__Impl rule__Disjunction__Group_1__1 )
-            // InternalZeroKnowledge.g:1667:2: rule__Disjunction__Group_1__0__Impl rule__Disjunction__Group_1__1
+            // InternalZeroKnowledge.g:1639:1: ( rule__Disjunction__Group_1__0__Impl rule__Disjunction__Group_1__1 )
+            // InternalZeroKnowledge.g:1640:2: rule__Disjunction__Group_1__0__Impl rule__Disjunction__Group_1__1
             {
-            pushFollow(FOLLOW_17);
+            pushFollow(FOLLOW_16);
             rule__Disjunction__Group_1__0__Impl();
 
             state._fsp--;
@@ -5754,23 +5665,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:1674:1: rule__Disjunction__Group_1__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:1647:1: rule__Disjunction__Group_1__0__Impl : ( () ) ;
     public final void rule__Disjunction__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1678:1: ( ( () ) )
-            // InternalZeroKnowledge.g:1679:1: ( () )
+            // InternalZeroKnowledge.g:1651:1: ( ( () ) )
+            // InternalZeroKnowledge.g:1652:1: ( () )
             {
-            // InternalZeroKnowledge.g:1679:1: ( () )
-            // InternalZeroKnowledge.g:1680:2: ()
+            // InternalZeroKnowledge.g:1652:1: ( () )
+            // InternalZeroKnowledge.g:1653:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getDisjunctionLeftAction_1_0()); 
             }
-            // InternalZeroKnowledge.g:1681:2: ()
-            // InternalZeroKnowledge.g:1681:3: 
+            // InternalZeroKnowledge.g:1654:2: ()
+            // InternalZeroKnowledge.g:1654:3: 
             {
             }
 
@@ -5795,14 +5706,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group_1__1"
-    // InternalZeroKnowledge.g:1689:1: rule__Disjunction__Group_1__1 : rule__Disjunction__Group_1__1__Impl rule__Disjunction__Group_1__2 ;
+    // InternalZeroKnowledge.g:1662:1: rule__Disjunction__Group_1__1 : rule__Disjunction__Group_1__1__Impl rule__Disjunction__Group_1__2 ;
     public final void rule__Disjunction__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1693:1: ( rule__Disjunction__Group_1__1__Impl rule__Disjunction__Group_1__2 )
-            // InternalZeroKnowledge.g:1694:2: rule__Disjunction__Group_1__1__Impl rule__Disjunction__Group_1__2
+            // InternalZeroKnowledge.g:1666:1: ( rule__Disjunction__Group_1__1__Impl rule__Disjunction__Group_1__2 )
+            // InternalZeroKnowledge.g:1667:2: rule__Disjunction__Group_1__1__Impl rule__Disjunction__Group_1__2
             {
             pushFollow(FOLLOW_5);
             rule__Disjunction__Group_1__1__Impl();
@@ -5833,23 +5744,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:1701:1: rule__Disjunction__Group_1__1__Impl : ( ( rule__Disjunction__OperationAssignment_1_1 ) ) ;
+    // InternalZeroKnowledge.g:1674:1: rule__Disjunction__Group_1__1__Impl : ( ( rule__Disjunction__OperationAssignment_1_1 ) ) ;
     public final void rule__Disjunction__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1705:1: ( ( ( rule__Disjunction__OperationAssignment_1_1 ) ) )
-            // InternalZeroKnowledge.g:1706:1: ( ( rule__Disjunction__OperationAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:1678:1: ( ( ( rule__Disjunction__OperationAssignment_1_1 ) ) )
+            // InternalZeroKnowledge.g:1679:1: ( ( rule__Disjunction__OperationAssignment_1_1 ) )
             {
-            // InternalZeroKnowledge.g:1706:1: ( ( rule__Disjunction__OperationAssignment_1_1 ) )
-            // InternalZeroKnowledge.g:1707:2: ( rule__Disjunction__OperationAssignment_1_1 )
+            // InternalZeroKnowledge.g:1679:1: ( ( rule__Disjunction__OperationAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:1680:2: ( rule__Disjunction__OperationAssignment_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getOperationAssignment_1_1()); 
             }
-            // InternalZeroKnowledge.g:1708:2: ( rule__Disjunction__OperationAssignment_1_1 )
-            // InternalZeroKnowledge.g:1708:3: rule__Disjunction__OperationAssignment_1_1
+            // InternalZeroKnowledge.g:1681:2: ( rule__Disjunction__OperationAssignment_1_1 )
+            // InternalZeroKnowledge.g:1681:3: rule__Disjunction__OperationAssignment_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Disjunction__OperationAssignment_1_1();
@@ -5884,14 +5795,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group_1__2"
-    // InternalZeroKnowledge.g:1716:1: rule__Disjunction__Group_1__2 : rule__Disjunction__Group_1__2__Impl ;
+    // InternalZeroKnowledge.g:1689:1: rule__Disjunction__Group_1__2 : rule__Disjunction__Group_1__2__Impl ;
     public final void rule__Disjunction__Group_1__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1720:1: ( rule__Disjunction__Group_1__2__Impl )
-            // InternalZeroKnowledge.g:1721:2: rule__Disjunction__Group_1__2__Impl
+            // InternalZeroKnowledge.g:1693:1: ( rule__Disjunction__Group_1__2__Impl )
+            // InternalZeroKnowledge.g:1694:2: rule__Disjunction__Group_1__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Disjunction__Group_1__2__Impl();
@@ -5917,23 +5828,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__Group_1__2__Impl"
-    // InternalZeroKnowledge.g:1727:1: rule__Disjunction__Group_1__2__Impl : ( ( rule__Disjunction__RightAssignment_1_2 ) ) ;
+    // InternalZeroKnowledge.g:1700:1: rule__Disjunction__Group_1__2__Impl : ( ( rule__Disjunction__RightAssignment_1_2 ) ) ;
     public final void rule__Disjunction__Group_1__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1731:1: ( ( ( rule__Disjunction__RightAssignment_1_2 ) ) )
-            // InternalZeroKnowledge.g:1732:1: ( ( rule__Disjunction__RightAssignment_1_2 ) )
+            // InternalZeroKnowledge.g:1704:1: ( ( ( rule__Disjunction__RightAssignment_1_2 ) ) )
+            // InternalZeroKnowledge.g:1705:1: ( ( rule__Disjunction__RightAssignment_1_2 ) )
             {
-            // InternalZeroKnowledge.g:1732:1: ( ( rule__Disjunction__RightAssignment_1_2 ) )
-            // InternalZeroKnowledge.g:1733:2: ( rule__Disjunction__RightAssignment_1_2 )
+            // InternalZeroKnowledge.g:1705:1: ( ( rule__Disjunction__RightAssignment_1_2 ) )
+            // InternalZeroKnowledge.g:1706:2: ( rule__Disjunction__RightAssignment_1_2 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getRightAssignment_1_2()); 
             }
-            // InternalZeroKnowledge.g:1734:2: ( rule__Disjunction__RightAssignment_1_2 )
-            // InternalZeroKnowledge.g:1734:3: rule__Disjunction__RightAssignment_1_2
+            // InternalZeroKnowledge.g:1707:2: ( rule__Disjunction__RightAssignment_1_2 )
+            // InternalZeroKnowledge.g:1707:3: rule__Disjunction__RightAssignment_1_2
             {
             pushFollow(FOLLOW_2);
             rule__Disjunction__RightAssignment_1_2();
@@ -5968,16 +5879,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group__0"
-    // InternalZeroKnowledge.g:1743:1: rule__Comparison__Group__0 : rule__Comparison__Group__0__Impl rule__Comparison__Group__1 ;
+    // InternalZeroKnowledge.g:1716:1: rule__Comparison__Group__0 : rule__Comparison__Group__0__Impl rule__Comparison__Group__1 ;
     public final void rule__Comparison__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1747:1: ( rule__Comparison__Group__0__Impl rule__Comparison__Group__1 )
-            // InternalZeroKnowledge.g:1748:2: rule__Comparison__Group__0__Impl rule__Comparison__Group__1
+            // InternalZeroKnowledge.g:1720:1: ( rule__Comparison__Group__0__Impl rule__Comparison__Group__1 )
+            // InternalZeroKnowledge.g:1721:2: rule__Comparison__Group__0__Impl rule__Comparison__Group__1
             {
-            pushFollow(FOLLOW_19);
+            pushFollow(FOLLOW_18);
             rule__Comparison__Group__0__Impl();
 
             state._fsp--;
@@ -6006,17 +5917,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group__0__Impl"
-    // InternalZeroKnowledge.g:1755:1: rule__Comparison__Group__0__Impl : ( ruleSum ) ;
+    // InternalZeroKnowledge.g:1728:1: rule__Comparison__Group__0__Impl : ( ruleSum ) ;
     public final void rule__Comparison__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1759:1: ( ( ruleSum ) )
-            // InternalZeroKnowledge.g:1760:1: ( ruleSum )
+            // InternalZeroKnowledge.g:1732:1: ( ( ruleSum ) )
+            // InternalZeroKnowledge.g:1733:1: ( ruleSum )
             {
-            // InternalZeroKnowledge.g:1760:1: ( ruleSum )
-            // InternalZeroKnowledge.g:1761:2: ruleSum
+            // InternalZeroKnowledge.g:1733:1: ( ruleSum )
+            // InternalZeroKnowledge.g:1734:2: ruleSum
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getSumParserRuleCall_0()); 
@@ -6051,14 +5962,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group__1"
-    // InternalZeroKnowledge.g:1770:1: rule__Comparison__Group__1 : rule__Comparison__Group__1__Impl ;
+    // InternalZeroKnowledge.g:1743:1: rule__Comparison__Group__1 : rule__Comparison__Group__1__Impl ;
     public final void rule__Comparison__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1774:1: ( rule__Comparison__Group__1__Impl )
-            // InternalZeroKnowledge.g:1775:2: rule__Comparison__Group__1__Impl
+            // InternalZeroKnowledge.g:1747:1: ( rule__Comparison__Group__1__Impl )
+            // InternalZeroKnowledge.g:1748:2: rule__Comparison__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group__1__Impl();
@@ -6084,31 +5995,31 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group__1__Impl"
-    // InternalZeroKnowledge.g:1781:1: rule__Comparison__Group__1__Impl : ( ( rule__Comparison__Group_1__0 )? ) ;
+    // InternalZeroKnowledge.g:1754:1: rule__Comparison__Group__1__Impl : ( ( rule__Comparison__Group_1__0 )? ) ;
     public final void rule__Comparison__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1785:1: ( ( ( rule__Comparison__Group_1__0 )? ) )
-            // InternalZeroKnowledge.g:1786:1: ( ( rule__Comparison__Group_1__0 )? )
+            // InternalZeroKnowledge.g:1758:1: ( ( ( rule__Comparison__Group_1__0 )? ) )
+            // InternalZeroKnowledge.g:1759:1: ( ( rule__Comparison__Group_1__0 )? )
             {
-            // InternalZeroKnowledge.g:1786:1: ( ( rule__Comparison__Group_1__0 )? )
-            // InternalZeroKnowledge.g:1787:2: ( rule__Comparison__Group_1__0 )?
+            // InternalZeroKnowledge.g:1759:1: ( ( rule__Comparison__Group_1__0 )? )
+            // InternalZeroKnowledge.g:1760:2: ( rule__Comparison__Group_1__0 )?
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:1788:2: ( rule__Comparison__Group_1__0 )?
+            // InternalZeroKnowledge.g:1761:2: ( rule__Comparison__Group_1__0 )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
-            if ( ((LA18_0>=21 && LA18_0<=26)) ) {
+            if ( ((LA18_0>=20 && LA18_0<=25)) ) {
                 alt18=1;
             }
             switch (alt18) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1788:3: rule__Comparison__Group_1__0
+                    // InternalZeroKnowledge.g:1761:3: rule__Comparison__Group_1__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__Comparison__Group_1__0();
@@ -6146,14 +6057,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1__0"
-    // InternalZeroKnowledge.g:1797:1: rule__Comparison__Group_1__0 : rule__Comparison__Group_1__0__Impl rule__Comparison__Group_1__1 ;
+    // InternalZeroKnowledge.g:1770:1: rule__Comparison__Group_1__0 : rule__Comparison__Group_1__0__Impl rule__Comparison__Group_1__1 ;
     public final void rule__Comparison__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1801:1: ( rule__Comparison__Group_1__0__Impl rule__Comparison__Group_1__1 )
-            // InternalZeroKnowledge.g:1802:2: rule__Comparison__Group_1__0__Impl rule__Comparison__Group_1__1
+            // InternalZeroKnowledge.g:1774:1: ( rule__Comparison__Group_1__0__Impl rule__Comparison__Group_1__1 )
+            // InternalZeroKnowledge.g:1775:2: rule__Comparison__Group_1__0__Impl rule__Comparison__Group_1__1
             {
             pushFollow(FOLLOW_5);
             rule__Comparison__Group_1__0__Impl();
@@ -6184,23 +6095,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:1809:1: rule__Comparison__Group_1__0__Impl : ( ( rule__Comparison__Alternatives_1_0 ) ) ;
+    // InternalZeroKnowledge.g:1782:1: rule__Comparison__Group_1__0__Impl : ( ( rule__Comparison__Alternatives_1_0 ) ) ;
     public final void rule__Comparison__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1813:1: ( ( ( rule__Comparison__Alternatives_1_0 ) ) )
-            // InternalZeroKnowledge.g:1814:1: ( ( rule__Comparison__Alternatives_1_0 ) )
+            // InternalZeroKnowledge.g:1786:1: ( ( ( rule__Comparison__Alternatives_1_0 ) ) )
+            // InternalZeroKnowledge.g:1787:1: ( ( rule__Comparison__Alternatives_1_0 ) )
             {
-            // InternalZeroKnowledge.g:1814:1: ( ( rule__Comparison__Alternatives_1_0 ) )
-            // InternalZeroKnowledge.g:1815:2: ( rule__Comparison__Alternatives_1_0 )
+            // InternalZeroKnowledge.g:1787:1: ( ( rule__Comparison__Alternatives_1_0 ) )
+            // InternalZeroKnowledge.g:1788:2: ( rule__Comparison__Alternatives_1_0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getAlternatives_1_0()); 
             }
-            // InternalZeroKnowledge.g:1816:2: ( rule__Comparison__Alternatives_1_0 )
-            // InternalZeroKnowledge.g:1816:3: rule__Comparison__Alternatives_1_0
+            // InternalZeroKnowledge.g:1789:2: ( rule__Comparison__Alternatives_1_0 )
+            // InternalZeroKnowledge.g:1789:3: rule__Comparison__Alternatives_1_0
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Alternatives_1_0();
@@ -6235,14 +6146,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1__1"
-    // InternalZeroKnowledge.g:1824:1: rule__Comparison__Group_1__1 : rule__Comparison__Group_1__1__Impl ;
+    // InternalZeroKnowledge.g:1797:1: rule__Comparison__Group_1__1 : rule__Comparison__Group_1__1__Impl ;
     public final void rule__Comparison__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1828:1: ( rule__Comparison__Group_1__1__Impl )
-            // InternalZeroKnowledge.g:1829:2: rule__Comparison__Group_1__1__Impl
+            // InternalZeroKnowledge.g:1801:1: ( rule__Comparison__Group_1__1__Impl )
+            // InternalZeroKnowledge.g:1802:2: rule__Comparison__Group_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1__1__Impl();
@@ -6268,23 +6179,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:1835:1: rule__Comparison__Group_1__1__Impl : ( ( rule__Comparison__RightAssignment_1_1 ) ) ;
+    // InternalZeroKnowledge.g:1808:1: rule__Comparison__Group_1__1__Impl : ( ( rule__Comparison__RightAssignment_1_1 ) ) ;
     public final void rule__Comparison__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1839:1: ( ( ( rule__Comparison__RightAssignment_1_1 ) ) )
-            // InternalZeroKnowledge.g:1840:1: ( ( rule__Comparison__RightAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:1812:1: ( ( ( rule__Comparison__RightAssignment_1_1 ) ) )
+            // InternalZeroKnowledge.g:1813:1: ( ( rule__Comparison__RightAssignment_1_1 ) )
             {
-            // InternalZeroKnowledge.g:1840:1: ( ( rule__Comparison__RightAssignment_1_1 ) )
-            // InternalZeroKnowledge.g:1841:2: ( rule__Comparison__RightAssignment_1_1 )
+            // InternalZeroKnowledge.g:1813:1: ( ( rule__Comparison__RightAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:1814:2: ( rule__Comparison__RightAssignment_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getRightAssignment_1_1()); 
             }
-            // InternalZeroKnowledge.g:1842:2: ( rule__Comparison__RightAssignment_1_1 )
-            // InternalZeroKnowledge.g:1842:3: rule__Comparison__RightAssignment_1_1
+            // InternalZeroKnowledge.g:1815:2: ( rule__Comparison__RightAssignment_1_1 )
+            // InternalZeroKnowledge.g:1815:3: rule__Comparison__RightAssignment_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__RightAssignment_1_1();
@@ -6319,16 +6230,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_0__0"
-    // InternalZeroKnowledge.g:1851:1: rule__Comparison__Group_1_0_0__0 : rule__Comparison__Group_1_0_0__0__Impl rule__Comparison__Group_1_0_0__1 ;
+    // InternalZeroKnowledge.g:1824:1: rule__Comparison__Group_1_0_0__0 : rule__Comparison__Group_1_0_0__0__Impl rule__Comparison__Group_1_0_0__1 ;
     public final void rule__Comparison__Group_1_0_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1855:1: ( rule__Comparison__Group_1_0_0__0__Impl rule__Comparison__Group_1_0_0__1 )
-            // InternalZeroKnowledge.g:1856:2: rule__Comparison__Group_1_0_0__0__Impl rule__Comparison__Group_1_0_0__1
+            // InternalZeroKnowledge.g:1828:1: ( rule__Comparison__Group_1_0_0__0__Impl rule__Comparison__Group_1_0_0__1 )
+            // InternalZeroKnowledge.g:1829:2: rule__Comparison__Group_1_0_0__0__Impl rule__Comparison__Group_1_0_0__1
             {
-            pushFollow(FOLLOW_20);
+            pushFollow(FOLLOW_19);
             rule__Comparison__Group_1_0_0__0__Impl();
 
             state._fsp--;
@@ -6357,23 +6268,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_0__0__Impl"
-    // InternalZeroKnowledge.g:1863:1: rule__Comparison__Group_1_0_0__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:1836:1: rule__Comparison__Group_1_0_0__0__Impl : ( () ) ;
     public final void rule__Comparison__Group_1_0_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1867:1: ( ( () ) )
-            // InternalZeroKnowledge.g:1868:1: ( () )
+            // InternalZeroKnowledge.g:1840:1: ( ( () ) )
+            // InternalZeroKnowledge.g:1841:1: ( () )
             {
-            // InternalZeroKnowledge.g:1868:1: ( () )
-            // InternalZeroKnowledge.g:1869:2: ()
+            // InternalZeroKnowledge.g:1841:1: ( () )
+            // InternalZeroKnowledge.g:1842:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getComparisonLeftAction_1_0_0_0()); 
             }
-            // InternalZeroKnowledge.g:1870:2: ()
-            // InternalZeroKnowledge.g:1870:3: 
+            // InternalZeroKnowledge.g:1843:2: ()
+            // InternalZeroKnowledge.g:1843:3: 
             {
             }
 
@@ -6398,14 +6309,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_0__1"
-    // InternalZeroKnowledge.g:1878:1: rule__Comparison__Group_1_0_0__1 : rule__Comparison__Group_1_0_0__1__Impl ;
+    // InternalZeroKnowledge.g:1851:1: rule__Comparison__Group_1_0_0__1 : rule__Comparison__Group_1_0_0__1__Impl ;
     public final void rule__Comparison__Group_1_0_0__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1882:1: ( rule__Comparison__Group_1_0_0__1__Impl )
-            // InternalZeroKnowledge.g:1883:2: rule__Comparison__Group_1_0_0__1__Impl
+            // InternalZeroKnowledge.g:1855:1: ( rule__Comparison__Group_1_0_0__1__Impl )
+            // InternalZeroKnowledge.g:1856:2: rule__Comparison__Group_1_0_0__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1_0_0__1__Impl();
@@ -6431,23 +6342,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_0__1__Impl"
-    // InternalZeroKnowledge.g:1889:1: rule__Comparison__Group_1_0_0__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) ) ;
+    // InternalZeroKnowledge.g:1862:1: rule__Comparison__Group_1_0_0__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) ) ;
     public final void rule__Comparison__Group_1_0_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1893:1: ( ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) ) )
-            // InternalZeroKnowledge.g:1894:1: ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) )
+            // InternalZeroKnowledge.g:1866:1: ( ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) ) )
+            // InternalZeroKnowledge.g:1867:1: ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) )
             {
-            // InternalZeroKnowledge.g:1894:1: ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) )
-            // InternalZeroKnowledge.g:1895:2: ( rule__Comparison__OperationAssignment_1_0_0_1 )
+            // InternalZeroKnowledge.g:1867:1: ( ( rule__Comparison__OperationAssignment_1_0_0_1 ) )
+            // InternalZeroKnowledge.g:1868:2: ( rule__Comparison__OperationAssignment_1_0_0_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationAssignment_1_0_0_1()); 
             }
-            // InternalZeroKnowledge.g:1896:2: ( rule__Comparison__OperationAssignment_1_0_0_1 )
-            // InternalZeroKnowledge.g:1896:3: rule__Comparison__OperationAssignment_1_0_0_1
+            // InternalZeroKnowledge.g:1869:2: ( rule__Comparison__OperationAssignment_1_0_0_1 )
+            // InternalZeroKnowledge.g:1869:3: rule__Comparison__OperationAssignment_1_0_0_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__OperationAssignment_1_0_0_1();
@@ -6482,16 +6393,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_1__0"
-    // InternalZeroKnowledge.g:1905:1: rule__Comparison__Group_1_0_1__0 : rule__Comparison__Group_1_0_1__0__Impl rule__Comparison__Group_1_0_1__1 ;
+    // InternalZeroKnowledge.g:1878:1: rule__Comparison__Group_1_0_1__0 : rule__Comparison__Group_1_0_1__0__Impl rule__Comparison__Group_1_0_1__1 ;
     public final void rule__Comparison__Group_1_0_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1909:1: ( rule__Comparison__Group_1_0_1__0__Impl rule__Comparison__Group_1_0_1__1 )
-            // InternalZeroKnowledge.g:1910:2: rule__Comparison__Group_1_0_1__0__Impl rule__Comparison__Group_1_0_1__1
+            // InternalZeroKnowledge.g:1882:1: ( rule__Comparison__Group_1_0_1__0__Impl rule__Comparison__Group_1_0_1__1 )
+            // InternalZeroKnowledge.g:1883:2: rule__Comparison__Group_1_0_1__0__Impl rule__Comparison__Group_1_0_1__1
             {
-            pushFollow(FOLLOW_21);
+            pushFollow(FOLLOW_20);
             rule__Comparison__Group_1_0_1__0__Impl();
 
             state._fsp--;
@@ -6520,23 +6431,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_1__0__Impl"
-    // InternalZeroKnowledge.g:1917:1: rule__Comparison__Group_1_0_1__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:1890:1: rule__Comparison__Group_1_0_1__0__Impl : ( () ) ;
     public final void rule__Comparison__Group_1_0_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1921:1: ( ( () ) )
-            // InternalZeroKnowledge.g:1922:1: ( () )
+            // InternalZeroKnowledge.g:1894:1: ( ( () ) )
+            // InternalZeroKnowledge.g:1895:1: ( () )
             {
-            // InternalZeroKnowledge.g:1922:1: ( () )
-            // InternalZeroKnowledge.g:1923:2: ()
+            // InternalZeroKnowledge.g:1895:1: ( () )
+            // InternalZeroKnowledge.g:1896:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getComparisonLeftAction_1_0_1_0()); 
             }
-            // InternalZeroKnowledge.g:1924:2: ()
-            // InternalZeroKnowledge.g:1924:3: 
+            // InternalZeroKnowledge.g:1897:2: ()
+            // InternalZeroKnowledge.g:1897:3: 
             {
             }
 
@@ -6561,14 +6472,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_1__1"
-    // InternalZeroKnowledge.g:1932:1: rule__Comparison__Group_1_0_1__1 : rule__Comparison__Group_1_0_1__1__Impl ;
+    // InternalZeroKnowledge.g:1905:1: rule__Comparison__Group_1_0_1__1 : rule__Comparison__Group_1_0_1__1__Impl ;
     public final void rule__Comparison__Group_1_0_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1936:1: ( rule__Comparison__Group_1_0_1__1__Impl )
-            // InternalZeroKnowledge.g:1937:2: rule__Comparison__Group_1_0_1__1__Impl
+            // InternalZeroKnowledge.g:1909:1: ( rule__Comparison__Group_1_0_1__1__Impl )
+            // InternalZeroKnowledge.g:1910:2: rule__Comparison__Group_1_0_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1_0_1__1__Impl();
@@ -6594,23 +6505,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_1__1__Impl"
-    // InternalZeroKnowledge.g:1943:1: rule__Comparison__Group_1_0_1__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) ) ;
+    // InternalZeroKnowledge.g:1916:1: rule__Comparison__Group_1_0_1__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) ) ;
     public final void rule__Comparison__Group_1_0_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1947:1: ( ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) ) )
-            // InternalZeroKnowledge.g:1948:1: ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) )
+            // InternalZeroKnowledge.g:1920:1: ( ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) ) )
+            // InternalZeroKnowledge.g:1921:1: ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) )
             {
-            // InternalZeroKnowledge.g:1948:1: ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) )
-            // InternalZeroKnowledge.g:1949:2: ( rule__Comparison__OperationAssignment_1_0_1_1 )
+            // InternalZeroKnowledge.g:1921:1: ( ( rule__Comparison__OperationAssignment_1_0_1_1 ) )
+            // InternalZeroKnowledge.g:1922:2: ( rule__Comparison__OperationAssignment_1_0_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationAssignment_1_0_1_1()); 
             }
-            // InternalZeroKnowledge.g:1950:2: ( rule__Comparison__OperationAssignment_1_0_1_1 )
-            // InternalZeroKnowledge.g:1950:3: rule__Comparison__OperationAssignment_1_0_1_1
+            // InternalZeroKnowledge.g:1923:2: ( rule__Comparison__OperationAssignment_1_0_1_1 )
+            // InternalZeroKnowledge.g:1923:3: rule__Comparison__OperationAssignment_1_0_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__OperationAssignment_1_0_1_1();
@@ -6645,16 +6556,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_2__0"
-    // InternalZeroKnowledge.g:1959:1: rule__Comparison__Group_1_0_2__0 : rule__Comparison__Group_1_0_2__0__Impl rule__Comparison__Group_1_0_2__1 ;
+    // InternalZeroKnowledge.g:1932:1: rule__Comparison__Group_1_0_2__0 : rule__Comparison__Group_1_0_2__0__Impl rule__Comparison__Group_1_0_2__1 ;
     public final void rule__Comparison__Group_1_0_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1963:1: ( rule__Comparison__Group_1_0_2__0__Impl rule__Comparison__Group_1_0_2__1 )
-            // InternalZeroKnowledge.g:1964:2: rule__Comparison__Group_1_0_2__0__Impl rule__Comparison__Group_1_0_2__1
+            // InternalZeroKnowledge.g:1936:1: ( rule__Comparison__Group_1_0_2__0__Impl rule__Comparison__Group_1_0_2__1 )
+            // InternalZeroKnowledge.g:1937:2: rule__Comparison__Group_1_0_2__0__Impl rule__Comparison__Group_1_0_2__1
             {
-            pushFollow(FOLLOW_22);
+            pushFollow(FOLLOW_21);
             rule__Comparison__Group_1_0_2__0__Impl();
 
             state._fsp--;
@@ -6683,23 +6594,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_2__0__Impl"
-    // InternalZeroKnowledge.g:1971:1: rule__Comparison__Group_1_0_2__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:1944:1: rule__Comparison__Group_1_0_2__0__Impl : ( () ) ;
     public final void rule__Comparison__Group_1_0_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1975:1: ( ( () ) )
-            // InternalZeroKnowledge.g:1976:1: ( () )
+            // InternalZeroKnowledge.g:1948:1: ( ( () ) )
+            // InternalZeroKnowledge.g:1949:1: ( () )
             {
-            // InternalZeroKnowledge.g:1976:1: ( () )
-            // InternalZeroKnowledge.g:1977:2: ()
+            // InternalZeroKnowledge.g:1949:1: ( () )
+            // InternalZeroKnowledge.g:1950:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getComparisonLeftAction_1_0_2_0()); 
             }
-            // InternalZeroKnowledge.g:1978:2: ()
-            // InternalZeroKnowledge.g:1978:3: 
+            // InternalZeroKnowledge.g:1951:2: ()
+            // InternalZeroKnowledge.g:1951:3: 
             {
             }
 
@@ -6724,14 +6635,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_2__1"
-    // InternalZeroKnowledge.g:1986:1: rule__Comparison__Group_1_0_2__1 : rule__Comparison__Group_1_0_2__1__Impl ;
+    // InternalZeroKnowledge.g:1959:1: rule__Comparison__Group_1_0_2__1 : rule__Comparison__Group_1_0_2__1__Impl ;
     public final void rule__Comparison__Group_1_0_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:1990:1: ( rule__Comparison__Group_1_0_2__1__Impl )
-            // InternalZeroKnowledge.g:1991:2: rule__Comparison__Group_1_0_2__1__Impl
+            // InternalZeroKnowledge.g:1963:1: ( rule__Comparison__Group_1_0_2__1__Impl )
+            // InternalZeroKnowledge.g:1964:2: rule__Comparison__Group_1_0_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1_0_2__1__Impl();
@@ -6757,23 +6668,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_2__1__Impl"
-    // InternalZeroKnowledge.g:1997:1: rule__Comparison__Group_1_0_2__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) ) ;
+    // InternalZeroKnowledge.g:1970:1: rule__Comparison__Group_1_0_2__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) ) ;
     public final void rule__Comparison__Group_1_0_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2001:1: ( ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) ) )
-            // InternalZeroKnowledge.g:2002:1: ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) )
+            // InternalZeroKnowledge.g:1974:1: ( ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) ) )
+            // InternalZeroKnowledge.g:1975:1: ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) )
             {
-            // InternalZeroKnowledge.g:2002:1: ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) )
-            // InternalZeroKnowledge.g:2003:2: ( rule__Comparison__OperationAssignment_1_0_2_1 )
+            // InternalZeroKnowledge.g:1975:1: ( ( rule__Comparison__OperationAssignment_1_0_2_1 ) )
+            // InternalZeroKnowledge.g:1976:2: ( rule__Comparison__OperationAssignment_1_0_2_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationAssignment_1_0_2_1()); 
             }
-            // InternalZeroKnowledge.g:2004:2: ( rule__Comparison__OperationAssignment_1_0_2_1 )
-            // InternalZeroKnowledge.g:2004:3: rule__Comparison__OperationAssignment_1_0_2_1
+            // InternalZeroKnowledge.g:1977:2: ( rule__Comparison__OperationAssignment_1_0_2_1 )
+            // InternalZeroKnowledge.g:1977:3: rule__Comparison__OperationAssignment_1_0_2_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__OperationAssignment_1_0_2_1();
@@ -6808,16 +6719,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_3__0"
-    // InternalZeroKnowledge.g:2013:1: rule__Comparison__Group_1_0_3__0 : rule__Comparison__Group_1_0_3__0__Impl rule__Comparison__Group_1_0_3__1 ;
+    // InternalZeroKnowledge.g:1986:1: rule__Comparison__Group_1_0_3__0 : rule__Comparison__Group_1_0_3__0__Impl rule__Comparison__Group_1_0_3__1 ;
     public final void rule__Comparison__Group_1_0_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2017:1: ( rule__Comparison__Group_1_0_3__0__Impl rule__Comparison__Group_1_0_3__1 )
-            // InternalZeroKnowledge.g:2018:2: rule__Comparison__Group_1_0_3__0__Impl rule__Comparison__Group_1_0_3__1
+            // InternalZeroKnowledge.g:1990:1: ( rule__Comparison__Group_1_0_3__0__Impl rule__Comparison__Group_1_0_3__1 )
+            // InternalZeroKnowledge.g:1991:2: rule__Comparison__Group_1_0_3__0__Impl rule__Comparison__Group_1_0_3__1
             {
-            pushFollow(FOLLOW_23);
+            pushFollow(FOLLOW_22);
             rule__Comparison__Group_1_0_3__0__Impl();
 
             state._fsp--;
@@ -6846,23 +6757,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_3__0__Impl"
-    // InternalZeroKnowledge.g:2025:1: rule__Comparison__Group_1_0_3__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:1998:1: rule__Comparison__Group_1_0_3__0__Impl : ( () ) ;
     public final void rule__Comparison__Group_1_0_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2029:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2030:1: ( () )
+            // InternalZeroKnowledge.g:2002:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2003:1: ( () )
             {
-            // InternalZeroKnowledge.g:2030:1: ( () )
-            // InternalZeroKnowledge.g:2031:2: ()
+            // InternalZeroKnowledge.g:2003:1: ( () )
+            // InternalZeroKnowledge.g:2004:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getComparisonLeftAction_1_0_3_0()); 
             }
-            // InternalZeroKnowledge.g:2032:2: ()
-            // InternalZeroKnowledge.g:2032:3: 
+            // InternalZeroKnowledge.g:2005:2: ()
+            // InternalZeroKnowledge.g:2005:3: 
             {
             }
 
@@ -6887,14 +6798,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_3__1"
-    // InternalZeroKnowledge.g:2040:1: rule__Comparison__Group_1_0_3__1 : rule__Comparison__Group_1_0_3__1__Impl ;
+    // InternalZeroKnowledge.g:2013:1: rule__Comparison__Group_1_0_3__1 : rule__Comparison__Group_1_0_3__1__Impl ;
     public final void rule__Comparison__Group_1_0_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2044:1: ( rule__Comparison__Group_1_0_3__1__Impl )
-            // InternalZeroKnowledge.g:2045:2: rule__Comparison__Group_1_0_3__1__Impl
+            // InternalZeroKnowledge.g:2017:1: ( rule__Comparison__Group_1_0_3__1__Impl )
+            // InternalZeroKnowledge.g:2018:2: rule__Comparison__Group_1_0_3__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1_0_3__1__Impl();
@@ -6920,23 +6831,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_3__1__Impl"
-    // InternalZeroKnowledge.g:2051:1: rule__Comparison__Group_1_0_3__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) ) ;
+    // InternalZeroKnowledge.g:2024:1: rule__Comparison__Group_1_0_3__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) ) ;
     public final void rule__Comparison__Group_1_0_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2055:1: ( ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) ) )
-            // InternalZeroKnowledge.g:2056:1: ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) )
+            // InternalZeroKnowledge.g:2028:1: ( ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) ) )
+            // InternalZeroKnowledge.g:2029:1: ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) )
             {
-            // InternalZeroKnowledge.g:2056:1: ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) )
-            // InternalZeroKnowledge.g:2057:2: ( rule__Comparison__OperationAssignment_1_0_3_1 )
+            // InternalZeroKnowledge.g:2029:1: ( ( rule__Comparison__OperationAssignment_1_0_3_1 ) )
+            // InternalZeroKnowledge.g:2030:2: ( rule__Comparison__OperationAssignment_1_0_3_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationAssignment_1_0_3_1()); 
             }
-            // InternalZeroKnowledge.g:2058:2: ( rule__Comparison__OperationAssignment_1_0_3_1 )
-            // InternalZeroKnowledge.g:2058:3: rule__Comparison__OperationAssignment_1_0_3_1
+            // InternalZeroKnowledge.g:2031:2: ( rule__Comparison__OperationAssignment_1_0_3_1 )
+            // InternalZeroKnowledge.g:2031:3: rule__Comparison__OperationAssignment_1_0_3_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__OperationAssignment_1_0_3_1();
@@ -6971,16 +6882,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_4__0"
-    // InternalZeroKnowledge.g:2067:1: rule__Comparison__Group_1_0_4__0 : rule__Comparison__Group_1_0_4__0__Impl rule__Comparison__Group_1_0_4__1 ;
+    // InternalZeroKnowledge.g:2040:1: rule__Comparison__Group_1_0_4__0 : rule__Comparison__Group_1_0_4__0__Impl rule__Comparison__Group_1_0_4__1 ;
     public final void rule__Comparison__Group_1_0_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2071:1: ( rule__Comparison__Group_1_0_4__0__Impl rule__Comparison__Group_1_0_4__1 )
-            // InternalZeroKnowledge.g:2072:2: rule__Comparison__Group_1_0_4__0__Impl rule__Comparison__Group_1_0_4__1
+            // InternalZeroKnowledge.g:2044:1: ( rule__Comparison__Group_1_0_4__0__Impl rule__Comparison__Group_1_0_4__1 )
+            // InternalZeroKnowledge.g:2045:2: rule__Comparison__Group_1_0_4__0__Impl rule__Comparison__Group_1_0_4__1
             {
-            pushFollow(FOLLOW_24);
+            pushFollow(FOLLOW_23);
             rule__Comparison__Group_1_0_4__0__Impl();
 
             state._fsp--;
@@ -7009,23 +6920,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_4__0__Impl"
-    // InternalZeroKnowledge.g:2079:1: rule__Comparison__Group_1_0_4__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2052:1: rule__Comparison__Group_1_0_4__0__Impl : ( () ) ;
     public final void rule__Comparison__Group_1_0_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2083:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2084:1: ( () )
+            // InternalZeroKnowledge.g:2056:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2057:1: ( () )
             {
-            // InternalZeroKnowledge.g:2084:1: ( () )
-            // InternalZeroKnowledge.g:2085:2: ()
+            // InternalZeroKnowledge.g:2057:1: ( () )
+            // InternalZeroKnowledge.g:2058:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getComparisonLeftAction_1_0_4_0()); 
             }
-            // InternalZeroKnowledge.g:2086:2: ()
-            // InternalZeroKnowledge.g:2086:3: 
+            // InternalZeroKnowledge.g:2059:2: ()
+            // InternalZeroKnowledge.g:2059:3: 
             {
             }
 
@@ -7050,14 +6961,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_4__1"
-    // InternalZeroKnowledge.g:2094:1: rule__Comparison__Group_1_0_4__1 : rule__Comparison__Group_1_0_4__1__Impl ;
+    // InternalZeroKnowledge.g:2067:1: rule__Comparison__Group_1_0_4__1 : rule__Comparison__Group_1_0_4__1__Impl ;
     public final void rule__Comparison__Group_1_0_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2098:1: ( rule__Comparison__Group_1_0_4__1__Impl )
-            // InternalZeroKnowledge.g:2099:2: rule__Comparison__Group_1_0_4__1__Impl
+            // InternalZeroKnowledge.g:2071:1: ( rule__Comparison__Group_1_0_4__1__Impl )
+            // InternalZeroKnowledge.g:2072:2: rule__Comparison__Group_1_0_4__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1_0_4__1__Impl();
@@ -7083,23 +6994,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_4__1__Impl"
-    // InternalZeroKnowledge.g:2105:1: rule__Comparison__Group_1_0_4__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) ) ;
+    // InternalZeroKnowledge.g:2078:1: rule__Comparison__Group_1_0_4__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) ) ;
     public final void rule__Comparison__Group_1_0_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2109:1: ( ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) ) )
-            // InternalZeroKnowledge.g:2110:1: ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) )
+            // InternalZeroKnowledge.g:2082:1: ( ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) ) )
+            // InternalZeroKnowledge.g:2083:1: ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) )
             {
-            // InternalZeroKnowledge.g:2110:1: ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) )
-            // InternalZeroKnowledge.g:2111:2: ( rule__Comparison__OperationAssignment_1_0_4_1 )
+            // InternalZeroKnowledge.g:2083:1: ( ( rule__Comparison__OperationAssignment_1_0_4_1 ) )
+            // InternalZeroKnowledge.g:2084:2: ( rule__Comparison__OperationAssignment_1_0_4_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationAssignment_1_0_4_1()); 
             }
-            // InternalZeroKnowledge.g:2112:2: ( rule__Comparison__OperationAssignment_1_0_4_1 )
-            // InternalZeroKnowledge.g:2112:3: rule__Comparison__OperationAssignment_1_0_4_1
+            // InternalZeroKnowledge.g:2085:2: ( rule__Comparison__OperationAssignment_1_0_4_1 )
+            // InternalZeroKnowledge.g:2085:3: rule__Comparison__OperationAssignment_1_0_4_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__OperationAssignment_1_0_4_1();
@@ -7134,16 +7045,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_5__0"
-    // InternalZeroKnowledge.g:2121:1: rule__Comparison__Group_1_0_5__0 : rule__Comparison__Group_1_0_5__0__Impl rule__Comparison__Group_1_0_5__1 ;
+    // InternalZeroKnowledge.g:2094:1: rule__Comparison__Group_1_0_5__0 : rule__Comparison__Group_1_0_5__0__Impl rule__Comparison__Group_1_0_5__1 ;
     public final void rule__Comparison__Group_1_0_5__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2125:1: ( rule__Comparison__Group_1_0_5__0__Impl rule__Comparison__Group_1_0_5__1 )
-            // InternalZeroKnowledge.g:2126:2: rule__Comparison__Group_1_0_5__0__Impl rule__Comparison__Group_1_0_5__1
+            // InternalZeroKnowledge.g:2098:1: ( rule__Comparison__Group_1_0_5__0__Impl rule__Comparison__Group_1_0_5__1 )
+            // InternalZeroKnowledge.g:2099:2: rule__Comparison__Group_1_0_5__0__Impl rule__Comparison__Group_1_0_5__1
             {
-            pushFollow(FOLLOW_19);
+            pushFollow(FOLLOW_18);
             rule__Comparison__Group_1_0_5__0__Impl();
 
             state._fsp--;
@@ -7172,23 +7083,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_5__0__Impl"
-    // InternalZeroKnowledge.g:2133:1: rule__Comparison__Group_1_0_5__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2106:1: rule__Comparison__Group_1_0_5__0__Impl : ( () ) ;
     public final void rule__Comparison__Group_1_0_5__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2137:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2138:1: ( () )
+            // InternalZeroKnowledge.g:2110:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2111:1: ( () )
             {
-            // InternalZeroKnowledge.g:2138:1: ( () )
-            // InternalZeroKnowledge.g:2139:2: ()
+            // InternalZeroKnowledge.g:2111:1: ( () )
+            // InternalZeroKnowledge.g:2112:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getComparisonLeftAction_1_0_5_0()); 
             }
-            // InternalZeroKnowledge.g:2140:2: ()
-            // InternalZeroKnowledge.g:2140:3: 
+            // InternalZeroKnowledge.g:2113:2: ()
+            // InternalZeroKnowledge.g:2113:3: 
             {
             }
 
@@ -7213,14 +7124,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_5__1"
-    // InternalZeroKnowledge.g:2148:1: rule__Comparison__Group_1_0_5__1 : rule__Comparison__Group_1_0_5__1__Impl ;
+    // InternalZeroKnowledge.g:2121:1: rule__Comparison__Group_1_0_5__1 : rule__Comparison__Group_1_0_5__1__Impl ;
     public final void rule__Comparison__Group_1_0_5__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2152:1: ( rule__Comparison__Group_1_0_5__1__Impl )
-            // InternalZeroKnowledge.g:2153:2: rule__Comparison__Group_1_0_5__1__Impl
+            // InternalZeroKnowledge.g:2125:1: ( rule__Comparison__Group_1_0_5__1__Impl )
+            // InternalZeroKnowledge.g:2126:2: rule__Comparison__Group_1_0_5__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__Group_1_0_5__1__Impl();
@@ -7246,23 +7157,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__Group_1_0_5__1__Impl"
-    // InternalZeroKnowledge.g:2159:1: rule__Comparison__Group_1_0_5__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) ) ;
+    // InternalZeroKnowledge.g:2132:1: rule__Comparison__Group_1_0_5__1__Impl : ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) ) ;
     public final void rule__Comparison__Group_1_0_5__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2163:1: ( ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) ) )
-            // InternalZeroKnowledge.g:2164:1: ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) )
+            // InternalZeroKnowledge.g:2136:1: ( ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) ) )
+            // InternalZeroKnowledge.g:2137:1: ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) )
             {
-            // InternalZeroKnowledge.g:2164:1: ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) )
-            // InternalZeroKnowledge.g:2165:2: ( rule__Comparison__OperationAssignment_1_0_5_1 )
+            // InternalZeroKnowledge.g:2137:1: ( ( rule__Comparison__OperationAssignment_1_0_5_1 ) )
+            // InternalZeroKnowledge.g:2138:2: ( rule__Comparison__OperationAssignment_1_0_5_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationAssignment_1_0_5_1()); 
             }
-            // InternalZeroKnowledge.g:2166:2: ( rule__Comparison__OperationAssignment_1_0_5_1 )
-            // InternalZeroKnowledge.g:2166:3: rule__Comparison__OperationAssignment_1_0_5_1
+            // InternalZeroKnowledge.g:2139:2: ( rule__Comparison__OperationAssignment_1_0_5_1 )
+            // InternalZeroKnowledge.g:2139:3: rule__Comparison__OperationAssignment_1_0_5_1
             {
             pushFollow(FOLLOW_2);
             rule__Comparison__OperationAssignment_1_0_5_1();
@@ -7297,16 +7208,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group__0"
-    // InternalZeroKnowledge.g:2175:1: rule__Sum__Group__0 : rule__Sum__Group__0__Impl rule__Sum__Group__1 ;
+    // InternalZeroKnowledge.g:2148:1: rule__Sum__Group__0 : rule__Sum__Group__0__Impl rule__Sum__Group__1 ;
     public final void rule__Sum__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2179:1: ( rule__Sum__Group__0__Impl rule__Sum__Group__1 )
-            // InternalZeroKnowledge.g:2180:2: rule__Sum__Group__0__Impl rule__Sum__Group__1
+            // InternalZeroKnowledge.g:2152:1: ( rule__Sum__Group__0__Impl rule__Sum__Group__1 )
+            // InternalZeroKnowledge.g:2153:2: rule__Sum__Group__0__Impl rule__Sum__Group__1
             {
-            pushFollow(FOLLOW_25);
+            pushFollow(FOLLOW_24);
             rule__Sum__Group__0__Impl();
 
             state._fsp--;
@@ -7335,17 +7246,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group__0__Impl"
-    // InternalZeroKnowledge.g:2187:1: rule__Sum__Group__0__Impl : ( ruleProduct ) ;
+    // InternalZeroKnowledge.g:2160:1: rule__Sum__Group__0__Impl : ( ruleProduct ) ;
     public final void rule__Sum__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2191:1: ( ( ruleProduct ) )
-            // InternalZeroKnowledge.g:2192:1: ( ruleProduct )
+            // InternalZeroKnowledge.g:2164:1: ( ( ruleProduct ) )
+            // InternalZeroKnowledge.g:2165:1: ( ruleProduct )
             {
-            // InternalZeroKnowledge.g:2192:1: ( ruleProduct )
-            // InternalZeroKnowledge.g:2193:2: ruleProduct
+            // InternalZeroKnowledge.g:2165:1: ( ruleProduct )
+            // InternalZeroKnowledge.g:2166:2: ruleProduct
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getProductParserRuleCall_0()); 
@@ -7380,14 +7291,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group__1"
-    // InternalZeroKnowledge.g:2202:1: rule__Sum__Group__1 : rule__Sum__Group__1__Impl ;
+    // InternalZeroKnowledge.g:2175:1: rule__Sum__Group__1 : rule__Sum__Group__1__Impl ;
     public final void rule__Sum__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2206:1: ( rule__Sum__Group__1__Impl )
-            // InternalZeroKnowledge.g:2207:2: rule__Sum__Group__1__Impl
+            // InternalZeroKnowledge.g:2179:1: ( rule__Sum__Group__1__Impl )
+            // InternalZeroKnowledge.g:2180:2: rule__Sum__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Sum__Group__1__Impl();
@@ -7413,37 +7324,37 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group__1__Impl"
-    // InternalZeroKnowledge.g:2213:1: rule__Sum__Group__1__Impl : ( ( rule__Sum__Group_1__0 )* ) ;
+    // InternalZeroKnowledge.g:2186:1: rule__Sum__Group__1__Impl : ( ( rule__Sum__Group_1__0 )* ) ;
     public final void rule__Sum__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2217:1: ( ( ( rule__Sum__Group_1__0 )* ) )
-            // InternalZeroKnowledge.g:2218:1: ( ( rule__Sum__Group_1__0 )* )
+            // InternalZeroKnowledge.g:2190:1: ( ( ( rule__Sum__Group_1__0 )* ) )
+            // InternalZeroKnowledge.g:2191:1: ( ( rule__Sum__Group_1__0 )* )
             {
-            // InternalZeroKnowledge.g:2218:1: ( ( rule__Sum__Group_1__0 )* )
-            // InternalZeroKnowledge.g:2219:2: ( rule__Sum__Group_1__0 )*
+            // InternalZeroKnowledge.g:2191:1: ( ( rule__Sum__Group_1__0 )* )
+            // InternalZeroKnowledge.g:2192:2: ( rule__Sum__Group_1__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:2220:2: ( rule__Sum__Group_1__0 )*
+            // InternalZeroKnowledge.g:2193:2: ( rule__Sum__Group_1__0 )*
             loop19:
             do {
                 int alt19=2;
                 int LA19_0 = input.LA(1);
 
-                if ( (LA19_0==17||LA19_0==27) ) {
+                if ( (LA19_0==17||LA19_0==26) ) {
                     alt19=1;
                 }
 
 
                 switch (alt19) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:2220:3: rule__Sum__Group_1__0
+            	    // InternalZeroKnowledge.g:2193:3: rule__Sum__Group_1__0
             	    {
-            	    pushFollow(FOLLOW_26);
+            	    pushFollow(FOLLOW_25);
             	    rule__Sum__Group_1__0();
 
             	    state._fsp--;
@@ -7482,14 +7393,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1__0"
-    // InternalZeroKnowledge.g:2229:1: rule__Sum__Group_1__0 : rule__Sum__Group_1__0__Impl rule__Sum__Group_1__1 ;
+    // InternalZeroKnowledge.g:2202:1: rule__Sum__Group_1__0 : rule__Sum__Group_1__0__Impl rule__Sum__Group_1__1 ;
     public final void rule__Sum__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2233:1: ( rule__Sum__Group_1__0__Impl rule__Sum__Group_1__1 )
-            // InternalZeroKnowledge.g:2234:2: rule__Sum__Group_1__0__Impl rule__Sum__Group_1__1
+            // InternalZeroKnowledge.g:2206:1: ( rule__Sum__Group_1__0__Impl rule__Sum__Group_1__1 )
+            // InternalZeroKnowledge.g:2207:2: rule__Sum__Group_1__0__Impl rule__Sum__Group_1__1
             {
             pushFollow(FOLLOW_5);
             rule__Sum__Group_1__0__Impl();
@@ -7520,23 +7431,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:2241:1: rule__Sum__Group_1__0__Impl : ( ( rule__Sum__Alternatives_1_0 ) ) ;
+    // InternalZeroKnowledge.g:2214:1: rule__Sum__Group_1__0__Impl : ( ( rule__Sum__Alternatives_1_0 ) ) ;
     public final void rule__Sum__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2245:1: ( ( ( rule__Sum__Alternatives_1_0 ) ) )
-            // InternalZeroKnowledge.g:2246:1: ( ( rule__Sum__Alternatives_1_0 ) )
+            // InternalZeroKnowledge.g:2218:1: ( ( ( rule__Sum__Alternatives_1_0 ) ) )
+            // InternalZeroKnowledge.g:2219:1: ( ( rule__Sum__Alternatives_1_0 ) )
             {
-            // InternalZeroKnowledge.g:2246:1: ( ( rule__Sum__Alternatives_1_0 ) )
-            // InternalZeroKnowledge.g:2247:2: ( rule__Sum__Alternatives_1_0 )
+            // InternalZeroKnowledge.g:2219:1: ( ( rule__Sum__Alternatives_1_0 ) )
+            // InternalZeroKnowledge.g:2220:2: ( rule__Sum__Alternatives_1_0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getAlternatives_1_0()); 
             }
-            // InternalZeroKnowledge.g:2248:2: ( rule__Sum__Alternatives_1_0 )
-            // InternalZeroKnowledge.g:2248:3: rule__Sum__Alternatives_1_0
+            // InternalZeroKnowledge.g:2221:2: ( rule__Sum__Alternatives_1_0 )
+            // InternalZeroKnowledge.g:2221:3: rule__Sum__Alternatives_1_0
             {
             pushFollow(FOLLOW_2);
             rule__Sum__Alternatives_1_0();
@@ -7571,14 +7482,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1__1"
-    // InternalZeroKnowledge.g:2256:1: rule__Sum__Group_1__1 : rule__Sum__Group_1__1__Impl ;
+    // InternalZeroKnowledge.g:2229:1: rule__Sum__Group_1__1 : rule__Sum__Group_1__1__Impl ;
     public final void rule__Sum__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2260:1: ( rule__Sum__Group_1__1__Impl )
-            // InternalZeroKnowledge.g:2261:2: rule__Sum__Group_1__1__Impl
+            // InternalZeroKnowledge.g:2233:1: ( rule__Sum__Group_1__1__Impl )
+            // InternalZeroKnowledge.g:2234:2: rule__Sum__Group_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Sum__Group_1__1__Impl();
@@ -7604,23 +7515,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:2267:1: rule__Sum__Group_1__1__Impl : ( ( rule__Sum__RightAssignment_1_1 ) ) ;
+    // InternalZeroKnowledge.g:2240:1: rule__Sum__Group_1__1__Impl : ( ( rule__Sum__RightAssignment_1_1 ) ) ;
     public final void rule__Sum__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2271:1: ( ( ( rule__Sum__RightAssignment_1_1 ) ) )
-            // InternalZeroKnowledge.g:2272:1: ( ( rule__Sum__RightAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:2244:1: ( ( ( rule__Sum__RightAssignment_1_1 ) ) )
+            // InternalZeroKnowledge.g:2245:1: ( ( rule__Sum__RightAssignment_1_1 ) )
             {
-            // InternalZeroKnowledge.g:2272:1: ( ( rule__Sum__RightAssignment_1_1 ) )
-            // InternalZeroKnowledge.g:2273:2: ( rule__Sum__RightAssignment_1_1 )
+            // InternalZeroKnowledge.g:2245:1: ( ( rule__Sum__RightAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:2246:2: ( rule__Sum__RightAssignment_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getRightAssignment_1_1()); 
             }
-            // InternalZeroKnowledge.g:2274:2: ( rule__Sum__RightAssignment_1_1 )
-            // InternalZeroKnowledge.g:2274:3: rule__Sum__RightAssignment_1_1
+            // InternalZeroKnowledge.g:2247:2: ( rule__Sum__RightAssignment_1_1 )
+            // InternalZeroKnowledge.g:2247:3: rule__Sum__RightAssignment_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Sum__RightAssignment_1_1();
@@ -7655,16 +7566,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_0__0"
-    // InternalZeroKnowledge.g:2283:1: rule__Sum__Group_1_0_0__0 : rule__Sum__Group_1_0_0__0__Impl rule__Sum__Group_1_0_0__1 ;
+    // InternalZeroKnowledge.g:2256:1: rule__Sum__Group_1_0_0__0 : rule__Sum__Group_1_0_0__0__Impl rule__Sum__Group_1_0_0__1 ;
     public final void rule__Sum__Group_1_0_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2287:1: ( rule__Sum__Group_1_0_0__0__Impl rule__Sum__Group_1_0_0__1 )
-            // InternalZeroKnowledge.g:2288:2: rule__Sum__Group_1_0_0__0__Impl rule__Sum__Group_1_0_0__1
+            // InternalZeroKnowledge.g:2260:1: ( rule__Sum__Group_1_0_0__0__Impl rule__Sum__Group_1_0_0__1 )
+            // InternalZeroKnowledge.g:2261:2: rule__Sum__Group_1_0_0__0__Impl rule__Sum__Group_1_0_0__1
             {
-            pushFollow(FOLLOW_27);
+            pushFollow(FOLLOW_26);
             rule__Sum__Group_1_0_0__0__Impl();
 
             state._fsp--;
@@ -7693,23 +7604,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_0__0__Impl"
-    // InternalZeroKnowledge.g:2295:1: rule__Sum__Group_1_0_0__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2268:1: rule__Sum__Group_1_0_0__0__Impl : ( () ) ;
     public final void rule__Sum__Group_1_0_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2299:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2300:1: ( () )
+            // InternalZeroKnowledge.g:2272:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2273:1: ( () )
             {
-            // InternalZeroKnowledge.g:2300:1: ( () )
-            // InternalZeroKnowledge.g:2301:2: ()
+            // InternalZeroKnowledge.g:2273:1: ( () )
+            // InternalZeroKnowledge.g:2274:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getSumLeftAction_1_0_0_0()); 
             }
-            // InternalZeroKnowledge.g:2302:2: ()
-            // InternalZeroKnowledge.g:2302:3: 
+            // InternalZeroKnowledge.g:2275:2: ()
+            // InternalZeroKnowledge.g:2275:3: 
             {
             }
 
@@ -7734,14 +7645,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_0__1"
-    // InternalZeroKnowledge.g:2310:1: rule__Sum__Group_1_0_0__1 : rule__Sum__Group_1_0_0__1__Impl ;
+    // InternalZeroKnowledge.g:2283:1: rule__Sum__Group_1_0_0__1 : rule__Sum__Group_1_0_0__1__Impl ;
     public final void rule__Sum__Group_1_0_0__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2314:1: ( rule__Sum__Group_1_0_0__1__Impl )
-            // InternalZeroKnowledge.g:2315:2: rule__Sum__Group_1_0_0__1__Impl
+            // InternalZeroKnowledge.g:2287:1: ( rule__Sum__Group_1_0_0__1__Impl )
+            // InternalZeroKnowledge.g:2288:2: rule__Sum__Group_1_0_0__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Sum__Group_1_0_0__1__Impl();
@@ -7767,23 +7678,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_0__1__Impl"
-    // InternalZeroKnowledge.g:2321:1: rule__Sum__Group_1_0_0__1__Impl : ( ( rule__Sum__OperationAssignment_1_0_0_1 ) ) ;
+    // InternalZeroKnowledge.g:2294:1: rule__Sum__Group_1_0_0__1__Impl : ( ( rule__Sum__OperationAssignment_1_0_0_1 ) ) ;
     public final void rule__Sum__Group_1_0_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2325:1: ( ( ( rule__Sum__OperationAssignment_1_0_0_1 ) ) )
-            // InternalZeroKnowledge.g:2326:1: ( ( rule__Sum__OperationAssignment_1_0_0_1 ) )
+            // InternalZeroKnowledge.g:2298:1: ( ( ( rule__Sum__OperationAssignment_1_0_0_1 ) ) )
+            // InternalZeroKnowledge.g:2299:1: ( ( rule__Sum__OperationAssignment_1_0_0_1 ) )
             {
-            // InternalZeroKnowledge.g:2326:1: ( ( rule__Sum__OperationAssignment_1_0_0_1 ) )
-            // InternalZeroKnowledge.g:2327:2: ( rule__Sum__OperationAssignment_1_0_0_1 )
+            // InternalZeroKnowledge.g:2299:1: ( ( rule__Sum__OperationAssignment_1_0_0_1 ) )
+            // InternalZeroKnowledge.g:2300:2: ( rule__Sum__OperationAssignment_1_0_0_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getOperationAssignment_1_0_0_1()); 
             }
-            // InternalZeroKnowledge.g:2328:2: ( rule__Sum__OperationAssignment_1_0_0_1 )
-            // InternalZeroKnowledge.g:2328:3: rule__Sum__OperationAssignment_1_0_0_1
+            // InternalZeroKnowledge.g:2301:2: ( rule__Sum__OperationAssignment_1_0_0_1 )
+            // InternalZeroKnowledge.g:2301:3: rule__Sum__OperationAssignment_1_0_0_1
             {
             pushFollow(FOLLOW_2);
             rule__Sum__OperationAssignment_1_0_0_1();
@@ -7818,16 +7729,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_1__0"
-    // InternalZeroKnowledge.g:2337:1: rule__Sum__Group_1_0_1__0 : rule__Sum__Group_1_0_1__0__Impl rule__Sum__Group_1_0_1__1 ;
+    // InternalZeroKnowledge.g:2310:1: rule__Sum__Group_1_0_1__0 : rule__Sum__Group_1_0_1__0__Impl rule__Sum__Group_1_0_1__1 ;
     public final void rule__Sum__Group_1_0_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2341:1: ( rule__Sum__Group_1_0_1__0__Impl rule__Sum__Group_1_0_1__1 )
-            // InternalZeroKnowledge.g:2342:2: rule__Sum__Group_1_0_1__0__Impl rule__Sum__Group_1_0_1__1
+            // InternalZeroKnowledge.g:2314:1: ( rule__Sum__Group_1_0_1__0__Impl rule__Sum__Group_1_0_1__1 )
+            // InternalZeroKnowledge.g:2315:2: rule__Sum__Group_1_0_1__0__Impl rule__Sum__Group_1_0_1__1
             {
-            pushFollow(FOLLOW_25);
+            pushFollow(FOLLOW_24);
             rule__Sum__Group_1_0_1__0__Impl();
 
             state._fsp--;
@@ -7856,23 +7767,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_1__0__Impl"
-    // InternalZeroKnowledge.g:2349:1: rule__Sum__Group_1_0_1__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2322:1: rule__Sum__Group_1_0_1__0__Impl : ( () ) ;
     public final void rule__Sum__Group_1_0_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2353:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2354:1: ( () )
+            // InternalZeroKnowledge.g:2326:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2327:1: ( () )
             {
-            // InternalZeroKnowledge.g:2354:1: ( () )
-            // InternalZeroKnowledge.g:2355:2: ()
+            // InternalZeroKnowledge.g:2327:1: ( () )
+            // InternalZeroKnowledge.g:2328:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getSumLeftAction_1_0_1_0()); 
             }
-            // InternalZeroKnowledge.g:2356:2: ()
-            // InternalZeroKnowledge.g:2356:3: 
+            // InternalZeroKnowledge.g:2329:2: ()
+            // InternalZeroKnowledge.g:2329:3: 
             {
             }
 
@@ -7897,14 +7808,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_1__1"
-    // InternalZeroKnowledge.g:2364:1: rule__Sum__Group_1_0_1__1 : rule__Sum__Group_1_0_1__1__Impl ;
+    // InternalZeroKnowledge.g:2337:1: rule__Sum__Group_1_0_1__1 : rule__Sum__Group_1_0_1__1__Impl ;
     public final void rule__Sum__Group_1_0_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2368:1: ( rule__Sum__Group_1_0_1__1__Impl )
-            // InternalZeroKnowledge.g:2369:2: rule__Sum__Group_1_0_1__1__Impl
+            // InternalZeroKnowledge.g:2341:1: ( rule__Sum__Group_1_0_1__1__Impl )
+            // InternalZeroKnowledge.g:2342:2: rule__Sum__Group_1_0_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Sum__Group_1_0_1__1__Impl();
@@ -7930,23 +7841,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__Group_1_0_1__1__Impl"
-    // InternalZeroKnowledge.g:2375:1: rule__Sum__Group_1_0_1__1__Impl : ( ( rule__Sum__OperationAssignment_1_0_1_1 ) ) ;
+    // InternalZeroKnowledge.g:2348:1: rule__Sum__Group_1_0_1__1__Impl : ( ( rule__Sum__OperationAssignment_1_0_1_1 ) ) ;
     public final void rule__Sum__Group_1_0_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2379:1: ( ( ( rule__Sum__OperationAssignment_1_0_1_1 ) ) )
-            // InternalZeroKnowledge.g:2380:1: ( ( rule__Sum__OperationAssignment_1_0_1_1 ) )
+            // InternalZeroKnowledge.g:2352:1: ( ( ( rule__Sum__OperationAssignment_1_0_1_1 ) ) )
+            // InternalZeroKnowledge.g:2353:1: ( ( rule__Sum__OperationAssignment_1_0_1_1 ) )
             {
-            // InternalZeroKnowledge.g:2380:1: ( ( rule__Sum__OperationAssignment_1_0_1_1 ) )
-            // InternalZeroKnowledge.g:2381:2: ( rule__Sum__OperationAssignment_1_0_1_1 )
+            // InternalZeroKnowledge.g:2353:1: ( ( rule__Sum__OperationAssignment_1_0_1_1 ) )
+            // InternalZeroKnowledge.g:2354:2: ( rule__Sum__OperationAssignment_1_0_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getOperationAssignment_1_0_1_1()); 
             }
-            // InternalZeroKnowledge.g:2382:2: ( rule__Sum__OperationAssignment_1_0_1_1 )
-            // InternalZeroKnowledge.g:2382:3: rule__Sum__OperationAssignment_1_0_1_1
+            // InternalZeroKnowledge.g:2355:2: ( rule__Sum__OperationAssignment_1_0_1_1 )
+            // InternalZeroKnowledge.g:2355:3: rule__Sum__OperationAssignment_1_0_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Sum__OperationAssignment_1_0_1_1();
@@ -7981,16 +7892,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group__0"
-    // InternalZeroKnowledge.g:2391:1: rule__Product__Group__0 : rule__Product__Group__0__Impl rule__Product__Group__1 ;
+    // InternalZeroKnowledge.g:2364:1: rule__Product__Group__0 : rule__Product__Group__0__Impl rule__Product__Group__1 ;
     public final void rule__Product__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2395:1: ( rule__Product__Group__0__Impl rule__Product__Group__1 )
-            // InternalZeroKnowledge.g:2396:2: rule__Product__Group__0__Impl rule__Product__Group__1
+            // InternalZeroKnowledge.g:2368:1: ( rule__Product__Group__0__Impl rule__Product__Group__1 )
+            // InternalZeroKnowledge.g:2369:2: rule__Product__Group__0__Impl rule__Product__Group__1
             {
-            pushFollow(FOLLOW_28);
+            pushFollow(FOLLOW_27);
             rule__Product__Group__0__Impl();
 
             state._fsp--;
@@ -8019,17 +7930,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group__0__Impl"
-    // InternalZeroKnowledge.g:2403:1: rule__Product__Group__0__Impl : ( rulePower ) ;
+    // InternalZeroKnowledge.g:2376:1: rule__Product__Group__0__Impl : ( rulePower ) ;
     public final void rule__Product__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2407:1: ( ( rulePower ) )
-            // InternalZeroKnowledge.g:2408:1: ( rulePower )
+            // InternalZeroKnowledge.g:2380:1: ( ( rulePower ) )
+            // InternalZeroKnowledge.g:2381:1: ( rulePower )
             {
-            // InternalZeroKnowledge.g:2408:1: ( rulePower )
-            // InternalZeroKnowledge.g:2409:2: rulePower
+            // InternalZeroKnowledge.g:2381:1: ( rulePower )
+            // InternalZeroKnowledge.g:2382:2: rulePower
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getPowerParserRuleCall_0()); 
@@ -8064,14 +7975,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group__1"
-    // InternalZeroKnowledge.g:2418:1: rule__Product__Group__1 : rule__Product__Group__1__Impl ;
+    // InternalZeroKnowledge.g:2391:1: rule__Product__Group__1 : rule__Product__Group__1__Impl ;
     public final void rule__Product__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2422:1: ( rule__Product__Group__1__Impl )
-            // InternalZeroKnowledge.g:2423:2: rule__Product__Group__1__Impl
+            // InternalZeroKnowledge.g:2395:1: ( rule__Product__Group__1__Impl )
+            // InternalZeroKnowledge.g:2396:2: rule__Product__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Product__Group__1__Impl();
@@ -8097,37 +8008,37 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group__1__Impl"
-    // InternalZeroKnowledge.g:2429:1: rule__Product__Group__1__Impl : ( ( rule__Product__Group_1__0 )* ) ;
+    // InternalZeroKnowledge.g:2402:1: rule__Product__Group__1__Impl : ( ( rule__Product__Group_1__0 )* ) ;
     public final void rule__Product__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2433:1: ( ( ( rule__Product__Group_1__0 )* ) )
-            // InternalZeroKnowledge.g:2434:1: ( ( rule__Product__Group_1__0 )* )
+            // InternalZeroKnowledge.g:2406:1: ( ( ( rule__Product__Group_1__0 )* ) )
+            // InternalZeroKnowledge.g:2407:1: ( ( rule__Product__Group_1__0 )* )
             {
-            // InternalZeroKnowledge.g:2434:1: ( ( rule__Product__Group_1__0 )* )
-            // InternalZeroKnowledge.g:2435:2: ( rule__Product__Group_1__0 )*
+            // InternalZeroKnowledge.g:2407:1: ( ( rule__Product__Group_1__0 )* )
+            // InternalZeroKnowledge.g:2408:2: ( rule__Product__Group_1__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:2436:2: ( rule__Product__Group_1__0 )*
+            // InternalZeroKnowledge.g:2409:2: ( rule__Product__Group_1__0 )*
             loop20:
             do {
                 int alt20=2;
                 int LA20_0 = input.LA(1);
 
-                if ( ((LA20_0>=28 && LA20_0<=29)) ) {
+                if ( ((LA20_0>=27 && LA20_0<=28)) ) {
                     alt20=1;
                 }
 
 
                 switch (alt20) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:2436:3: rule__Product__Group_1__0
+            	    // InternalZeroKnowledge.g:2409:3: rule__Product__Group_1__0
             	    {
-            	    pushFollow(FOLLOW_29);
+            	    pushFollow(FOLLOW_28);
             	    rule__Product__Group_1__0();
 
             	    state._fsp--;
@@ -8166,14 +8077,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1__0"
-    // InternalZeroKnowledge.g:2445:1: rule__Product__Group_1__0 : rule__Product__Group_1__0__Impl rule__Product__Group_1__1 ;
+    // InternalZeroKnowledge.g:2418:1: rule__Product__Group_1__0 : rule__Product__Group_1__0__Impl rule__Product__Group_1__1 ;
     public final void rule__Product__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2449:1: ( rule__Product__Group_1__0__Impl rule__Product__Group_1__1 )
-            // InternalZeroKnowledge.g:2450:2: rule__Product__Group_1__0__Impl rule__Product__Group_1__1
+            // InternalZeroKnowledge.g:2422:1: ( rule__Product__Group_1__0__Impl rule__Product__Group_1__1 )
+            // InternalZeroKnowledge.g:2423:2: rule__Product__Group_1__0__Impl rule__Product__Group_1__1
             {
             pushFollow(FOLLOW_5);
             rule__Product__Group_1__0__Impl();
@@ -8204,23 +8115,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:2457:1: rule__Product__Group_1__0__Impl : ( ( rule__Product__Alternatives_1_0 ) ) ;
+    // InternalZeroKnowledge.g:2430:1: rule__Product__Group_1__0__Impl : ( ( rule__Product__Alternatives_1_0 ) ) ;
     public final void rule__Product__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2461:1: ( ( ( rule__Product__Alternatives_1_0 ) ) )
-            // InternalZeroKnowledge.g:2462:1: ( ( rule__Product__Alternatives_1_0 ) )
+            // InternalZeroKnowledge.g:2434:1: ( ( ( rule__Product__Alternatives_1_0 ) ) )
+            // InternalZeroKnowledge.g:2435:1: ( ( rule__Product__Alternatives_1_0 ) )
             {
-            // InternalZeroKnowledge.g:2462:1: ( ( rule__Product__Alternatives_1_0 ) )
-            // InternalZeroKnowledge.g:2463:2: ( rule__Product__Alternatives_1_0 )
+            // InternalZeroKnowledge.g:2435:1: ( ( rule__Product__Alternatives_1_0 ) )
+            // InternalZeroKnowledge.g:2436:2: ( rule__Product__Alternatives_1_0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getAlternatives_1_0()); 
             }
-            // InternalZeroKnowledge.g:2464:2: ( rule__Product__Alternatives_1_0 )
-            // InternalZeroKnowledge.g:2464:3: rule__Product__Alternatives_1_0
+            // InternalZeroKnowledge.g:2437:2: ( rule__Product__Alternatives_1_0 )
+            // InternalZeroKnowledge.g:2437:3: rule__Product__Alternatives_1_0
             {
             pushFollow(FOLLOW_2);
             rule__Product__Alternatives_1_0();
@@ -8255,14 +8166,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1__1"
-    // InternalZeroKnowledge.g:2472:1: rule__Product__Group_1__1 : rule__Product__Group_1__1__Impl ;
+    // InternalZeroKnowledge.g:2445:1: rule__Product__Group_1__1 : rule__Product__Group_1__1__Impl ;
     public final void rule__Product__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2476:1: ( rule__Product__Group_1__1__Impl )
-            // InternalZeroKnowledge.g:2477:2: rule__Product__Group_1__1__Impl
+            // InternalZeroKnowledge.g:2449:1: ( rule__Product__Group_1__1__Impl )
+            // InternalZeroKnowledge.g:2450:2: rule__Product__Group_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Product__Group_1__1__Impl();
@@ -8288,23 +8199,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:2483:1: rule__Product__Group_1__1__Impl : ( ( rule__Product__RightAssignment_1_1 ) ) ;
+    // InternalZeroKnowledge.g:2456:1: rule__Product__Group_1__1__Impl : ( ( rule__Product__RightAssignment_1_1 ) ) ;
     public final void rule__Product__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2487:1: ( ( ( rule__Product__RightAssignment_1_1 ) ) )
-            // InternalZeroKnowledge.g:2488:1: ( ( rule__Product__RightAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:2460:1: ( ( ( rule__Product__RightAssignment_1_1 ) ) )
+            // InternalZeroKnowledge.g:2461:1: ( ( rule__Product__RightAssignment_1_1 ) )
             {
-            // InternalZeroKnowledge.g:2488:1: ( ( rule__Product__RightAssignment_1_1 ) )
-            // InternalZeroKnowledge.g:2489:2: ( rule__Product__RightAssignment_1_1 )
+            // InternalZeroKnowledge.g:2461:1: ( ( rule__Product__RightAssignment_1_1 ) )
+            // InternalZeroKnowledge.g:2462:2: ( rule__Product__RightAssignment_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getRightAssignment_1_1()); 
             }
-            // InternalZeroKnowledge.g:2490:2: ( rule__Product__RightAssignment_1_1 )
-            // InternalZeroKnowledge.g:2490:3: rule__Product__RightAssignment_1_1
+            // InternalZeroKnowledge.g:2463:2: ( rule__Product__RightAssignment_1_1 )
+            // InternalZeroKnowledge.g:2463:3: rule__Product__RightAssignment_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Product__RightAssignment_1_1();
@@ -8339,16 +8250,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_0__0"
-    // InternalZeroKnowledge.g:2499:1: rule__Product__Group_1_0_0__0 : rule__Product__Group_1_0_0__0__Impl rule__Product__Group_1_0_0__1 ;
+    // InternalZeroKnowledge.g:2472:1: rule__Product__Group_1_0_0__0 : rule__Product__Group_1_0_0__0__Impl rule__Product__Group_1_0_0__1 ;
     public final void rule__Product__Group_1_0_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2503:1: ( rule__Product__Group_1_0_0__0__Impl rule__Product__Group_1_0_0__1 )
-            // InternalZeroKnowledge.g:2504:2: rule__Product__Group_1_0_0__0__Impl rule__Product__Group_1_0_0__1
+            // InternalZeroKnowledge.g:2476:1: ( rule__Product__Group_1_0_0__0__Impl rule__Product__Group_1_0_0__1 )
+            // InternalZeroKnowledge.g:2477:2: rule__Product__Group_1_0_0__0__Impl rule__Product__Group_1_0_0__1
             {
-            pushFollow(FOLLOW_30);
+            pushFollow(FOLLOW_29);
             rule__Product__Group_1_0_0__0__Impl();
 
             state._fsp--;
@@ -8377,23 +8288,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_0__0__Impl"
-    // InternalZeroKnowledge.g:2511:1: rule__Product__Group_1_0_0__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2484:1: rule__Product__Group_1_0_0__0__Impl : ( () ) ;
     public final void rule__Product__Group_1_0_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2515:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2516:1: ( () )
+            // InternalZeroKnowledge.g:2488:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2489:1: ( () )
             {
-            // InternalZeroKnowledge.g:2516:1: ( () )
-            // InternalZeroKnowledge.g:2517:2: ()
+            // InternalZeroKnowledge.g:2489:1: ( () )
+            // InternalZeroKnowledge.g:2490:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getProductLeftAction_1_0_0_0()); 
             }
-            // InternalZeroKnowledge.g:2518:2: ()
-            // InternalZeroKnowledge.g:2518:3: 
+            // InternalZeroKnowledge.g:2491:2: ()
+            // InternalZeroKnowledge.g:2491:3: 
             {
             }
 
@@ -8418,14 +8329,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_0__1"
-    // InternalZeroKnowledge.g:2526:1: rule__Product__Group_1_0_0__1 : rule__Product__Group_1_0_0__1__Impl ;
+    // InternalZeroKnowledge.g:2499:1: rule__Product__Group_1_0_0__1 : rule__Product__Group_1_0_0__1__Impl ;
     public final void rule__Product__Group_1_0_0__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2530:1: ( rule__Product__Group_1_0_0__1__Impl )
-            // InternalZeroKnowledge.g:2531:2: rule__Product__Group_1_0_0__1__Impl
+            // InternalZeroKnowledge.g:2503:1: ( rule__Product__Group_1_0_0__1__Impl )
+            // InternalZeroKnowledge.g:2504:2: rule__Product__Group_1_0_0__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Product__Group_1_0_0__1__Impl();
@@ -8451,23 +8362,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_0__1__Impl"
-    // InternalZeroKnowledge.g:2537:1: rule__Product__Group_1_0_0__1__Impl : ( ( rule__Product__OperationAssignment_1_0_0_1 ) ) ;
+    // InternalZeroKnowledge.g:2510:1: rule__Product__Group_1_0_0__1__Impl : ( ( rule__Product__OperationAssignment_1_0_0_1 ) ) ;
     public final void rule__Product__Group_1_0_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2541:1: ( ( ( rule__Product__OperationAssignment_1_0_0_1 ) ) )
-            // InternalZeroKnowledge.g:2542:1: ( ( rule__Product__OperationAssignment_1_0_0_1 ) )
+            // InternalZeroKnowledge.g:2514:1: ( ( ( rule__Product__OperationAssignment_1_0_0_1 ) ) )
+            // InternalZeroKnowledge.g:2515:1: ( ( rule__Product__OperationAssignment_1_0_0_1 ) )
             {
-            // InternalZeroKnowledge.g:2542:1: ( ( rule__Product__OperationAssignment_1_0_0_1 ) )
-            // InternalZeroKnowledge.g:2543:2: ( rule__Product__OperationAssignment_1_0_0_1 )
+            // InternalZeroKnowledge.g:2515:1: ( ( rule__Product__OperationAssignment_1_0_0_1 ) )
+            // InternalZeroKnowledge.g:2516:2: ( rule__Product__OperationAssignment_1_0_0_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getOperationAssignment_1_0_0_1()); 
             }
-            // InternalZeroKnowledge.g:2544:2: ( rule__Product__OperationAssignment_1_0_0_1 )
-            // InternalZeroKnowledge.g:2544:3: rule__Product__OperationAssignment_1_0_0_1
+            // InternalZeroKnowledge.g:2517:2: ( rule__Product__OperationAssignment_1_0_0_1 )
+            // InternalZeroKnowledge.g:2517:3: rule__Product__OperationAssignment_1_0_0_1
             {
             pushFollow(FOLLOW_2);
             rule__Product__OperationAssignment_1_0_0_1();
@@ -8502,16 +8413,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_1__0"
-    // InternalZeroKnowledge.g:2553:1: rule__Product__Group_1_0_1__0 : rule__Product__Group_1_0_1__0__Impl rule__Product__Group_1_0_1__1 ;
+    // InternalZeroKnowledge.g:2526:1: rule__Product__Group_1_0_1__0 : rule__Product__Group_1_0_1__0__Impl rule__Product__Group_1_0_1__1 ;
     public final void rule__Product__Group_1_0_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2557:1: ( rule__Product__Group_1_0_1__0__Impl rule__Product__Group_1_0_1__1 )
-            // InternalZeroKnowledge.g:2558:2: rule__Product__Group_1_0_1__0__Impl rule__Product__Group_1_0_1__1
+            // InternalZeroKnowledge.g:2530:1: ( rule__Product__Group_1_0_1__0__Impl rule__Product__Group_1_0_1__1 )
+            // InternalZeroKnowledge.g:2531:2: rule__Product__Group_1_0_1__0__Impl rule__Product__Group_1_0_1__1
             {
-            pushFollow(FOLLOW_28);
+            pushFollow(FOLLOW_27);
             rule__Product__Group_1_0_1__0__Impl();
 
             state._fsp--;
@@ -8540,23 +8451,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_1__0__Impl"
-    // InternalZeroKnowledge.g:2565:1: rule__Product__Group_1_0_1__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2538:1: rule__Product__Group_1_0_1__0__Impl : ( () ) ;
     public final void rule__Product__Group_1_0_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2569:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2570:1: ( () )
+            // InternalZeroKnowledge.g:2542:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2543:1: ( () )
             {
-            // InternalZeroKnowledge.g:2570:1: ( () )
-            // InternalZeroKnowledge.g:2571:2: ()
+            // InternalZeroKnowledge.g:2543:1: ( () )
+            // InternalZeroKnowledge.g:2544:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getProductLeftAction_1_0_1_0()); 
             }
-            // InternalZeroKnowledge.g:2572:2: ()
-            // InternalZeroKnowledge.g:2572:3: 
+            // InternalZeroKnowledge.g:2545:2: ()
+            // InternalZeroKnowledge.g:2545:3: 
             {
             }
 
@@ -8581,14 +8492,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_1__1"
-    // InternalZeroKnowledge.g:2580:1: rule__Product__Group_1_0_1__1 : rule__Product__Group_1_0_1__1__Impl ;
+    // InternalZeroKnowledge.g:2553:1: rule__Product__Group_1_0_1__1 : rule__Product__Group_1_0_1__1__Impl ;
     public final void rule__Product__Group_1_0_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2584:1: ( rule__Product__Group_1_0_1__1__Impl )
-            // InternalZeroKnowledge.g:2585:2: rule__Product__Group_1_0_1__1__Impl
+            // InternalZeroKnowledge.g:2557:1: ( rule__Product__Group_1_0_1__1__Impl )
+            // InternalZeroKnowledge.g:2558:2: rule__Product__Group_1_0_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Product__Group_1_0_1__1__Impl();
@@ -8614,23 +8525,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__Group_1_0_1__1__Impl"
-    // InternalZeroKnowledge.g:2591:1: rule__Product__Group_1_0_1__1__Impl : ( ( rule__Product__OperationAssignment_1_0_1_1 ) ) ;
+    // InternalZeroKnowledge.g:2564:1: rule__Product__Group_1_0_1__1__Impl : ( ( rule__Product__OperationAssignment_1_0_1_1 ) ) ;
     public final void rule__Product__Group_1_0_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2595:1: ( ( ( rule__Product__OperationAssignment_1_0_1_1 ) ) )
-            // InternalZeroKnowledge.g:2596:1: ( ( rule__Product__OperationAssignment_1_0_1_1 ) )
+            // InternalZeroKnowledge.g:2568:1: ( ( ( rule__Product__OperationAssignment_1_0_1_1 ) ) )
+            // InternalZeroKnowledge.g:2569:1: ( ( rule__Product__OperationAssignment_1_0_1_1 ) )
             {
-            // InternalZeroKnowledge.g:2596:1: ( ( rule__Product__OperationAssignment_1_0_1_1 ) )
-            // InternalZeroKnowledge.g:2597:2: ( rule__Product__OperationAssignment_1_0_1_1 )
+            // InternalZeroKnowledge.g:2569:1: ( ( rule__Product__OperationAssignment_1_0_1_1 ) )
+            // InternalZeroKnowledge.g:2570:2: ( rule__Product__OperationAssignment_1_0_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getOperationAssignment_1_0_1_1()); 
             }
-            // InternalZeroKnowledge.g:2598:2: ( rule__Product__OperationAssignment_1_0_1_1 )
-            // InternalZeroKnowledge.g:2598:3: rule__Product__OperationAssignment_1_0_1_1
+            // InternalZeroKnowledge.g:2571:2: ( rule__Product__OperationAssignment_1_0_1_1 )
+            // InternalZeroKnowledge.g:2571:3: rule__Product__OperationAssignment_1_0_1_1
             {
             pushFollow(FOLLOW_2);
             rule__Product__OperationAssignment_1_0_1_1();
@@ -8665,16 +8576,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group__0"
-    // InternalZeroKnowledge.g:2607:1: rule__Power__Group__0 : rule__Power__Group__0__Impl rule__Power__Group__1 ;
+    // InternalZeroKnowledge.g:2580:1: rule__Power__Group__0 : rule__Power__Group__0__Impl rule__Power__Group__1 ;
     public final void rule__Power__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2611:1: ( rule__Power__Group__0__Impl rule__Power__Group__1 )
-            // InternalZeroKnowledge.g:2612:2: rule__Power__Group__0__Impl rule__Power__Group__1
+            // InternalZeroKnowledge.g:2584:1: ( rule__Power__Group__0__Impl rule__Power__Group__1 )
+            // InternalZeroKnowledge.g:2585:2: rule__Power__Group__0__Impl rule__Power__Group__1
             {
-            pushFollow(FOLLOW_31);
+            pushFollow(FOLLOW_30);
             rule__Power__Group__0__Impl();
 
             state._fsp--;
@@ -8703,17 +8614,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group__0__Impl"
-    // InternalZeroKnowledge.g:2619:1: rule__Power__Group__0__Impl : ( ruleConstruct ) ;
+    // InternalZeroKnowledge.g:2592:1: rule__Power__Group__0__Impl : ( ruleConstruct ) ;
     public final void rule__Power__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2623:1: ( ( ruleConstruct ) )
-            // InternalZeroKnowledge.g:2624:1: ( ruleConstruct )
+            // InternalZeroKnowledge.g:2596:1: ( ( ruleConstruct ) )
+            // InternalZeroKnowledge.g:2597:1: ( ruleConstruct )
             {
-            // InternalZeroKnowledge.g:2624:1: ( ruleConstruct )
-            // InternalZeroKnowledge.g:2625:2: ruleConstruct
+            // InternalZeroKnowledge.g:2597:1: ( ruleConstruct )
+            // InternalZeroKnowledge.g:2598:2: ruleConstruct
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getPowerAccess().getConstructParserRuleCall_0()); 
@@ -8748,14 +8659,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group__1"
-    // InternalZeroKnowledge.g:2634:1: rule__Power__Group__1 : rule__Power__Group__1__Impl ;
+    // InternalZeroKnowledge.g:2607:1: rule__Power__Group__1 : rule__Power__Group__1__Impl ;
     public final void rule__Power__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2638:1: ( rule__Power__Group__1__Impl )
-            // InternalZeroKnowledge.g:2639:2: rule__Power__Group__1__Impl
+            // InternalZeroKnowledge.g:2611:1: ( rule__Power__Group__1__Impl )
+            // InternalZeroKnowledge.g:2612:2: rule__Power__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Power__Group__1__Impl();
@@ -8781,22 +8692,22 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group__1__Impl"
-    // InternalZeroKnowledge.g:2645:1: rule__Power__Group__1__Impl : ( ( rule__Power__Group_1__0 )? ) ;
+    // InternalZeroKnowledge.g:2618:1: rule__Power__Group__1__Impl : ( ( rule__Power__Group_1__0 )? ) ;
     public final void rule__Power__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2649:1: ( ( ( rule__Power__Group_1__0 )? ) )
-            // InternalZeroKnowledge.g:2650:1: ( ( rule__Power__Group_1__0 )? )
+            // InternalZeroKnowledge.g:2622:1: ( ( ( rule__Power__Group_1__0 )? ) )
+            // InternalZeroKnowledge.g:2623:1: ( ( rule__Power__Group_1__0 )? )
             {
-            // InternalZeroKnowledge.g:2650:1: ( ( rule__Power__Group_1__0 )? )
-            // InternalZeroKnowledge.g:2651:2: ( rule__Power__Group_1__0 )?
+            // InternalZeroKnowledge.g:2623:1: ( ( rule__Power__Group_1__0 )? )
+            // InternalZeroKnowledge.g:2624:2: ( rule__Power__Group_1__0 )?
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getPowerAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:2652:2: ( rule__Power__Group_1__0 )?
+            // InternalZeroKnowledge.g:2625:2: ( rule__Power__Group_1__0 )?
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -8805,7 +8716,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             }
             switch (alt21) {
                 case 1 :
-                    // InternalZeroKnowledge.g:2652:3: rule__Power__Group_1__0
+                    // InternalZeroKnowledge.g:2625:3: rule__Power__Group_1__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__Power__Group_1__0();
@@ -8843,16 +8754,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group_1__0"
-    // InternalZeroKnowledge.g:2661:1: rule__Power__Group_1__0 : rule__Power__Group_1__0__Impl rule__Power__Group_1__1 ;
+    // InternalZeroKnowledge.g:2634:1: rule__Power__Group_1__0 : rule__Power__Group_1__0__Impl rule__Power__Group_1__1 ;
     public final void rule__Power__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2665:1: ( rule__Power__Group_1__0__Impl rule__Power__Group_1__1 )
-            // InternalZeroKnowledge.g:2666:2: rule__Power__Group_1__0__Impl rule__Power__Group_1__1
+            // InternalZeroKnowledge.g:2638:1: ( rule__Power__Group_1__0__Impl rule__Power__Group_1__1 )
+            // InternalZeroKnowledge.g:2639:2: rule__Power__Group_1__0__Impl rule__Power__Group_1__1
             {
-            pushFollow(FOLLOW_31);
+            pushFollow(FOLLOW_30);
             rule__Power__Group_1__0__Impl();
 
             state._fsp--;
@@ -8881,23 +8792,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:2673:1: rule__Power__Group_1__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2646:1: rule__Power__Group_1__0__Impl : ( () ) ;
     public final void rule__Power__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2677:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2678:1: ( () )
+            // InternalZeroKnowledge.g:2650:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2651:1: ( () )
             {
-            // InternalZeroKnowledge.g:2678:1: ( () )
-            // InternalZeroKnowledge.g:2679:2: ()
+            // InternalZeroKnowledge.g:2651:1: ( () )
+            // InternalZeroKnowledge.g:2652:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getPowerAccess().getPowerLeftAction_1_0()); 
             }
-            // InternalZeroKnowledge.g:2680:2: ()
-            // InternalZeroKnowledge.g:2680:3: 
+            // InternalZeroKnowledge.g:2653:2: ()
+            // InternalZeroKnowledge.g:2653:3: 
             {
             }
 
@@ -8922,14 +8833,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group_1__1"
-    // InternalZeroKnowledge.g:2688:1: rule__Power__Group_1__1 : rule__Power__Group_1__1__Impl rule__Power__Group_1__2 ;
+    // InternalZeroKnowledge.g:2661:1: rule__Power__Group_1__1 : rule__Power__Group_1__1__Impl rule__Power__Group_1__2 ;
     public final void rule__Power__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2692:1: ( rule__Power__Group_1__1__Impl rule__Power__Group_1__2 )
-            // InternalZeroKnowledge.g:2693:2: rule__Power__Group_1__1__Impl rule__Power__Group_1__2
+            // InternalZeroKnowledge.g:2665:1: ( rule__Power__Group_1__1__Impl rule__Power__Group_1__2 )
+            // InternalZeroKnowledge.g:2666:2: rule__Power__Group_1__1__Impl rule__Power__Group_1__2
             {
             pushFollow(FOLLOW_5);
             rule__Power__Group_1__1__Impl();
@@ -8960,17 +8871,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:2700:1: rule__Power__Group_1__1__Impl : ( '^' ) ;
+    // InternalZeroKnowledge.g:2673:1: rule__Power__Group_1__1__Impl : ( '^' ) ;
     public final void rule__Power__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2704:1: ( ( '^' ) )
-            // InternalZeroKnowledge.g:2705:1: ( '^' )
+            // InternalZeroKnowledge.g:2677:1: ( ( '^' ) )
+            // InternalZeroKnowledge.g:2678:1: ( '^' )
             {
-            // InternalZeroKnowledge.g:2705:1: ( '^' )
-            // InternalZeroKnowledge.g:2706:2: '^'
+            // InternalZeroKnowledge.g:2678:1: ( '^' )
+            // InternalZeroKnowledge.g:2679:2: '^'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getPowerAccess().getCircumflexAccentKeyword_1_1()); 
@@ -9001,14 +8912,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group_1__2"
-    // InternalZeroKnowledge.g:2715:1: rule__Power__Group_1__2 : rule__Power__Group_1__2__Impl ;
+    // InternalZeroKnowledge.g:2688:1: rule__Power__Group_1__2 : rule__Power__Group_1__2__Impl ;
     public final void rule__Power__Group_1__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2719:1: ( rule__Power__Group_1__2__Impl )
-            // InternalZeroKnowledge.g:2720:2: rule__Power__Group_1__2__Impl
+            // InternalZeroKnowledge.g:2692:1: ( rule__Power__Group_1__2__Impl )
+            // InternalZeroKnowledge.g:2693:2: rule__Power__Group_1__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Power__Group_1__2__Impl();
@@ -9034,23 +8945,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__Group_1__2__Impl"
-    // InternalZeroKnowledge.g:2726:1: rule__Power__Group_1__2__Impl : ( ( rule__Power__RightAssignment_1_2 ) ) ;
+    // InternalZeroKnowledge.g:2699:1: rule__Power__Group_1__2__Impl : ( ( rule__Power__RightAssignment_1_2 ) ) ;
     public final void rule__Power__Group_1__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2730:1: ( ( ( rule__Power__RightAssignment_1_2 ) ) )
-            // InternalZeroKnowledge.g:2731:1: ( ( rule__Power__RightAssignment_1_2 ) )
+            // InternalZeroKnowledge.g:2703:1: ( ( ( rule__Power__RightAssignment_1_2 ) ) )
+            // InternalZeroKnowledge.g:2704:1: ( ( rule__Power__RightAssignment_1_2 ) )
             {
-            // InternalZeroKnowledge.g:2731:1: ( ( rule__Power__RightAssignment_1_2 ) )
-            // InternalZeroKnowledge.g:2732:2: ( rule__Power__RightAssignment_1_2 )
+            // InternalZeroKnowledge.g:2704:1: ( ( rule__Power__RightAssignment_1_2 ) )
+            // InternalZeroKnowledge.g:2705:2: ( rule__Power__RightAssignment_1_2 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getPowerAccess().getRightAssignment_1_2()); 
             }
-            // InternalZeroKnowledge.g:2733:2: ( rule__Power__RightAssignment_1_2 )
-            // InternalZeroKnowledge.g:2733:3: rule__Power__RightAssignment_1_2
+            // InternalZeroKnowledge.g:2706:2: ( rule__Power__RightAssignment_1_2 )
+            // InternalZeroKnowledge.g:2706:3: rule__Power__RightAssignment_1_2
             {
             pushFollow(FOLLOW_2);
             rule__Power__RightAssignment_1_2();
@@ -9085,14 +8996,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__0"
-    // InternalZeroKnowledge.g:2742:1: rule__Tuple__Group__0 : rule__Tuple__Group__0__Impl rule__Tuple__Group__1 ;
+    // InternalZeroKnowledge.g:2715:1: rule__Tuple__Group__0 : rule__Tuple__Group__0__Impl rule__Tuple__Group__1 ;
     public final void rule__Tuple__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2746:1: ( rule__Tuple__Group__0__Impl rule__Tuple__Group__1 )
-            // InternalZeroKnowledge.g:2747:2: rule__Tuple__Group__0__Impl rule__Tuple__Group__1
+            // InternalZeroKnowledge.g:2719:1: ( rule__Tuple__Group__0__Impl rule__Tuple__Group__1 )
+            // InternalZeroKnowledge.g:2720:2: rule__Tuple__Group__0__Impl rule__Tuple__Group__1
             {
             pushFollow(FOLLOW_5);
             rule__Tuple__Group__0__Impl();
@@ -9123,23 +9034,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__0__Impl"
-    // InternalZeroKnowledge.g:2754:1: rule__Tuple__Group__0__Impl : ( ( rule__Tuple__Group_0__0 ) ) ;
+    // InternalZeroKnowledge.g:2727:1: rule__Tuple__Group__0__Impl : ( ( rule__Tuple__Group_0__0 ) ) ;
     public final void rule__Tuple__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2758:1: ( ( ( rule__Tuple__Group_0__0 ) ) )
-            // InternalZeroKnowledge.g:2759:1: ( ( rule__Tuple__Group_0__0 ) )
+            // InternalZeroKnowledge.g:2731:1: ( ( ( rule__Tuple__Group_0__0 ) ) )
+            // InternalZeroKnowledge.g:2732:1: ( ( rule__Tuple__Group_0__0 ) )
             {
-            // InternalZeroKnowledge.g:2759:1: ( ( rule__Tuple__Group_0__0 ) )
-            // InternalZeroKnowledge.g:2760:2: ( rule__Tuple__Group_0__0 )
+            // InternalZeroKnowledge.g:2732:1: ( ( rule__Tuple__Group_0__0 ) )
+            // InternalZeroKnowledge.g:2733:2: ( rule__Tuple__Group_0__0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getGroup_0()); 
             }
-            // InternalZeroKnowledge.g:2761:2: ( rule__Tuple__Group_0__0 )
-            // InternalZeroKnowledge.g:2761:3: rule__Tuple__Group_0__0
+            // InternalZeroKnowledge.g:2734:2: ( rule__Tuple__Group_0__0 )
+            // InternalZeroKnowledge.g:2734:3: rule__Tuple__Group_0__0
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__Group_0__0();
@@ -9174,16 +9085,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__1"
-    // InternalZeroKnowledge.g:2769:1: rule__Tuple__Group__1 : rule__Tuple__Group__1__Impl rule__Tuple__Group__2 ;
+    // InternalZeroKnowledge.g:2742:1: rule__Tuple__Group__1 : rule__Tuple__Group__1__Impl rule__Tuple__Group__2 ;
     public final void rule__Tuple__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2773:1: ( rule__Tuple__Group__1__Impl rule__Tuple__Group__2 )
-            // InternalZeroKnowledge.g:2774:2: rule__Tuple__Group__1__Impl rule__Tuple__Group__2
+            // InternalZeroKnowledge.g:2746:1: ( rule__Tuple__Group__1__Impl rule__Tuple__Group__2 )
+            // InternalZeroKnowledge.g:2747:2: rule__Tuple__Group__1__Impl rule__Tuple__Group__2
             {
-            pushFollow(FOLLOW_32);
+            pushFollow(FOLLOW_31);
             rule__Tuple__Group__1__Impl();
 
             state._fsp--;
@@ -9212,23 +9123,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__1__Impl"
-    // InternalZeroKnowledge.g:2781:1: rule__Tuple__Group__1__Impl : ( ( rule__Tuple__ElementsAssignment_1 ) ) ;
+    // InternalZeroKnowledge.g:2754:1: rule__Tuple__Group__1__Impl : ( ( rule__Tuple__ElementsAssignment_1 ) ) ;
     public final void rule__Tuple__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2785:1: ( ( ( rule__Tuple__ElementsAssignment_1 ) ) )
-            // InternalZeroKnowledge.g:2786:1: ( ( rule__Tuple__ElementsAssignment_1 ) )
+            // InternalZeroKnowledge.g:2758:1: ( ( ( rule__Tuple__ElementsAssignment_1 ) ) )
+            // InternalZeroKnowledge.g:2759:1: ( ( rule__Tuple__ElementsAssignment_1 ) )
             {
-            // InternalZeroKnowledge.g:2786:1: ( ( rule__Tuple__ElementsAssignment_1 ) )
-            // InternalZeroKnowledge.g:2787:2: ( rule__Tuple__ElementsAssignment_1 )
+            // InternalZeroKnowledge.g:2759:1: ( ( rule__Tuple__ElementsAssignment_1 ) )
+            // InternalZeroKnowledge.g:2760:2: ( rule__Tuple__ElementsAssignment_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getElementsAssignment_1()); 
             }
-            // InternalZeroKnowledge.g:2788:2: ( rule__Tuple__ElementsAssignment_1 )
-            // InternalZeroKnowledge.g:2788:3: rule__Tuple__ElementsAssignment_1
+            // InternalZeroKnowledge.g:2761:2: ( rule__Tuple__ElementsAssignment_1 )
+            // InternalZeroKnowledge.g:2761:3: rule__Tuple__ElementsAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__ElementsAssignment_1();
@@ -9263,16 +9174,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__2"
-    // InternalZeroKnowledge.g:2796:1: rule__Tuple__Group__2 : rule__Tuple__Group__2__Impl rule__Tuple__Group__3 ;
+    // InternalZeroKnowledge.g:2769:1: rule__Tuple__Group__2 : rule__Tuple__Group__2__Impl rule__Tuple__Group__3 ;
     public final void rule__Tuple__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2800:1: ( rule__Tuple__Group__2__Impl rule__Tuple__Group__3 )
-            // InternalZeroKnowledge.g:2801:2: rule__Tuple__Group__2__Impl rule__Tuple__Group__3
+            // InternalZeroKnowledge.g:2773:1: ( rule__Tuple__Group__2__Impl rule__Tuple__Group__3 )
+            // InternalZeroKnowledge.g:2774:2: rule__Tuple__Group__2__Impl rule__Tuple__Group__3
             {
-            pushFollow(FOLLOW_32);
+            pushFollow(FOLLOW_31);
             rule__Tuple__Group__2__Impl();
 
             state._fsp--;
@@ -9301,22 +9212,22 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__2__Impl"
-    // InternalZeroKnowledge.g:2808:1: rule__Tuple__Group__2__Impl : ( ( rule__Tuple__Group_2__0 )* ) ;
+    // InternalZeroKnowledge.g:2781:1: rule__Tuple__Group__2__Impl : ( ( rule__Tuple__Group_2__0 )* ) ;
     public final void rule__Tuple__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2812:1: ( ( ( rule__Tuple__Group_2__0 )* ) )
-            // InternalZeroKnowledge.g:2813:1: ( ( rule__Tuple__Group_2__0 )* )
+            // InternalZeroKnowledge.g:2785:1: ( ( ( rule__Tuple__Group_2__0 )* ) )
+            // InternalZeroKnowledge.g:2786:1: ( ( rule__Tuple__Group_2__0 )* )
             {
-            // InternalZeroKnowledge.g:2813:1: ( ( rule__Tuple__Group_2__0 )* )
-            // InternalZeroKnowledge.g:2814:2: ( rule__Tuple__Group_2__0 )*
+            // InternalZeroKnowledge.g:2786:1: ( ( rule__Tuple__Group_2__0 )* )
+            // InternalZeroKnowledge.g:2787:2: ( rule__Tuple__Group_2__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getGroup_2()); 
             }
-            // InternalZeroKnowledge.g:2815:2: ( rule__Tuple__Group_2__0 )*
+            // InternalZeroKnowledge.g:2788:2: ( rule__Tuple__Group_2__0 )*
             loop22:
             do {
                 int alt22=2;
@@ -9329,7 +9240,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
                 switch (alt22) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:2815:3: rule__Tuple__Group_2__0
+            	    // InternalZeroKnowledge.g:2788:3: rule__Tuple__Group_2__0
             	    {
             	    pushFollow(FOLLOW_11);
             	    rule__Tuple__Group_2__0();
@@ -9370,14 +9281,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__3"
-    // InternalZeroKnowledge.g:2823:1: rule__Tuple__Group__3 : rule__Tuple__Group__3__Impl ;
+    // InternalZeroKnowledge.g:2796:1: rule__Tuple__Group__3 : rule__Tuple__Group__3__Impl ;
     public final void rule__Tuple__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2827:1: ( rule__Tuple__Group__3__Impl )
-            // InternalZeroKnowledge.g:2828:2: rule__Tuple__Group__3__Impl
+            // InternalZeroKnowledge.g:2800:1: ( rule__Tuple__Group__3__Impl )
+            // InternalZeroKnowledge.g:2801:2: rule__Tuple__Group__3__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__Group__3__Impl();
@@ -9403,17 +9314,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group__3__Impl"
-    // InternalZeroKnowledge.g:2834:1: rule__Tuple__Group__3__Impl : ( ')' ) ;
+    // InternalZeroKnowledge.g:2807:1: rule__Tuple__Group__3__Impl : ( ')' ) ;
     public final void rule__Tuple__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2838:1: ( ( ')' ) )
-            // InternalZeroKnowledge.g:2839:1: ( ')' )
+            // InternalZeroKnowledge.g:2811:1: ( ( ')' ) )
+            // InternalZeroKnowledge.g:2812:1: ( ')' )
             {
-            // InternalZeroKnowledge.g:2839:1: ( ')' )
-            // InternalZeroKnowledge.g:2840:2: ')'
+            // InternalZeroKnowledge.g:2812:1: ( ')' )
+            // InternalZeroKnowledge.g:2813:2: ')'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getRightParenthesisKeyword_3()); 
@@ -9444,14 +9355,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0__0"
-    // InternalZeroKnowledge.g:2850:1: rule__Tuple__Group_0__0 : rule__Tuple__Group_0__0__Impl ;
+    // InternalZeroKnowledge.g:2823:1: rule__Tuple__Group_0__0 : rule__Tuple__Group_0__0__Impl ;
     public final void rule__Tuple__Group_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2854:1: ( rule__Tuple__Group_0__0__Impl )
-            // InternalZeroKnowledge.g:2855:2: rule__Tuple__Group_0__0__Impl
+            // InternalZeroKnowledge.g:2827:1: ( rule__Tuple__Group_0__0__Impl )
+            // InternalZeroKnowledge.g:2828:2: rule__Tuple__Group_0__0__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__Group_0__0__Impl();
@@ -9477,23 +9388,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0__0__Impl"
-    // InternalZeroKnowledge.g:2861:1: rule__Tuple__Group_0__0__Impl : ( ( rule__Tuple__Group_0_0__0 ) ) ;
+    // InternalZeroKnowledge.g:2834:1: rule__Tuple__Group_0__0__Impl : ( ( rule__Tuple__Group_0_0__0 ) ) ;
     public final void rule__Tuple__Group_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2865:1: ( ( ( rule__Tuple__Group_0_0__0 ) ) )
-            // InternalZeroKnowledge.g:2866:1: ( ( rule__Tuple__Group_0_0__0 ) )
+            // InternalZeroKnowledge.g:2838:1: ( ( ( rule__Tuple__Group_0_0__0 ) ) )
+            // InternalZeroKnowledge.g:2839:1: ( ( rule__Tuple__Group_0_0__0 ) )
             {
-            // InternalZeroKnowledge.g:2866:1: ( ( rule__Tuple__Group_0_0__0 ) )
-            // InternalZeroKnowledge.g:2867:2: ( rule__Tuple__Group_0_0__0 )
+            // InternalZeroKnowledge.g:2839:1: ( ( rule__Tuple__Group_0_0__0 ) )
+            // InternalZeroKnowledge.g:2840:2: ( rule__Tuple__Group_0_0__0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getGroup_0_0()); 
             }
-            // InternalZeroKnowledge.g:2868:2: ( rule__Tuple__Group_0_0__0 )
-            // InternalZeroKnowledge.g:2868:3: rule__Tuple__Group_0_0__0
+            // InternalZeroKnowledge.g:2841:2: ( rule__Tuple__Group_0_0__0 )
+            // InternalZeroKnowledge.g:2841:3: rule__Tuple__Group_0_0__0
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__Group_0_0__0();
@@ -9528,14 +9439,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__0"
-    // InternalZeroKnowledge.g:2877:1: rule__Tuple__Group_0_0__0 : rule__Tuple__Group_0_0__0__Impl rule__Tuple__Group_0_0__1 ;
+    // InternalZeroKnowledge.g:2850:1: rule__Tuple__Group_0_0__0 : rule__Tuple__Group_0_0__0__Impl rule__Tuple__Group_0_0__1 ;
     public final void rule__Tuple__Group_0_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2881:1: ( rule__Tuple__Group_0_0__0__Impl rule__Tuple__Group_0_0__1 )
-            // InternalZeroKnowledge.g:2882:2: rule__Tuple__Group_0_0__0__Impl rule__Tuple__Group_0_0__1
+            // InternalZeroKnowledge.g:2854:1: ( rule__Tuple__Group_0_0__0__Impl rule__Tuple__Group_0_0__1 )
+            // InternalZeroKnowledge.g:2855:2: rule__Tuple__Group_0_0__0__Impl rule__Tuple__Group_0_0__1
             {
             pushFollow(FOLLOW_3);
             rule__Tuple__Group_0_0__0__Impl();
@@ -9566,23 +9477,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__0__Impl"
-    // InternalZeroKnowledge.g:2889:1: rule__Tuple__Group_0_0__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:2862:1: rule__Tuple__Group_0_0__0__Impl : ( () ) ;
     public final void rule__Tuple__Group_0_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2893:1: ( ( () ) )
-            // InternalZeroKnowledge.g:2894:1: ( () )
+            // InternalZeroKnowledge.g:2866:1: ( ( () ) )
+            // InternalZeroKnowledge.g:2867:1: ( () )
             {
-            // InternalZeroKnowledge.g:2894:1: ( () )
-            // InternalZeroKnowledge.g:2895:2: ()
+            // InternalZeroKnowledge.g:2867:1: ( () )
+            // InternalZeroKnowledge.g:2868:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getTupleAction_0_0_0()); 
             }
-            // InternalZeroKnowledge.g:2896:2: ()
-            // InternalZeroKnowledge.g:2896:3: 
+            // InternalZeroKnowledge.g:2869:2: ()
+            // InternalZeroKnowledge.g:2869:3: 
             {
             }
 
@@ -9607,14 +9518,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__1"
-    // InternalZeroKnowledge.g:2904:1: rule__Tuple__Group_0_0__1 : rule__Tuple__Group_0_0__1__Impl rule__Tuple__Group_0_0__2 ;
+    // InternalZeroKnowledge.g:2877:1: rule__Tuple__Group_0_0__1 : rule__Tuple__Group_0_0__1__Impl rule__Tuple__Group_0_0__2 ;
     public final void rule__Tuple__Group_0_0__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2908:1: ( rule__Tuple__Group_0_0__1__Impl rule__Tuple__Group_0_0__2 )
-            // InternalZeroKnowledge.g:2909:2: rule__Tuple__Group_0_0__1__Impl rule__Tuple__Group_0_0__2
+            // InternalZeroKnowledge.g:2881:1: ( rule__Tuple__Group_0_0__1__Impl rule__Tuple__Group_0_0__2 )
+            // InternalZeroKnowledge.g:2882:2: rule__Tuple__Group_0_0__1__Impl rule__Tuple__Group_0_0__2
             {
             pushFollow(FOLLOW_5);
             rule__Tuple__Group_0_0__1__Impl();
@@ -9645,17 +9556,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__1__Impl"
-    // InternalZeroKnowledge.g:2916:1: rule__Tuple__Group_0_0__1__Impl : ( '(' ) ;
+    // InternalZeroKnowledge.g:2889:1: rule__Tuple__Group_0_0__1__Impl : ( '(' ) ;
     public final void rule__Tuple__Group_0_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2920:1: ( ( '(' ) )
-            // InternalZeroKnowledge.g:2921:1: ( '(' )
+            // InternalZeroKnowledge.g:2893:1: ( ( '(' ) )
+            // InternalZeroKnowledge.g:2894:1: ( '(' )
             {
-            // InternalZeroKnowledge.g:2921:1: ( '(' )
-            // InternalZeroKnowledge.g:2922:2: '('
+            // InternalZeroKnowledge.g:2894:1: ( '(' )
+            // InternalZeroKnowledge.g:2895:2: '('
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getLeftParenthesisKeyword_0_0_1()); 
@@ -9686,14 +9597,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__2"
-    // InternalZeroKnowledge.g:2931:1: rule__Tuple__Group_0_0__2 : rule__Tuple__Group_0_0__2__Impl rule__Tuple__Group_0_0__3 ;
+    // InternalZeroKnowledge.g:2904:1: rule__Tuple__Group_0_0__2 : rule__Tuple__Group_0_0__2__Impl rule__Tuple__Group_0_0__3 ;
     public final void rule__Tuple__Group_0_0__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2935:1: ( rule__Tuple__Group_0_0__2__Impl rule__Tuple__Group_0_0__3 )
-            // InternalZeroKnowledge.g:2936:2: rule__Tuple__Group_0_0__2__Impl rule__Tuple__Group_0_0__3
+            // InternalZeroKnowledge.g:2908:1: ( rule__Tuple__Group_0_0__2__Impl rule__Tuple__Group_0_0__3 )
+            // InternalZeroKnowledge.g:2909:2: rule__Tuple__Group_0_0__2__Impl rule__Tuple__Group_0_0__3
             {
             pushFollow(FOLLOW_10);
             rule__Tuple__Group_0_0__2__Impl();
@@ -9724,23 +9635,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__2__Impl"
-    // InternalZeroKnowledge.g:2943:1: rule__Tuple__Group_0_0__2__Impl : ( ( rule__Tuple__ElementsAssignment_0_0_2 ) ) ;
+    // InternalZeroKnowledge.g:2916:1: rule__Tuple__Group_0_0__2__Impl : ( ( rule__Tuple__ElementsAssignment_0_0_2 ) ) ;
     public final void rule__Tuple__Group_0_0__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2947:1: ( ( ( rule__Tuple__ElementsAssignment_0_0_2 ) ) )
-            // InternalZeroKnowledge.g:2948:1: ( ( rule__Tuple__ElementsAssignment_0_0_2 ) )
+            // InternalZeroKnowledge.g:2920:1: ( ( ( rule__Tuple__ElementsAssignment_0_0_2 ) ) )
+            // InternalZeroKnowledge.g:2921:1: ( ( rule__Tuple__ElementsAssignment_0_0_2 ) )
             {
-            // InternalZeroKnowledge.g:2948:1: ( ( rule__Tuple__ElementsAssignment_0_0_2 ) )
-            // InternalZeroKnowledge.g:2949:2: ( rule__Tuple__ElementsAssignment_0_0_2 )
+            // InternalZeroKnowledge.g:2921:1: ( ( rule__Tuple__ElementsAssignment_0_0_2 ) )
+            // InternalZeroKnowledge.g:2922:2: ( rule__Tuple__ElementsAssignment_0_0_2 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getElementsAssignment_0_0_2()); 
             }
-            // InternalZeroKnowledge.g:2950:2: ( rule__Tuple__ElementsAssignment_0_0_2 )
-            // InternalZeroKnowledge.g:2950:3: rule__Tuple__ElementsAssignment_0_0_2
+            // InternalZeroKnowledge.g:2923:2: ( rule__Tuple__ElementsAssignment_0_0_2 )
+            // InternalZeroKnowledge.g:2923:3: rule__Tuple__ElementsAssignment_0_0_2
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__ElementsAssignment_0_0_2();
@@ -9775,14 +9686,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__3"
-    // InternalZeroKnowledge.g:2958:1: rule__Tuple__Group_0_0__3 : rule__Tuple__Group_0_0__3__Impl ;
+    // InternalZeroKnowledge.g:2931:1: rule__Tuple__Group_0_0__3 : rule__Tuple__Group_0_0__3__Impl ;
     public final void rule__Tuple__Group_0_0__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2962:1: ( rule__Tuple__Group_0_0__3__Impl )
-            // InternalZeroKnowledge.g:2963:2: rule__Tuple__Group_0_0__3__Impl
+            // InternalZeroKnowledge.g:2935:1: ( rule__Tuple__Group_0_0__3__Impl )
+            // InternalZeroKnowledge.g:2936:2: rule__Tuple__Group_0_0__3__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__Group_0_0__3__Impl();
@@ -9808,17 +9719,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_0_0__3__Impl"
-    // InternalZeroKnowledge.g:2969:1: rule__Tuple__Group_0_0__3__Impl : ( ',' ) ;
+    // InternalZeroKnowledge.g:2942:1: rule__Tuple__Group_0_0__3__Impl : ( ',' ) ;
     public final void rule__Tuple__Group_0_0__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2973:1: ( ( ',' ) )
-            // InternalZeroKnowledge.g:2974:1: ( ',' )
+            // InternalZeroKnowledge.g:2946:1: ( ( ',' ) )
+            // InternalZeroKnowledge.g:2947:1: ( ',' )
             {
-            // InternalZeroKnowledge.g:2974:1: ( ',' )
-            // InternalZeroKnowledge.g:2975:2: ','
+            // InternalZeroKnowledge.g:2947:1: ( ',' )
+            // InternalZeroKnowledge.g:2948:2: ','
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getCommaKeyword_0_0_3()); 
@@ -9849,14 +9760,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_2__0"
-    // InternalZeroKnowledge.g:2985:1: rule__Tuple__Group_2__0 : rule__Tuple__Group_2__0__Impl rule__Tuple__Group_2__1 ;
+    // InternalZeroKnowledge.g:2958:1: rule__Tuple__Group_2__0 : rule__Tuple__Group_2__0__Impl rule__Tuple__Group_2__1 ;
     public final void rule__Tuple__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:2989:1: ( rule__Tuple__Group_2__0__Impl rule__Tuple__Group_2__1 )
-            // InternalZeroKnowledge.g:2990:2: rule__Tuple__Group_2__0__Impl rule__Tuple__Group_2__1
+            // InternalZeroKnowledge.g:2962:1: ( rule__Tuple__Group_2__0__Impl rule__Tuple__Group_2__1 )
+            // InternalZeroKnowledge.g:2963:2: rule__Tuple__Group_2__0__Impl rule__Tuple__Group_2__1
             {
             pushFollow(FOLLOW_5);
             rule__Tuple__Group_2__0__Impl();
@@ -9887,17 +9798,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_2__0__Impl"
-    // InternalZeroKnowledge.g:2997:1: rule__Tuple__Group_2__0__Impl : ( ',' ) ;
+    // InternalZeroKnowledge.g:2970:1: rule__Tuple__Group_2__0__Impl : ( ',' ) ;
     public final void rule__Tuple__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3001:1: ( ( ',' ) )
-            // InternalZeroKnowledge.g:3002:1: ( ',' )
+            // InternalZeroKnowledge.g:2974:1: ( ( ',' ) )
+            // InternalZeroKnowledge.g:2975:1: ( ',' )
             {
-            // InternalZeroKnowledge.g:3002:1: ( ',' )
-            // InternalZeroKnowledge.g:3003:2: ','
+            // InternalZeroKnowledge.g:2975:1: ( ',' )
+            // InternalZeroKnowledge.g:2976:2: ','
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getCommaKeyword_2_0()); 
@@ -9928,14 +9839,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_2__1"
-    // InternalZeroKnowledge.g:3012:1: rule__Tuple__Group_2__1 : rule__Tuple__Group_2__1__Impl ;
+    // InternalZeroKnowledge.g:2985:1: rule__Tuple__Group_2__1 : rule__Tuple__Group_2__1__Impl ;
     public final void rule__Tuple__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3016:1: ( rule__Tuple__Group_2__1__Impl )
-            // InternalZeroKnowledge.g:3017:2: rule__Tuple__Group_2__1__Impl
+            // InternalZeroKnowledge.g:2989:1: ( rule__Tuple__Group_2__1__Impl )
+            // InternalZeroKnowledge.g:2990:2: rule__Tuple__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__Group_2__1__Impl();
@@ -9961,23 +9872,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__Group_2__1__Impl"
-    // InternalZeroKnowledge.g:3023:1: rule__Tuple__Group_2__1__Impl : ( ( rule__Tuple__ElementsAssignment_2_1 ) ) ;
+    // InternalZeroKnowledge.g:2996:1: rule__Tuple__Group_2__1__Impl : ( ( rule__Tuple__ElementsAssignment_2_1 ) ) ;
     public final void rule__Tuple__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3027:1: ( ( ( rule__Tuple__ElementsAssignment_2_1 ) ) )
-            // InternalZeroKnowledge.g:3028:1: ( ( rule__Tuple__ElementsAssignment_2_1 ) )
+            // InternalZeroKnowledge.g:3000:1: ( ( ( rule__Tuple__ElementsAssignment_2_1 ) ) )
+            // InternalZeroKnowledge.g:3001:1: ( ( rule__Tuple__ElementsAssignment_2_1 ) )
             {
-            // InternalZeroKnowledge.g:3028:1: ( ( rule__Tuple__ElementsAssignment_2_1 ) )
-            // InternalZeroKnowledge.g:3029:2: ( rule__Tuple__ElementsAssignment_2_1 )
+            // InternalZeroKnowledge.g:3001:1: ( ( rule__Tuple__ElementsAssignment_2_1 ) )
+            // InternalZeroKnowledge.g:3002:2: ( rule__Tuple__ElementsAssignment_2_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getElementsAssignment_2_1()); 
             }
-            // InternalZeroKnowledge.g:3030:2: ( rule__Tuple__ElementsAssignment_2_1 )
-            // InternalZeroKnowledge.g:3030:3: rule__Tuple__ElementsAssignment_2_1
+            // InternalZeroKnowledge.g:3003:2: ( rule__Tuple__ElementsAssignment_2_1 )
+            // InternalZeroKnowledge.g:3003:3: rule__Tuple__ElementsAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__Tuple__ElementsAssignment_2_1();
@@ -10012,16 +9923,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__Group_0__0"
-    // InternalZeroKnowledge.g:3039:1: rule__Negative__Group_0__0 : rule__Negative__Group_0__0__Impl rule__Negative__Group_0__1 ;
+    // InternalZeroKnowledge.g:3012:1: rule__Negative__Group_0__0 : rule__Negative__Group_0__0__Impl rule__Negative__Group_0__1 ;
     public final void rule__Negative__Group_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3043:1: ( rule__Negative__Group_0__0__Impl rule__Negative__Group_0__1 )
-            // InternalZeroKnowledge.g:3044:2: rule__Negative__Group_0__0__Impl rule__Negative__Group_0__1
+            // InternalZeroKnowledge.g:3016:1: ( rule__Negative__Group_0__0__Impl rule__Negative__Group_0__1 )
+            // InternalZeroKnowledge.g:3017:2: rule__Negative__Group_0__0__Impl rule__Negative__Group_0__1
             {
-            pushFollow(FOLLOW_33);
+            pushFollow(FOLLOW_32);
             rule__Negative__Group_0__0__Impl();
 
             state._fsp--;
@@ -10050,23 +9961,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__Group_0__0__Impl"
-    // InternalZeroKnowledge.g:3051:1: rule__Negative__Group_0__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:3024:1: rule__Negative__Group_0__0__Impl : ( () ) ;
     public final void rule__Negative__Group_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3055:1: ( ( () ) )
-            // InternalZeroKnowledge.g:3056:1: ( () )
+            // InternalZeroKnowledge.g:3028:1: ( ( () ) )
+            // InternalZeroKnowledge.g:3029:1: ( () )
             {
-            // InternalZeroKnowledge.g:3056:1: ( () )
-            // InternalZeroKnowledge.g:3057:2: ()
+            // InternalZeroKnowledge.g:3029:1: ( () )
+            // InternalZeroKnowledge.g:3030:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getNegativeAccess().getNegativeAction_0_0()); 
             }
-            // InternalZeroKnowledge.g:3058:2: ()
-            // InternalZeroKnowledge.g:3058:3: 
+            // InternalZeroKnowledge.g:3031:2: ()
+            // InternalZeroKnowledge.g:3031:3: 
             {
             }
 
@@ -10091,14 +10002,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__Group_0__1"
-    // InternalZeroKnowledge.g:3066:1: rule__Negative__Group_0__1 : rule__Negative__Group_0__1__Impl rule__Negative__Group_0__2 ;
+    // InternalZeroKnowledge.g:3039:1: rule__Negative__Group_0__1 : rule__Negative__Group_0__1__Impl rule__Negative__Group_0__2 ;
     public final void rule__Negative__Group_0__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3070:1: ( rule__Negative__Group_0__1__Impl rule__Negative__Group_0__2 )
-            // InternalZeroKnowledge.g:3071:2: rule__Negative__Group_0__1__Impl rule__Negative__Group_0__2
+            // InternalZeroKnowledge.g:3043:1: ( rule__Negative__Group_0__1__Impl rule__Negative__Group_0__2 )
+            // InternalZeroKnowledge.g:3044:2: rule__Negative__Group_0__1__Impl rule__Negative__Group_0__2
             {
             pushFollow(FOLLOW_5);
             rule__Negative__Group_0__1__Impl();
@@ -10129,17 +10040,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__Group_0__1__Impl"
-    // InternalZeroKnowledge.g:3078:1: rule__Negative__Group_0__1__Impl : ( '-' ) ;
+    // InternalZeroKnowledge.g:3051:1: rule__Negative__Group_0__1__Impl : ( '-' ) ;
     public final void rule__Negative__Group_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3082:1: ( ( '-' ) )
-            // InternalZeroKnowledge.g:3083:1: ( '-' )
+            // InternalZeroKnowledge.g:3055:1: ( ( '-' ) )
+            // InternalZeroKnowledge.g:3056:1: ( '-' )
             {
-            // InternalZeroKnowledge.g:3083:1: ( '-' )
-            // InternalZeroKnowledge.g:3084:2: '-'
+            // InternalZeroKnowledge.g:3056:1: ( '-' )
+            // InternalZeroKnowledge.g:3057:2: '-'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getNegativeAccess().getHyphenMinusKeyword_0_1()); 
@@ -10170,14 +10081,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__Group_0__2"
-    // InternalZeroKnowledge.g:3093:1: rule__Negative__Group_0__2 : rule__Negative__Group_0__2__Impl ;
+    // InternalZeroKnowledge.g:3066:1: rule__Negative__Group_0__2 : rule__Negative__Group_0__2__Impl ;
     public final void rule__Negative__Group_0__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3097:1: ( rule__Negative__Group_0__2__Impl )
-            // InternalZeroKnowledge.g:3098:2: rule__Negative__Group_0__2__Impl
+            // InternalZeroKnowledge.g:3070:1: ( rule__Negative__Group_0__2__Impl )
+            // InternalZeroKnowledge.g:3071:2: rule__Negative__Group_0__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Negative__Group_0__2__Impl();
@@ -10203,23 +10114,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__Group_0__2__Impl"
-    // InternalZeroKnowledge.g:3104:1: rule__Negative__Group_0__2__Impl : ( ( rule__Negative__TermAssignment_0_2 ) ) ;
+    // InternalZeroKnowledge.g:3077:1: rule__Negative__Group_0__2__Impl : ( ( rule__Negative__TermAssignment_0_2 ) ) ;
     public final void rule__Negative__Group_0__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3108:1: ( ( ( rule__Negative__TermAssignment_0_2 ) ) )
-            // InternalZeroKnowledge.g:3109:1: ( ( rule__Negative__TermAssignment_0_2 ) )
+            // InternalZeroKnowledge.g:3081:1: ( ( ( rule__Negative__TermAssignment_0_2 ) ) )
+            // InternalZeroKnowledge.g:3082:1: ( ( rule__Negative__TermAssignment_0_2 ) )
             {
-            // InternalZeroKnowledge.g:3109:1: ( ( rule__Negative__TermAssignment_0_2 ) )
-            // InternalZeroKnowledge.g:3110:2: ( rule__Negative__TermAssignment_0_2 )
+            // InternalZeroKnowledge.g:3082:1: ( ( rule__Negative__TermAssignment_0_2 ) )
+            // InternalZeroKnowledge.g:3083:2: ( rule__Negative__TermAssignment_0_2 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getNegativeAccess().getTermAssignment_0_2()); 
             }
-            // InternalZeroKnowledge.g:3111:2: ( rule__Negative__TermAssignment_0_2 )
-            // InternalZeroKnowledge.g:3111:3: rule__Negative__TermAssignment_0_2
+            // InternalZeroKnowledge.g:3084:2: ( rule__Negative__TermAssignment_0_2 )
+            // InternalZeroKnowledge.g:3084:3: rule__Negative__TermAssignment_0_2
             {
             pushFollow(FOLLOW_2);
             rule__Negative__TermAssignment_0_2();
@@ -10254,14 +10165,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Value__Group_3__0"
-    // InternalZeroKnowledge.g:3120:1: rule__Value__Group_3__0 : rule__Value__Group_3__0__Impl rule__Value__Group_3__1 ;
+    // InternalZeroKnowledge.g:3093:1: rule__Value__Group_3__0 : rule__Value__Group_3__0__Impl rule__Value__Group_3__1 ;
     public final void rule__Value__Group_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3124:1: ( rule__Value__Group_3__0__Impl rule__Value__Group_3__1 )
-            // InternalZeroKnowledge.g:3125:2: rule__Value__Group_3__0__Impl rule__Value__Group_3__1
+            // InternalZeroKnowledge.g:3097:1: ( rule__Value__Group_3__0__Impl rule__Value__Group_3__1 )
+            // InternalZeroKnowledge.g:3098:2: rule__Value__Group_3__0__Impl rule__Value__Group_3__1
             {
             pushFollow(FOLLOW_5);
             rule__Value__Group_3__0__Impl();
@@ -10292,17 +10203,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Value__Group_3__0__Impl"
-    // InternalZeroKnowledge.g:3132:1: rule__Value__Group_3__0__Impl : ( '(' ) ;
+    // InternalZeroKnowledge.g:3105:1: rule__Value__Group_3__0__Impl : ( '(' ) ;
     public final void rule__Value__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3136:1: ( ( '(' ) )
-            // InternalZeroKnowledge.g:3137:1: ( '(' )
+            // InternalZeroKnowledge.g:3109:1: ( ( '(' ) )
+            // InternalZeroKnowledge.g:3110:1: ( '(' )
             {
-            // InternalZeroKnowledge.g:3137:1: ( '(' )
-            // InternalZeroKnowledge.g:3138:2: '('
+            // InternalZeroKnowledge.g:3110:1: ( '(' )
+            // InternalZeroKnowledge.g:3111:2: '('
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getValueAccess().getLeftParenthesisKeyword_3_0()); 
@@ -10333,16 +10244,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Value__Group_3__1"
-    // InternalZeroKnowledge.g:3147:1: rule__Value__Group_3__1 : rule__Value__Group_3__1__Impl rule__Value__Group_3__2 ;
+    // InternalZeroKnowledge.g:3120:1: rule__Value__Group_3__1 : rule__Value__Group_3__1__Impl rule__Value__Group_3__2 ;
     public final void rule__Value__Group_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3151:1: ( rule__Value__Group_3__1__Impl rule__Value__Group_3__2 )
-            // InternalZeroKnowledge.g:3152:2: rule__Value__Group_3__1__Impl rule__Value__Group_3__2
+            // InternalZeroKnowledge.g:3124:1: ( rule__Value__Group_3__1__Impl rule__Value__Group_3__2 )
+            // InternalZeroKnowledge.g:3125:2: rule__Value__Group_3__1__Impl rule__Value__Group_3__2
             {
-            pushFollow(FOLLOW_34);
+            pushFollow(FOLLOW_33);
             rule__Value__Group_3__1__Impl();
 
             state._fsp--;
@@ -10371,17 +10282,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Value__Group_3__1__Impl"
-    // InternalZeroKnowledge.g:3159:1: rule__Value__Group_3__1__Impl : ( ruleBrackets ) ;
+    // InternalZeroKnowledge.g:3132:1: rule__Value__Group_3__1__Impl : ( ruleBrackets ) ;
     public final void rule__Value__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3163:1: ( ( ruleBrackets ) )
-            // InternalZeroKnowledge.g:3164:1: ( ruleBrackets )
+            // InternalZeroKnowledge.g:3136:1: ( ( ruleBrackets ) )
+            // InternalZeroKnowledge.g:3137:1: ( ruleBrackets )
             {
-            // InternalZeroKnowledge.g:3164:1: ( ruleBrackets )
-            // InternalZeroKnowledge.g:3165:2: ruleBrackets
+            // InternalZeroKnowledge.g:3137:1: ( ruleBrackets )
+            // InternalZeroKnowledge.g:3138:2: ruleBrackets
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getValueAccess().getBracketsParserRuleCall_3_1()); 
@@ -10416,14 +10327,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Value__Group_3__2"
-    // InternalZeroKnowledge.g:3174:1: rule__Value__Group_3__2 : rule__Value__Group_3__2__Impl ;
+    // InternalZeroKnowledge.g:3147:1: rule__Value__Group_3__2 : rule__Value__Group_3__2__Impl ;
     public final void rule__Value__Group_3__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3178:1: ( rule__Value__Group_3__2__Impl )
-            // InternalZeroKnowledge.g:3179:2: rule__Value__Group_3__2__Impl
+            // InternalZeroKnowledge.g:3151:1: ( rule__Value__Group_3__2__Impl )
+            // InternalZeroKnowledge.g:3152:2: rule__Value__Group_3__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Value__Group_3__2__Impl();
@@ -10449,17 +10360,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Value__Group_3__2__Impl"
-    // InternalZeroKnowledge.g:3185:1: rule__Value__Group_3__2__Impl : ( ')' ) ;
+    // InternalZeroKnowledge.g:3158:1: rule__Value__Group_3__2__Impl : ( ')' ) ;
     public final void rule__Value__Group_3__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3189:1: ( ( ')' ) )
-            // InternalZeroKnowledge.g:3190:1: ( ')' )
+            // InternalZeroKnowledge.g:3162:1: ( ( ')' ) )
+            // InternalZeroKnowledge.g:3163:1: ( ')' )
             {
-            // InternalZeroKnowledge.g:3190:1: ( ')' )
-            // InternalZeroKnowledge.g:3191:2: ')'
+            // InternalZeroKnowledge.g:3163:1: ( ')' )
+            // InternalZeroKnowledge.g:3164:2: ')'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getValueAccess().getRightParenthesisKeyword_3_2()); 
@@ -10490,14 +10401,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group__0"
-    // InternalZeroKnowledge.g:3201:1: rule__FunctionCall__Group__0 : rule__FunctionCall__Group__0__Impl rule__FunctionCall__Group__1 ;
+    // InternalZeroKnowledge.g:3174:1: rule__FunctionCall__Group__0 : rule__FunctionCall__Group__0__Impl rule__FunctionCall__Group__1 ;
     public final void rule__FunctionCall__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3205:1: ( rule__FunctionCall__Group__0__Impl rule__FunctionCall__Group__1 )
-            // InternalZeroKnowledge.g:3206:2: rule__FunctionCall__Group__0__Impl rule__FunctionCall__Group__1
+            // InternalZeroKnowledge.g:3178:1: ( rule__FunctionCall__Group__0__Impl rule__FunctionCall__Group__1 )
+            // InternalZeroKnowledge.g:3179:2: rule__FunctionCall__Group__0__Impl rule__FunctionCall__Group__1
             {
             pushFollow(FOLLOW_12);
             rule__FunctionCall__Group__0__Impl();
@@ -10528,23 +10439,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group__0__Impl"
-    // InternalZeroKnowledge.g:3213:1: rule__FunctionCall__Group__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:3186:1: rule__FunctionCall__Group__0__Impl : ( () ) ;
     public final void rule__FunctionCall__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3217:1: ( ( () ) )
-            // InternalZeroKnowledge.g:3218:1: ( () )
+            // InternalZeroKnowledge.g:3190:1: ( ( () ) )
+            // InternalZeroKnowledge.g:3191:1: ( () )
             {
-            // InternalZeroKnowledge.g:3218:1: ( () )
-            // InternalZeroKnowledge.g:3219:2: ()
+            // InternalZeroKnowledge.g:3191:1: ( () )
+            // InternalZeroKnowledge.g:3192:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getFunctionCallAction_0()); 
             }
-            // InternalZeroKnowledge.g:3220:2: ()
-            // InternalZeroKnowledge.g:3220:3: 
+            // InternalZeroKnowledge.g:3193:2: ()
+            // InternalZeroKnowledge.g:3193:3: 
             {
             }
 
@@ -10569,14 +10480,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group__1"
-    // InternalZeroKnowledge.g:3228:1: rule__FunctionCall__Group__1 : rule__FunctionCall__Group__1__Impl ;
+    // InternalZeroKnowledge.g:3201:1: rule__FunctionCall__Group__1 : rule__FunctionCall__Group__1__Impl ;
     public final void rule__FunctionCall__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3232:1: ( rule__FunctionCall__Group__1__Impl )
-            // InternalZeroKnowledge.g:3233:2: rule__FunctionCall__Group__1__Impl
+            // InternalZeroKnowledge.g:3205:1: ( rule__FunctionCall__Group__1__Impl )
+            // InternalZeroKnowledge.g:3206:2: rule__FunctionCall__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group__1__Impl();
@@ -10602,23 +10513,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group__1__Impl"
-    // InternalZeroKnowledge.g:3239:1: rule__FunctionCall__Group__1__Impl : ( ( rule__FunctionCall__Group_1__0 ) ) ;
+    // InternalZeroKnowledge.g:3212:1: rule__FunctionCall__Group__1__Impl : ( ( rule__FunctionCall__Group_1__0 ) ) ;
     public final void rule__FunctionCall__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3243:1: ( ( ( rule__FunctionCall__Group_1__0 ) ) )
-            // InternalZeroKnowledge.g:3244:1: ( ( rule__FunctionCall__Group_1__0 ) )
+            // InternalZeroKnowledge.g:3216:1: ( ( ( rule__FunctionCall__Group_1__0 ) ) )
+            // InternalZeroKnowledge.g:3217:1: ( ( rule__FunctionCall__Group_1__0 ) )
             {
-            // InternalZeroKnowledge.g:3244:1: ( ( rule__FunctionCall__Group_1__0 ) )
-            // InternalZeroKnowledge.g:3245:2: ( rule__FunctionCall__Group_1__0 )
+            // InternalZeroKnowledge.g:3217:1: ( ( rule__FunctionCall__Group_1__0 ) )
+            // InternalZeroKnowledge.g:3218:2: ( rule__FunctionCall__Group_1__0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getGroup_1()); 
             }
-            // InternalZeroKnowledge.g:3246:2: ( rule__FunctionCall__Group_1__0 )
-            // InternalZeroKnowledge.g:3246:3: rule__FunctionCall__Group_1__0
+            // InternalZeroKnowledge.g:3219:2: ( rule__FunctionCall__Group_1__0 )
+            // InternalZeroKnowledge.g:3219:3: rule__FunctionCall__Group_1__0
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1__0();
@@ -10653,16 +10564,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1__0"
-    // InternalZeroKnowledge.g:3255:1: rule__FunctionCall__Group_1__0 : rule__FunctionCall__Group_1__0__Impl rule__FunctionCall__Group_1__1 ;
+    // InternalZeroKnowledge.g:3228:1: rule__FunctionCall__Group_1__0 : rule__FunctionCall__Group_1__0__Impl rule__FunctionCall__Group_1__1 ;
     public final void rule__FunctionCall__Group_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3259:1: ( rule__FunctionCall__Group_1__0__Impl rule__FunctionCall__Group_1__1 )
-            // InternalZeroKnowledge.g:3260:2: rule__FunctionCall__Group_1__0__Impl rule__FunctionCall__Group_1__1
+            // InternalZeroKnowledge.g:3232:1: ( rule__FunctionCall__Group_1__0__Impl rule__FunctionCall__Group_1__1 )
+            // InternalZeroKnowledge.g:3233:2: rule__FunctionCall__Group_1__0__Impl rule__FunctionCall__Group_1__1
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_34);
             rule__FunctionCall__Group_1__0__Impl();
 
             state._fsp--;
@@ -10691,23 +10602,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1__0__Impl"
-    // InternalZeroKnowledge.g:3267:1: rule__FunctionCall__Group_1__0__Impl : ( ( rule__FunctionCall__Group_1_0__0 ) ) ;
+    // InternalZeroKnowledge.g:3240:1: rule__FunctionCall__Group_1__0__Impl : ( ( rule__FunctionCall__Group_1_0__0 ) ) ;
     public final void rule__FunctionCall__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3271:1: ( ( ( rule__FunctionCall__Group_1_0__0 ) ) )
-            // InternalZeroKnowledge.g:3272:1: ( ( rule__FunctionCall__Group_1_0__0 ) )
+            // InternalZeroKnowledge.g:3244:1: ( ( ( rule__FunctionCall__Group_1_0__0 ) ) )
+            // InternalZeroKnowledge.g:3245:1: ( ( rule__FunctionCall__Group_1_0__0 ) )
             {
-            // InternalZeroKnowledge.g:3272:1: ( ( rule__FunctionCall__Group_1_0__0 ) )
-            // InternalZeroKnowledge.g:3273:2: ( rule__FunctionCall__Group_1_0__0 )
+            // InternalZeroKnowledge.g:3245:1: ( ( rule__FunctionCall__Group_1_0__0 ) )
+            // InternalZeroKnowledge.g:3246:2: ( rule__FunctionCall__Group_1_0__0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getGroup_1_0()); 
             }
-            // InternalZeroKnowledge.g:3274:2: ( rule__FunctionCall__Group_1_0__0 )
-            // InternalZeroKnowledge.g:3274:3: rule__FunctionCall__Group_1_0__0
+            // InternalZeroKnowledge.g:3247:2: ( rule__FunctionCall__Group_1_0__0 )
+            // InternalZeroKnowledge.g:3247:3: rule__FunctionCall__Group_1_0__0
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1_0__0();
@@ -10742,16 +10653,16 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1__1"
-    // InternalZeroKnowledge.g:3282:1: rule__FunctionCall__Group_1__1 : rule__FunctionCall__Group_1__1__Impl rule__FunctionCall__Group_1__2 ;
+    // InternalZeroKnowledge.g:3255:1: rule__FunctionCall__Group_1__1 : rule__FunctionCall__Group_1__1__Impl rule__FunctionCall__Group_1__2 ;
     public final void rule__FunctionCall__Group_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3286:1: ( rule__FunctionCall__Group_1__1__Impl rule__FunctionCall__Group_1__2 )
-            // InternalZeroKnowledge.g:3287:2: rule__FunctionCall__Group_1__1__Impl rule__FunctionCall__Group_1__2
+            // InternalZeroKnowledge.g:3259:1: ( rule__FunctionCall__Group_1__1__Impl rule__FunctionCall__Group_1__2 )
+            // InternalZeroKnowledge.g:3260:2: rule__FunctionCall__Group_1__1__Impl rule__FunctionCall__Group_1__2
             {
-            pushFollow(FOLLOW_35);
+            pushFollow(FOLLOW_34);
             rule__FunctionCall__Group_1__1__Impl();
 
             state._fsp--;
@@ -10780,22 +10691,22 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1__1__Impl"
-    // InternalZeroKnowledge.g:3294:1: rule__FunctionCall__Group_1__1__Impl : ( ( rule__FunctionCall__Group_1_1__0 )? ) ;
+    // InternalZeroKnowledge.g:3267:1: rule__FunctionCall__Group_1__1__Impl : ( ( rule__FunctionCall__Group_1_1__0 )? ) ;
     public final void rule__FunctionCall__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3298:1: ( ( ( rule__FunctionCall__Group_1_1__0 )? ) )
-            // InternalZeroKnowledge.g:3299:1: ( ( rule__FunctionCall__Group_1_1__0 )? )
+            // InternalZeroKnowledge.g:3271:1: ( ( ( rule__FunctionCall__Group_1_1__0 )? ) )
+            // InternalZeroKnowledge.g:3272:1: ( ( rule__FunctionCall__Group_1_1__0 )? )
             {
-            // InternalZeroKnowledge.g:3299:1: ( ( rule__FunctionCall__Group_1_1__0 )? )
-            // InternalZeroKnowledge.g:3300:2: ( rule__FunctionCall__Group_1_1__0 )?
+            // InternalZeroKnowledge.g:3272:1: ( ( rule__FunctionCall__Group_1_1__0 )? )
+            // InternalZeroKnowledge.g:3273:2: ( rule__FunctionCall__Group_1_1__0 )?
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getGroup_1_1()); 
             }
-            // InternalZeroKnowledge.g:3301:2: ( rule__FunctionCall__Group_1_1__0 )?
+            // InternalZeroKnowledge.g:3274:2: ( rule__FunctionCall__Group_1_1__0 )?
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -10804,7 +10715,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
             }
             switch (alt23) {
                 case 1 :
-                    // InternalZeroKnowledge.g:3301:3: rule__FunctionCall__Group_1_1__0
+                    // InternalZeroKnowledge.g:3274:3: rule__FunctionCall__Group_1_1__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__FunctionCall__Group_1_1__0();
@@ -10842,14 +10753,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1__2"
-    // InternalZeroKnowledge.g:3309:1: rule__FunctionCall__Group_1__2 : rule__FunctionCall__Group_1__2__Impl ;
+    // InternalZeroKnowledge.g:3282:1: rule__FunctionCall__Group_1__2 : rule__FunctionCall__Group_1__2__Impl ;
     public final void rule__FunctionCall__Group_1__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3313:1: ( rule__FunctionCall__Group_1__2__Impl )
-            // InternalZeroKnowledge.g:3314:2: rule__FunctionCall__Group_1__2__Impl
+            // InternalZeroKnowledge.g:3286:1: ( rule__FunctionCall__Group_1__2__Impl )
+            // InternalZeroKnowledge.g:3287:2: rule__FunctionCall__Group_1__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1__2__Impl();
@@ -10875,17 +10786,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1__2__Impl"
-    // InternalZeroKnowledge.g:3320:1: rule__FunctionCall__Group_1__2__Impl : ( ')' ) ;
+    // InternalZeroKnowledge.g:3293:1: rule__FunctionCall__Group_1__2__Impl : ( ')' ) ;
     public final void rule__FunctionCall__Group_1__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3324:1: ( ( ')' ) )
-            // InternalZeroKnowledge.g:3325:1: ( ')' )
+            // InternalZeroKnowledge.g:3297:1: ( ( ')' ) )
+            // InternalZeroKnowledge.g:3298:1: ( ')' )
             {
-            // InternalZeroKnowledge.g:3325:1: ( ')' )
-            // InternalZeroKnowledge.g:3326:2: ')'
+            // InternalZeroKnowledge.g:3298:1: ( ')' )
+            // InternalZeroKnowledge.g:3299:2: ')'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getRightParenthesisKeyword_1_2()); 
@@ -10916,14 +10827,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_0__0"
-    // InternalZeroKnowledge.g:3336:1: rule__FunctionCall__Group_1_0__0 : rule__FunctionCall__Group_1_0__0__Impl ;
+    // InternalZeroKnowledge.g:3309:1: rule__FunctionCall__Group_1_0__0 : rule__FunctionCall__Group_1_0__0__Impl ;
     public final void rule__FunctionCall__Group_1_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3340:1: ( rule__FunctionCall__Group_1_0__0__Impl )
-            // InternalZeroKnowledge.g:3341:2: rule__FunctionCall__Group_1_0__0__Impl
+            // InternalZeroKnowledge.g:3313:1: ( rule__FunctionCall__Group_1_0__0__Impl )
+            // InternalZeroKnowledge.g:3314:2: rule__FunctionCall__Group_1_0__0__Impl
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1_0__0__Impl();
@@ -10949,23 +10860,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_0__0__Impl"
-    // InternalZeroKnowledge.g:3347:1: rule__FunctionCall__Group_1_0__0__Impl : ( ( rule__FunctionCall__Group_1_0_0__0 ) ) ;
+    // InternalZeroKnowledge.g:3320:1: rule__FunctionCall__Group_1_0__0__Impl : ( ( rule__FunctionCall__Group_1_0_0__0 ) ) ;
     public final void rule__FunctionCall__Group_1_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3351:1: ( ( ( rule__FunctionCall__Group_1_0_0__0 ) ) )
-            // InternalZeroKnowledge.g:3352:1: ( ( rule__FunctionCall__Group_1_0_0__0 ) )
+            // InternalZeroKnowledge.g:3324:1: ( ( ( rule__FunctionCall__Group_1_0_0__0 ) ) )
+            // InternalZeroKnowledge.g:3325:1: ( ( rule__FunctionCall__Group_1_0_0__0 ) )
             {
-            // InternalZeroKnowledge.g:3352:1: ( ( rule__FunctionCall__Group_1_0_0__0 ) )
-            // InternalZeroKnowledge.g:3353:2: ( rule__FunctionCall__Group_1_0_0__0 )
+            // InternalZeroKnowledge.g:3325:1: ( ( rule__FunctionCall__Group_1_0_0__0 ) )
+            // InternalZeroKnowledge.g:3326:2: ( rule__FunctionCall__Group_1_0_0__0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getGroup_1_0_0()); 
             }
-            // InternalZeroKnowledge.g:3354:2: ( rule__FunctionCall__Group_1_0_0__0 )
-            // InternalZeroKnowledge.g:3354:3: rule__FunctionCall__Group_1_0_0__0
+            // InternalZeroKnowledge.g:3327:2: ( rule__FunctionCall__Group_1_0_0__0 )
+            // InternalZeroKnowledge.g:3327:3: rule__FunctionCall__Group_1_0_0__0
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1_0_0__0();
@@ -11000,14 +10911,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_0_0__0"
-    // InternalZeroKnowledge.g:3363:1: rule__FunctionCall__Group_1_0_0__0 : rule__FunctionCall__Group_1_0_0__0__Impl rule__FunctionCall__Group_1_0_0__1 ;
+    // InternalZeroKnowledge.g:3336:1: rule__FunctionCall__Group_1_0_0__0 : rule__FunctionCall__Group_1_0_0__0__Impl rule__FunctionCall__Group_1_0_0__1 ;
     public final void rule__FunctionCall__Group_1_0_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3367:1: ( rule__FunctionCall__Group_1_0_0__0__Impl rule__FunctionCall__Group_1_0_0__1 )
-            // InternalZeroKnowledge.g:3368:2: rule__FunctionCall__Group_1_0_0__0__Impl rule__FunctionCall__Group_1_0_0__1
+            // InternalZeroKnowledge.g:3340:1: ( rule__FunctionCall__Group_1_0_0__0__Impl rule__FunctionCall__Group_1_0_0__1 )
+            // InternalZeroKnowledge.g:3341:2: rule__FunctionCall__Group_1_0_0__0__Impl rule__FunctionCall__Group_1_0_0__1
             {
             pushFollow(FOLLOW_3);
             rule__FunctionCall__Group_1_0_0__0__Impl();
@@ -11038,23 +10949,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_0_0__0__Impl"
-    // InternalZeroKnowledge.g:3375:1: rule__FunctionCall__Group_1_0_0__0__Impl : ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) ) ;
+    // InternalZeroKnowledge.g:3348:1: rule__FunctionCall__Group_1_0_0__0__Impl : ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) ) ;
     public final void rule__FunctionCall__Group_1_0_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3379:1: ( ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) ) )
-            // InternalZeroKnowledge.g:3380:1: ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) )
+            // InternalZeroKnowledge.g:3352:1: ( ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) ) )
+            // InternalZeroKnowledge.g:3353:1: ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) )
             {
-            // InternalZeroKnowledge.g:3380:1: ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) )
-            // InternalZeroKnowledge.g:3381:2: ( rule__FunctionCall__NameAssignment_1_0_0_0 )
+            // InternalZeroKnowledge.g:3353:1: ( ( rule__FunctionCall__NameAssignment_1_0_0_0 ) )
+            // InternalZeroKnowledge.g:3354:2: ( rule__FunctionCall__NameAssignment_1_0_0_0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getNameAssignment_1_0_0_0()); 
             }
-            // InternalZeroKnowledge.g:3382:2: ( rule__FunctionCall__NameAssignment_1_0_0_0 )
-            // InternalZeroKnowledge.g:3382:3: rule__FunctionCall__NameAssignment_1_0_0_0
+            // InternalZeroKnowledge.g:3355:2: ( rule__FunctionCall__NameAssignment_1_0_0_0 )
+            // InternalZeroKnowledge.g:3355:3: rule__FunctionCall__NameAssignment_1_0_0_0
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__NameAssignment_1_0_0_0();
@@ -11089,14 +11000,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_0_0__1"
-    // InternalZeroKnowledge.g:3390:1: rule__FunctionCall__Group_1_0_0__1 : rule__FunctionCall__Group_1_0_0__1__Impl ;
+    // InternalZeroKnowledge.g:3363:1: rule__FunctionCall__Group_1_0_0__1 : rule__FunctionCall__Group_1_0_0__1__Impl ;
     public final void rule__FunctionCall__Group_1_0_0__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3394:1: ( rule__FunctionCall__Group_1_0_0__1__Impl )
-            // InternalZeroKnowledge.g:3395:2: rule__FunctionCall__Group_1_0_0__1__Impl
+            // InternalZeroKnowledge.g:3367:1: ( rule__FunctionCall__Group_1_0_0__1__Impl )
+            // InternalZeroKnowledge.g:3368:2: rule__FunctionCall__Group_1_0_0__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1_0_0__1__Impl();
@@ -11122,17 +11033,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_0_0__1__Impl"
-    // InternalZeroKnowledge.g:3401:1: rule__FunctionCall__Group_1_0_0__1__Impl : ( '(' ) ;
+    // InternalZeroKnowledge.g:3374:1: rule__FunctionCall__Group_1_0_0__1__Impl : ( '(' ) ;
     public final void rule__FunctionCall__Group_1_0_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3405:1: ( ( '(' ) )
-            // InternalZeroKnowledge.g:3406:1: ( '(' )
+            // InternalZeroKnowledge.g:3378:1: ( ( '(' ) )
+            // InternalZeroKnowledge.g:3379:1: ( '(' )
             {
-            // InternalZeroKnowledge.g:3406:1: ( '(' )
-            // InternalZeroKnowledge.g:3407:2: '('
+            // InternalZeroKnowledge.g:3379:1: ( '(' )
+            // InternalZeroKnowledge.g:3380:2: '('
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getLeftParenthesisKeyword_1_0_0_1()); 
@@ -11163,14 +11074,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1__0"
-    // InternalZeroKnowledge.g:3417:1: rule__FunctionCall__Group_1_1__0 : rule__FunctionCall__Group_1_1__0__Impl rule__FunctionCall__Group_1_1__1 ;
+    // InternalZeroKnowledge.g:3390:1: rule__FunctionCall__Group_1_1__0 : rule__FunctionCall__Group_1_1__0__Impl rule__FunctionCall__Group_1_1__1 ;
     public final void rule__FunctionCall__Group_1_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3421:1: ( rule__FunctionCall__Group_1_1__0__Impl rule__FunctionCall__Group_1_1__1 )
-            // InternalZeroKnowledge.g:3422:2: rule__FunctionCall__Group_1_1__0__Impl rule__FunctionCall__Group_1_1__1
+            // InternalZeroKnowledge.g:3394:1: ( rule__FunctionCall__Group_1_1__0__Impl rule__FunctionCall__Group_1_1__1 )
+            // InternalZeroKnowledge.g:3395:2: rule__FunctionCall__Group_1_1__0__Impl rule__FunctionCall__Group_1_1__1
             {
             pushFollow(FOLLOW_10);
             rule__FunctionCall__Group_1_1__0__Impl();
@@ -11201,23 +11112,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1__0__Impl"
-    // InternalZeroKnowledge.g:3429:1: rule__FunctionCall__Group_1_1__0__Impl : ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) ) ;
+    // InternalZeroKnowledge.g:3402:1: rule__FunctionCall__Group_1_1__0__Impl : ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) ) ;
     public final void rule__FunctionCall__Group_1_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3433:1: ( ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) ) )
-            // InternalZeroKnowledge.g:3434:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) )
+            // InternalZeroKnowledge.g:3406:1: ( ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) ) )
+            // InternalZeroKnowledge.g:3407:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) )
             {
-            // InternalZeroKnowledge.g:3434:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) )
-            // InternalZeroKnowledge.g:3435:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_0 )
+            // InternalZeroKnowledge.g:3407:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_0 ) )
+            // InternalZeroKnowledge.g:3408:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_0 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getArgumentsAssignment_1_1_0()); 
             }
-            // InternalZeroKnowledge.g:3436:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_0 )
-            // InternalZeroKnowledge.g:3436:3: rule__FunctionCall__ArgumentsAssignment_1_1_0
+            // InternalZeroKnowledge.g:3409:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_0 )
+            // InternalZeroKnowledge.g:3409:3: rule__FunctionCall__ArgumentsAssignment_1_1_0
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__ArgumentsAssignment_1_1_0();
@@ -11252,14 +11163,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1__1"
-    // InternalZeroKnowledge.g:3444:1: rule__FunctionCall__Group_1_1__1 : rule__FunctionCall__Group_1_1__1__Impl ;
+    // InternalZeroKnowledge.g:3417:1: rule__FunctionCall__Group_1_1__1 : rule__FunctionCall__Group_1_1__1__Impl ;
     public final void rule__FunctionCall__Group_1_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3448:1: ( rule__FunctionCall__Group_1_1__1__Impl )
-            // InternalZeroKnowledge.g:3449:2: rule__FunctionCall__Group_1_1__1__Impl
+            // InternalZeroKnowledge.g:3421:1: ( rule__FunctionCall__Group_1_1__1__Impl )
+            // InternalZeroKnowledge.g:3422:2: rule__FunctionCall__Group_1_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1_1__1__Impl();
@@ -11285,22 +11196,22 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1__1__Impl"
-    // InternalZeroKnowledge.g:3455:1: rule__FunctionCall__Group_1_1__1__Impl : ( ( rule__FunctionCall__Group_1_1_1__0 )* ) ;
+    // InternalZeroKnowledge.g:3428:1: rule__FunctionCall__Group_1_1__1__Impl : ( ( rule__FunctionCall__Group_1_1_1__0 )* ) ;
     public final void rule__FunctionCall__Group_1_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3459:1: ( ( ( rule__FunctionCall__Group_1_1_1__0 )* ) )
-            // InternalZeroKnowledge.g:3460:1: ( ( rule__FunctionCall__Group_1_1_1__0 )* )
+            // InternalZeroKnowledge.g:3432:1: ( ( ( rule__FunctionCall__Group_1_1_1__0 )* ) )
+            // InternalZeroKnowledge.g:3433:1: ( ( rule__FunctionCall__Group_1_1_1__0 )* )
             {
-            // InternalZeroKnowledge.g:3460:1: ( ( rule__FunctionCall__Group_1_1_1__0 )* )
-            // InternalZeroKnowledge.g:3461:2: ( rule__FunctionCall__Group_1_1_1__0 )*
+            // InternalZeroKnowledge.g:3433:1: ( ( rule__FunctionCall__Group_1_1_1__0 )* )
+            // InternalZeroKnowledge.g:3434:2: ( rule__FunctionCall__Group_1_1_1__0 )*
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getGroup_1_1_1()); 
             }
-            // InternalZeroKnowledge.g:3462:2: ( rule__FunctionCall__Group_1_1_1__0 )*
+            // InternalZeroKnowledge.g:3435:2: ( rule__FunctionCall__Group_1_1_1__0 )*
             loop24:
             do {
                 int alt24=2;
@@ -11313,7 +11224,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
                 switch (alt24) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:3462:3: rule__FunctionCall__Group_1_1_1__0
+            	    // InternalZeroKnowledge.g:3435:3: rule__FunctionCall__Group_1_1_1__0
             	    {
             	    pushFollow(FOLLOW_11);
             	    rule__FunctionCall__Group_1_1_1__0();
@@ -11354,14 +11265,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1_1__0"
-    // InternalZeroKnowledge.g:3471:1: rule__FunctionCall__Group_1_1_1__0 : rule__FunctionCall__Group_1_1_1__0__Impl rule__FunctionCall__Group_1_1_1__1 ;
+    // InternalZeroKnowledge.g:3444:1: rule__FunctionCall__Group_1_1_1__0 : rule__FunctionCall__Group_1_1_1__0__Impl rule__FunctionCall__Group_1_1_1__1 ;
     public final void rule__FunctionCall__Group_1_1_1__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3475:1: ( rule__FunctionCall__Group_1_1_1__0__Impl rule__FunctionCall__Group_1_1_1__1 )
-            // InternalZeroKnowledge.g:3476:2: rule__FunctionCall__Group_1_1_1__0__Impl rule__FunctionCall__Group_1_1_1__1
+            // InternalZeroKnowledge.g:3448:1: ( rule__FunctionCall__Group_1_1_1__0__Impl rule__FunctionCall__Group_1_1_1__1 )
+            // InternalZeroKnowledge.g:3449:2: rule__FunctionCall__Group_1_1_1__0__Impl rule__FunctionCall__Group_1_1_1__1
             {
             pushFollow(FOLLOW_5);
             rule__FunctionCall__Group_1_1_1__0__Impl();
@@ -11392,17 +11303,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1_1__0__Impl"
-    // InternalZeroKnowledge.g:3483:1: rule__FunctionCall__Group_1_1_1__0__Impl : ( ',' ) ;
+    // InternalZeroKnowledge.g:3456:1: rule__FunctionCall__Group_1_1_1__0__Impl : ( ',' ) ;
     public final void rule__FunctionCall__Group_1_1_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3487:1: ( ( ',' ) )
-            // InternalZeroKnowledge.g:3488:1: ( ',' )
+            // InternalZeroKnowledge.g:3460:1: ( ( ',' ) )
+            // InternalZeroKnowledge.g:3461:1: ( ',' )
             {
-            // InternalZeroKnowledge.g:3488:1: ( ',' )
-            // InternalZeroKnowledge.g:3489:2: ','
+            // InternalZeroKnowledge.g:3461:1: ( ',' )
+            // InternalZeroKnowledge.g:3462:2: ','
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getCommaKeyword_1_1_1_0()); 
@@ -11433,14 +11344,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1_1__1"
-    // InternalZeroKnowledge.g:3498:1: rule__FunctionCall__Group_1_1_1__1 : rule__FunctionCall__Group_1_1_1__1__Impl ;
+    // InternalZeroKnowledge.g:3471:1: rule__FunctionCall__Group_1_1_1__1 : rule__FunctionCall__Group_1_1_1__1__Impl ;
     public final void rule__FunctionCall__Group_1_1_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3502:1: ( rule__FunctionCall__Group_1_1_1__1__Impl )
-            // InternalZeroKnowledge.g:3503:2: rule__FunctionCall__Group_1_1_1__1__Impl
+            // InternalZeroKnowledge.g:3475:1: ( rule__FunctionCall__Group_1_1_1__1__Impl )
+            // InternalZeroKnowledge.g:3476:2: rule__FunctionCall__Group_1_1_1__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__Group_1_1_1__1__Impl();
@@ -11466,23 +11377,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__Group_1_1_1__1__Impl"
-    // InternalZeroKnowledge.g:3509:1: rule__FunctionCall__Group_1_1_1__1__Impl : ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) ) ;
+    // InternalZeroKnowledge.g:3482:1: rule__FunctionCall__Group_1_1_1__1__Impl : ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) ) ;
     public final void rule__FunctionCall__Group_1_1_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3513:1: ( ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) ) )
-            // InternalZeroKnowledge.g:3514:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) )
+            // InternalZeroKnowledge.g:3486:1: ( ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) ) )
+            // InternalZeroKnowledge.g:3487:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) )
             {
-            // InternalZeroKnowledge.g:3514:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) )
-            // InternalZeroKnowledge.g:3515:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 )
+            // InternalZeroKnowledge.g:3487:1: ( ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 ) )
+            // InternalZeroKnowledge.g:3488:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getArgumentsAssignment_1_1_1_1()); 
             }
-            // InternalZeroKnowledge.g:3516:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 )
-            // InternalZeroKnowledge.g:3516:3: rule__FunctionCall__ArgumentsAssignment_1_1_1_1
+            // InternalZeroKnowledge.g:3489:2: ( rule__FunctionCall__ArgumentsAssignment_1_1_1_1 )
+            // InternalZeroKnowledge.g:3489:3: rule__FunctionCall__ArgumentsAssignment_1_1_1_1
             {
             pushFollow(FOLLOW_2);
             rule__FunctionCall__ArgumentsAssignment_1_1_1_1();
@@ -11517,14 +11428,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Brackets__Group__0"
-    // InternalZeroKnowledge.g:3525:1: rule__Brackets__Group__0 : rule__Brackets__Group__0__Impl rule__Brackets__Group__1 ;
+    // InternalZeroKnowledge.g:3498:1: rule__Brackets__Group__0 : rule__Brackets__Group__0__Impl rule__Brackets__Group__1 ;
     public final void rule__Brackets__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3529:1: ( rule__Brackets__Group__0__Impl rule__Brackets__Group__1 )
-            // InternalZeroKnowledge.g:3530:2: rule__Brackets__Group__0__Impl rule__Brackets__Group__1
+            // InternalZeroKnowledge.g:3502:1: ( rule__Brackets__Group__0__Impl rule__Brackets__Group__1 )
+            // InternalZeroKnowledge.g:3503:2: rule__Brackets__Group__0__Impl rule__Brackets__Group__1
             {
             pushFollow(FOLLOW_5);
             rule__Brackets__Group__0__Impl();
@@ -11555,23 +11466,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Brackets__Group__0__Impl"
-    // InternalZeroKnowledge.g:3537:1: rule__Brackets__Group__0__Impl : ( () ) ;
+    // InternalZeroKnowledge.g:3510:1: rule__Brackets__Group__0__Impl : ( () ) ;
     public final void rule__Brackets__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3541:1: ( ( () ) )
-            // InternalZeroKnowledge.g:3542:1: ( () )
+            // InternalZeroKnowledge.g:3514:1: ( ( () ) )
+            // InternalZeroKnowledge.g:3515:1: ( () )
             {
-            // InternalZeroKnowledge.g:3542:1: ( () )
-            // InternalZeroKnowledge.g:3543:2: ()
+            // InternalZeroKnowledge.g:3515:1: ( () )
+            // InternalZeroKnowledge.g:3516:2: ()
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getBracketsAccess().getBracketsAction_0()); 
             }
-            // InternalZeroKnowledge.g:3544:2: ()
-            // InternalZeroKnowledge.g:3544:3: 
+            // InternalZeroKnowledge.g:3517:2: ()
+            // InternalZeroKnowledge.g:3517:3: 
             {
             }
 
@@ -11596,14 +11507,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Brackets__Group__1"
-    // InternalZeroKnowledge.g:3552:1: rule__Brackets__Group__1 : rule__Brackets__Group__1__Impl ;
+    // InternalZeroKnowledge.g:3525:1: rule__Brackets__Group__1 : rule__Brackets__Group__1__Impl ;
     public final void rule__Brackets__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3556:1: ( rule__Brackets__Group__1__Impl )
-            // InternalZeroKnowledge.g:3557:2: rule__Brackets__Group__1__Impl
+            // InternalZeroKnowledge.g:3529:1: ( rule__Brackets__Group__1__Impl )
+            // InternalZeroKnowledge.g:3530:2: rule__Brackets__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Brackets__Group__1__Impl();
@@ -11629,23 +11540,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Brackets__Group__1__Impl"
-    // InternalZeroKnowledge.g:3563:1: rule__Brackets__Group__1__Impl : ( ( rule__Brackets__ContentAssignment_1 ) ) ;
+    // InternalZeroKnowledge.g:3536:1: rule__Brackets__Group__1__Impl : ( ( rule__Brackets__ContentAssignment_1 ) ) ;
     public final void rule__Brackets__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3567:1: ( ( ( rule__Brackets__ContentAssignment_1 ) ) )
-            // InternalZeroKnowledge.g:3568:1: ( ( rule__Brackets__ContentAssignment_1 ) )
+            // InternalZeroKnowledge.g:3540:1: ( ( ( rule__Brackets__ContentAssignment_1 ) ) )
+            // InternalZeroKnowledge.g:3541:1: ( ( rule__Brackets__ContentAssignment_1 ) )
             {
-            // InternalZeroKnowledge.g:3568:1: ( ( rule__Brackets__ContentAssignment_1 ) )
-            // InternalZeroKnowledge.g:3569:2: ( rule__Brackets__ContentAssignment_1 )
+            // InternalZeroKnowledge.g:3541:1: ( ( rule__Brackets__ContentAssignment_1 ) )
+            // InternalZeroKnowledge.g:3542:2: ( rule__Brackets__ContentAssignment_1 )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getBracketsAccess().getContentAssignment_1()); 
             }
-            // InternalZeroKnowledge.g:3570:2: ( rule__Brackets__ContentAssignment_1 )
-            // InternalZeroKnowledge.g:3570:3: rule__Brackets__ContentAssignment_1
+            // InternalZeroKnowledge.g:3543:2: ( rule__Brackets__ContentAssignment_1 )
+            // InternalZeroKnowledge.g:3543:3: rule__Brackets__ContentAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__Brackets__ContentAssignment_1();
@@ -11680,17 +11591,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Model__FunctionsAssignment_0"
-    // InternalZeroKnowledge.g:3579:1: rule__Model__FunctionsAssignment_0 : ( ruleFunctionDefinition ) ;
+    // InternalZeroKnowledge.g:3552:1: rule__Model__FunctionsAssignment_0 : ( ruleFunctionDefinition ) ;
     public final void rule__Model__FunctionsAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3583:1: ( ( ruleFunctionDefinition ) )
-            // InternalZeroKnowledge.g:3584:2: ( ruleFunctionDefinition )
+            // InternalZeroKnowledge.g:3556:1: ( ( ruleFunctionDefinition ) )
+            // InternalZeroKnowledge.g:3557:2: ( ruleFunctionDefinition )
             {
-            // InternalZeroKnowledge.g:3584:2: ( ruleFunctionDefinition )
-            // InternalZeroKnowledge.g:3585:3: ruleFunctionDefinition
+            // InternalZeroKnowledge.g:3557:2: ( ruleFunctionDefinition )
+            // InternalZeroKnowledge.g:3558:3: ruleFunctionDefinition
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getModelAccess().getFunctionsFunctionDefinitionParserRuleCall_0_0()); 
@@ -11725,17 +11636,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Model__WitnessListAssignment_1"
-    // InternalZeroKnowledge.g:3594:1: rule__Model__WitnessListAssignment_1 : ( ruleWitnessList ) ;
+    // InternalZeroKnowledge.g:3567:1: rule__Model__WitnessListAssignment_1 : ( ruleWitnessList ) ;
     public final void rule__Model__WitnessListAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3598:1: ( ( ruleWitnessList ) )
-            // InternalZeroKnowledge.g:3599:2: ( ruleWitnessList )
+            // InternalZeroKnowledge.g:3571:1: ( ( ruleWitnessList ) )
+            // InternalZeroKnowledge.g:3572:2: ( ruleWitnessList )
             {
-            // InternalZeroKnowledge.g:3599:2: ( ruleWitnessList )
-            // InternalZeroKnowledge.g:3600:3: ruleWitnessList
+            // InternalZeroKnowledge.g:3572:2: ( ruleWitnessList )
+            // InternalZeroKnowledge.g:3573:3: ruleWitnessList
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getModelAccess().getWitnessListWitnessListParserRuleCall_1_0()); 
@@ -11770,17 +11681,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Model__ProofAssignment_3"
-    // InternalZeroKnowledge.g:3609:1: rule__Model__ProofAssignment_3 : ( ruleExpression ) ;
+    // InternalZeroKnowledge.g:3582:1: rule__Model__ProofAssignment_3 : ( ruleExpression ) ;
     public final void rule__Model__ProofAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3613:1: ( ( ruleExpression ) )
-            // InternalZeroKnowledge.g:3614:2: ( ruleExpression )
+            // InternalZeroKnowledge.g:3586:1: ( ( ruleExpression ) )
+            // InternalZeroKnowledge.g:3587:2: ( ruleExpression )
             {
-            // InternalZeroKnowledge.g:3614:2: ( ruleExpression )
-            // InternalZeroKnowledge.g:3615:3: ruleExpression
+            // InternalZeroKnowledge.g:3587:2: ( ruleExpression )
+            // InternalZeroKnowledge.g:3588:3: ruleExpression
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getModelAccess().getProofExpressionParserRuleCall_3_0()); 
@@ -11815,17 +11726,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionDefinition__NameAssignment_0"
-    // InternalZeroKnowledge.g:3624:1: rule__FunctionDefinition__NameAssignment_0 : ( RULE_IDENTIFIER ) ;
+    // InternalZeroKnowledge.g:3597:1: rule__FunctionDefinition__NameAssignment_0 : ( RULE_IDENTIFIER ) ;
     public final void rule__FunctionDefinition__NameAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3628:1: ( ( RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:3629:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:3601:1: ( ( RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:3602:2: ( RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:3629:2: ( RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:3630:3: RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:3602:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:3603:3: RULE_IDENTIFIER
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionDefinitionAccess().getNameIDENTIFIERTerminalRuleCall_0_0()); 
@@ -11856,17 +11767,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionDefinition__ParameterListAssignment_1"
-    // InternalZeroKnowledge.g:3639:1: rule__FunctionDefinition__ParameterListAssignment_1 : ( ruleParameterList ) ;
+    // InternalZeroKnowledge.g:3612:1: rule__FunctionDefinition__ParameterListAssignment_1 : ( ruleParameterList ) ;
     public final void rule__FunctionDefinition__ParameterListAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3643:1: ( ( ruleParameterList ) )
-            // InternalZeroKnowledge.g:3644:2: ( ruleParameterList )
+            // InternalZeroKnowledge.g:3616:1: ( ( ruleParameterList ) )
+            // InternalZeroKnowledge.g:3617:2: ( ruleParameterList )
             {
-            // InternalZeroKnowledge.g:3644:2: ( ruleParameterList )
-            // InternalZeroKnowledge.g:3645:3: ruleParameterList
+            // InternalZeroKnowledge.g:3617:2: ( ruleParameterList )
+            // InternalZeroKnowledge.g:3618:3: ruleParameterList
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionDefinitionAccess().getParameterListParameterListParserRuleCall_1_0()); 
@@ -11901,17 +11812,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionDefinition__BodyAssignment_3"
-    // InternalZeroKnowledge.g:3654:1: rule__FunctionDefinition__BodyAssignment_3 : ( ruleExpression ) ;
+    // InternalZeroKnowledge.g:3627:1: rule__FunctionDefinition__BodyAssignment_3 : ( ruleExpression ) ;
     public final void rule__FunctionDefinition__BodyAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3658:1: ( ( ruleExpression ) )
-            // InternalZeroKnowledge.g:3659:2: ( ruleExpression )
+            // InternalZeroKnowledge.g:3631:1: ( ( ruleExpression ) )
+            // InternalZeroKnowledge.g:3632:2: ( ruleExpression )
             {
-            // InternalZeroKnowledge.g:3659:2: ( ruleExpression )
-            // InternalZeroKnowledge.g:3660:3: ruleExpression
+            // InternalZeroKnowledge.g:3632:2: ( ruleExpression )
+            // InternalZeroKnowledge.g:3633:3: ruleExpression
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionDefinitionAccess().getBodyExpressionParserRuleCall_3_0()); 
@@ -11946,17 +11857,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__ParametersAssignment_1_0"
-    // InternalZeroKnowledge.g:3669:1: rule__ParameterList__ParametersAssignment_1_0 : ( ruleParameter ) ;
+    // InternalZeroKnowledge.g:3642:1: rule__ParameterList__ParametersAssignment_1_0 : ( ruleParameter ) ;
     public final void rule__ParameterList__ParametersAssignment_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3673:1: ( ( ruleParameter ) )
-            // InternalZeroKnowledge.g:3674:2: ( ruleParameter )
+            // InternalZeroKnowledge.g:3646:1: ( ( ruleParameter ) )
+            // InternalZeroKnowledge.g:3647:2: ( ruleParameter )
             {
-            // InternalZeroKnowledge.g:3674:2: ( ruleParameter )
-            // InternalZeroKnowledge.g:3675:3: ruleParameter
+            // InternalZeroKnowledge.g:3647:2: ( ruleParameter )
+            // InternalZeroKnowledge.g:3648:3: ruleParameter
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getParametersParameterParserRuleCall_1_0_0()); 
@@ -11991,17 +11902,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__ParameterList__ParametersAssignment_1_1_1"
-    // InternalZeroKnowledge.g:3684:1: rule__ParameterList__ParametersAssignment_1_1_1 : ( ruleParameter ) ;
+    // InternalZeroKnowledge.g:3657:1: rule__ParameterList__ParametersAssignment_1_1_1 : ( ruleParameter ) ;
     public final void rule__ParameterList__ParametersAssignment_1_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3688:1: ( ( ruleParameter ) )
-            // InternalZeroKnowledge.g:3689:2: ( ruleParameter )
+            // InternalZeroKnowledge.g:3661:1: ( ( ruleParameter ) )
+            // InternalZeroKnowledge.g:3662:2: ( ruleParameter )
             {
-            // InternalZeroKnowledge.g:3689:2: ( ruleParameter )
-            // InternalZeroKnowledge.g:3690:3: ruleParameter
+            // InternalZeroKnowledge.g:3662:2: ( ruleParameter )
+            // InternalZeroKnowledge.g:3663:3: ruleParameter
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterListAccess().getParametersParameterParserRuleCall_1_1_1_0()); 
@@ -12036,17 +11947,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Parameter__NameAssignment"
-    // InternalZeroKnowledge.g:3699:1: rule__Parameter__NameAssignment : ( RULE_IDENTIFIER ) ;
+    // InternalZeroKnowledge.g:3672:1: rule__Parameter__NameAssignment : ( RULE_IDENTIFIER ) ;
     public final void rule__Parameter__NameAssignment() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3703:1: ( ( RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:3704:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:3676:1: ( ( RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:3677:2: ( RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:3704:2: ( RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:3705:3: RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:3677:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:3678:3: RULE_IDENTIFIER
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getParameterAccess().getNameIDENTIFIERTerminalRuleCall_0()); 
@@ -12077,17 +11988,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__WitnessesAssignment_1"
-    // InternalZeroKnowledge.g:3714:1: rule__WitnessList__WitnessesAssignment_1 : ( ruleWitness ) ;
+    // InternalZeroKnowledge.g:3687:1: rule__WitnessList__WitnessesAssignment_1 : ( ruleWitness ) ;
     public final void rule__WitnessList__WitnessesAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3718:1: ( ( ruleWitness ) )
-            // InternalZeroKnowledge.g:3719:2: ( ruleWitness )
+            // InternalZeroKnowledge.g:3691:1: ( ( ruleWitness ) )
+            // InternalZeroKnowledge.g:3692:2: ( ruleWitness )
             {
-            // InternalZeroKnowledge.g:3719:2: ( ruleWitness )
-            // InternalZeroKnowledge.g:3720:3: ruleWitness
+            // InternalZeroKnowledge.g:3692:2: ( ruleWitness )
+            // InternalZeroKnowledge.g:3693:3: ruleWitness
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_0()); 
@@ -12122,17 +12033,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__WitnessList__WitnessesAssignment_2_1"
-    // InternalZeroKnowledge.g:3729:1: rule__WitnessList__WitnessesAssignment_2_1 : ( ruleWitness ) ;
+    // InternalZeroKnowledge.g:3702:1: rule__WitnessList__WitnessesAssignment_2_1 : ( ruleWitness ) ;
     public final void rule__WitnessList__WitnessesAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3733:1: ( ( ruleWitness ) )
-            // InternalZeroKnowledge.g:3734:2: ( ruleWitness )
+            // InternalZeroKnowledge.g:3706:1: ( ( ruleWitness ) )
+            // InternalZeroKnowledge.g:3707:2: ( ruleWitness )
             {
-            // InternalZeroKnowledge.g:3734:2: ( ruleWitness )
-            // InternalZeroKnowledge.g:3735:3: ruleWitness
+            // InternalZeroKnowledge.g:3707:2: ( ruleWitness )
+            // InternalZeroKnowledge.g:3708:3: ruleWitness
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_2_1_0()); 
@@ -12166,25 +12077,25 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
     // $ANTLR end "rule__WitnessList__WitnessesAssignment_2_1"
 
 
-    // $ANTLR start "rule__Witness__NameAssignment_0"
-    // InternalZeroKnowledge.g:3744:1: rule__Witness__NameAssignment_0 : ( RULE_IDENTIFIER ) ;
-    public final void rule__Witness__NameAssignment_0() throws RecognitionException {
+    // $ANTLR start "rule__Witness__NameAssignment"
+    // InternalZeroKnowledge.g:3717:1: rule__Witness__NameAssignment : ( RULE_IDENTIFIER ) ;
+    public final void rule__Witness__NameAssignment() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3748:1: ( ( RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:3749:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:3721:1: ( ( RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:3722:2: ( RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:3749:2: ( RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:3750:3: RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:3722:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:3723:3: RULE_IDENTIFIER
             {
             if ( state.backtracking==0 ) {
-               before(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0_0()); 
+               before(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0()); 
             }
             match(input,RULE_IDENTIFIER,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
-               after(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0_0()); 
+               after(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0()); 
             }
 
             }
@@ -12204,85 +12115,32 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
         }
         return ;
     }
-    // $ANTLR end "rule__Witness__NameAssignment_0"
-
-
-    // $ANTLR start "rule__Witness__TestingAssignment_1"
-    // InternalZeroKnowledge.g:3759:1: rule__Witness__TestingAssignment_1 : ( ( '?' ) ) ;
-    public final void rule__Witness__TestingAssignment_1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-        	
-        try {
-            // InternalZeroKnowledge.g:3763:1: ( ( ( '?' ) ) )
-            // InternalZeroKnowledge.g:3764:2: ( ( '?' ) )
-            {
-            // InternalZeroKnowledge.g:3764:2: ( ( '?' ) )
-            // InternalZeroKnowledge.g:3765:3: ( '?' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3766:3: ( '?' )
-            // InternalZeroKnowledge.g:3767:4: '?'
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); 
-            }
-            match(input,18,FOLLOW_2); if (state.failed) return ;
-            if ( state.backtracking==0 ) {
-               after(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); 
-            }
-
-            }
-
-            if ( state.backtracking==0 ) {
-               after(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); 
-            }
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__Witness__TestingAssignment_1"
+    // $ANTLR end "rule__Witness__NameAssignment"
 
 
     // $ANTLR start "rule__Conjunction__OperationAssignment_1_1"
-    // InternalZeroKnowledge.g:3778:1: rule__Conjunction__OperationAssignment_1_1 : ( ( '&' ) ) ;
+    // InternalZeroKnowledge.g:3732:1: rule__Conjunction__OperationAssignment_1_1 : ( ( '&' ) ) ;
     public final void rule__Conjunction__OperationAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3782:1: ( ( ( '&' ) ) )
-            // InternalZeroKnowledge.g:3783:2: ( ( '&' ) )
+            // InternalZeroKnowledge.g:3736:1: ( ( ( '&' ) ) )
+            // InternalZeroKnowledge.g:3737:2: ( ( '&' ) )
             {
-            // InternalZeroKnowledge.g:3783:2: ( ( '&' ) )
-            // InternalZeroKnowledge.g:3784:3: ( '&' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getConjunctionAccess().getOperationAmpersandKeyword_1_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3785:3: ( '&' )
-            // InternalZeroKnowledge.g:3786:4: '&'
+            // InternalZeroKnowledge.g:3737:2: ( ( '&' ) )
+            // InternalZeroKnowledge.g:3738:3: ( '&' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getOperationAmpersandKeyword_1_1_0()); 
             }
-            match(input,19,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3739:3: ( '&' )
+            // InternalZeroKnowledge.g:3740:4: '&'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getConjunctionAccess().getOperationAmpersandKeyword_1_1_0()); 
+            }
+            match(input,18,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getConjunctionAccess().getOperationAmpersandKeyword_1_1_0()); 
             }
@@ -12314,17 +12172,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Conjunction__RightAssignment_1_2"
-    // InternalZeroKnowledge.g:3797:1: rule__Conjunction__RightAssignment_1_2 : ( ruleDisjunction ) ;
+    // InternalZeroKnowledge.g:3751:1: rule__Conjunction__RightAssignment_1_2 : ( ruleDisjunction ) ;
     public final void rule__Conjunction__RightAssignment_1_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3801:1: ( ( ruleDisjunction ) )
-            // InternalZeroKnowledge.g:3802:2: ( ruleDisjunction )
+            // InternalZeroKnowledge.g:3755:1: ( ( ruleDisjunction ) )
+            // InternalZeroKnowledge.g:3756:2: ( ruleDisjunction )
             {
-            // InternalZeroKnowledge.g:3802:2: ( ruleDisjunction )
-            // InternalZeroKnowledge.g:3803:3: ruleDisjunction
+            // InternalZeroKnowledge.g:3756:2: ( ruleDisjunction )
+            // InternalZeroKnowledge.g:3757:3: ruleDisjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getConjunctionAccess().getRightDisjunctionParserRuleCall_1_2_0()); 
@@ -12359,28 +12217,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__OperationAssignment_1_1"
-    // InternalZeroKnowledge.g:3812:1: rule__Disjunction__OperationAssignment_1_1 : ( ( '|' ) ) ;
+    // InternalZeroKnowledge.g:3766:1: rule__Disjunction__OperationAssignment_1_1 : ( ( '|' ) ) ;
     public final void rule__Disjunction__OperationAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3816:1: ( ( ( '|' ) ) )
-            // InternalZeroKnowledge.g:3817:2: ( ( '|' ) )
+            // InternalZeroKnowledge.g:3770:1: ( ( ( '|' ) ) )
+            // InternalZeroKnowledge.g:3771:2: ( ( '|' ) )
             {
-            // InternalZeroKnowledge.g:3817:2: ( ( '|' ) )
-            // InternalZeroKnowledge.g:3818:3: ( '|' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getDisjunctionAccess().getOperationVerticalLineKeyword_1_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3819:3: ( '|' )
-            // InternalZeroKnowledge.g:3820:4: '|'
+            // InternalZeroKnowledge.g:3771:2: ( ( '|' ) )
+            // InternalZeroKnowledge.g:3772:3: ( '|' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getOperationVerticalLineKeyword_1_1_0()); 
             }
-            match(input,20,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3773:3: ( '|' )
+            // InternalZeroKnowledge.g:3774:4: '|'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getDisjunctionAccess().getOperationVerticalLineKeyword_1_1_0()); 
+            }
+            match(input,19,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getDisjunctionAccess().getOperationVerticalLineKeyword_1_1_0()); 
             }
@@ -12412,17 +12270,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Disjunction__RightAssignment_1_2"
-    // InternalZeroKnowledge.g:3831:1: rule__Disjunction__RightAssignment_1_2 : ( ruleComparison ) ;
+    // InternalZeroKnowledge.g:3785:1: rule__Disjunction__RightAssignment_1_2 : ( ruleComparison ) ;
     public final void rule__Disjunction__RightAssignment_1_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3835:1: ( ( ruleComparison ) )
-            // InternalZeroKnowledge.g:3836:2: ( ruleComparison )
+            // InternalZeroKnowledge.g:3789:1: ( ( ruleComparison ) )
+            // InternalZeroKnowledge.g:3790:2: ( ruleComparison )
             {
-            // InternalZeroKnowledge.g:3836:2: ( ruleComparison )
-            // InternalZeroKnowledge.g:3837:3: ruleComparison
+            // InternalZeroKnowledge.g:3790:2: ( ruleComparison )
+            // InternalZeroKnowledge.g:3791:3: ruleComparison
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getDisjunctionAccess().getRightComparisonParserRuleCall_1_2_0()); 
@@ -12457,28 +12315,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__OperationAssignment_1_0_0_1"
-    // InternalZeroKnowledge.g:3846:1: rule__Comparison__OperationAssignment_1_0_0_1 : ( ( '!=' ) ) ;
+    // InternalZeroKnowledge.g:3800:1: rule__Comparison__OperationAssignment_1_0_0_1 : ( ( '!=' ) ) ;
     public final void rule__Comparison__OperationAssignment_1_0_0_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3850:1: ( ( ( '!=' ) ) )
-            // InternalZeroKnowledge.g:3851:2: ( ( '!=' ) )
+            // InternalZeroKnowledge.g:3804:1: ( ( ( '!=' ) ) )
+            // InternalZeroKnowledge.g:3805:2: ( ( '!=' ) )
             {
-            // InternalZeroKnowledge.g:3851:2: ( ( '!=' ) )
-            // InternalZeroKnowledge.g:3852:3: ( '!=' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getComparisonAccess().getOperationExclamationMarkEqualsSignKeyword_1_0_0_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3853:3: ( '!=' )
-            // InternalZeroKnowledge.g:3854:4: '!='
+            // InternalZeroKnowledge.g:3805:2: ( ( '!=' ) )
+            // InternalZeroKnowledge.g:3806:3: ( '!=' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationExclamationMarkEqualsSignKeyword_1_0_0_1_0()); 
             }
-            match(input,21,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3807:3: ( '!=' )
+            // InternalZeroKnowledge.g:3808:4: '!='
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getComparisonAccess().getOperationExclamationMarkEqualsSignKeyword_1_0_0_1_0()); 
+            }
+            match(input,20,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getComparisonAccess().getOperationExclamationMarkEqualsSignKeyword_1_0_0_1_0()); 
             }
@@ -12510,28 +12368,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__OperationAssignment_1_0_1_1"
-    // InternalZeroKnowledge.g:3865:1: rule__Comparison__OperationAssignment_1_0_1_1 : ( ( '=' ) ) ;
+    // InternalZeroKnowledge.g:3819:1: rule__Comparison__OperationAssignment_1_0_1_1 : ( ( '=' ) ) ;
     public final void rule__Comparison__OperationAssignment_1_0_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3869:1: ( ( ( '=' ) ) )
-            // InternalZeroKnowledge.g:3870:2: ( ( '=' ) )
+            // InternalZeroKnowledge.g:3823:1: ( ( ( '=' ) ) )
+            // InternalZeroKnowledge.g:3824:2: ( ( '=' ) )
             {
-            // InternalZeroKnowledge.g:3870:2: ( ( '=' ) )
-            // InternalZeroKnowledge.g:3871:3: ( '=' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getComparisonAccess().getOperationEqualsSignKeyword_1_0_1_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3872:3: ( '=' )
-            // InternalZeroKnowledge.g:3873:4: '='
+            // InternalZeroKnowledge.g:3824:2: ( ( '=' ) )
+            // InternalZeroKnowledge.g:3825:3: ( '=' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationEqualsSignKeyword_1_0_1_1_0()); 
             }
-            match(input,22,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3826:3: ( '=' )
+            // InternalZeroKnowledge.g:3827:4: '='
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getComparisonAccess().getOperationEqualsSignKeyword_1_0_1_1_0()); 
+            }
+            match(input,21,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getComparisonAccess().getOperationEqualsSignKeyword_1_0_1_1_0()); 
             }
@@ -12563,28 +12421,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__OperationAssignment_1_0_2_1"
-    // InternalZeroKnowledge.g:3884:1: rule__Comparison__OperationAssignment_1_0_2_1 : ( ( '>=' ) ) ;
+    // InternalZeroKnowledge.g:3838:1: rule__Comparison__OperationAssignment_1_0_2_1 : ( ( '>=' ) ) ;
     public final void rule__Comparison__OperationAssignment_1_0_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3888:1: ( ( ( '>=' ) ) )
-            // InternalZeroKnowledge.g:3889:2: ( ( '>=' ) )
+            // InternalZeroKnowledge.g:3842:1: ( ( ( '>=' ) ) )
+            // InternalZeroKnowledge.g:3843:2: ( ( '>=' ) )
             {
-            // InternalZeroKnowledge.g:3889:2: ( ( '>=' ) )
-            // InternalZeroKnowledge.g:3890:3: ( '>=' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getComparisonAccess().getOperationGreaterThanSignEqualsSignKeyword_1_0_2_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3891:3: ( '>=' )
-            // InternalZeroKnowledge.g:3892:4: '>='
+            // InternalZeroKnowledge.g:3843:2: ( ( '>=' ) )
+            // InternalZeroKnowledge.g:3844:3: ( '>=' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationGreaterThanSignEqualsSignKeyword_1_0_2_1_0()); 
             }
-            match(input,23,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3845:3: ( '>=' )
+            // InternalZeroKnowledge.g:3846:4: '>='
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getComparisonAccess().getOperationGreaterThanSignEqualsSignKeyword_1_0_2_1_0()); 
+            }
+            match(input,22,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getComparisonAccess().getOperationGreaterThanSignEqualsSignKeyword_1_0_2_1_0()); 
             }
@@ -12616,28 +12474,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__OperationAssignment_1_0_3_1"
-    // InternalZeroKnowledge.g:3903:1: rule__Comparison__OperationAssignment_1_0_3_1 : ( ( '<=' ) ) ;
+    // InternalZeroKnowledge.g:3857:1: rule__Comparison__OperationAssignment_1_0_3_1 : ( ( '<=' ) ) ;
     public final void rule__Comparison__OperationAssignment_1_0_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3907:1: ( ( ( '<=' ) ) )
-            // InternalZeroKnowledge.g:3908:2: ( ( '<=' ) )
+            // InternalZeroKnowledge.g:3861:1: ( ( ( '<=' ) ) )
+            // InternalZeroKnowledge.g:3862:2: ( ( '<=' ) )
             {
-            // InternalZeroKnowledge.g:3908:2: ( ( '<=' ) )
-            // InternalZeroKnowledge.g:3909:3: ( '<=' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getComparisonAccess().getOperationLessThanSignEqualsSignKeyword_1_0_3_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3910:3: ( '<=' )
-            // InternalZeroKnowledge.g:3911:4: '<='
+            // InternalZeroKnowledge.g:3862:2: ( ( '<=' ) )
+            // InternalZeroKnowledge.g:3863:3: ( '<=' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationLessThanSignEqualsSignKeyword_1_0_3_1_0()); 
             }
-            match(input,24,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3864:3: ( '<=' )
+            // InternalZeroKnowledge.g:3865:4: '<='
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getComparisonAccess().getOperationLessThanSignEqualsSignKeyword_1_0_3_1_0()); 
+            }
+            match(input,23,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getComparisonAccess().getOperationLessThanSignEqualsSignKeyword_1_0_3_1_0()); 
             }
@@ -12669,28 +12527,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__OperationAssignment_1_0_4_1"
-    // InternalZeroKnowledge.g:3922:1: rule__Comparison__OperationAssignment_1_0_4_1 : ( ( '>' ) ) ;
+    // InternalZeroKnowledge.g:3876:1: rule__Comparison__OperationAssignment_1_0_4_1 : ( ( '>' ) ) ;
     public final void rule__Comparison__OperationAssignment_1_0_4_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3926:1: ( ( ( '>' ) ) )
-            // InternalZeroKnowledge.g:3927:2: ( ( '>' ) )
+            // InternalZeroKnowledge.g:3880:1: ( ( ( '>' ) ) )
+            // InternalZeroKnowledge.g:3881:2: ( ( '>' ) )
             {
-            // InternalZeroKnowledge.g:3927:2: ( ( '>' ) )
-            // InternalZeroKnowledge.g:3928:3: ( '>' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getComparisonAccess().getOperationGreaterThanSignKeyword_1_0_4_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3929:3: ( '>' )
-            // InternalZeroKnowledge.g:3930:4: '>'
+            // InternalZeroKnowledge.g:3881:2: ( ( '>' ) )
+            // InternalZeroKnowledge.g:3882:3: ( '>' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationGreaterThanSignKeyword_1_0_4_1_0()); 
             }
-            match(input,25,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3883:3: ( '>' )
+            // InternalZeroKnowledge.g:3884:4: '>'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getComparisonAccess().getOperationGreaterThanSignKeyword_1_0_4_1_0()); 
+            }
+            match(input,24,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getComparisonAccess().getOperationGreaterThanSignKeyword_1_0_4_1_0()); 
             }
@@ -12722,28 +12580,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__OperationAssignment_1_0_5_1"
-    // InternalZeroKnowledge.g:3941:1: rule__Comparison__OperationAssignment_1_0_5_1 : ( ( '<' ) ) ;
+    // InternalZeroKnowledge.g:3895:1: rule__Comparison__OperationAssignment_1_0_5_1 : ( ( '<' ) ) ;
     public final void rule__Comparison__OperationAssignment_1_0_5_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3945:1: ( ( ( '<' ) ) )
-            // InternalZeroKnowledge.g:3946:2: ( ( '<' ) )
+            // InternalZeroKnowledge.g:3899:1: ( ( ( '<' ) ) )
+            // InternalZeroKnowledge.g:3900:2: ( ( '<' ) )
             {
-            // InternalZeroKnowledge.g:3946:2: ( ( '<' ) )
-            // InternalZeroKnowledge.g:3947:3: ( '<' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getComparisonAccess().getOperationLessThanSignKeyword_1_0_5_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3948:3: ( '<' )
-            // InternalZeroKnowledge.g:3949:4: '<'
+            // InternalZeroKnowledge.g:3900:2: ( ( '<' ) )
+            // InternalZeroKnowledge.g:3901:3: ( '<' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getOperationLessThanSignKeyword_1_0_5_1_0()); 
             }
-            match(input,26,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3902:3: ( '<' )
+            // InternalZeroKnowledge.g:3903:4: '<'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getComparisonAccess().getOperationLessThanSignKeyword_1_0_5_1_0()); 
+            }
+            match(input,25,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getComparisonAccess().getOperationLessThanSignKeyword_1_0_5_1_0()); 
             }
@@ -12775,17 +12633,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Comparison__RightAssignment_1_1"
-    // InternalZeroKnowledge.g:3960:1: rule__Comparison__RightAssignment_1_1 : ( ruleSum ) ;
+    // InternalZeroKnowledge.g:3914:1: rule__Comparison__RightAssignment_1_1 : ( ruleSum ) ;
     public final void rule__Comparison__RightAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3964:1: ( ( ruleSum ) )
-            // InternalZeroKnowledge.g:3965:2: ( ruleSum )
+            // InternalZeroKnowledge.g:3918:1: ( ( ruleSum ) )
+            // InternalZeroKnowledge.g:3919:2: ( ruleSum )
             {
-            // InternalZeroKnowledge.g:3965:2: ( ruleSum )
-            // InternalZeroKnowledge.g:3966:3: ruleSum
+            // InternalZeroKnowledge.g:3919:2: ( ruleSum )
+            // InternalZeroKnowledge.g:3920:3: ruleSum
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getComparisonAccess().getRightSumParserRuleCall_1_1_0()); 
@@ -12820,28 +12678,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__OperationAssignment_1_0_0_1"
-    // InternalZeroKnowledge.g:3975:1: rule__Sum__OperationAssignment_1_0_0_1 : ( ( '+' ) ) ;
+    // InternalZeroKnowledge.g:3929:1: rule__Sum__OperationAssignment_1_0_0_1 : ( ( '+' ) ) ;
     public final void rule__Sum__OperationAssignment_1_0_0_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3979:1: ( ( ( '+' ) ) )
-            // InternalZeroKnowledge.g:3980:2: ( ( '+' ) )
+            // InternalZeroKnowledge.g:3933:1: ( ( ( '+' ) ) )
+            // InternalZeroKnowledge.g:3934:2: ( ( '+' ) )
             {
-            // InternalZeroKnowledge.g:3980:2: ( ( '+' ) )
-            // InternalZeroKnowledge.g:3981:3: ( '+' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getSumAccess().getOperationPlusSignKeyword_1_0_0_1_0()); 
-            }
-            // InternalZeroKnowledge.g:3982:3: ( '+' )
-            // InternalZeroKnowledge.g:3983:4: '+'
+            // InternalZeroKnowledge.g:3934:2: ( ( '+' ) )
+            // InternalZeroKnowledge.g:3935:3: ( '+' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getOperationPlusSignKeyword_1_0_0_1_0()); 
             }
-            match(input,27,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3936:3: ( '+' )
+            // InternalZeroKnowledge.g:3937:4: '+'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getSumAccess().getOperationPlusSignKeyword_1_0_0_1_0()); 
+            }
+            match(input,26,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getSumAccess().getOperationPlusSignKeyword_1_0_0_1_0()); 
             }
@@ -12873,23 +12731,23 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__OperationAssignment_1_0_1_1"
-    // InternalZeroKnowledge.g:3994:1: rule__Sum__OperationAssignment_1_0_1_1 : ( ( '-' ) ) ;
+    // InternalZeroKnowledge.g:3948:1: rule__Sum__OperationAssignment_1_0_1_1 : ( ( '-' ) ) ;
     public final void rule__Sum__OperationAssignment_1_0_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:3998:1: ( ( ( '-' ) ) )
-            // InternalZeroKnowledge.g:3999:2: ( ( '-' ) )
+            // InternalZeroKnowledge.g:3952:1: ( ( ( '-' ) ) )
+            // InternalZeroKnowledge.g:3953:2: ( ( '-' ) )
             {
-            // InternalZeroKnowledge.g:3999:2: ( ( '-' ) )
-            // InternalZeroKnowledge.g:4000:3: ( '-' )
+            // InternalZeroKnowledge.g:3953:2: ( ( '-' ) )
+            // InternalZeroKnowledge.g:3954:3: ( '-' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getOperationHyphenMinusKeyword_1_0_1_1_0()); 
             }
-            // InternalZeroKnowledge.g:4001:3: ( '-' )
-            // InternalZeroKnowledge.g:4002:4: '-'
+            // InternalZeroKnowledge.g:3955:3: ( '-' )
+            // InternalZeroKnowledge.g:3956:4: '-'
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getOperationHyphenMinusKeyword_1_0_1_1_0()); 
@@ -12926,17 +12784,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Sum__RightAssignment_1_1"
-    // InternalZeroKnowledge.g:4013:1: rule__Sum__RightAssignment_1_1 : ( ruleProduct ) ;
+    // InternalZeroKnowledge.g:3967:1: rule__Sum__RightAssignment_1_1 : ( ruleProduct ) ;
     public final void rule__Sum__RightAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4017:1: ( ( ruleProduct ) )
-            // InternalZeroKnowledge.g:4018:2: ( ruleProduct )
+            // InternalZeroKnowledge.g:3971:1: ( ( ruleProduct ) )
+            // InternalZeroKnowledge.g:3972:2: ( ruleProduct )
             {
-            // InternalZeroKnowledge.g:4018:2: ( ruleProduct )
-            // InternalZeroKnowledge.g:4019:3: ruleProduct
+            // InternalZeroKnowledge.g:3972:2: ( ruleProduct )
+            // InternalZeroKnowledge.g:3973:3: ruleProduct
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getSumAccess().getRightProductParserRuleCall_1_1_0()); 
@@ -12971,28 +12829,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__OperationAssignment_1_0_0_1"
-    // InternalZeroKnowledge.g:4028:1: rule__Product__OperationAssignment_1_0_0_1 : ( ( '*' ) ) ;
+    // InternalZeroKnowledge.g:3982:1: rule__Product__OperationAssignment_1_0_0_1 : ( ( '*' ) ) ;
     public final void rule__Product__OperationAssignment_1_0_0_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4032:1: ( ( ( '*' ) ) )
-            // InternalZeroKnowledge.g:4033:2: ( ( '*' ) )
+            // InternalZeroKnowledge.g:3986:1: ( ( ( '*' ) ) )
+            // InternalZeroKnowledge.g:3987:2: ( ( '*' ) )
             {
-            // InternalZeroKnowledge.g:4033:2: ( ( '*' ) )
-            // InternalZeroKnowledge.g:4034:3: ( '*' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getProductAccess().getOperationAsteriskKeyword_1_0_0_1_0()); 
-            }
-            // InternalZeroKnowledge.g:4035:3: ( '*' )
-            // InternalZeroKnowledge.g:4036:4: '*'
+            // InternalZeroKnowledge.g:3987:2: ( ( '*' ) )
+            // InternalZeroKnowledge.g:3988:3: ( '*' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getOperationAsteriskKeyword_1_0_0_1_0()); 
             }
-            match(input,28,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:3989:3: ( '*' )
+            // InternalZeroKnowledge.g:3990:4: '*'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getProductAccess().getOperationAsteriskKeyword_1_0_0_1_0()); 
+            }
+            match(input,27,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getProductAccess().getOperationAsteriskKeyword_1_0_0_1_0()); 
             }
@@ -13024,28 +12882,28 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__OperationAssignment_1_0_1_1"
-    // InternalZeroKnowledge.g:4047:1: rule__Product__OperationAssignment_1_0_1_1 : ( ( '/' ) ) ;
+    // InternalZeroKnowledge.g:4001:1: rule__Product__OperationAssignment_1_0_1_1 : ( ( '/' ) ) ;
     public final void rule__Product__OperationAssignment_1_0_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4051:1: ( ( ( '/' ) ) )
-            // InternalZeroKnowledge.g:4052:2: ( ( '/' ) )
+            // InternalZeroKnowledge.g:4005:1: ( ( ( '/' ) ) )
+            // InternalZeroKnowledge.g:4006:2: ( ( '/' ) )
             {
-            // InternalZeroKnowledge.g:4052:2: ( ( '/' ) )
-            // InternalZeroKnowledge.g:4053:3: ( '/' )
-            {
-            if ( state.backtracking==0 ) {
-               before(grammarAccess.getProductAccess().getOperationSolidusKeyword_1_0_1_1_0()); 
-            }
-            // InternalZeroKnowledge.g:4054:3: ( '/' )
-            // InternalZeroKnowledge.g:4055:4: '/'
+            // InternalZeroKnowledge.g:4006:2: ( ( '/' ) )
+            // InternalZeroKnowledge.g:4007:3: ( '/' )
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getOperationSolidusKeyword_1_0_1_1_0()); 
             }
-            match(input,29,FOLLOW_2); if (state.failed) return ;
+            // InternalZeroKnowledge.g:4008:3: ( '/' )
+            // InternalZeroKnowledge.g:4009:4: '/'
+            {
+            if ( state.backtracking==0 ) {
+               before(grammarAccess.getProductAccess().getOperationSolidusKeyword_1_0_1_1_0()); 
+            }
+            match(input,28,FOLLOW_2); if (state.failed) return ;
             if ( state.backtracking==0 ) {
                after(grammarAccess.getProductAccess().getOperationSolidusKeyword_1_0_1_1_0()); 
             }
@@ -13077,17 +12935,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Product__RightAssignment_1_1"
-    // InternalZeroKnowledge.g:4066:1: rule__Product__RightAssignment_1_1 : ( rulePower ) ;
+    // InternalZeroKnowledge.g:4020:1: rule__Product__RightAssignment_1_1 : ( rulePower ) ;
     public final void rule__Product__RightAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4070:1: ( ( rulePower ) )
-            // InternalZeroKnowledge.g:4071:2: ( rulePower )
+            // InternalZeroKnowledge.g:4024:1: ( ( rulePower ) )
+            // InternalZeroKnowledge.g:4025:2: ( rulePower )
             {
-            // InternalZeroKnowledge.g:4071:2: ( rulePower )
-            // InternalZeroKnowledge.g:4072:3: rulePower
+            // InternalZeroKnowledge.g:4025:2: ( rulePower )
+            // InternalZeroKnowledge.g:4026:3: rulePower
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getProductAccess().getRightPowerParserRuleCall_1_1_0()); 
@@ -13122,17 +12980,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Power__RightAssignment_1_2"
-    // InternalZeroKnowledge.g:4081:1: rule__Power__RightAssignment_1_2 : ( rulePower ) ;
+    // InternalZeroKnowledge.g:4035:1: rule__Power__RightAssignment_1_2 : ( rulePower ) ;
     public final void rule__Power__RightAssignment_1_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4085:1: ( ( rulePower ) )
-            // InternalZeroKnowledge.g:4086:2: ( rulePower )
+            // InternalZeroKnowledge.g:4039:1: ( ( rulePower ) )
+            // InternalZeroKnowledge.g:4040:2: ( rulePower )
             {
-            // InternalZeroKnowledge.g:4086:2: ( rulePower )
-            // InternalZeroKnowledge.g:4087:3: rulePower
+            // InternalZeroKnowledge.g:4040:2: ( rulePower )
+            // InternalZeroKnowledge.g:4041:3: rulePower
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getPowerAccess().getRightPowerParserRuleCall_1_2_0()); 
@@ -13167,17 +13025,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__StringLiteral__ValueAssignment"
-    // InternalZeroKnowledge.g:4096:1: rule__StringLiteral__ValueAssignment : ( RULE_STRING_LITERAL ) ;
+    // InternalZeroKnowledge.g:4050:1: rule__StringLiteral__ValueAssignment : ( RULE_STRING_LITERAL ) ;
     public final void rule__StringLiteral__ValueAssignment() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4100:1: ( ( RULE_STRING_LITERAL ) )
-            // InternalZeroKnowledge.g:4101:2: ( RULE_STRING_LITERAL )
+            // InternalZeroKnowledge.g:4054:1: ( ( RULE_STRING_LITERAL ) )
+            // InternalZeroKnowledge.g:4055:2: ( RULE_STRING_LITERAL )
             {
-            // InternalZeroKnowledge.g:4101:2: ( RULE_STRING_LITERAL )
-            // InternalZeroKnowledge.g:4102:3: RULE_STRING_LITERAL
+            // InternalZeroKnowledge.g:4055:2: ( RULE_STRING_LITERAL )
+            // InternalZeroKnowledge.g:4056:3: RULE_STRING_LITERAL
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getStringLiteralAccess().getValueSTRING_LITERALTerminalRuleCall_0()); 
@@ -13208,17 +13066,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__ElementsAssignment_0_0_2"
-    // InternalZeroKnowledge.g:4111:1: rule__Tuple__ElementsAssignment_0_0_2 : ( ruleConjunction ) ;
+    // InternalZeroKnowledge.g:4065:1: rule__Tuple__ElementsAssignment_0_0_2 : ( ruleConjunction ) ;
     public final void rule__Tuple__ElementsAssignment_0_0_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4115:1: ( ( ruleConjunction ) )
-            // InternalZeroKnowledge.g:4116:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4069:1: ( ( ruleConjunction ) )
+            // InternalZeroKnowledge.g:4070:2: ( ruleConjunction )
             {
-            // InternalZeroKnowledge.g:4116:2: ( ruleConjunction )
-            // InternalZeroKnowledge.g:4117:3: ruleConjunction
+            // InternalZeroKnowledge.g:4070:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4071:3: ruleConjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getElementsConjunctionParserRuleCall_0_0_2_0()); 
@@ -13253,17 +13111,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__ElementsAssignment_1"
-    // InternalZeroKnowledge.g:4126:1: rule__Tuple__ElementsAssignment_1 : ( ruleConjunction ) ;
+    // InternalZeroKnowledge.g:4080:1: rule__Tuple__ElementsAssignment_1 : ( ruleConjunction ) ;
     public final void rule__Tuple__ElementsAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4130:1: ( ( ruleConjunction ) )
-            // InternalZeroKnowledge.g:4131:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4084:1: ( ( ruleConjunction ) )
+            // InternalZeroKnowledge.g:4085:2: ( ruleConjunction )
             {
-            // InternalZeroKnowledge.g:4131:2: ( ruleConjunction )
-            // InternalZeroKnowledge.g:4132:3: ruleConjunction
+            // InternalZeroKnowledge.g:4085:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4086:3: ruleConjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getElementsConjunctionParserRuleCall_1_0()); 
@@ -13298,17 +13156,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Tuple__ElementsAssignment_2_1"
-    // InternalZeroKnowledge.g:4141:1: rule__Tuple__ElementsAssignment_2_1 : ( ruleConjunction ) ;
+    // InternalZeroKnowledge.g:4095:1: rule__Tuple__ElementsAssignment_2_1 : ( ruleConjunction ) ;
     public final void rule__Tuple__ElementsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4145:1: ( ( ruleConjunction ) )
-            // InternalZeroKnowledge.g:4146:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4099:1: ( ( ruleConjunction ) )
+            // InternalZeroKnowledge.g:4100:2: ( ruleConjunction )
             {
-            // InternalZeroKnowledge.g:4146:2: ( ruleConjunction )
-            // InternalZeroKnowledge.g:4147:3: ruleConjunction
+            // InternalZeroKnowledge.g:4100:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4101:3: ruleConjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getTupleAccess().getElementsConjunctionParserRuleCall_2_1_0()); 
@@ -13343,17 +13201,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Negative__TermAssignment_0_2"
-    // InternalZeroKnowledge.g:4156:1: rule__Negative__TermAssignment_0_2 : ( ruleValue ) ;
+    // InternalZeroKnowledge.g:4110:1: rule__Negative__TermAssignment_0_2 : ( ruleValue ) ;
     public final void rule__Negative__TermAssignment_0_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4160:1: ( ( ruleValue ) )
-            // InternalZeroKnowledge.g:4161:2: ( ruleValue )
+            // InternalZeroKnowledge.g:4114:1: ( ( ruleValue ) )
+            // InternalZeroKnowledge.g:4115:2: ( ruleValue )
             {
-            // InternalZeroKnowledge.g:4161:2: ( ruleValue )
-            // InternalZeroKnowledge.g:4162:3: ruleValue
+            // InternalZeroKnowledge.g:4115:2: ( ruleValue )
+            // InternalZeroKnowledge.g:4116:3: ruleValue
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getNegativeAccess().getTermValueParserRuleCall_0_2_0()); 
@@ -13388,17 +13246,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__NameAssignment_1_0_0_0"
-    // InternalZeroKnowledge.g:4171:1: rule__FunctionCall__NameAssignment_1_0_0_0 : ( RULE_IDENTIFIER ) ;
+    // InternalZeroKnowledge.g:4125:1: rule__FunctionCall__NameAssignment_1_0_0_0 : ( RULE_IDENTIFIER ) ;
     public final void rule__FunctionCall__NameAssignment_1_0_0_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4175:1: ( ( RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:4176:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:4129:1: ( ( RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:4130:2: ( RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:4176:2: ( RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:4177:3: RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:4130:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:4131:3: RULE_IDENTIFIER
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getNameIDENTIFIERTerminalRuleCall_1_0_0_0_0()); 
@@ -13429,17 +13287,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__ArgumentsAssignment_1_1_0"
-    // InternalZeroKnowledge.g:4186:1: rule__FunctionCall__ArgumentsAssignment_1_1_0 : ( ruleConjunction ) ;
+    // InternalZeroKnowledge.g:4140:1: rule__FunctionCall__ArgumentsAssignment_1_1_0 : ( ruleConjunction ) ;
     public final void rule__FunctionCall__ArgumentsAssignment_1_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4190:1: ( ( ruleConjunction ) )
-            // InternalZeroKnowledge.g:4191:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4144:1: ( ( ruleConjunction ) )
+            // InternalZeroKnowledge.g:4145:2: ( ruleConjunction )
             {
-            // InternalZeroKnowledge.g:4191:2: ( ruleConjunction )
-            // InternalZeroKnowledge.g:4192:3: ruleConjunction
+            // InternalZeroKnowledge.g:4145:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4146:3: ruleConjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getArgumentsConjunctionParserRuleCall_1_1_0_0()); 
@@ -13474,17 +13332,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__FunctionCall__ArgumentsAssignment_1_1_1_1"
-    // InternalZeroKnowledge.g:4201:1: rule__FunctionCall__ArgumentsAssignment_1_1_1_1 : ( ruleConjunction ) ;
+    // InternalZeroKnowledge.g:4155:1: rule__FunctionCall__ArgumentsAssignment_1_1_1_1 : ( ruleConjunction ) ;
     public final void rule__FunctionCall__ArgumentsAssignment_1_1_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4205:1: ( ( ruleConjunction ) )
-            // InternalZeroKnowledge.g:4206:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4159:1: ( ( ruleConjunction ) )
+            // InternalZeroKnowledge.g:4160:2: ( ruleConjunction )
             {
-            // InternalZeroKnowledge.g:4206:2: ( ruleConjunction )
-            // InternalZeroKnowledge.g:4207:3: ruleConjunction
+            // InternalZeroKnowledge.g:4160:2: ( ruleConjunction )
+            // InternalZeroKnowledge.g:4161:3: ruleConjunction
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getFunctionCallAccess().getArgumentsConjunctionParserRuleCall_1_1_1_1_0()); 
@@ -13519,17 +13377,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Variable__NameAssignment"
-    // InternalZeroKnowledge.g:4216:1: rule__Variable__NameAssignment : ( RULE_IDENTIFIER ) ;
+    // InternalZeroKnowledge.g:4170:1: rule__Variable__NameAssignment : ( RULE_IDENTIFIER ) ;
     public final void rule__Variable__NameAssignment() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4220:1: ( ( RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:4221:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:4174:1: ( ( RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:4175:2: ( RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:4221:2: ( RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:4222:3: RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:4175:2: ( RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:4176:3: RULE_IDENTIFIER
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getVariableAccess().getNameIDENTIFIERTerminalRuleCall_0()); 
@@ -13560,17 +13418,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__NumberLiteral__ValueAssignment"
-    // InternalZeroKnowledge.g:4231:1: rule__NumberLiteral__ValueAssignment : ( RULE_INT ) ;
+    // InternalZeroKnowledge.g:4185:1: rule__NumberLiteral__ValueAssignment : ( RULE_INT ) ;
     public final void rule__NumberLiteral__ValueAssignment() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4235:1: ( ( RULE_INT ) )
-            // InternalZeroKnowledge.g:4236:2: ( RULE_INT )
+            // InternalZeroKnowledge.g:4189:1: ( ( RULE_INT ) )
+            // InternalZeroKnowledge.g:4190:2: ( RULE_INT )
             {
-            // InternalZeroKnowledge.g:4236:2: ( RULE_INT )
-            // InternalZeroKnowledge.g:4237:3: RULE_INT
+            // InternalZeroKnowledge.g:4190:2: ( RULE_INT )
+            // InternalZeroKnowledge.g:4191:3: RULE_INT
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getNumberLiteralAccess().getValueINTTerminalRuleCall_0()); 
@@ -13601,17 +13459,17 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
 
 
     // $ANTLR start "rule__Brackets__ContentAssignment_1"
-    // InternalZeroKnowledge.g:4246:1: rule__Brackets__ContentAssignment_1 : ( ruleExpression ) ;
+    // InternalZeroKnowledge.g:4200:1: rule__Brackets__ContentAssignment_1 : ( ruleExpression ) ;
     public final void rule__Brackets__ContentAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         	
         try {
-            // InternalZeroKnowledge.g:4250:1: ( ( ruleExpression ) )
-            // InternalZeroKnowledge.g:4251:2: ( ruleExpression )
+            // InternalZeroKnowledge.g:4204:1: ( ( ruleExpression ) )
+            // InternalZeroKnowledge.g:4205:2: ( ruleExpression )
             {
-            // InternalZeroKnowledge.g:4251:2: ( ruleExpression )
-            // InternalZeroKnowledge.g:4252:3: ruleExpression
+            // InternalZeroKnowledge.g:4205:2: ( ruleExpression )
+            // InternalZeroKnowledge.g:4206:3: ruleExpression
             {
             if ( state.backtracking==0 ) {
                before(grammarAccess.getBracketsAccess().getContentExpressionParserRuleCall_1_0()); 
@@ -13701,33 +13559,32 @@ public class InternalZeroKnowledgeParser extends AbstractInternalContentAssistPa
     public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x0000000000022470L});
     public static final BitSet FOLLOW_6 = new BitSet(new long[]{0x0000000000000400L});
     public static final BitSet FOLLOW_7 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_8 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_8 = new BitSet(new long[]{0x0000000000001400L});
     public static final BitSet FOLLOW_9 = new BitSet(new long[]{0x0000000000004010L});
     public static final BitSet FOLLOW_10 = new BitSet(new long[]{0x0000000000008000L});
     public static final BitSet FOLLOW_11 = new BitSet(new long[]{0x0000000000008002L});
     public static final BitSet FOLLOW_12 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_13 = new BitSet(new long[]{0x000000000000C010L});
     public static final BitSet FOLLOW_14 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_15 = new BitSet(new long[]{0x0000000000080000L});
-    public static final BitSet FOLLOW_16 = new BitSet(new long[]{0x0000000000080002L});
-    public static final BitSet FOLLOW_17 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_18 = new BitSet(new long[]{0x0000000000100002L});
-    public static final BitSet FOLLOW_19 = new BitSet(new long[]{0x0000000007E00000L});
+    public static final BitSet FOLLOW_15 = new BitSet(new long[]{0x0000000000040002L});
+    public static final BitSet FOLLOW_16 = new BitSet(new long[]{0x0000000000080000L});
+    public static final BitSet FOLLOW_17 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_18 = new BitSet(new long[]{0x0000000003F00000L});
+    public static final BitSet FOLLOW_19 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_20 = new BitSet(new long[]{0x0000000000200000L});
     public static final BitSet FOLLOW_21 = new BitSet(new long[]{0x0000000000400000L});
     public static final BitSet FOLLOW_22 = new BitSet(new long[]{0x0000000000800000L});
     public static final BitSet FOLLOW_23 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_24 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25 = new BitSet(new long[]{0x0000000008020000L});
-    public static final BitSet FOLLOW_26 = new BitSet(new long[]{0x0000000008020002L});
-    public static final BitSet FOLLOW_27 = new BitSet(new long[]{0x0000000008000000L});
-    public static final BitSet FOLLOW_28 = new BitSet(new long[]{0x0000000030000000L});
-    public static final BitSet FOLLOW_29 = new BitSet(new long[]{0x0000000030000002L});
-    public static final BitSet FOLLOW_30 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_31 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_32 = new BitSet(new long[]{0x000000000000C000L});
-    public static final BitSet FOLLOW_33 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_34 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_35 = new BitSet(new long[]{0x0000000000026470L});
+    public static final BitSet FOLLOW_24 = new BitSet(new long[]{0x0000000004020000L});
+    public static final BitSet FOLLOW_25 = new BitSet(new long[]{0x0000000004020002L});
+    public static final BitSet FOLLOW_26 = new BitSet(new long[]{0x0000000004000000L});
+    public static final BitSet FOLLOW_27 = new BitSet(new long[]{0x0000000018000000L});
+    public static final BitSet FOLLOW_28 = new BitSet(new long[]{0x0000000018000002L});
+    public static final BitSet FOLLOW_29 = new BitSet(new long[]{0x0000000008000000L});
+    public static final BitSet FOLLOW_30 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_31 = new BitSet(new long[]{0x000000000000C000L});
+    public static final BitSet FOLLOW_32 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_33 = new BitSet(new long[]{0x0000000000004000L});
+    public static final BitSet FOLLOW_34 = new BitSet(new long[]{0x0000000000026470L});
 
 }

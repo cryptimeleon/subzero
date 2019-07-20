@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Witness#getName <em>Name</em>}</li>
- *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Witness#isTesting <em>Testing</em>}</li>
  * </ul>
  *
  * @see de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage#getWitness()
@@ -45,27 +44,5 @@ public interface Witness extends EObject
    * @generated
    */
   void setName(String value);
-
-  /**
-   * Returns the value of the '<em><b>Testing</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Testing</em>' attribute.
-   * @see #setTesting(boolean)
-   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage#getWitness_Testing()
-   * @model
-   * @generated
-   */
-  boolean isTesting();
-
-  /**
-   * Sets the value of the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Witness#isTesting <em>Testing</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Testing</em>' attribute.
-   * @see #isTesting()
-   * @generated
-   */
-  void setTesting(boolean value);
 
 } // Witness

@@ -65,6 +65,8 @@ class BranchState {
 		this.inPowerRightBranch = false;
 		this.inNegative = false;
 		this.inFunctionCall = false;
+		
+		this.comparisonBeforePropositional = false;
 	}
 
 	
@@ -72,8 +74,19 @@ class BranchState {
 		this.depth = state.depth;
 		this.parent = state.parent;
 		
+		this.inProof = state.inProof
+		this.inFunctionDefinition = state.inFunctionDefinition;
+		this.inConjunction = state.inConjunction;
+		this.inDisjunction = state.inDisjunction;
+		this.inComparison = state.inComparison;
+		this.inSum = state.inSum;
+		this.inProduct = state.inProduct;
+		this.inPower = state.inPower;
+		this.inPowerRightBranch = state.inPowerRightBranch;
+		this.inNegative = state.inNegative;
+		this.inFunctionCall = state.inFunctionCall;
 		
-		this.exponentContext = state.exponentContext;
+		this.comparisonBeforePropositional = state.comparisonBeforePropositional;
 	}
 	
 	
@@ -96,7 +109,7 @@ class BranchState {
 	def boolean hasPowerAncestor() {return this.inPower;}
 	def boolean isInPowerRightBranch() {return this.inPowerRightBranch;}
 	def boolean hasNegativeAncestor() {return this.inNegative;}
-	def boolean hasFunctionCallAncestor() {return this.hasFunctionCallAncestor();}
+	def boolean hasFunctionCallAncestor() {return this.inFunctionCall;}
 	
 	def void setProofAncestor(boolean inProof) {this.inProof = inProof;}
 	def void setFunctionDefinitionAncestor(boolean inFunctionDefinition) {this.inFunctionDefinition = inFunctionDefinition;}

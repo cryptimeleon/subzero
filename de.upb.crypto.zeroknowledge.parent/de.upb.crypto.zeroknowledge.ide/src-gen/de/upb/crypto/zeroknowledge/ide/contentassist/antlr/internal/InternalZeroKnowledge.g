@@ -191,9 +191,9 @@ ruleWitness
 	}
 	:
 	(
-		{ before(grammarAccess.getWitnessAccess().getGroup()); }
-		(rule__Witness__Group__0)
-		{ after(grammarAccess.getWitnessAccess().getGroup()); }
+		{ before(grammarAccess.getWitnessAccess().getNameAssignment()); }
+		(rule__Witness__NameAssignment)
+		{ after(grammarAccess.getWitnessAccess().getNameAssignment()); }
 	)
 ;
 finally {
@@ -1029,9 +1029,9 @@ rule__FunctionDefinition__Group__4__Impl
 	}
 :
 (
-	{ before(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_4()); }
-	'}'
-	{ after(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_4()); }
+	{ before(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_4()); }
+	(';')?
+	{ after(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_4()); }
 )
 ;
 finally {
@@ -1044,6 +1044,7 @@ rule__FunctionDefinition__Group__5
 	}
 :
 	rule__FunctionDefinition__Group__5__Impl
+	rule__FunctionDefinition__Group__6
 ;
 finally {
 	restoreStackSize(stackSize);
@@ -1055,9 +1056,35 @@ rule__FunctionDefinition__Group__5__Impl
 	}
 :
 (
-	{ before(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_5()); }
+	{ before(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_5()); }
+	'}'
+	{ after(grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_5()); }
+)
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__FunctionDefinition__Group__6
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+	rule__FunctionDefinition__Group__6__Impl
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+rule__FunctionDefinition__Group__6__Impl
+	@init {
+		int stackSize = keepStackSize();
+	}
+:
+(
+	{ before(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_6()); }
 	(';')?
-	{ after(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_5()); }
+	{ after(grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_6()); }
 )
 ;
 finally {
@@ -1409,60 +1436,6 @@ rule__WitnessList__Group_2__1__Impl
 	{ before(grammarAccess.getWitnessListAccess().getWitnessesAssignment_2_1()); }
 	(rule__WitnessList__WitnessesAssignment_2_1)
 	{ after(grammarAccess.getWitnessListAccess().getWitnessesAssignment_2_1()); }
-)
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-
-rule__Witness__Group__0
-	@init {
-		int stackSize = keepStackSize();
-	}
-:
-	rule__Witness__Group__0__Impl
-	rule__Witness__Group__1
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__Witness__Group__0__Impl
-	@init {
-		int stackSize = keepStackSize();
-	}
-:
-(
-	{ before(grammarAccess.getWitnessAccess().getNameAssignment_0()); }
-	(rule__Witness__NameAssignment_0)
-	{ after(grammarAccess.getWitnessAccess().getNameAssignment_0()); }
-)
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__Witness__Group__1
-	@init {
-		int stackSize = keepStackSize();
-	}
-:
-	rule__Witness__Group__1__Impl
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__Witness__Group__1__Impl
-	@init {
-		int stackSize = keepStackSize();
-	}
-:
-(
-	{ before(grammarAccess.getWitnessAccess().getTestingAssignment_1()); }
-	(rule__Witness__TestingAssignment_1)?
-	{ after(grammarAccess.getWitnessAccess().getTestingAssignment_1()); }
 )
 ;
 finally {
@@ -3741,34 +3714,15 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Witness__NameAssignment_0
+rule__Witness__NameAssignment
 	@init {
 		int stackSize = keepStackSize();
 	}
 :
 	(
-		{ before(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0_0()); }
+		{ before(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0()); }
 		RULE_IDENTIFIER
-		{ after(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0_0()); }
-	)
-;
-finally {
-	restoreStackSize(stackSize);
-}
-
-rule__Witness__TestingAssignment_1
-	@init {
-		int stackSize = keepStackSize();
-	}
-:
-	(
-		{ before(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); }
-		(
-			{ before(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); }
-			'?'
-			{ after(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); }
-		)
-		{ after(grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0()); }
+		{ after(grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0()); }
 	)
 ;
 finally {

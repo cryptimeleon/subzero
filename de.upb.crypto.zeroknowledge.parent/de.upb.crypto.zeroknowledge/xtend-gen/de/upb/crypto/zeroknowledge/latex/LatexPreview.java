@@ -12,6 +12,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Negative;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Power;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Product;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.StringLiteral;
@@ -19,6 +20,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Sum;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList;
 import java.util.Arrays;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -189,7 +191,7 @@ public class LatexPreview {
         }
       }
     }
-    this.generateList(model.getWitnessList().getWitnesses());
+    this.generateLatex(model.getWitnessList());
     this.builder.append(this.SEMICOLON);
     this.builder.append(this.NEWLINE);
     this.generateLatex(model.getProof());
@@ -197,14 +199,22 @@ public class LatexPreview {
   
   private void _generateLatex(final FunctionDefinition function) {
     this.builder.append(function.getName());
-    this.generateList(function.getParameterList().getParameters());
+    this.generateLatex(function.getParameterList());
     this.builder.append(this.COLON);
     this.builder.append(this.NEWLINE);
     this.generateLatex(function.getBody());
   }
   
+  private void _generateLatex(final ParameterList parameterList) {
+    this.generateList(parameterList.getParameters());
+  }
+  
   private void _generateLatex(final Parameter parameter) {
     this.builder.append(parameter.getName());
+  }
+  
+  private void _generateLatex(final WitnessList witnessList) {
+    this.generateList(witnessList.getWitnesses());
   }
   
   private void _generateLatex(final Witness witness) {
@@ -391,8 +401,14 @@ public class LatexPreview {
     } else if (brackets instanceof Parameter) {
       _generateLatex((Parameter)brackets);
       return;
+    } else if (brackets instanceof ParameterList) {
+      _generateLatex((ParameterList)brackets);
+      return;
     } else if (brackets instanceof Witness) {
       _generateLatex((Witness)brackets);
+      return;
+    } else if (brackets instanceof WitnessList) {
+      _generateLatex((WitnessList)brackets);
       return;
     } else if (brackets != null) {
       _generateLatex(brackets);

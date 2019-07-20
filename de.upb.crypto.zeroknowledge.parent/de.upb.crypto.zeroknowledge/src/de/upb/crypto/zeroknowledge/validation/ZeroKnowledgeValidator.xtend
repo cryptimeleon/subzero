@@ -46,6 +46,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList
 import java.util.Set
 import de.upb.crypto.zeroknowledge.helpers.Type
+import de.upb.crypto.zeroknowledge.helpers.TypeResolution
 
 /**
  * This class contains custom validation rules. 
@@ -62,13 +63,13 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	@Check
 	def void checkModel(Model model) {
 		
-		ModelPrinter.print(model);
+//		ModelPrinter.print(model);
 		
 		userFunctions = fetchUserFunctions(model);
 		witnessNames = fetchWitnessNames(model);
 		
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
-			checkNode(node, state)
+			checkNode(node, state);
 		]);
 	}
 	
@@ -91,7 +92,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Model model, BranchState state) {
-		checkFunctionNamesAreUnique(model)
+		checkFunctionNamesAreUnique(model);
 		
 		System.out.println("model");
 		return;
@@ -101,8 +102,8 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		checkFunctionNameFormat(function);
 		checkFunctionNameIsNotPredefined(function);
 		checkFunctionIsCalled(function);
-		checkParametersAreUsed(function);
-				
+		checkFunctionParametersAreUsed(function);
+		
 		System.out.println("function");
 		return;
 	}
@@ -151,6 +152,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Comparison comparison, BranchState state) {
+//		System.out.println("branchstate" + state.has);
 		checkValidComparisonPosition(comparison, state);
 		
 		System.out.println("comparison");
@@ -158,21 +160,21 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Sum sum, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(sum, state);
+		checkValidAlgebraicPosition(sum, state);
 		
 		System.out.println("sum");
 		return;
 	}
 	
 	def dispatch void checkNode(Product product, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(product, state);
+		checkValidAlgebraicPosition(product, state);
 		
 		System.out.println("product");
 		return;
 	}
 	
 	def dispatch void checkNode(Power power, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(power, state);
+		checkValidAlgebraicPosition(power, state);
 		
 		System.out.println("power");
 		return;
@@ -186,14 +188,14 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Tuple tuple, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(tuple, state);
+		checkValidAlgebraicPosition(tuple, state);
 		
 		System.out.println("tuple");
 		return;
 	}
 	
 	def dispatch void checkNode(Negative negative, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(negative, state);
+		checkValidAlgebraicPosition(negative, state);
 		
 		System.out.println("negative");
 		return;
@@ -203,7 +205,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		checkValidFunctionCall(call);
 		checkFunctionHasNoUserFunctionCalls(call, state);
 		
-		checkAlgebraicIsInComparisonOrFunction(call, state);
+		checkValidAlgebraicPosition(call, state);
 		
 		return;
 	}
@@ -211,22 +213,23 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def dispatch void checkNode(Variable variable, BranchState state) {
 		checkVariableNameFormat(variable);
 		
-		checkAlgebraicIsInComparisonOrFunction(variable, state);
+		checkValidAlgebraicPosition(variable, state);
 		
 		System.out.println("variable");
 		return;
 	}
 	
-	def dispatch void checkNode(NumberLiteral number, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(number, state);
+	def dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
+		checkValidAlgebraicPosition(numberLiteral, state);
 		
+		checkNumberLiteralIsExponentLiteral(numberLiteral, state);
 		
 		System.out.println("number");
 		return;
 	}
 	
 	def dispatch void checkNode(Brackets brackets, BranchState state) {
-		checkAlgebraicIsInComparisonOrFunction(brackets, state);
+		checkValidAlgebraicPosition(brackets, state);
 		
 		System.out.println("brackets");
 		return;
@@ -273,6 +276,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private void checkParameterNameFormat(Parameter parameter) {
 		var List<String> name_errors = nameFormatErrors(parameter.getName(), "Parameter");
 		for (String name_error : name_errors) {
+			System.out.println("NAMEERRORFOUND");
 			error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
 		}
 	}
@@ -367,7 +371,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 
 	// Every function parameter should be used at least once in the function definition
-	def private void checkParametersAreUsed(FunctionDefinition function) {
+	def private void checkFunctionParametersAreUsed(FunctionDefinition function) {
 		for (Parameter parameter: function.getParameterList().getParameters()) {
 			if (!ModelMap.postorderAny(function.getBody(), [EObject node |
 				if (node instanceof Variable) {
@@ -377,7 +381,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 				}
 				return false;
 			])) {
-				warning('''Parameter '«parameter.getName()»' is not used within the function definition''', parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+				error('''Parameter '«parameter.getName()»' must be used within the function definition''', parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
 			}
 		}
 	}
@@ -532,18 +536,18 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 
 	// Algebraic expressions in the proof expression must be nested within a comparison expression or function call
-	def private void checkAlgebraicIsInComparisonOrFunction(EObject object, BranchState state) {
+	def private void checkValidAlgebraicPosition(EObject object, BranchState state) {
 		if (!(state.hasComparisonAncestor() || state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor())) {
 			error("Algebraic expressions must be nested within a comparison expression", null);
 		}
 	}
+		
 	
-
 	@Check
-	def void checkNumberLiteralIsExponent(NumberLiteral literal) {
-		if (!ModelHelper.hasSumOrPowerAncestor(literal)) {
+	def private void checkNumberLiteralIsExponentLiteral(NumberLiteral numberLiteral, BranchState state) {
+		if (!(state.hasSumAncestor() || state.isInPowerRightBranch())) {
 			error(
-				"Number literals must be contained within a sum expression or the right operand of a power expression",
+				"Number literals must be contained within a sum expression or the right operand of a power expression", numberLiteral,
 				ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE);
 		}
 	}
@@ -564,6 +568,26 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 //			}
 //		}
 //	}
+	
+	
+	
+//	@Check
+//	def void checkType(Model model) {
+////		TypeResolution.resolveAllTypes(model);
+////		ModelPrinter.print(model);
+//		ModelHelper.identifyLocalVariables(model);
+//		System.out.println(TypeResolution.getAllVariables(model).toString());
+////		ModelPrinter.print(model);
+//	}
+	
+	@Check
+	def void checking(Model model) {
+		ModelMap.preorder(model.getProof(), [EObject node |
+			System.out.println(node.toString());
+		]);
+	}
+	
+	
 	
 
 //	@Check

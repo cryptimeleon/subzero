@@ -29,6 +29,8 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.helpers.ModelMap;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
 import java.util.ArrayList
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
+import org.eclipse.emf.ecore.EStructuralFeature
 
 class ModelHelper {
 	
@@ -47,7 +49,14 @@ class ModelHelper {
 	// Sets a child node's parent's reference to the child node to reference a new child node
 	// Precondition: node cannot be the root Model node
 	def static void replaceParentReferenceToSelf(EObject child_node, EObject new_child_node) {
-		child_node.eContainer().eSet(child_node.eContainingFeature(), new_child_node);
+		val EObject parent = child_node.eContainer();
+		val EStructuralFeature feature = child_node.eContainingFeature();
+		if (parent.eGet(feature) instanceof EList) {
+			val EList<EObject> list = parent.eGet(feature) as EList<EObject>;
+			list.set(list.indexOf(child_node), new_child_node);
+		} else {			
+			parent.eSet(feature, new_child_node);
+		}
 	}
 
 	// Takes the user functions of a syntax tree and inlines
@@ -125,6 +134,28 @@ class ModelHelper {
 			}
 			
 		]);
+	}
+	
+	// Changes all Variable nodes in a FunctionDefinition that reference
+	// a Parameter into a LocalVariable
+	def static void identifyLocalVariables(Model model) {
+		for (FunctionDefinition function : model.getFunctions()) {
+			val ArrayList<String> parameters = new ArrayList<String>;
+			for (Parameter parameter : function.getParameterList().getParameters()) {
+				parameters.add(parameter.getName());
+			}
+			
+			ModelMap.preorder(function.getBody(), [EObject node |
+				if (node instanceof Variable) {
+					if (parameters.contains(node.getName())) {
+						val LocalVariable local = ZeroKnowledgeFactory.eINSTANCE.createLocalVariable();
+						local.setName(node.getName());
+						ModelHelper.replaceParentReferenceToSelf(node, local);
+					}
+				}
+			]);
+			
+		}
 	}
 	
 	// True if the object will evaluate to an algebraic value
@@ -272,6 +303,12 @@ class ModelHelper {
 			}
 		}
 		return hasSumOrPowerAncestor(parent);
+	}
+	
+	
+	// Labels every node with the type returned upon evaluation of that node
+	def static void typeResolution(Model model) {
+		
 	}
 	
 }

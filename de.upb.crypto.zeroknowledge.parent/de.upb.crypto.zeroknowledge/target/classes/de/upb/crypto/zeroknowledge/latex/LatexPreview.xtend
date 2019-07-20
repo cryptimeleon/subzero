@@ -24,6 +24,8 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Sum;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList
+import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 
 // Converts a syntax tree to valid Latex output
 class LatexPreview {
@@ -153,7 +155,7 @@ class LatexPreview {
 			}
 		}
 
-		generateList(model.getWitnessList().getWitnesses());
+		generateLatex(model.getWitnessList());
 		builder.append(SEMICOLON);
 		builder.append(NEWLINE);
 		generateLatex(model.getProof());
@@ -161,14 +163,22 @@ class LatexPreview {
 
 	def dispatch private void generateLatex(FunctionDefinition function) {
 		builder.append(function.getName());		
-		generateList(function.getParameterList().getParameters());
+		generateLatex(function.getParameterList());
 		builder.append(COLON);
 		builder.append(NEWLINE);
 		generateLatex(function.getBody());
 	}
+	
+	def dispatch private void generateLatex(ParameterList parameterList) {
+		generateList(parameterList.getParameters());
+	}
 
 	def dispatch private void generateLatex(Parameter parameter) {
 		builder.append(parameter.getName());
+	}
+	
+	def dispatch private void generateLatex(WitnessList witnessList) {
+		generateList(witnessList.getWitnesses());
 	}
 
 	def dispatch private void generateLatex(Witness witness) {

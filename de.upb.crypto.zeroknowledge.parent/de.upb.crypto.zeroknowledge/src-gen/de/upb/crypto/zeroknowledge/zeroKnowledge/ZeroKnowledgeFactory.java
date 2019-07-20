@@ -195,6 +195,15 @@ public interface ZeroKnowledgeFactory extends EFactory
   FunctionCall createFunctionCall();
 
   /**
+   * Returns a new object of class '<em>Local Variable</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Local Variable</em>'.
+   * @generated
+   */
+  LocalVariable createLocalVariable();
+
+  /**
    * Returns a new object of class '<em>Brackets</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

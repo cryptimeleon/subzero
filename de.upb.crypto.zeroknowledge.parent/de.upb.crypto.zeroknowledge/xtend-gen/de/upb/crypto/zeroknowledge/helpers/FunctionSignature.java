@@ -1,7 +1,6 @@
 package de.upb.crypto.zeroknowledge.helpers;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,14 +8,15 @@ import java.util.Set;
 public class FunctionSignature {
   private String name;
   
-  private String type;
+  private String returnType;
+  
+  private String[] parameterTypes;
   
   private int parameter_count;
   
   public FunctionSignature(final String name, final String type, final int parameter_count) {
-    this.name = name;
-    this.type = type;
-    this.parameter_count = parameter_count;
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method type(String) is undefined for the type FunctionSignature");
   }
   
   public String getName() {
@@ -27,12 +27,16 @@ public class FunctionSignature {
     return this.parameter_count;
   }
   
-  public String getType() {
-    return this.type;
+  public String getReturnType() {
+    return this.returnType;
   }
   
-  public static List<String> getAllNames(final Map<String, FunctionSignature> map) {
-    final List<String> names = new ArrayList<String>();
+  public String[] getParameterTypes() {
+    return this.parameterTypes;
+  }
+  
+  public static ArrayList<String> getAllNames(final Map<String, FunctionSignature> map) {
+    final ArrayList<String> names = new ArrayList<String>();
     Set<Map.Entry<String, FunctionSignature>> _entrySet = map.entrySet();
     for (final Map.Entry<String, FunctionSignature> entry : _entrySet) {
       names.add(entry.getValue().getName());

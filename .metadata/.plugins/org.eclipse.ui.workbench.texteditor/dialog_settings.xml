@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="checkAlge"/>
+		<item key="selection" value="defaultType"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="checkAlge"/>
-			<item value=".hasFunctionCall"/>
-			<item value="checkAlgebrai"/>
-			<item value="ComparisonOr"/>
-			<item value="hasComparisonOr"/>
-			<item value=";"/>
-			<item value="boolean "/>
-			<item value="isIllegallyNested"/>
-			<item value="checkValidFunctionCallPosition"/>
-			<item value="checkValidComparison"/>
-			<item value="checkValid"/>
-			<item value="isIlle"/>
-			<item value="checkValidFunctionCa"/>
-			<item value="checkString"/>
-			<item value="state.get"/>
+			<item value="defaultType"/>
+			<item value="GETALL"/>
+			<item value="EStruc"/>
+			<item value="EStructuralFeature"/>
+			<item value="replaceParentRefere"/>
+			<item value="Types"/>
+			<item value="createLocal"/>
+			<item value="Local"/>
+			<item value="Loal"/>
+			<item value="LocalVariable"/>
+			<item value="local"/>
+			<item value="Factor"/>
+			<item value="Negative"/>
+			<item value="Variable"/>
+			<item value="void resolveTypes"/>
 		</list>
 		<list key="replacehistory">
+			<item value="static"/>
+			<item value="checkValidAlgebraicPosition"/>
+			<item value="checkFunctionParametersAreUsed"/>
 			<item value=" = false;"/>
 			<item value="this."/>
 			<item value="Power"/>
@@ -37,9 +40,6 @@
 			<item value="ModelHelper.hasSum"/>
 			<item value="Any"/>
 			<item value="Brackets"/>
-			<item value="def dispatch String generateCode"/>
-			<item value="firstParameter"/>
-			<item value="firstItem"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

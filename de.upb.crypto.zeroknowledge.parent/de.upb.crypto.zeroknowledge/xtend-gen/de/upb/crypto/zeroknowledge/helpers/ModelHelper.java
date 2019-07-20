@@ -12,6 +12,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Disjunction;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Expression;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Negative;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
@@ -23,12 +24,14 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Sum;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
@@ -47,7 +50,16 @@ public class ModelHelper {
   }
   
   public static void replaceParentReferenceToSelf(final EObject child_node, final EObject new_child_node) {
-    child_node.eContainer().eSet(child_node.eContainingFeature(), new_child_node);
+    final EObject parent = child_node.eContainer();
+    final EStructuralFeature feature = child_node.eContainingFeature();
+    Object _eGet = parent.eGet(feature);
+    if ((_eGet instanceof EList)) {
+      Object _eGet_1 = parent.eGet(feature);
+      final EList<EObject> list = ((EList<EObject>) _eGet_1);
+      list.set(list.indexOf(child_node), new_child_node);
+    } else {
+      parent.eSet(feature, new_child_node);
+    }
   }
   
   public static void inlineFunctions(final Model model) {
@@ -119,6 +131,30 @@ public class ModelHelper {
     ModelMap.postorder(model, _function);
   }
   
+  public static void identifyLocalVariables(final Model model) {
+    EList<FunctionDefinition> _functions = model.getFunctions();
+    for (final FunctionDefinition function : _functions) {
+      {
+        final ArrayList<String> parameters = new ArrayList<String>();
+        EList<Parameter> _parameters = function.getParameterList().getParameters();
+        for (final Parameter parameter : _parameters) {
+          parameters.add(parameter.getName());
+        }
+        final Procedure1<EObject> _function = (EObject node) -> {
+          if ((node instanceof Variable)) {
+            boolean _contains = parameters.contains(((Variable)node).getName());
+            if (_contains) {
+              final LocalVariable local = ZeroKnowledgeFactory.eINSTANCE.createLocalVariable();
+              local.setName(((Variable)node).getName());
+              ModelHelper.replaceParentReferenceToSelf(node, local);
+            }
+          }
+        };
+        ModelMap.preorder(function.getBody(), _function);
+      }
+    }
+  }
+  
   public static boolean isAlgebraic(final EObject node) {
     return ((((((((((node instanceof FunctionCall) || (node instanceof Brackets)) || (node instanceof Negative)) || (node instanceof NumberLiteral)) || (node instanceof Power)) || (node instanceof Product)) || (node instanceof StringLiteral)) || (node instanceof Sum)) || (node instanceof Tuple)) || (node instanceof Variable));
   }
@@ -175,21 +211,8 @@ public class ModelHelper {
   }
   
   public static Type functionType(final FunctionCall call) {
-    final String function_name = call.getName();
-    final FunctionSignature value = ModelHelper.predefined_functions.get(call.getName());
-    if ((value != null)) {
-      return Type.convert(value.getType());
-    }
-    final Model root = ModelHelper.getRoot(call);
-    EList<FunctionDefinition> _functions = root.getFunctions();
-    for (final FunctionDefinition function : _functions) {
-      String _name = function.getName();
-      boolean _equals = Objects.equal(function_name, _name);
-      if (_equals) {
-        return ModelHelper.functionType(function);
-      }
-    }
-    return null;
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method getType() is undefined for the type FunctionSignature");
   }
   
   public static Type functionType(final FunctionDefinition function) {
@@ -248,6 +271,9 @@ public class ModelHelper {
       }
     }
     return ModelHelper.hasSumOrPowerAncestor(parent);
+  }
+  
+  public static void typeResolution(final Model model) {
   }
   
   private static void replaceFunctionCallWithDefinition(final EObject call, final Map<String, FunctionDefinition> functions) {

@@ -29,7 +29,7 @@ class PredefinedFunctionsHelper {
       val FunctionSignature signature = new FunctionSignature(name, type, parameters);
       functions.put(name,  signature);
     }
-	System.out.println("PREDEFINEDCALLED");
+
     return functions;
   }
 

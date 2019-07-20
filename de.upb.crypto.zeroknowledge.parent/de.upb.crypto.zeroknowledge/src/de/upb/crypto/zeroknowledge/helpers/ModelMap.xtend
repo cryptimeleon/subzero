@@ -94,4 +94,31 @@ class ModelMap {
 		// Apply function
 		function.apply(node, state);
 	}
+
+
+	def static void preorderWithControl(EObject node, (EObject, ModelMapControl) => void function) {
+		val ModelMapControl controller = new ModelMapControl();
+		preorderWithControlHelper(node, controller, function);
+	}
+	
+	def static void preorderWithControlHelper(EObject node, ModelMapControl controller, (EObject, ModelMapControl) => void function) {
+		
+		// End all traversal if break was called in a function
+		if (controller.triggerBreak()) {
+			return;
+		}
+		
+		// Apply function
+		function.apply(node, controller);
+		
+		// End branch traversal if continue was called in function
+		if (controller.triggerContinue()) {
+			return;
+		}
+		
+		// Recurse through child nodes
+		for (EObject child : node.eContents()) {
+			preorderWithControlHelper(child, controller, function);
+		}	
+	}
 }

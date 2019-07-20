@@ -224,14 +224,20 @@ ruleFunctionDefinition returns [EObject current=null]
 				}
 			)
 		)
-		otherlv_4='}'
+		(
+			otherlv_4=';'
+			{
+				newLeafNode(otherlv_4, grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_4());
+			}
+		)?
+		otherlv_5='}'
 		{
-			newLeafNode(otherlv_4, grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_4());
+			newLeafNode(otherlv_5, grammarAccess.getFunctionDefinitionAccess().getRightCurlyBracketKeyword_5());
 		}
 		(
-			otherlv_5=';'
+			otherlv_6=';'
 			{
-				newLeafNode(otherlv_5, grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_5());
+				newLeafNode(otherlv_6, grammarAccess.getFunctionDefinitionAccess().getSemicolonKeyword_6());
 			}
 		)?
 	)
@@ -433,37 +439,21 @@ ruleWitness returns [EObject current=null]
 }:
 	(
 		(
-			(
-				lv_name_0_0=RULE_IDENTIFIER
-				{
-					newLeafNode(lv_name_0_0, grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0_0());
+			lv_name_0_0=RULE_IDENTIFIER
+			{
+				newLeafNode(lv_name_0_0, grammarAccess.getWitnessAccess().getNameIDENTIFIERTerminalRuleCall_0());
+			}
+			{
+				if ($current==null) {
+					$current = createModelElement(grammarAccess.getWitnessRule());
 				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getWitnessRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"name",
-						lv_name_0_0,
-						"de.upb.crypto.zeroknowledge.ZeroKnowledge.IDENTIFIER");
-				}
-			)
+				setWithLastConsumed(
+					$current,
+					"name",
+					lv_name_0_0,
+					"de.upb.crypto.zeroknowledge.ZeroKnowledge.IDENTIFIER");
+			}
 		)
-		(
-			(
-				lv_testing_1_0='?'
-				{
-					newLeafNode(lv_testing_1_0, grammarAccess.getWitnessAccess().getTestingQuestionMarkKeyword_1_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getWitnessRule());
-					}
-					setWithLastConsumed($current, "testing", true, "?");
-				}
-			)
-		)?
 	)
 ;
 

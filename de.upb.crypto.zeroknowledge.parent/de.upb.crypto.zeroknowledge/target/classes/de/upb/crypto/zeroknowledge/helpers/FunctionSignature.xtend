@@ -10,7 +10,8 @@ import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
 class FunctionSignature {
 
 	String name;
-	String type;
+	String returnType;
+	String[] parameterTypes;
 	int parameter_count;
 	
 	new(String name, String type, int parameter_count) {
@@ -27,13 +28,17 @@ class FunctionSignature {
 		return parameter_count;
 	}
 	
-	def String getType() {
-		return type;
+	def String getReturnType() {
+		return returnType;
+	}
+	
+	def String[] getParameterTypes() {
+		return parameterTypes;
 	}
 	
 	// Returns a map of all function names to their corresponding function signature
-	def static List<String> getAllNames(Map<String, FunctionSignature> map) {
-		val List<String> names = new ArrayList<String>();
+	def static ArrayList<String> getAllNames(Map<String, FunctionSignature> map) {
+		val ArrayList<String> names = new ArrayList<String>();
 		for (Map.Entry<String, FunctionSignature> entry : map.entrySet()) {
 			names.add(entry.getValue().getName());
 		}

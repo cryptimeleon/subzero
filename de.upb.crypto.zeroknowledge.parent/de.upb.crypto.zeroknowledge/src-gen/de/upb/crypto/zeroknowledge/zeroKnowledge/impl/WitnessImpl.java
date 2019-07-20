@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * </p>
  * <ul>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessImpl#getName <em>Name</em>}</li>
- *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessImpl#isTesting <em>Testing</em>}</li>
  * </ul>
  *
  * @generated
@@ -48,26 +47,6 @@ public class WitnessImpl extends MinimalEObjectImpl.Container implements Witness
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #isTesting() <em>Testing</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isTesting()
-   * @generated
-   * @ordered
-   */
-  protected static final boolean TESTING_EDEFAULT = false;
-
-  /**
-   * The cached value of the '{@link #isTesting() <em>Testing</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #isTesting()
-   * @generated
-   * @ordered
-   */
-  protected boolean testing = TESTING_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -121,39 +100,12 @@ public class WitnessImpl extends MinimalEObjectImpl.Container implements Witness
    * @generated
    */
   @Override
-  public boolean isTesting()
-  {
-    return testing;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setTesting(boolean newTesting)
-  {
-    boolean oldTesting = testing;
-    testing = newTesting;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, ZeroKnowledgePackage.WITNESS__TESTING, oldTesting, testing));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
     {
       case ZeroKnowledgePackage.WITNESS__NAME:
         return getName();
-      case ZeroKnowledgePackage.WITNESS__TESTING:
-        return isTesting();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -170,9 +122,6 @@ public class WitnessImpl extends MinimalEObjectImpl.Container implements Witness
     {
       case ZeroKnowledgePackage.WITNESS__NAME:
         setName((String)newValue);
-        return;
-      case ZeroKnowledgePackage.WITNESS__TESTING:
-        setTesting((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -191,9 +140,6 @@ public class WitnessImpl extends MinimalEObjectImpl.Container implements Witness
       case ZeroKnowledgePackage.WITNESS__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case ZeroKnowledgePackage.WITNESS__TESTING:
-        setTesting(TESTING_EDEFAULT);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -210,8 +156,6 @@ public class WitnessImpl extends MinimalEObjectImpl.Container implements Witness
     {
       case ZeroKnowledgePackage.WITNESS__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case ZeroKnowledgePackage.WITNESS__TESTING:
-        return testing != TESTING_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -229,8 +173,6 @@ public class WitnessImpl extends MinimalEObjectImpl.Container implements Witness
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", testing: ");
-    result.append(testing);
     result.append(')');
     return result.toString();
   }

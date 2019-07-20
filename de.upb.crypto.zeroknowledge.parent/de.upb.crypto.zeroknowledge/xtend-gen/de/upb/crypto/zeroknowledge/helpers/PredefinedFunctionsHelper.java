@@ -29,7 +29,6 @@ public class PredefinedFunctionsHelper {
         functions.put(name, signature);
       }
     }
-    System.out.println("PREDEFINEDCALLED");
     return functions;
   }
 }

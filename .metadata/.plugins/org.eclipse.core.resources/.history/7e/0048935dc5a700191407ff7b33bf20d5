@@ -1,0 +1,16 @@
+package de.upb.crypto.zeroknowledge.helpers
+
+class ModelMapControl {
+	
+	boolean breakTraversal;
+	boolean continueIteration;
+	
+	public void break() {
+		this.breakTraversal = true;
+	}
+	
+	public void continue() {
+		this.continueIteration();
+	}
+	
+}
