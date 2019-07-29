@@ -85,6 +85,8 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   
   private String INDENT = "  ";
   
+  private String PREDEFINED_FUNCTIONS = "predefinedFunctions";
+  
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     HashSet<String> _hashSet = new HashSet<String>();
@@ -170,6 +172,8 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("import de.upb.crypto.math.expressions.*;");
     _builder.newLine();
+    _builder.append("import static de.upb.crypto.zeroknowledge.helpers.PredefinedFunctions;");
+    _builder.newLine();
     this.importBuilder.append(_builder);
   }
   
@@ -178,7 +182,7 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     for (final FunctionDefinition function : _functions) {
       boolean _containsKey = this.types.containsKey(function);
       if (_containsKey) {
-        final String returnType = Type.toReturnType(this.types.get(function));
+        final String returnType = Type.toString(this.types.get(function));
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("private static ");
         _builder.append(returnType);
@@ -195,8 +199,8 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
             } else {
               _builder.appendImmediate(", ", "");
             }
-            String _returnType = Type.toReturnType(this.types.get(parameter));
-            _builder.append(_returnType);
+            String _string = Type.toString(this.types.get(parameter));
+            _builder.append(_string);
             _builder.append(" ");
             String _name_1 = parameter.getName();
             _builder.append(_name_1);

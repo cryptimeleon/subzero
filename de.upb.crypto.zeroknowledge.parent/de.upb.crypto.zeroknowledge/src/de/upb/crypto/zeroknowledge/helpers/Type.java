@@ -7,7 +7,7 @@ public enum Type {
 	STRING,
 	UNKNOWN;
 	
-	public static Type convert(String type) {
+	public static Type toType(String type) {
 		switch(type) {
 			case "boolean": return Type.BOOLEAN;
 			case "GroupElementExpression": return Type.GROUP_ELEMENT;
@@ -16,7 +16,7 @@ public enum Type {
 		}
 	}
 	
-	public static String toReturnType(Type type) {
+	public static String toString(Type type) {
 		switch(type) {
 			case BOOLEAN: return "boolean";
 			case GROUP_ELEMENT: return "GroupElementExpression";

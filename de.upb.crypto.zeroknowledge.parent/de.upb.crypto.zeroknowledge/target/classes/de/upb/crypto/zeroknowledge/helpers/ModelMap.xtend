@@ -78,23 +78,6 @@ class ModelMap {
 			preorderWithState(child, new BranchState(state), function);
 		}
 	}
-	
-	// Recurses through the abstract syntax tree and applies the function to each node
-	// Applies to all of a node's subtrees before applying the function to the node
-	// A BranchState instance is also passed in each recursive call
-	def static void postorderWithState(EObject node, BranchState state, (EObject, BranchState) => void function) {
-		
-		state.updateState(node);
-		
-		// Recurse through child nodes
-		for (EObject child : node.eContents()) {
-			postorderWithState(child, state, function);
-		}
-		
-		// Apply function
-		function.apply(node, state);
-	}
-
 
 	def static void preorderWithControl(EObject node, (EObject, ModelMapControl) => void function) {
 		val ModelMapControl controller = new ModelMapControl();

@@ -42,14 +42,6 @@ class BranchState {
 	
 	boolean comparisonBeforePropositional;
 	
-	
-	
-	boolean exponentContext;
-	
-	
-	
-	
-	
 	new() {
 		this.depth = 0;
 		this.parent = null;
@@ -211,7 +203,6 @@ class BranchState {
 	def dispatch void updateState(Brackets brackets) {
 		updateGeneral(brackets);
 	}
-	
 	
 	def String getPackageLiteral() {
 		return this.packageLiteral;

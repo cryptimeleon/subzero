@@ -38,10 +38,11 @@ import de.upb.crypto.zeroknowledge.helpers.ModelHelper
 
 import de.upb.crypto.math.expressions.*;
 import de.upb.crypto.zeroknowledge.helpers.ModelPrinter
-import de.upb.crypto.zeroknowledge.helpers.VariableEnvironment
 import de.upb.crypto.zeroknowledge.helpers.Type
 import de.upb.crypto.zeroknowledge.helpers.TypeResolution
 import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
+import de.upb.crypto.zeroknowledge.helpers.FunctionSignature
+import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper
 
 /**
  * Generates code from your model files on save.
@@ -74,6 +75,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	String OPERATOR_GREATEREQUAL = ">=";
 	String NEWLINE = "\n";
 	String INDENT = "  ";
+	String PREDEFINED_FUNCTIONS = "predefinedFunctions";
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 	
@@ -136,6 +138,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		importBuilder.append(
 			'''
 			import de.upb.crypto.math.expressions.*;
+			import static de.upb.crypto.zeroknowledge.helpers.PredefinedFunctions;
 			'''
 		);
 	}
@@ -146,11 +149,11 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			
 			if (types.containsKey(function)) {
 				
-				val String returnType = Type.toReturnType(types.get(function));
+				val String returnType = Type.toString(types.get(function));
 				
 				functionBuilder.append(
 					'''
-					private static «returnType» «function.getName()»(«FOR Parameter parameter : function.getParameterList().getParameters() SEPARATOR ', '»«Type.toReturnType(types.get(parameter))» «parameter.getName()»«ENDFOR») {
+					private static «returnType» «function.getName()»(«FOR Parameter parameter : function.getParameterList().getParameters() SEPARATOR ', '»«Type.toString(types.get(parameter))» «parameter.getName()»«ENDFOR») {
 					  return «generateCode(function.getBody(), state)»;
 					}
 					'''

@@ -1,9 +1,7 @@
 package de.upb.crypto.zeroknowledge.helpers;
 
 import com.google.common.base.Objects;
-import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
 import de.upb.crypto.zeroknowledge.helpers.ModelMap;
-import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -36,8 +34,6 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 @SuppressWarnings("all")
 public class ModelHelper {
-  public static Map<String, FunctionSignature> predefined_functions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-  
   public static Model getRoot(final EObject node) {
     EObject _rootContainer = EcoreUtil.getRootContainer(node);
     return ((Model) _rootContainer);
@@ -177,38 +173,6 @@ public class ModelHelper {
       (node instanceof Sum)) || 
       (node instanceof Product)) || 
       (node instanceof Power));
-  }
-  
-  public static boolean inFunctionDefinition(final EObject node) {
-    if ((node instanceof Model)) {
-      return false;
-    }
-    if ((node instanceof FunctionDefinition)) {
-      return true;
-    }
-    return ModelHelper.inFunctionDefinition(node.eContainer());
-  }
-  
-  public static boolean hasSumOrPowerAncestor(final EObject node) {
-    if ((node instanceof Model)) {
-      return false;
-    }
-    EObject parent = node.eContainer();
-    if ((parent instanceof Sum)) {
-      return true;
-    } else {
-      if ((parent instanceof Power)) {
-        Expression _right = ((Power)parent).getRight();
-        boolean _tripleEquals = (_right == node);
-        if (_tripleEquals) {
-          return true;
-        }
-      }
-    }
-    return ModelHelper.hasSumOrPowerAncestor(parent);
-  }
-  
-  public static void typeResolution(final Model model) {
   }
   
   private static void replaceFunctionCallWithDefinition(final EObject call, final Map<String, FunctionDefinition> functions) {

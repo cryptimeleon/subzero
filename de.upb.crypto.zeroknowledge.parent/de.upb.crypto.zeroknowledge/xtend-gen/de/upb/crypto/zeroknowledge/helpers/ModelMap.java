@@ -62,15 +62,6 @@ public class ModelMap {
     }
   }
   
-  public static void postorderWithState(final EObject node, final BranchState state, final Procedure2<? super EObject, ? super BranchState> function) {
-    state.updateState(node);
-    EList<EObject> _eContents = node.eContents();
-    for (final EObject child : _eContents) {
-      ModelMap.postorderWithState(child, state, function);
-    }
-    function.apply(node, state);
-  }
-  
   public static void preorderWithControl(final EObject node, final Procedure2<? super EObject, ? super ModelMapControl> function) {
     final ModelMapControl controller = new ModelMapControl();
     ModelMap.preorderWithControlHelper(node, controller, function);

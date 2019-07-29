@@ -34,8 +34,6 @@ import org.eclipse.emf.ecore.EStructuralFeature
 
 class ModelHelper {
 	
-	var public static Map<String, FunctionSignature> predefined_functions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-	
 	// Helper function to get the root Model object
 	def static Model getRoot(EObject node) {
 		return EcoreUtil.getRootContainer(node) as Model;
@@ -59,8 +57,7 @@ class ModelHelper {
 		}
 	}
 
-	// Takes the user functions of a syntax tree and inlines
-	// them for each corresponding function call
+	// Takes the user functions of a syntax tree and inlines them for each corresponding function call
 	def static void inlineFunctions(Model model) {
 		val Map<String, FunctionDefinition> functions = new HashMap<String, FunctionDefinition>();
 		for (FunctionDefinition function : model.getFunctions()) {
@@ -198,117 +195,6 @@ class ModelHelper {
 				node instanceof Sum ||
 				node instanceof Product ||
 				node instanceof Power;
-	}
-	
-//	def static boolean isBooleanFunction(FunctionCall call) {
-//		return functionType(call) == Type.BOOLEAN;
-//	}
-//	def static boolean isBooleanFunction(FunctionDefinition function) {
-//		return functionType(function) == Type.BOOLEAN;	
-//	}
-//	
-//	def static boolean isGroupElementFunction(FunctionCall call) {
-//		return functionType(call) == Type.GROUP_ELEMENT;
-//	}
-//	def static boolean isGroupElementFunction(FunctionDefinition function) {
-//		return functionType(function) == Type.GROUP_ELEMENT;
-//	}
-//	
-//	def static boolean isExponentFunction(FunctionCall call) {
-//		return functionType(call) == Type.EXPONENT;
-//	}
-//	def static boolean isExponentFunction(FunctionDefinition function) {
-//		return functionType(function) == Type.EXPONENT;
-//	}
-//	
-//	def static Type functionType(FunctionCall call) {
-//		// Precondition: function call must reference a valid user function or predefined function
-//		val String functionName = call.getName();
-//		
-//		// If function call references a predefined function, just return its type
-//		val FunctionSignature value = predefined_functions.get(functionName);
-//		if (value !== null) {
-//			return Type.convert(value.getReturnType());
-//		}
-//		
-//		// If function call references a user function, determine the type and return it
-//		val Model root = ModelHelper.getRoot(call);
-//		for (FunctionDefinition function : root.getFunctions()) {
-//			if (functionName == function.getName()) {
-//				return functionType(function);
-//			}
-//		}
-//	}
-//	
-//	def static Type functionType(FunctionDefinition function) {
-//		val EObject body = function.getBody();
-//		
-//		if (body instanceof Conjunction || body instanceof Disjunction || body instanceof Comparison) {
-//			return Type.BOOLEAN;
-//		}
-//		
-//		if (body instanceof Sum || body instanceof NumberLiteral) {
-//			return Type.EXPONENT;
-//		}
-//		
-//		if (body instanceof FunctionCall) {
-//			return functionType(body);
-//		}
-//		
-//		// body instanceof StringLiteral is not possible
-//		// body instanceof Tuple is not possible
-//		// Validation guarantees that StringLiterals and Tuples are never the top node of a function body
-//
-//		val Model model = ModelHelper.getRoot(function);
-//		val String function_name = function.getName();
-//		
-//		if (ModelMap.postorderAny(model.getProof(), [EObject node | 
-//			if (node instanceof FunctionCall) {
-//				if (node.getName() == function_name && ModelHelper.hasSumOrPowerAncestor(node)) {
-//					return true;
-//				}
-//			}
-//			return false;
-//		])) {
-//			return Type.EXPONENT;
-//		} else {
-//			return Type.GROUP_ELEMENT;
-//		}
-//		
-//	}
-	
-	// Returns true if the node is contained within a function definition
-	def static boolean inFunctionDefinition(EObject node) {
-		if (node instanceof Model) {
-			return false;
-		}
-		if (node instanceof FunctionDefinition) {
-			return true;
-		}
-		return inFunctionDefinition(node.eContainer());
-	}
-	
-	// Returns true if the node is a descendant of a sum node
-	// or a descendant of the right branch of a power node
-	def static boolean hasSumOrPowerAncestor(EObject node) {
-		if (node instanceof Model) {
-			return false;
-		}
-		var EObject parent = node.eContainer();
-		if (parent instanceof Sum) {
-			return true;
-		} else if (parent instanceof Power) {
-			if (parent.getRight() === node) {
-				return true;
-			}
-		}
-		return hasSumOrPowerAncestor(parent);
-	}
-	
-	
-	// Labels every node with the type returned upon evaluation of that node
-	def static void typeResolution(Model model) {
-		
 	}
 	
 }

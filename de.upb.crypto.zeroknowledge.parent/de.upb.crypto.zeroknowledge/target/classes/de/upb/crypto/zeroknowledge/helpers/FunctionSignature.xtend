@@ -7,6 +7,7 @@ import java.util.HashMap;
 import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
 import java.lang.reflect.Method
 
+// Contains information about a function's name, return type, and parameters
 class FunctionSignature {
 
 	String name;
@@ -16,11 +17,11 @@ class FunctionSignature {
 	
 	new(String name, String returnType, int parameterCount, String[] parameterTypes) {
 		this.name = name;
-		this.returnType = Type.convert(returnType);
+		this.returnType = Type.toType(returnType);
 		this.parameterCount = parameterCount;
 		this.parameterTypes = new ArrayList();
 		for (String parameterType : parameterTypes) {
-			this.parameterTypes.add(Type.convert(parameterType));
+			this.parameterTypes.add(Type.toType(parameterType));
 		}
 	}
 	
@@ -33,12 +34,12 @@ class FunctionSignature {
 	
 	new(Method method) {
 		this.name = method.getName();
-		this.returnType = Type.convert(trimTypeName(method.getReturnType().getName()));
+		this.returnType = Type.toType(trimTypeName(method.getReturnType().getName()));
 		this.parameterCount = method.getParameterTypes.size();
 		this.parameterTypes = new ArrayList<Type>;
 
 		for (Class<?> classObject : method.getParameterTypes()) {
-			this.parameterTypes.add(Type.convert(trimTypeName(classObject.getName())));			
+			this.parameterTypes.add(Type.toType(trimTypeName(classObject.getName())));			
 		}
 	}
 	

@@ -21,12 +21,12 @@ public class FunctionSignature {
   
   public FunctionSignature(final String name, final String returnType, final int parameterCount, final String[] parameterTypes) {
     this.name = name;
-    this.returnType = Type.convert(returnType);
+    this.returnType = Type.toType(returnType);
     this.parameterCount = parameterCount;
     ArrayList<Type> _arrayList = new ArrayList<Type>();
     this.parameterTypes = _arrayList;
     for (final String parameterType : parameterTypes) {
-      this.parameterTypes.add(Type.convert(parameterType));
+      this.parameterTypes.add(Type.toType(parameterType));
     }
   }
   
@@ -40,13 +40,13 @@ public class FunctionSignature {
   
   public FunctionSignature(final Method method) {
     this.name = method.getName();
-    this.returnType = Type.convert(FunctionSignature.trimTypeName(method.getReturnType().getName()));
+    this.returnType = Type.toType(FunctionSignature.trimTypeName(method.getReturnType().getName()));
     this.parameterCount = ((List<Class<?>>)Conversions.doWrapArray(method.getParameterTypes())).size();
     ArrayList<Type> _arrayList = new ArrayList<Type>();
     this.parameterTypes = _arrayList;
     Class<?>[] _parameterTypes = method.getParameterTypes();
     for (final Class<?> classObject : _parameterTypes) {
-      this.parameterTypes.add(Type.convert(FunctionSignature.trimTypeName(classObject.getName())));
+      this.parameterTypes.add(Type.toType(FunctionSignature.trimTypeName(classObject.getName())));
     }
   }
   

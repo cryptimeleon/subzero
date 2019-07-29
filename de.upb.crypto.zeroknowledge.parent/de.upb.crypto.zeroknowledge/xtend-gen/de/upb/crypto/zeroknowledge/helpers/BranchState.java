@@ -52,8 +52,6 @@ public class BranchState {
   
   private boolean comparisonBeforePropositional;
   
-  private boolean exponentContext;
-  
   public BranchState() {
     this.depth = 0;
     this.parent = null;
