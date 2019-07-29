@@ -3,6 +3,7 @@ package de.upb.crypto.zeroknowledge.helpers;
 import de.upb.crypto.zeroknowledge.helpers.BranchState;
 import de.upb.crypto.zeroknowledge.helpers.ModelMap;
 import de.upb.crypto.zeroknowledge.helpers.TypeResolution;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
@@ -33,11 +34,19 @@ public class ModelPrinter {
         System.out.print(_plus);
       }
       boolean _matched = false;
-      if (node instanceof FunctionDefinition) {
+      if (node instanceof FunctionCall) {
         _matched=true;
-        String _string_1 = ((FunctionDefinition)node).getName().toString();
+        String _string_1 = ((FunctionCall)node).getName().toString();
         String _plus_1 = (" - " + _string_1);
         System.out.println(_plus_1);
+      }
+      if (!_matched) {
+        if (node instanceof FunctionDefinition) {
+          _matched=true;
+          String _string_1 = ((FunctionDefinition)node).getName().toString();
+          String _plus_1 = (" - " + _string_1);
+          System.out.println(_plus_1);
+        }
       }
       if (!_matched) {
         if (node instanceof Parameter) {

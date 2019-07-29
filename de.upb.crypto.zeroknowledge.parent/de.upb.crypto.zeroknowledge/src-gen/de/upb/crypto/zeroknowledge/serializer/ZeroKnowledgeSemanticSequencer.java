@@ -301,15 +301,18 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     LocalVariable returns LocalVariable
 	 *
 	 * Constraint:
-	 *     name=IDENTIFIER
+	 *     (name=IDENTIFIER function=IDENTIFIER)
 	 */
 	protected void sequence_LocalVariable(ISerializationContext context, LocalVariable semanticObject) {
 		if (errorAcceptor != null) {
 			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.VARIABLE__NAME) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.VARIABLE__NAME));
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.LOCAL_VARIABLE__FUNCTION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.LOCAL_VARIABLE__FUNCTION));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getLocalVariableAccess().getNameIDENTIFIERTerminalRuleCall_1_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getLocalVariableAccess().getFunctionIDENTIFIERTerminalRuleCall_2_0(), semanticObject.getFunction());
 		feeder.finish();
 	}
 	

@@ -8,8 +8,10 @@ import de.upb.crypto.zeroknowledge.helpers.BranchState;
 import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
 import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
 import de.upb.crypto.zeroknowledge.helpers.ModelMap;
+import de.upb.crypto.zeroknowledge.helpers.ModelPrinter;
 import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper;
 import de.upb.crypto.zeroknowledge.helpers.Type;
+import de.upb.crypto.zeroknowledge.helpers.TypeResolution;
 import de.upb.crypto.zeroknowledge.validation.AbstractZeroKnowledgeValidator;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
@@ -44,7 +46,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
 /**
@@ -80,7 +81,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
       String _name = function.getName();
       String _name_1 = function.getName();
       int _size = function.getParameterList().getParameters().size();
-      FunctionSignature _functionSignature = new FunctionSignature(_name_1, "", _size);
+      FunctionSignature _functionSignature = new FunctionSignature(_name_1, "", _size, new String[] {});
       functions.put(_name, _functionSignature);
     }
     return functions;
@@ -205,7 +206,6 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   
   protected void _checkNode(final NumberLiteral numberLiteral, final BranchState state) {
     this.checkValidAlgebraicPosition(numberLiteral, state);
-    this.checkNumberLiteralIsExponentLiteral(numberLiteral, state);
     System.out.println("number");
     return;
   }
@@ -249,10 +249,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   private void checkParameterNameFormat(final Parameter parameter) {
     List<String> name_errors = this.nameFormatErrors(parameter.getName(), "Parameter");
     for (final String name_error : name_errors) {
-      {
-        System.out.println("NAMEERRORFOUND");
-        this.error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
-      }
+      this.error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
     }
   }
   
@@ -352,8 +349,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
    * Validate user function definitions
    */
   private void checkFunctionHasNoUserFunctionCalls(final FunctionCall call, final BranchState state) {
-    boolean _hasFunctionDefinitionAncestor = state.hasFunctionDefinitionAncestor();
-    if (_hasFunctionDefinitionAncestor) {
+    if ((state.hasFunctionDefinitionAncestor() && this.userFunctions.containsKey(call.getName()))) {
       this.error("Can not call user functions from within a user function", call, ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
     }
   }
@@ -379,8 +375,8 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
         _builder.append("Parameter \'");
         String _name = parameter.getName();
         _builder.append(_name);
-        _builder.append("\' must be used within the function definition");
-        this.error(_builder.toString(), parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+        _builder.append("\' should be used within the function definition");
+        this.warning(_builder.toString(), parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
       }
     }
   }
@@ -449,8 +445,15 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
       int _size_2 = call.getArguments().size();
       boolean _tripleNotEquals_1 = (_parameterCount_2 != _size_2);
       if (_tripleNotEquals_1) {
-        this.error(
-          "The number of arguments in the function call must match the number of parameters in the function definition", call, 
+        StringConcatenation _builder_1 = new StringConcatenation();
+        _builder_1.append("The number of arguments in the function call (");
+        int _size_3 = call.getArguments().size();
+        _builder_1.append(_size_3);
+        _builder_1.append(") must match the number of parameters in the function definition (");
+        int _parameterCount_3 = signature.getParameterCount();
+        _builder_1.append(_parameterCount_3);
+        _builder_1.append(")");
+        this.error(_builder_1.toString(), call, 
           ZeroKnowledgePackage.Literals.FUNCTION_CALL__ARGUMENTS);
       }
       return;
@@ -497,9 +500,9 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   private boolean isIllegallyNested(final EObject node, final BranchState state) {
     final EObject parent = state.getParent();
     if (((((parent instanceof Model) || (parent instanceof FunctionDefinition)) || (parent instanceof Conjunction)) || (parent instanceof Disjunction))) {
-      return true;
+      return false;
     }
-    return false;
+    return true;
   }
   
   @Check
@@ -535,21 +538,12 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   @Check
-  private void checkNumberLiteralIsExponentLiteral(final NumberLiteral numberLiteral, final BranchState state) {
-    boolean _not = (!(state.hasSumAncestor() || state.isInPowerRightBranch()));
-    if (_not) {
-      this.error(
-        "Number literals must be contained within a sum expression or the right operand of a power expression", numberLiteral, 
-        ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE);
-    }
-  }
-  
-  @Check
-  public void checking(final Model model) {
-    final Procedure1<EObject> _function = (EObject node) -> {
-      System.out.println(node.toString());
-    };
-    ModelMap.preorder(model.getProof(), _function);
+  public void check(final Model model) {
+    ModelPrinter.print(model);
+    System.out.println("RESOLVING--------");
+    TypeResolution.resolveTypes(model);
+    ModelPrinter.print(model);
+    System.out.println("DONE-------------");
   }
   
   public void checkNode(final EObject brackets, final BranchState state) {

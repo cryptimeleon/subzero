@@ -9,6 +9,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
+import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall
 
 class ModelPrinter {
 		
@@ -29,6 +30,7 @@ class ModelPrinter {
 			}
 			
 			switch node {
+				FunctionCall: System.out.println(" - " + node.getName().toString())
 				FunctionDefinition: System.out.println(" - " + node.getName().toString())
 				Parameter: System.out.println(" - " + node.getName().toString())
 				Variable: System.out.println(" - " + node.getName().toString())

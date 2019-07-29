@@ -65,7 +65,7 @@ Variable returns Variable:
   name=IDENTIFIER;
   
 LocalVariable returns Variable:
-  {LocalVariable} name=IDENTIFIER;
+  {LocalVariable} name=IDENTIFIER function=IDENTIFIER;
 
 NumberLiteral returns NumberLiteral:
   value=INT;

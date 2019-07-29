@@ -5,19 +5,41 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
-
+import java.lang.reflect.Method
 
 class FunctionSignature {
 
 	String name;
-	String returnType;
-	String[] parameterTypes;
-	int parameter_count;
+	Type returnType;
+	ArrayList<Type> parameterTypes;
+	int parameterCount;
 	
-	new(String name, String type, int parameter_count) {
+	new(String name, String returnType, int parameterCount, String[] parameterTypes) {
 		this.name = name;
-		this.type = type;
-		this.parameter_count = parameter_count;
+		this.returnType = Type.convert(returnType);
+		this.parameterCount = parameterCount;
+		this.parameterTypes = new ArrayList();
+		for (String parameterType : parameterTypes) {
+			this.parameterTypes.add(Type.convert(parameterType));
+		}
+	}
+	
+	new(String name, Type returnType, int parameterCount, Type[] parameterTypes) {
+		this.name = name;
+		this.returnType = returnType;
+		this.parameterCount = parameterCount;
+		this.parameterTypes = new ArrayList(parameterTypes);		
+	}
+	
+	new(Method method) {
+		this.name = method.getName();
+		this.returnType = Type.convert(trimTypeName(method.getReturnType().getName()));
+		this.parameterCount = method.getParameterTypes.size();
+		this.parameterTypes = new ArrayList<Type>;
+
+		for (Class<?> classObject : method.getParameterTypes()) {
+			this.parameterTypes.add(Type.convert(trimTypeName(classObject.getName())));			
+		}
 	}
 	
 	def String getName() {
@@ -25,14 +47,14 @@ class FunctionSignature {
 	}
 	
 	def int getParameterCount() {
-		return parameter_count;
+		return parameterCount;
 	}
 	
-	def String getReturnType() {
+	def Type getReturnType() {
 		return returnType;
 	}
 	
-	def String[] getParameterTypes() {
+	def ArrayList<Type> getParameterTypes() {
 		return parameterTypes;
 	}
 	
@@ -43,6 +65,16 @@ class FunctionSignature {
 			names.add(entry.getValue().getName());
 		}
 		return names;
+	}
+		
+	// Converts internal class name to simpler form
+	// Possibly remove and simply use fully qualified name?
+	def private static String trimTypeName(String type) {
+	  val int periodIndex = type.lastIndexOf('.');
+	  if (periodIndex > 0) {
+	    return type.substring(periodIndex + 1);
+	  }
+	  return type;
 	}
 	
 }

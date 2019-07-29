@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
 import de.upb.crypto.zeroknowledge.helpers.ModelMap;
 import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper;
-import de.upb.crypto.zeroknowledge.helpers.Type;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -33,7 +32,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 @SuppressWarnings("all")
@@ -146,6 +144,7 @@ public class ModelHelper {
             if (_contains) {
               final LocalVariable local = ZeroKnowledgeFactory.eINSTANCE.createLocalVariable();
               local.setName(((Variable)node).getName());
+              local.setFunction(function.getName());
               ModelHelper.replaceParentReferenceToSelf(node, local);
             }
           }
@@ -178,70 +177,6 @@ public class ModelHelper {
       (node instanceof Sum)) || 
       (node instanceof Product)) || 
       (node instanceof Power));
-  }
-  
-  public static boolean isBooleanFunction(final FunctionCall call) {
-    Type _functionType = ModelHelper.functionType(call);
-    return Objects.equal(_functionType, Type.BOOLEAN);
-  }
-  
-  public static boolean isBooleanFunction(final FunctionDefinition function) {
-    Type _functionType = ModelHelper.functionType(function);
-    return Objects.equal(_functionType, Type.BOOLEAN);
-  }
-  
-  public static boolean isGroupElementFunction(final FunctionCall call) {
-    Type _functionType = ModelHelper.functionType(call);
-    return Objects.equal(_functionType, Type.GROUP_ELEMENT);
-  }
-  
-  public static boolean isGroupElementFunction(final FunctionDefinition function) {
-    Type _functionType = ModelHelper.functionType(function);
-    return Objects.equal(_functionType, Type.GROUP_ELEMENT);
-  }
-  
-  public static boolean isExponentFunction(final FunctionCall call) {
-    Type _functionType = ModelHelper.functionType(call);
-    return Objects.equal(_functionType, Type.EXPONENT);
-  }
-  
-  public static boolean isExponentFunction(final FunctionDefinition function) {
-    Type _functionType = ModelHelper.functionType(function);
-    return Objects.equal(_functionType, Type.EXPONENT);
-  }
-  
-  public static Type functionType(final FunctionCall call) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nThe method getType() is undefined for the type FunctionSignature");
-  }
-  
-  public static Type functionType(final FunctionDefinition function) {
-    final EObject body = function.getBody();
-    if ((((body instanceof Conjunction) || (body instanceof Disjunction)) || (body instanceof Comparison))) {
-      return Type.BOOLEAN;
-    }
-    if (((body instanceof Sum) || (body instanceof NumberLiteral))) {
-      return Type.EXPONENT;
-    }
-    if ((body instanceof FunctionCall)) {
-      return ModelHelper.functionType(((FunctionCall)body));
-    }
-    final Model model = ModelHelper.getRoot(function);
-    final String function_name = function.getName();
-    final Function1<EObject, Boolean> _function = (EObject node) -> {
-      if ((node instanceof FunctionCall)) {
-        if ((Objects.equal(((FunctionCall)node).getName(), function_name) && ModelHelper.hasSumOrPowerAncestor(node))) {
-          return true;
-        }
-      }
-      return false;
-    };
-    boolean _postorderAny = ModelMap.postorderAny(model.getProof(), _function);
-    if (_postorderAny) {
-      return Type.EXPONENT;
-    } else {
-      return Type.GROUP_ELEMENT;
-    }
   }
   
   public static boolean inFunctionDefinition(final EObject node) {

@@ -31,7 +31,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 class LatexPreview {
 
 	var String latexCode;
-	val StringBuilder builder = new StringBuilder();
+	var StringBuilder builder;
 
 	// Token constants
 	val String CONJUNCTION = "\\land";
@@ -86,6 +86,7 @@ class LatexPreview {
 	}
 
 	def private void constructLatexPreview(Model model, boolean inline) {
+		builder = new StringBuilder();
 		this.inline = inline;
 		if (inline) {
 			ModelHelper.inlineFunctions(model);
@@ -140,8 +141,6 @@ class LatexPreview {
 		builder.append(RIGHTPAREN);
 	}
 
-	// Function catches any node that currently has type EObject
-	// and casts it to its actual type
 	def dispatch private void generateLatex(EObject node) {
 		System.err.println("Unhandled EObject type in Latex generation function");
 	}

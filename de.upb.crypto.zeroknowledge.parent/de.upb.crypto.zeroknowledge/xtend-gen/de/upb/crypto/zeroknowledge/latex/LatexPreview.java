@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.EObject;
 public class LatexPreview {
   private String latexCode;
   
-  private final StringBuilder builder = new StringBuilder();
+  private StringBuilder builder;
   
   private final String CONJUNCTION = "\\land";
   
@@ -116,6 +116,8 @@ public class LatexPreview {
   }
   
   private void constructLatexPreview(final Model model, final boolean inline) {
+    StringBuilder _stringBuilder = new StringBuilder();
+    this.builder = _stringBuilder;
     this.inline = inline;
     if (inline) {
       ModelHelper.inlineFunctions(model);

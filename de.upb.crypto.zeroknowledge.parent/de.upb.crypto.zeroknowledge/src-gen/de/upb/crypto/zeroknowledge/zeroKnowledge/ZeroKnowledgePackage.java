@@ -744,13 +744,22 @@ public interface ZeroKnowledgePackage extends EPackage
   int LOCAL_VARIABLE__NAME = VARIABLE__NAME;
 
   /**
+   * The feature id for the '<em><b>Function</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int LOCAL_VARIABLE__FUNCTION = VARIABLE_FEATURE_COUNT + 0;
+
+  /**
    * The number of structural features of the '<em>Local Variable</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int LOCAL_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
+  int LOCAL_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.BracketsImpl <em>Brackets</em>}' class.
@@ -1356,6 +1365,17 @@ public interface ZeroKnowledgePackage extends EPackage
   EClass getLocalVariable();
 
   /**
+   * Returns the meta object for the attribute '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable#getFunction <em>Function</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Function</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable#getFunction()
+   * @see #getLocalVariable()
+   * @generated
+   */
+  EAttribute getLocalVariable_Function();
+
+  /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets <em>Brackets</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1870,6 +1890,14 @@ public interface ZeroKnowledgePackage extends EPackage
      * @generated
      */
     EClass LOCAL_VARIABLE = eINSTANCE.getLocalVariable();
+
+    /**
+     * The meta object literal for the '<em><b>Function</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute LOCAL_VARIABLE__FUNCTION = eINSTANCE.getLocalVariable_Function();
 
     /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.BracketsImpl <em>Brackets</em>}' class.

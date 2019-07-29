@@ -852,6 +852,17 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
    * @generated
    */
   @Override
+  public EAttribute getLocalVariable_Function()
+  {
+    return (EAttribute)localVariableEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getBrackets()
   {
     return bracketsEClass;
@@ -972,6 +983,7 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
     createEReference(functionCallEClass, FUNCTION_CALL__ARGUMENTS);
 
     localVariableEClass = createEClass(LOCAL_VARIABLE);
+    createEAttribute(localVariableEClass, LOCAL_VARIABLE__FUNCTION);
 
     bracketsEClass = createEClass(BRACKETS);
     createEReference(bracketsEClass, BRACKETS__CONTENT);
@@ -1095,6 +1107,7 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
     initEReference(getFunctionCall_Arguments(), this.getExpression(), null, "arguments", null, 0, -1, FunctionCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(localVariableEClass, LocalVariable.class, "LocalVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLocalVariable_Function(), ecorePackage.getEString(), "function", null, 0, 1, LocalVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(bracketsEClass, Brackets.class, "Brackets", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getBrackets_Content(), this.getExpression(), null, "content", null, 0, 1, Brackets.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -136,8 +136,8 @@ class ModelHelper {
 		]);
 	}
 	
-	// Changes all Variable nodes in a FunctionDefinition that reference
-	// a Parameter into a LocalVariable
+	// Changes any Variable node within a FunctionDefinition that references
+	// a Parameter into a LocalVariable node
 	def static void identifyLocalVariables(Model model) {
 		for (FunctionDefinition function : model.getFunctions()) {
 			val ArrayList<String> parameters = new ArrayList<String>;
@@ -150,6 +150,7 @@ class ModelHelper {
 					if (parameters.contains(node.getName())) {
 						val LocalVariable local = ZeroKnowledgeFactory.eINSTANCE.createLocalVariable();
 						local.setName(node.getName());
+						local.setFunction(function.getName());
 						ModelHelper.replaceParentReferenceToSelf(node, local);
 					}
 				}
@@ -199,83 +200,82 @@ class ModelHelper {
 				node instanceof Power;
 	}
 	
-	def static boolean isBooleanFunction(FunctionCall call) {
-		return functionType(call) == Type.BOOLEAN;
-	}
-	def static boolean isBooleanFunction(FunctionDefinition function) {
-		return functionType(function) == Type.BOOLEAN;	
-	}
-	
-	def static boolean isGroupElementFunction(FunctionCall call) {
-		return functionType(call) == Type.GROUP_ELEMENT;
-	}
-	def static boolean isGroupElementFunction(FunctionDefinition function) {
-		return functionType(function) == Type.GROUP_ELEMENT;
-	}
-	
-	def static boolean isExponentFunction(FunctionCall call) {
-		return functionType(call) == Type.EXPONENT;
-	}
-	def static boolean isExponentFunction(FunctionDefinition function) {
-		return functionType(function) == Type.EXPONENT;
-	}
-	
-	def static Type functionType(FunctionCall call) {
-		// Precondition: function call must reference a valid user function or predefined function
-		val String function_name = call.getName();
-		
-		// If function call references a predefined function, just return its type
-		val FunctionSignature value = predefined_functions.get(call.getName());
-		if (value !== null) {
-			return Type.convert(value.getType());
-		}
-		
-		// If function call references a user function, determine the type and return it
-		val Model root = ModelHelper.getRoot(call);
-		for (FunctionDefinition function : root.getFunctions()) {
-			if (function_name == function.getName()) {
-				return functionType(function);
-			}
-		}
-		
-	}
-	
-	def static Type functionType(FunctionDefinition function) {
-		val EObject body = function.getBody();
-		
-		if (body instanceof Conjunction || body instanceof Disjunction || body instanceof Comparison) {
-			return Type.BOOLEAN;
-		}
-		
-		if (body instanceof Sum || body instanceof NumberLiteral) {
-			return Type.EXPONENT;
-		}
-		
-		if (body instanceof FunctionCall) {
-			return functionType(body);
-		}
-		
-		// body instanceof StringLiteral is not possible
-		// body instanceof Tuple is not possible
-		// Validation guarantees that StringLiterals and Tuples are never the top node of a function body
-
-		val Model model = ModelHelper.getRoot(function);
-		val String function_name = function.getName();
-		
-		if (ModelMap.postorderAny(model.getProof(), [EObject node | 
-			if (node instanceof FunctionCall) {
-				if (node.getName() == function_name && ModelHelper.hasSumOrPowerAncestor(node)) {
-					return true;
-				}
-			}
-			return false;
-		])) {
-			return Type.EXPONENT;
-		} else {
-			return Type.GROUP_ELEMENT;
-		}
-		
-	}
+//	def static boolean isBooleanFunction(FunctionCall call) {
+//		return functionType(call) == Type.BOOLEAN;
+//	}
+//	def static boolean isBooleanFunction(FunctionDefinition function) {
+//		return functionType(function) == Type.BOOLEAN;	
+//	}
+//	
+//	def static boolean isGroupElementFunction(FunctionCall call) {
+//		return functionType(call) == Type.GROUP_ELEMENT;
+//	}
+//	def static boolean isGroupElementFunction(FunctionDefinition function) {
+//		return functionType(function) == Type.GROUP_ELEMENT;
+//	}
+//	
+//	def static boolean isExponentFunction(FunctionCall call) {
+//		return functionType(call) == Type.EXPONENT;
+//	}
+//	def static boolean isExponentFunction(FunctionDefinition function) {
+//		return functionType(function) == Type.EXPONENT;
+//	}
+//	
+//	def static Type functionType(FunctionCall call) {
+//		// Precondition: function call must reference a valid user function or predefined function
+//		val String functionName = call.getName();
+//		
+//		// If function call references a predefined function, just return its type
+//		val FunctionSignature value = predefined_functions.get(functionName);
+//		if (value !== null) {
+//			return Type.convert(value.getReturnType());
+//		}
+//		
+//		// If function call references a user function, determine the type and return it
+//		val Model root = ModelHelper.getRoot(call);
+//		for (FunctionDefinition function : root.getFunctions()) {
+//			if (functionName == function.getName()) {
+//				return functionType(function);
+//			}
+//		}
+//	}
+//	
+//	def static Type functionType(FunctionDefinition function) {
+//		val EObject body = function.getBody();
+//		
+//		if (body instanceof Conjunction || body instanceof Disjunction || body instanceof Comparison) {
+//			return Type.BOOLEAN;
+//		}
+//		
+//		if (body instanceof Sum || body instanceof NumberLiteral) {
+//			return Type.EXPONENT;
+//		}
+//		
+//		if (body instanceof FunctionCall) {
+//			return functionType(body);
+//		}
+//		
+//		// body instanceof StringLiteral is not possible
+//		// body instanceof Tuple is not possible
+//		// Validation guarantees that StringLiterals and Tuples are never the top node of a function body
+//
+//		val Model model = ModelHelper.getRoot(function);
+//		val String function_name = function.getName();
+//		
+//		if (ModelMap.postorderAny(model.getProof(), [EObject node | 
+//			if (node instanceof FunctionCall) {
+//				if (node.getName() == function_name && ModelHelper.hasSumOrPowerAncestor(node)) {
+//					return true;
+//				}
+//			}
+//			return false;
+//		])) {
+//			return Type.EXPONENT;
+//		} else {
+//			return Type.GROUP_ELEMENT;
+//		}
+//		
+//	}
 	
 	// Returns true if the node is contained within a function definition
 	def static boolean inFunctionDefinition(EObject node) {

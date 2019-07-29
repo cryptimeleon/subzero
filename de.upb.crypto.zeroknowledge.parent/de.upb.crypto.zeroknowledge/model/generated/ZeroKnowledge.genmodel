@@ -77,7 +77,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//FunctionCall/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//FunctionCall/arguments"/>
     </genClasses>
-    <genClasses ecoreClass="ZeroKnowledge.ecore#//LocalVariable"/>
+    <genClasses ecoreClass="ZeroKnowledge.ecore#//LocalVariable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//LocalVariable/function"/>
+    </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Brackets">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Brackets/content"/>
     </genClasses>

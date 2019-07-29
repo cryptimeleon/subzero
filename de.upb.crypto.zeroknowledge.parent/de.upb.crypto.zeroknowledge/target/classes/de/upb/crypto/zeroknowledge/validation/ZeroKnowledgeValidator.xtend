@@ -62,12 +62,10 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
 	@Check
 	def void checkModel(Model model) {
-		
 //		ModelPrinter.print(model);
 		
 		userFunctions = fetchUserFunctions(model);
 		witnessNames = fetchWitnessNames(model);
-		
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
 			checkNode(node, state);
 		]);
@@ -76,7 +74,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def HashMap<String, FunctionSignature> fetchUserFunctions(Model model) {
 		val HashMap<String, FunctionSignature> functions = new HashMap<String, FunctionSignature>();
 		for (FunctionDefinition function: model.getFunctions()) {
-			functions.put(function.getName(), new FunctionSignature(function.getName(), "", function.getParameterList().getParameters().size()));
+			functions.put(function.getName(), new FunctionSignature(function.getName(), "", function.getParameterList().getParameters().size(), #[]));				
 		}
 		
 		return functions;
@@ -222,7 +220,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
 		checkValidAlgebraicPosition(numberLiteral, state);
 		
-		checkNumberLiteralIsExponentLiteral(numberLiteral, state);
+//		checkNumberLiteralIsExponentLiteral(numberLiteral, state);
 		
 		System.out.println("number");
 		return;
@@ -276,7 +274,6 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private void checkParameterNameFormat(Parameter parameter) {
 		var List<String> name_errors = nameFormatErrors(parameter.getName(), "Parameter");
 		for (String name_error : name_errors) {
-			System.out.println("NAMEERRORFOUND");
 			error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
 		}
 	}
@@ -365,7 +362,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 */
 	// Function definitions cannot contain function calls to other user functions
 	def private void checkFunctionHasNoUserFunctionCalls(FunctionCall call, BranchState state) {
-		if (state.hasFunctionDefinitionAncestor()) {
+		if (state.hasFunctionDefinitionAncestor() && userFunctions.containsKey(call.getName())) {
 			error("Can not call user functions from within a user function", call, ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
 		}
 	}
@@ -381,7 +378,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 				}
 				return false;
 			])) {
-				error('''Parameter '«parameter.getName()»' must be used within the function definition''', parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+				warning('''Parameter '«parameter.getName()»' should be used within the function definition''', parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
 			}
 		}
 	}
@@ -433,12 +430,12 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 			}
 			return;
 		}
-		
+
 		signature = predefinedFunctions.get(name);
 		if (signature !== null) {
 			if (signature.getParameterCount() !== call.getArguments().size()) {
 				error(
-					"The number of arguments in the function call must match the number of parameters in the function definition", call,
+					'''The number of arguments in the function call («call.getArguments.size()») must match the number of parameters in the function definition («signature.getParameterCount()»)''', call,
 					ZeroKnowledgePackage.Literals.FUNCTION_CALL__ARGUMENTS);
 			}
 			return;
@@ -487,9 +484,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private boolean isIllegallyNested(EObject node, BranchState state) {
 		val EObject parent = state.getParent();
 		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Conjunction || parent instanceof Disjunction) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	// Helper function for checkValidConjunctionPosition, checkValidDisjunctionPosition, checkValidComparisonPosition
@@ -543,14 +540,14 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 		
 	
-	@Check
-	def private void checkNumberLiteralIsExponentLiteral(NumberLiteral numberLiteral, BranchState state) {
-		if (!(state.hasSumAncestor() || state.isInPowerRightBranch())) {
-			error(
-				"Number literals must be contained within a sum expression or the right operand of a power expression", numberLiteral,
-				ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE);
-		}
-	}
+//	@Check
+//	def private void checkNumberLiteralIsExponentLiteral(NumberLiteral numberLiteral, BranchState state) {
+//		if (!(state.hasSumAncestor() || state.isInPowerRightBranch())) {
+//			error(
+//				"Number literals must be contained within a sum expression or the right operand of a power expression", numberLiteral,
+//				ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE);
+//		}
+//	}
 
 	// Function calls which return a boolean value cannot be nested within algebraic expressions, and
 	// function calls which return algebraic values must be nested within a comparison expression
@@ -569,31 +566,21 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 //		}
 //	}
 	
-	
-	
-//	@Check
-//	def void checkType(Model model) {
-////		TypeResolution.resolveAllTypes(model);
-////		ModelPrinter.print(model);
-//		ModelHelper.identifyLocalVariables(model);
-//		System.out.println(TypeResolution.getAllVariables(model).toString());
-////		ModelPrinter.print(model);
-//	}
-	
-	@Check
-	def void checking(Model model) {
-		ModelMap.preorder(model.getProof(), [EObject node |
-			System.out.println(node.toString());
-		]);
-	}
-	
-	
-	
 
 //	@Check
 //	def void checkInline(Model model) {
 //		ModelPrinter.print(model);
 //		var LatexPreview output = new LatexPreview(model, false);
 //		error(output.getRawLatex(), null);
-//	}	
+//	}
+
+	@Check
+	def void check(Model model) {
+		ModelPrinter.print(model);
+		System.out.println("RESOLVING--------");
+		TypeResolution.resolveTypes(model);
+		ModelPrinter.print(model);
+		System.out.println("DONE-------------");
+	}
+
 }

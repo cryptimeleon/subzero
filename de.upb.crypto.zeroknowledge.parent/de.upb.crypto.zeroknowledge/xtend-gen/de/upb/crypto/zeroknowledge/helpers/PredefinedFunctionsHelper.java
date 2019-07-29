@@ -8,14 +8,6 @@ import java.util.Map;
 
 @SuppressWarnings("all")
 public class PredefinedFunctionsHelper {
-  private static String convertType(final String type) {
-    final int periodIndex = type.lastIndexOf(".");
-    if ((periodIndex > 0)) {
-      return type.substring((periodIndex + 1));
-    }
-    return type;
-  }
-  
   public static Map<String, FunctionSignature> getAllPredefinedFunctions() {
     final Map<String, FunctionSignature> functions = new HashMap<String, FunctionSignature>();
     final Class<PredefinedFunctions> predefinedClass = PredefinedFunctions.class;
@@ -23,9 +15,7 @@ public class PredefinedFunctionsHelper {
     for (final Method method : _declaredMethods) {
       {
         final String name = method.getName();
-        final String type = PredefinedFunctionsHelper.convertType(method.getReturnType().getName());
-        final int parameters = method.getParameterCount();
-        final FunctionSignature signature = new FunctionSignature(name, type, parameters);
+        final FunctionSignature signature = new FunctionSignature(method);
         functions.put(name, signature);
       }
     }

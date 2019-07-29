@@ -39,6 +39,9 @@ import de.upb.crypto.zeroknowledge.helpers.ModelHelper
 import de.upb.crypto.math.expressions.*;
 import de.upb.crypto.zeroknowledge.helpers.ModelPrinter
 import de.upb.crypto.zeroknowledge.helpers.VariableEnvironment
+import de.upb.crypto.zeroknowledge.helpers.Type
+import de.upb.crypto.zeroknowledge.helpers.TypeResolution
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
 
 /**
  * Generates code from your model files on save.
@@ -47,15 +50,21 @@ import de.upb.crypto.zeroknowledge.helpers.VariableEnvironment
  */
 class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
-	Set<String> variables;
-	Set<String> literals;
+	HashMap<EObject, Type> types;
+
+	HashSet<String> variables;
+	HashSet<String> numberLiterals;
+	HashSet<String> stringLiterals;
 	
 	StringBuilder codeBuilder;
 	StringBuilder importBuilder;
 	StringBuilder functionBuilder;
 	StringBuilder exponentVariableBuilder;
 	StringBuilder groupVariableBuilder;
-	StringBuilder literalBuilder;
+	StringBuilder numberLiteralBuilder;
+	StringBuilder stringLiteralBuilder;
+	
+	int stringLiteralCount;
 	
 	String OPERATOR_EQUAL = "=";
 	String OPERATOR_INEQUAL = "!=";
@@ -69,21 +78,29 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 	
 		variables = new HashSet<String>;
-		literals = new HashSet<String>;
+		numberLiterals = new HashSet<String>;
+		stringLiterals = new HashSet<String>;
 	
 		codeBuilder = new StringBuilder();
 		importBuilder = new StringBuilder();
 		functionBuilder = new StringBuilder();
 		exponentVariableBuilder = new StringBuilder();
 		groupVariableBuilder = new StringBuilder();
-		literalBuilder = new StringBuilder();
+		numberLiteralBuilder = new StringBuilder();
+		stringLiteralBuilder = new StringBuilder();
 	
 		// Perform model transformations
 		val Model model = resource.getContents().iterator().next() as Model;
 		val boolean inline = false;
 		
+		// If option is set, inline all functions
 		if (inline) ModelHelper.inlineFunctions(model);
+		
+		// Replace all subtraction operations with sum operations of negative nodes
 		ModelHelper.normalizeNegatives(model);
+
+	
+		types = TypeResolution.resolveTypes(model);	
 
 		ModelPrinter.print(model);
 
@@ -92,20 +109,23 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		val String code = generateCode(model, new BranchState());
 	
 		codeBuilder.append(importBuilder);
-		codeBuilder.append(NEWLINE);
+		if (importBuilder.length() !== 0) codeBuilder.append(NEWLINE);
 		codeBuilder.append(functionBuilder);
-		codeBuilder.append(NEWLINE);
-		codeBuilder.append(literalBuilder);
-		codeBuilder.append(NEWLINE);
+		if (functionBuilder.length() !== 0) codeBuilder.append(NEWLINE);
+		codeBuilder.append(numberLiteralBuilder);
+		if (numberLiteralBuilder.length() !== 0) codeBuilder.append(NEWLINE);
+		codeBuilder.append(stringLiteralBuilder);
+		if (stringLiteralBuilder.length() !== 0) codeBuilder.append(NEWLINE);
 		codeBuilder.append(exponentVariableBuilder);
-		codeBuilder.append(NEWLINE);
+		if (exponentVariableBuilder.length() !== 0) codeBuilder.append(NEWLINE);
 		codeBuilder.append(groupVariableBuilder);
-		codeBuilder.append(NEWLINE);
+		if (groupVariableBuilder.length() !== 0) codeBuilder.append(NEWLINE);
 		codeBuilder.append(code);
 		
 		System.out.println(codeBuilder.toString());
 				
 		if (context.getCancelIndicator.isCanceled()) return;
+
 //		if (!inline) return;
 		
 		fsa.generateFile('first.java', codeBuilder.toString());
@@ -117,71 +137,38 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			'''
 			import de.upb.crypto.math.expressions.*;
 			'''
-		)
+		);
 	}
 	
 	// Generates the Java equivalent of all user defined functions
 	def void generateFunctions(Model model, BranchState state) {
 		for (FunctionDefinition function : model.getFunctions()) {
-			val Map<String, Boolean> mapping = new HashMap<String, Boolean>();
 			
-			ModelMap.preorder(function.getBody(), [EObject node |
-				if (node instanceof Sum) {
-					ModelMap.postorder(node, [EObject child |
-						if (child instanceof Variable) {
-							val String name = child.getName();
-							if (!mapping.containsKey(name)) {
-								mapping.put(name, true);
-							}
-						}
-						
-					]);
-				} else if (node instanceof Power) {
-					ModelMap.postorder(node.getRight(), [EObject child |
-						if (child instanceof Variable) {
-							val String name = child.getName();
-							if (!mapping.containsKey(name)) {
-								mapping.put(name, true);
-							}
-						}
-					]);
-				}
+			if (types.containsKey(function)) {
 				
-			]);
-			
-			ModelMap.postorder(function.getBody(), [EObject node |
-				if (node instanceof Variable) {
-					val String name = node.getName();
-					if (!mapping.containsKey(name)) {
-						mapping.put(name, false);
+				val String returnType = Type.toReturnType(types.get(function));
+				
+				functionBuilder.append(
+					'''
+					private static «returnType» «function.getName()»(«FOR Parameter parameter : function.getParameterList().getParameters() SEPARATOR ', '»«Type.toReturnType(types.get(parameter))» «parameter.getName()»«ENDFOR») {
+					  return «generateCode(function.getBody(), state)»;
 					}
-				}
-				
-			]);
-				
-//			val String type = (mapping.get("test").booleanValue() ? "ExponentVariableExpr" : "GroupVariablExpr"); 
-//			
-			functionBuilder.append(
-				'''
-				private static «function.getName()»(«FOR Parameter parameter : function.getParameterList().getParameters() SEPARATOR ', '»«IF mapping.containsKey(parameter.getName()) === true && mapping.get(parameter.getName())»ExponentVariableExpr«ELSE»GroupVariablExpr«ENDIF» «parameter.getName()»«ENDFOR») {
-				  «generateCode(function.getBody(), state)»;
-				}
-				'''
-			);
-			// Throw a console warning above if the type cannot be determined for the variable
+					'''
+				);			
+			}
+			// Maybe throw a console warning above if the type cannot be determined for the variable
 			// Or possibly move this warning to validation
-			
 		}
 	}
 	
-	// Generates the Java code for the main expression and for the bodies of user functions
-	def dispatch String generateCode(Model node, BranchState state) {
-		return '''«generateCode(node.getProof(), state)»;''';
+	// Generates the Java code for the main expression
+	def dispatch String generateCode(Model model, BranchState state) {
+		return '''«generateCode(model.getProof(), state)»;''';
 	}
 	
-	def dispatch String generateCode(Conjunction node, BranchState state) {
-		val String left = generateCode(node.getLeft(), state);
-		val String right = generateCode(node.getRight(), state);
+	def dispatch String generateCode(Conjunction conjunction, BranchState state) {
+		val String left = generateCode(conjunction.getLeft(), state);
+		val String right = generateCode(conjunction.getRight(), state);
 		
 		return 
 		'''
@@ -189,19 +176,19 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		.and(«right»)''';
 	}
 	
-	def dispatch String generateCode(Disjunction node, BranchState state) {
-		val String left = generateCode(node.getLeft(), state);
-		val String right = generateCode(node.getRight(), state);
+	def dispatch String generateCode(Disjunction disjunction, BranchState state) {
+		val String left = generateCode(disjunction.getLeft(), state);
+		val String right = generateCode(disjunction.getRight(), state);
 		
 		return '''«left».or(«right»)''';
 		}
 	
-	def dispatch String generateCode(Comparison node, BranchState state) {
-		val String left = generateCode(node.getLeft(), state);
-		val String right = generateCode(node.getRight(), state);		
+	def dispatch String generateCode(Comparison comparison, BranchState state) {
+		val String left = generateCode(comparison.getLeft(), state);
+		val String right = generateCode(comparison.getRight(), state);		
 		var String operator;
 		
-		switch node.getOperation() {
+		switch comparison.getOperation() {
 			case OPERATOR_EQUAL: operator = "equals"
 			case OPERATOR_INEQUAL: operator = "notequals"
 			case OPERATOR_LESS: operator = "lessthan"
@@ -213,22 +200,23 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		return '''«left».«operator»(«right»)''';
 	}
 	
-	def dispatch String generateCode(Sum node, BranchState state) {
+	def dispatch String generateCode(Sum sum, BranchState state) {
 		
 		val newState = new BranchState(state);
 //		newState.setExponentContext();
-		val String left = generateCode(node.getLeft(), newState);
-		val String right = generateCode(node.getRight(), newState);
+
+		val String left = generateCode(sum.getLeft(), newState);
+		val String right = generateCode(sum.getRight(), newState);
 		
 		return '''«left».add(«right»)''';
 	}
 	
-	def dispatch String generateCode(Product node, BranchState state) {
+	def dispatch String generateCode(Product product, BranchState state) {
 
-		val String left = generateCode(node.getLeft(), state);
-		val String right = generateCode(node.getRight(), state);
+		val String left = generateCode(product.getLeft(), state);
+		val String right = generateCode(product.getRight(), state);
 		
-		if (ModelHelper.hasSumOrPowerAncestor(node)) {
+		if (types.get(product) === Type.EXPONENT) {
 			return '''«left».mul(«right»)'''
 		} else {
 			return '''«left».op(«right»)''';
@@ -236,16 +224,27 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 
 	}
 	
-	def dispatch String generateCode(Power node, BranchState state) {
+	def dispatch String generateCode(Power power, BranchState state) {
 		
-		val String left = generateCode(node.getLeft(), state);
-		val String right = generateCode(node.getRight(), state);
+		val String left = generateCode(power.getLeft(), state);
+		val String right = generateCode(power.getRight(), state);
 		
 		return '''«left».pow(«right»)''';		
 	}
 	
-	def dispatch String generateCode(StringLiteral node, BranchState state) {
-		return '''«node.getValue()»''';
+	def dispatch String generateCode(StringLiteral string, BranchState state) {
+		
+		val String name = "stringLiteral" + (stringLiteralCount++)
+		val String value = string.getValue(); // Value includes double quotes
+
+		if (!stringLiterals.contains(value)) {
+			stringLiterals.add(value);
+			stringLiteralBuilder.append('''
+				String «name» = «value»;
+			''');
+		}
+		
+		return '''value''';
 	}
 	
 	def dispatch String generateCode(Tuple node, BranchState state) {
@@ -259,28 +258,25 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		return '''«term».neg()''';		
 	}
 	
-	def dispatch String generateCode(FunctionCall node, BranchState state) {
-		val String name = ModelHelper.convertToJavaName(node.getName());
+	def dispatch String generateCode(FunctionCall call, BranchState state) {
+		val String name = ModelHelper.convertToJavaName(call.getName());
 		
-		return '''«name»(«FOR argument : node.getArguments() SEPARATOR ','»generateCode(argument)«ENDFOR»)'''
+		return '''«name»(«FOR argument : call.getArguments() SEPARATOR ','»«generateCode(argument, state)»«ENDFOR»)'''
 	}
 	
-	def dispatch String generateCode(Variable node, BranchState state) {
-		val String name = ModelHelper.convertToJavaName(node.getName());
+	def dispatch String generateCode(Variable variable, BranchState state) {
+		val String name = ModelHelper.convertToJavaName(variable.getName());
 		
-		if (true) {
-//		if (state.isExponentContext()) {
-			if (!variables.contains(name)) {
-				variables.add(name);
+		if (!variables.contains(name)) {
+			variables.add(name);
+			
+			if (types.get(variable) === Type.EXPONENT) {
 				exponentVariableBuilder.append(
 					'''
-					ExponentVariableExpr «name» = new ExponentVariableExpr(«name»);
+					ExponentVariableExpr «name» = new ExponentVariableExpr("«name»");
 					'''
 				);
-			}
-		} else {
-			if (!variables.contains(name)) {
-				variables.add(name);
+			} else {
 				groupVariableBuilder.append(
 					'''
 					GroupVariableExpr «name» = new GroupVariableExpr("«name»");
@@ -289,27 +285,30 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			}
 		}
 		
-		variables.add(name);
-		
 		return name;
 	}
 	
-	def dispatch String generateCode(NumberLiteral node, BranchState state) {
+	def dispatch String generateCode(LocalVariable variable, BranchState state) {
+		val String name = ModelHelper.convertToJavaName(variable.getName());
+		return name;
+	}
+	
+	def dispatch String generateCode(NumberLiteral number, BranchState state) {
 		
-		val String name = "val_" + node.getValue();
+		val String name = "val_" + number.getValue();
 		
-		if (!literals.contains(name)) {
-			literals.add(name);
-			literalBuilder.append('''
-				ExponentLiteralExpr «name» = new ExponentLiteralExpr(«node.getValue()»);
+		if (!numberLiterals.contains(name)) {
+			numberLiterals.add(name);
+			numberLiteralBuilder.append('''
+				ExponentLiteralExpr «name» = new ExponentLiteralExpr(«number.getValue()»);
 			''');
 		}
 
 		return name;
 	}
 	
-	def dispatch String generateCode(Brackets node, BranchState state) {
-		return generateCode(node.getContent(), state);
+	def dispatch String generateCode(Brackets brackets, BranchState state) {
+		return generateCode(brackets.getContent(), state);
 	}
 	
 }

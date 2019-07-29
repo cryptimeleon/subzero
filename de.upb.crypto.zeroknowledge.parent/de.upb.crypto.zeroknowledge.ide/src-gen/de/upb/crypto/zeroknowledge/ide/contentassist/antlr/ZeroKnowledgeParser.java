@@ -120,6 +120,7 @@ public class ZeroKnowledgeParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFunctionCallAccess().getArgumentsAssignment_1_1_1_1(), "rule__FunctionCall__ArgumentsAssignment_1_1_1_1");
 			builder.put(grammarAccess.getVariableAccess().getNameAssignment(), "rule__Variable__NameAssignment");
 			builder.put(grammarAccess.getLocalVariableAccess().getNameAssignment_1(), "rule__LocalVariable__NameAssignment_1");
+			builder.put(grammarAccess.getLocalVariableAccess().getFunctionAssignment_2(), "rule__LocalVariable__FunctionAssignment_2");
 			builder.put(grammarAccess.getNumberLiteralAccess().getValueAssignment(), "rule__NumberLiteral__ValueAssignment");
 			builder.put(grammarAccess.getBracketsAccess().getContentAssignment_1(), "rule__Brackets__ContentAssignment_1");
 		}

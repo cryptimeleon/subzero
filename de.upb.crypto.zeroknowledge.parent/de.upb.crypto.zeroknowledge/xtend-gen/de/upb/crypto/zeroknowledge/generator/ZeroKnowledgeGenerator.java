@@ -6,8 +6,9 @@ package de.upb.crypto.zeroknowledge.generator;
 import com.google.common.base.Objects;
 import de.upb.crypto.zeroknowledge.helpers.BranchState;
 import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
-import de.upb.crypto.zeroknowledge.helpers.ModelMap;
 import de.upb.crypto.zeroknowledge.helpers.ModelPrinter;
+import de.upb.crypto.zeroknowledge.helpers.Type;
+import de.upb.crypto.zeroknowledge.helpers.TypeResolution;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -15,6 +16,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Disjunction;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Expression;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Negative;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
@@ -28,8 +30,6 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -37,7 +37,6 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 /**
  * Generates code from your model files on save.
@@ -46,9 +45,13 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
  */
 @SuppressWarnings("all")
 public class ZeroKnowledgeGenerator extends AbstractGenerator {
-  private Set<String> variables;
+  private HashMap<EObject, Type> types;
   
-  private Set<String> literals;
+  private HashSet<String> variables;
+  
+  private HashSet<String> numberLiterals;
+  
+  private HashSet<String> stringLiterals;
   
   private StringBuilder codeBuilder;
   
@@ -60,7 +63,11 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   
   private StringBuilder groupVariableBuilder;
   
-  private StringBuilder literalBuilder;
+  private StringBuilder numberLiteralBuilder;
+  
+  private StringBuilder stringLiteralBuilder;
+  
+  private int stringLiteralCount;
   
   private String OPERATOR_EQUAL = "=";
   
@@ -83,7 +90,9 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     HashSet<String> _hashSet = new HashSet<String>();
     this.variables = _hashSet;
     HashSet<String> _hashSet_1 = new HashSet<String>();
-    this.literals = _hashSet_1;
+    this.numberLiterals = _hashSet_1;
+    HashSet<String> _hashSet_2 = new HashSet<String>();
+    this.stringLiterals = _hashSet_2;
     StringBuilder _stringBuilder = new StringBuilder();
     this.codeBuilder = _stringBuilder;
     StringBuilder _stringBuilder_1 = new StringBuilder();
@@ -95,7 +104,9 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     StringBuilder _stringBuilder_4 = new StringBuilder();
     this.groupVariableBuilder = _stringBuilder_4;
     StringBuilder _stringBuilder_5 = new StringBuilder();
-    this.literalBuilder = _stringBuilder_5;
+    this.numberLiteralBuilder = _stringBuilder_5;
+    StringBuilder _stringBuilder_6 = new StringBuilder();
+    this.stringLiteralBuilder = _stringBuilder_6;
     EObject _next = resource.getContents().iterator().next();
     final Model model = ((Model) _next);
     final boolean inline = false;
@@ -103,6 +114,7 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
       ModelHelper.inlineFunctions(model);
     }
     ModelHelper.normalizeNegatives(model);
+    this.types = TypeResolution.resolveTypes(model);
     ModelPrinter.print(model);
     this.generateImports();
     BranchState _branchState = new BranchState();
@@ -110,15 +122,41 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     BranchState _branchState_1 = new BranchState();
     final String code = this.generateCode(model, _branchState_1);
     this.codeBuilder.append(this.importBuilder);
-    this.codeBuilder.append(this.NEWLINE);
+    int _length = this.importBuilder.length();
+    boolean _tripleNotEquals = (_length != 0);
+    if (_tripleNotEquals) {
+      this.codeBuilder.append(this.NEWLINE);
+    }
     this.codeBuilder.append(this.functionBuilder);
-    this.codeBuilder.append(this.NEWLINE);
-    this.codeBuilder.append(this.literalBuilder);
-    this.codeBuilder.append(this.NEWLINE);
+    int _length_1 = this.functionBuilder.length();
+    boolean _tripleNotEquals_1 = (_length_1 != 0);
+    if (_tripleNotEquals_1) {
+      this.codeBuilder.append(this.NEWLINE);
+    }
+    this.codeBuilder.append(this.numberLiteralBuilder);
+    int _length_2 = this.numberLiteralBuilder.length();
+    boolean _tripleNotEquals_2 = (_length_2 != 0);
+    if (_tripleNotEquals_2) {
+      this.codeBuilder.append(this.NEWLINE);
+    }
+    this.codeBuilder.append(this.stringLiteralBuilder);
+    int _length_3 = this.stringLiteralBuilder.length();
+    boolean _tripleNotEquals_3 = (_length_3 != 0);
+    if (_tripleNotEquals_3) {
+      this.codeBuilder.append(this.NEWLINE);
+    }
     this.codeBuilder.append(this.exponentVariableBuilder);
-    this.codeBuilder.append(this.NEWLINE);
+    int _length_4 = this.exponentVariableBuilder.length();
+    boolean _tripleNotEquals_4 = (_length_4 != 0);
+    if (_tripleNotEquals_4) {
+      this.codeBuilder.append(this.NEWLINE);
+    }
     this.codeBuilder.append(this.groupVariableBuilder);
-    this.codeBuilder.append(this.NEWLINE);
+    int _length_5 = this.groupVariableBuilder.length();
+    boolean _tripleNotEquals_5 = (_length_5 != 0);
+    if (_tripleNotEquals_5) {
+      this.codeBuilder.append(this.NEWLINE);
+    }
     this.codeBuilder.append(code);
     System.out.println(this.codeBuilder.toString());
     boolean _isCanceled = context.getCancelIndicator().isCanceled();
@@ -138,51 +176,13 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   public void generateFunctions(final Model model, final BranchState state) {
     EList<FunctionDefinition> _functions = model.getFunctions();
     for (final FunctionDefinition function : _functions) {
-      {
-        final Map<String, Boolean> mapping = new HashMap<String, Boolean>();
-        final Procedure1<EObject> _function = (EObject node) -> {
-          if ((node instanceof Sum)) {
-            final Procedure1<EObject> _function_1 = (EObject child) -> {
-              if ((child instanceof Variable)) {
-                final String name = ((Variable)child).getName();
-                boolean _containsKey = mapping.containsKey(name);
-                boolean _not = (!_containsKey);
-                if (_not) {
-                  mapping.put(name, Boolean.valueOf(true));
-                }
-              }
-            };
-            ModelMap.postorder(node, _function_1);
-          } else {
-            if ((node instanceof Power)) {
-              final Procedure1<EObject> _function_2 = (EObject child) -> {
-                if ((child instanceof Variable)) {
-                  final String name = ((Variable)child).getName();
-                  boolean _containsKey = mapping.containsKey(name);
-                  boolean _not = (!_containsKey);
-                  if (_not) {
-                    mapping.put(name, Boolean.valueOf(true));
-                  }
-                }
-              };
-              ModelMap.postorder(((Power)node).getRight(), _function_2);
-            }
-          }
-        };
-        ModelMap.preorder(function.getBody(), _function);
-        final Procedure1<EObject> _function_1 = (EObject node) -> {
-          if ((node instanceof Variable)) {
-            final String name = ((Variable)node).getName();
-            boolean _containsKey = mapping.containsKey(name);
-            boolean _not = (!_containsKey);
-            if (_not) {
-              mapping.put(name, Boolean.valueOf(false));
-            }
-          }
-        };
-        ModelMap.postorder(function.getBody(), _function_1);
+      boolean _containsKey = this.types.containsKey(function);
+      if (_containsKey) {
+        final String returnType = Type.toReturnType(this.types.get(function));
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("private static ");
+        _builder.append(returnType);
+        _builder.append(" ");
         String _name = function.getName();
         _builder.append(_name);
         _builder.append("(");
@@ -195,13 +195,8 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
             } else {
               _builder.appendImmediate(", ", "");
             }
-            {
-              if (((Boolean.valueOf(mapping.containsKey(parameter.getName())) == Boolean.valueOf(true)) && (mapping.get(parameter.getName())).booleanValue())) {
-                _builder.append("ExponentVariableExpr");
-              } else {
-                _builder.append("GroupVariablExpr");
-              }
-            }
+            String _returnType = Type.toReturnType(this.types.get(parameter));
+            _builder.append(_returnType);
             _builder.append(" ");
             String _name_1 = parameter.getName();
             _builder.append(_name_1);
@@ -210,6 +205,7 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
         _builder.append(") {");
         _builder.newLineIfNotEmpty();
         _builder.append("  ");
+        _builder.append("return ");
         String _generateCode = this.generateCode(function.getBody(), state);
         _builder.append(_generateCode, "  ");
         _builder.append(";");
@@ -221,17 +217,17 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     }
   }
   
-  protected String _generateCode(final Model node, final BranchState state) {
+  protected String _generateCode(final Model model, final BranchState state) {
     StringConcatenation _builder = new StringConcatenation();
-    String _generateCode = this.generateCode(node.getProof(), state);
+    String _generateCode = this.generateCode(model.getProof(), state);
     _builder.append(_generateCode);
     _builder.append(";");
     return _builder.toString();
   }
   
-  protected String _generateCode(final Conjunction node, final BranchState state) {
-    final String left = this.generateCode(node.getLeft(), state);
-    final String right = this.generateCode(node.getRight(), state);
+  protected String _generateCode(final Conjunction conjunction, final BranchState state) {
+    final String left = this.generateCode(conjunction.getLeft(), state);
+    final String right = this.generateCode(conjunction.getRight(), state);
     StringConcatenation _builder = new StringConcatenation();
     _builder.append(left);
     _builder.newLineIfNotEmpty();
@@ -241,9 +237,9 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
-  protected String _generateCode(final Disjunction node, final BranchState state) {
-    final String left = this.generateCode(node.getLeft(), state);
-    final String right = this.generateCode(node.getRight(), state);
+  protected String _generateCode(final Disjunction disjunction, final BranchState state) {
+    final String left = this.generateCode(disjunction.getLeft(), state);
+    final String right = this.generateCode(disjunction.getRight(), state);
     StringConcatenation _builder = new StringConcatenation();
     _builder.append(left);
     _builder.append(".or(");
@@ -252,11 +248,11 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
-  protected String _generateCode(final Comparison node, final BranchState state) {
-    final String left = this.generateCode(node.getLeft(), state);
-    final String right = this.generateCode(node.getRight(), state);
+  protected String _generateCode(final Comparison comparison, final BranchState state) {
+    final String left = this.generateCode(comparison.getLeft(), state);
+    final String right = this.generateCode(comparison.getRight(), state);
     String operator = null;
-    String _operation = node.getOperation();
+    String _operation = comparison.getOperation();
     boolean _matched = false;
     if (Objects.equal(_operation, this.OPERATOR_EQUAL)) {
       _matched=true;
@@ -302,10 +298,10 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
-  protected String _generateCode(final Sum node, final BranchState state) {
+  protected String _generateCode(final Sum sum, final BranchState state) {
     final BranchState newState = new BranchState(state);
-    final String left = this.generateCode(node.getLeft(), newState);
-    final String right = this.generateCode(node.getRight(), newState);
+    final String left = this.generateCode(sum.getLeft(), newState);
+    final String right = this.generateCode(sum.getRight(), newState);
     StringConcatenation _builder = new StringConcatenation();
     _builder.append(left);
     _builder.append(".add(");
@@ -314,11 +310,12 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
-  protected String _generateCode(final Product node, final BranchState state) {
-    final String left = this.generateCode(node.getLeft(), state);
-    final String right = this.generateCode(node.getRight(), state);
-    boolean _hasSumOrPowerAncestor = ModelHelper.hasSumOrPowerAncestor(node);
-    if (_hasSumOrPowerAncestor) {
+  protected String _generateCode(final Product product, final BranchState state) {
+    final String left = this.generateCode(product.getLeft(), state);
+    final String right = this.generateCode(product.getRight(), state);
+    Type _get = this.types.get(product);
+    boolean _tripleEquals = (_get == Type.EXPONENT);
+    if (_tripleEquals) {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append(left);
       _builder.append(".mul(");
@@ -335,9 +332,9 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     }
   }
   
-  protected String _generateCode(final Power node, final BranchState state) {
-    final String left = this.generateCode(node.getLeft(), state);
-    final String right = this.generateCode(node.getRight(), state);
+  protected String _generateCode(final Power power, final BranchState state) {
+    final String left = this.generateCode(power.getLeft(), state);
+    final String right = this.generateCode(power.getRight(), state);
     StringConcatenation _builder = new StringConcatenation();
     _builder.append(left);
     _builder.append(".pow(");
@@ -346,11 +343,26 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
-  protected String _generateCode(final StringLiteral node, final BranchState state) {
-    StringConcatenation _builder = new StringConcatenation();
-    String _value = node.getValue();
-    _builder.append(_value);
-    return _builder.toString();
+  protected String _generateCode(final StringLiteral string, final BranchState state) {
+    int _plusPlus = this.stringLiteralCount++;
+    final String name = ("stringLiteral" + Integer.valueOf(_plusPlus));
+    final String value = string.getValue();
+    boolean _contains = this.stringLiterals.contains(value);
+    boolean _not = (!_contains);
+    if (_not) {
+      this.stringLiterals.add(value);
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("String ");
+      _builder.append(name);
+      _builder.append(" = ");
+      _builder.append(value);
+      _builder.append(";");
+      _builder.newLineIfNotEmpty();
+      this.stringLiteralBuilder.append(_builder);
+    }
+    StringConcatenation _builder_1 = new StringConcatenation();
+    _builder_1.append("value");
+    return _builder_1.toString();
   }
   
   protected String _generateCode(final Tuple node, final BranchState state) {
@@ -379,13 +391,13 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
-  protected String _generateCode(final FunctionCall node, final BranchState state) {
-    final String name = ModelHelper.convertToJavaName(node.getName());
+  protected String _generateCode(final FunctionCall call, final BranchState state) {
+    final String name = ModelHelper.convertToJavaName(call.getName());
     StringConcatenation _builder = new StringConcatenation();
     _builder.append(name);
     _builder.append("(");
     {
-      EList<Expression> _arguments = node.getArguments();
+      EList<Expression> _arguments = call.getArguments();
       boolean _hasElements = false;
       for(final Expression argument : _arguments) {
         if (!_hasElements) {
@@ -393,34 +405,32 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
         } else {
           _builder.appendImmediate(",", "");
         }
-        _builder.append("generateCode(argument)");
+        String _generateCode = this.generateCode(argument, state);
+        _builder.append(_generateCode);
       }
     }
     _builder.append(")");
     return _builder.toString();
   }
   
-  protected String _generateCode(final Variable node, final BranchState state) {
-    final String name = ModelHelper.convertToJavaName(node.getName());
-    if (true) {
-      boolean _contains = this.variables.contains(name);
-      boolean _not = (!_contains);
-      if (_not) {
-        this.variables.add(name);
+  protected String _generateCode(final Variable variable, final BranchState state) {
+    final String name = ModelHelper.convertToJavaName(variable.getName());
+    boolean _contains = this.variables.contains(name);
+    boolean _not = (!_contains);
+    if (_not) {
+      this.variables.add(name);
+      Type _get = this.types.get(variable);
+      boolean _tripleEquals = (_get == Type.EXPONENT);
+      if (_tripleEquals) {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("ExponentVariableExpr ");
         _builder.append(name);
-        _builder.append(" = new ExponentVariableExpr(");
+        _builder.append(" = new ExponentVariableExpr(\"");
         _builder.append(name);
-        _builder.append(");");
+        _builder.append("\");");
         _builder.newLineIfNotEmpty();
         this.exponentVariableBuilder.append(_builder);
-      }
-    } else {
-      boolean _contains_1 = this.variables.contains(name);
-      boolean _not_1 = (!_contains_1);
-      if (_not_1) {
-        this.variables.add(name);
+      } else {
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append("GroupVariableExpr ");
         _builder_1.append(name);
@@ -431,66 +441,72 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
         this.groupVariableBuilder.append(_builder_1);
       }
     }
-    this.variables.add(name);
     return name;
   }
   
-  protected String _generateCode(final NumberLiteral node, final BranchState state) {
-    int _value = node.getValue();
+  protected String _generateCode(final LocalVariable variable, final BranchState state) {
+    final String name = ModelHelper.convertToJavaName(variable.getName());
+    return name;
+  }
+  
+  protected String _generateCode(final NumberLiteral number, final BranchState state) {
+    int _value = number.getValue();
     final String name = ("val_" + Integer.valueOf(_value));
-    boolean _contains = this.literals.contains(name);
+    boolean _contains = this.numberLiterals.contains(name);
     boolean _not = (!_contains);
     if (_not) {
-      this.literals.add(name);
+      this.numberLiterals.add(name);
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("ExponentLiteralExpr ");
       _builder.append(name);
       _builder.append(" = new ExponentLiteralExpr(");
-      int _value_1 = node.getValue();
+      int _value_1 = number.getValue();
       _builder.append(_value_1);
       _builder.append(");");
       _builder.newLineIfNotEmpty();
-      this.literalBuilder.append(_builder);
+      this.numberLiteralBuilder.append(_builder);
     }
     return name;
   }
   
-  protected String _generateCode(final Brackets node, final BranchState state) {
-    return this.generateCode(node.getContent(), state);
+  protected String _generateCode(final Brackets brackets, final BranchState state) {
+    return this.generateCode(brackets.getContent(), state);
   }
   
-  public String generateCode(final EObject node, final BranchState state) {
-    if (node instanceof Brackets) {
-      return _generateCode((Brackets)node, state);
-    } else if (node instanceof Comparison) {
-      return _generateCode((Comparison)node, state);
-    } else if (node instanceof Conjunction) {
-      return _generateCode((Conjunction)node, state);
-    } else if (node instanceof Disjunction) {
-      return _generateCode((Disjunction)node, state);
-    } else if (node instanceof FunctionCall) {
-      return _generateCode((FunctionCall)node, state);
-    } else if (node instanceof Negative) {
-      return _generateCode((Negative)node, state);
-    } else if (node instanceof NumberLiteral) {
-      return _generateCode((NumberLiteral)node, state);
-    } else if (node instanceof Power) {
-      return _generateCode((Power)node, state);
-    } else if (node instanceof Product) {
-      return _generateCode((Product)node, state);
-    } else if (node instanceof StringLiteral) {
-      return _generateCode((StringLiteral)node, state);
-    } else if (node instanceof Sum) {
-      return _generateCode((Sum)node, state);
-    } else if (node instanceof Tuple) {
-      return _generateCode((Tuple)node, state);
-    } else if (node instanceof Variable) {
-      return _generateCode((Variable)node, state);
-    } else if (node instanceof Model) {
-      return _generateCode((Model)node, state);
+  public String generateCode(final EObject variable, final BranchState state) {
+    if (variable instanceof LocalVariable) {
+      return _generateCode((LocalVariable)variable, state);
+    } else if (variable instanceof Brackets) {
+      return _generateCode((Brackets)variable, state);
+    } else if (variable instanceof Comparison) {
+      return _generateCode((Comparison)variable, state);
+    } else if (variable instanceof Conjunction) {
+      return _generateCode((Conjunction)variable, state);
+    } else if (variable instanceof Disjunction) {
+      return _generateCode((Disjunction)variable, state);
+    } else if (variable instanceof FunctionCall) {
+      return _generateCode((FunctionCall)variable, state);
+    } else if (variable instanceof Negative) {
+      return _generateCode((Negative)variable, state);
+    } else if (variable instanceof NumberLiteral) {
+      return _generateCode((NumberLiteral)variable, state);
+    } else if (variable instanceof Power) {
+      return _generateCode((Power)variable, state);
+    } else if (variable instanceof Product) {
+      return _generateCode((Product)variable, state);
+    } else if (variable instanceof StringLiteral) {
+      return _generateCode((StringLiteral)variable, state);
+    } else if (variable instanceof Sum) {
+      return _generateCode((Sum)variable, state);
+    } else if (variable instanceof Tuple) {
+      return _generateCode((Tuple)variable, state);
+    } else if (variable instanceof Variable) {
+      return _generateCode((Variable)variable, state);
+    } else if (variable instanceof Model) {
+      return _generateCode((Model)variable, state);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
-        Arrays.<Object>asList(node, state).toString());
+        Arrays.<Object>asList(variable, state).toString());
     }
   }
 }

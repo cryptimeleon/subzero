@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="defaultType"/>
+		<item key="selection" value="resolveTypes"/>
 		<item key="wrap" value="true"/>
-		<item key="casesensitive" value="false"/>
+		<item key="casesensitive" value="true"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="defaultType"/>
-			<item value="GETALL"/>
-			<item value="EStruc"/>
-			<item value="EStructuralFeature"/>
-			<item value="replaceParentRefere"/>
-			<item value="Types"/>
-			<item value="createLocal"/>
-			<item value="Local"/>
-			<item value="Loal"/>
-			<item value="LocalVariable"/>
-			<item value="local"/>
-			<item value="Factor"/>
-			<item value="Negative"/>
-			<item value="Variable"/>
-			<item value="void resolveTypes"/>
+			<item value="resolveTypes"/>
+			<item value="userFunctionsMap"/>
+			<item value="userFunctionsMp"/>
+			<item value="AnotherFunctio"/>
+			<item value="VARIABLEBACK"/>
+			<item value="POWER"/>
+			<item value="BACKPROPA"/>
+			<item value="backprop"/>
+			<item value="back"/>
+			<item value="backpropa"/>
+			<item value="getAllLocal"/>
+			<item value="fillE"/>
+			<item value="fillE("/>
+			<item value="exponentFill"/>
+			<item value="fillExponent"/>
 		</list>
 		<list key="replacehistory">
+			<item value="topdownInference"/>
+			<item value="setGroupElement"/>
+			<item value="fillGroupElement"/>
+			<item value="getAllParameters"/>
 			<item value="static"/>
 			<item value="checkValidAlgebraicPosition"/>
 			<item value="checkFunctionParametersAreUsed"/>
@@ -36,10 +40,6 @@
 			<item value="Comparison"/>
 			<item value="Disjunction"/>
 			<item value="Conjunction"/>
-			<item value="FunctionDefinition"/>
-			<item value="ModelHelper.hasSum"/>
-			<item value="Any"/>
-			<item value="Brackets"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

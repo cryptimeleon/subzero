@@ -1,0 +1,92 @@
+grammar de.upb.crypto.zeroknowledge.ZeroKnowledge hidden(WHITESPACE, ML_COMMENT, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate zeroKnowledge "http://www.upb.de/crypto/zeroknowledge/ZeroKnowledge"
+
+Model returns Model:
+  functions+=(FunctionDefinition)* witnessList=WitnessList ';'? proof=Conjunction ';'?;
+
+FunctionDefinition returns FunctionDefinition:
+  name=IDENTIFIER parameterList=ParameterList '{' body=Conjunction ';'? '}' ';'?;
+
+ParameterList returns ParameterList:
+  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? ')';
+
+Parameter returns Parameter:
+  name=IDENTIFIER;
+  
+WitnessList returns WitnessList:
+  '(' witnesses+=Witness? (',' witnesses+=Witness)* ')';
+
+Witness returns Witness:
+  name=IDENTIFIER;
+
+Expression:
+  Conjunction;
+
+Conjunction returns Expression:
+  Disjunction ({Conjunction.left=current} operation='&' right=Disjunction)*;
+
+Disjunction returns Expression:
+  Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
+
+Comparison returns Expression:
+  Sum (({Comparison.left=current} operation='!=' | {Comparison.left=current} operation='=' | {Comparison.left=current} operation='>=' | {Comparison.left=current} operation='<=' | {Comparison.left=current} operation='>' | {Comparison.left=current} operation='<') right=Sum)?;
+
+Sum returns Expression:
+  Product (({Sum.left=current} operation='+' | {Sum.left=current} operation='-') right=Product)*;
+
+Product returns Expression:
+  Power (({Product.left=current} operation='*' | {Product.left=current} operation='/') right=Power)*;
+ 
+Power returns Expression:
+	Construct ({Power.left = current} '^' right=Power)?;
+
+Construct returns Expression:
+  StringLiteral | Tuple | Negative;
+  
+StringLiteral returns StringLiteral:
+  value=STRING_LITERAL;
+
+Tuple returns Expression:
+  =>({Tuple} '(' elements+=Conjunction ',') elements+=Conjunction (',' elements+=Conjunction)* ')';
+
+Negative returns Expression:
+  {Negative} '-' term=Value | Value;
+
+Value returns Expression:
+  FunctionCall | Variable | NumberLiteral | '(' Brackets ')';
+
+FunctionCall returns Expression:
+  {FunctionCall} (->(name=IDENTIFIER '(') (arguments+=Conjunction (',' arguments+=Conjunction)*)? ')');
+
+Variable returns Variable:
+  name=IDENTIFIER;
+  
+LocalVariable returns Variable:
+  {LocalVariable} name=IDENTIFIER function=IDENTIFIER;
+
+NumberLiteral returns NumberLiteral:
+  value=INT;
+
+Brackets returns Expression:
+	{Brackets} content=Expression;
+	
+terminal INT returns ecore::EInt:
+  ('0'..'9')+;
+
+terminal ML_COMMENT:
+  '/*' -> '*/';
+
+terminal SL_COMMENT:
+  '//' !('\n'|'\r')* ('\r'? '\n')?;
+
+terminal WHITESPACE:
+  (' '|'\t'|'\r'|'\n')+;
+
+terminal IDENTIFIER:
+	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')*;
+
+terminal STRING_LITERAL:
+  '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';

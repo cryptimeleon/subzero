@@ -892,12 +892,14 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Action cLocalVariableAction_0 = (Action)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameIDENTIFIERTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Assignment cFunctionAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cFunctionIDENTIFIERTerminalRuleCall_2_0 = (RuleCall)cFunctionAssignment_2.eContents().get(0);
 		
 		//LocalVariable Variable:
-		//	{LocalVariable} name=IDENTIFIER;
+		//	{LocalVariable} name=IDENTIFIER function=IDENTIFIER;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//{LocalVariable} name=IDENTIFIER
+		//{LocalVariable} name=IDENTIFIER function=IDENTIFIER
 		public Group getGroup() { return cGroup; }
 		
 		//{LocalVariable}
@@ -908,6 +910,12 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//IDENTIFIER
 		public RuleCall getNameIDENTIFIERTerminalRuleCall_1_0() { return cNameIDENTIFIERTerminalRuleCall_1_0; }
+		
+		//function=IDENTIFIER
+		public Assignment getFunctionAssignment_2() { return cFunctionAssignment_2; }
+		
+		//IDENTIFIER
+		public RuleCall getFunctionIDENTIFIERTerminalRuleCall_2_0() { return cFunctionIDENTIFIERTerminalRuleCall_2_0; }
 	}
 	public class NumberLiteralElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.NumberLiteral");
@@ -1241,7 +1249,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//LocalVariable Variable:
-	//	{LocalVariable} name=IDENTIFIER;
+	//	{LocalVariable} name=IDENTIFIER function=IDENTIFIER;
 	public LocalVariableElements getLocalVariableAccess() {
 		return pLocalVariable;
 	}
