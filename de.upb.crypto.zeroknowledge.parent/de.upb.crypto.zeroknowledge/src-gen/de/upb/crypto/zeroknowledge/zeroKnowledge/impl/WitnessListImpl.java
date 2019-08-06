@@ -9,6 +9,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -16,6 +17,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -30,6 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessListImpl#getWitnesses <em>Witnesses</em>}</li>
+ *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessListImpl#getSymbol <em>Symbol</em>}</li>
  * </ul>
  *
  * @generated
@@ -45,6 +48,26 @@ public class WitnessListImpl extends MinimalEObjectImpl.Container implements Wit
    * @ordered
    */
   protected EList<Witness> witnesses;
+
+  /**
+   * The default value of the '{@link #getSymbol() <em>Symbol</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSymbol()
+   * @generated
+   * @ordered
+   */
+  protected static final String SYMBOL_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSymbol() <em>Symbol</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSymbol()
+   * @generated
+   * @ordered
+   */
+  protected String symbol = SYMBOL_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -88,6 +111,31 @@ public class WitnessListImpl extends MinimalEObjectImpl.Container implements Wit
    * @generated
    */
   @Override
+  public String getSymbol()
+  {
+    return symbol;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setSymbol(String newSymbol)
+  {
+    String oldSymbol = symbol;
+    symbol = newSymbol;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ZeroKnowledgePackage.WITNESS_LIST__SYMBOL, oldSymbol, symbol));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
     switch (featureID)
@@ -110,6 +158,8 @@ public class WitnessListImpl extends MinimalEObjectImpl.Container implements Wit
     {
       case ZeroKnowledgePackage.WITNESS_LIST__WITNESSES:
         return getWitnesses();
+      case ZeroKnowledgePackage.WITNESS_LIST__SYMBOL:
+        return getSymbol();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -129,6 +179,9 @@ public class WitnessListImpl extends MinimalEObjectImpl.Container implements Wit
         getWitnesses().clear();
         getWitnesses().addAll((Collection<? extends Witness>)newValue);
         return;
+      case ZeroKnowledgePackage.WITNESS_LIST__SYMBOL:
+        setSymbol((String)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -146,6 +199,9 @@ public class WitnessListImpl extends MinimalEObjectImpl.Container implements Wit
       case ZeroKnowledgePackage.WITNESS_LIST__WITNESSES:
         getWitnesses().clear();
         return;
+      case ZeroKnowledgePackage.WITNESS_LIST__SYMBOL:
+        setSymbol(SYMBOL_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -162,8 +218,27 @@ public class WitnessListImpl extends MinimalEObjectImpl.Container implements Wit
     {
       case ZeroKnowledgePackage.WITNESS_LIST__WITNESSES:
         return witnesses != null && !witnesses.isEmpty();
+      case ZeroKnowledgePackage.WITNESS_LIST__SYMBOL:
+        return SYMBOL_EDEFAULT == null ? symbol != null : !SYMBOL_EDEFAULT.equals(symbol);
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (symbol: ");
+    result.append(symbol);
+    result.append(')');
+    return result.toString();
   }
 
 } //WitnessListImpl

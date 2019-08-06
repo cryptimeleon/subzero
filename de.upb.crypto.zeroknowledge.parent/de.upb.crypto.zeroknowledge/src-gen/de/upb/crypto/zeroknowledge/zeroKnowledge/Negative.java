@@ -13,6 +13,7 @@ package de.upb.crypto.zeroknowledge.zeroKnowledge;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Negative#getOperation <em>Operation</em>}</li>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Negative#getTerm <em>Term</em>}</li>
  * </ul>
  *
@@ -22,6 +23,28 @@ package de.upb.crypto.zeroknowledge.zeroKnowledge;
  */
 public interface Negative extends Expression
 {
+  /**
+   * Returns the value of the '<em><b>Operation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Operation</em>' attribute.
+   * @see #setOperation(String)
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage#getNegative_Operation()
+   * @model
+   * @generated
+   */
+  String getOperation();
+
+  /**
+   * Sets the value of the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Negative#getOperation <em>Operation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Operation</em>' attribute.
+   * @see #getOperation()
+   * @generated
+   */
+  void setOperation(String value);
+
   /**
    * Returns the value of the '<em><b>Term</b></em>' containment reference.
    * <!-- begin-user-doc -->

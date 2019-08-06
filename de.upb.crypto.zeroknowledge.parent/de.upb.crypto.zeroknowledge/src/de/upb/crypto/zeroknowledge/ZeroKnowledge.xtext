@@ -11,13 +11,13 @@ FunctionDefinition returns FunctionDefinition:
   name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
 
 ParameterList returns ParameterList:
-  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? ')';
+  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')';
 
 Parameter returns Parameter:
   name=IDENTIFIER;
   
 WitnessList returns WitnessList:
-  '(' witnesses+=Witness? (',' witnesses+=Witness)* ')';
+  '(' (witnesses+=Witness (',' witnesses+=Witness)*)? symbol=')';
 
 Witness returns Witness:
   name=IDENTIFIER;
@@ -41,7 +41,7 @@ Product returns Expression:
   Power (({Product.left=current} operation='*' | {Product.left=current} operation='/') right=Power)*;
  
 Power returns Expression:
-	Construct ({Power.left = current} '^' right=Power)?;
+	Construct ({Power.left = current} operation='^' right=Power)?;
 
 Construct returns Expression:
   StringLiteral | Tuple | Negative;
@@ -53,19 +53,25 @@ Tuple returns Expression:
   =>({Tuple} '(' elements+=Conjunction ',') elements+=Conjunction (',' elements+=Conjunction)* ')';
 
 Negative returns Expression:
-  {Negative} '-' term=Value | Value;
+  {Negative} operation='-' term=Value | Value;
 
 Value returns Expression:
   FunctionCall | Variable | NumberLiteral | '(' Brackets ')';
 
 FunctionCall returns Expression:
-  {FunctionCall} (->(name=IDENTIFIER '(') (arguments+=Conjunction (',' arguments+=Conjunction)*)? ')');
+  {FunctionCall} (->(name=IDENTIFIER '(') (arguments+=Argument (',' arguments+=Argument)*)? ')');
+
+Argument returns Expression:
+  {Argument} expression=Conjunction;
 
 Variable returns Variable:
   name=IDENTIFIER;
   
 LocalVariable returns Variable:
   {LocalVariable} name=IDENTIFIER function=IDENTIFIER;
+
+WitnessVariable returns Variable:
+  {WitnessVariable} name=IDENTIFIER;
 
 NumberLiteral returns NumberLiteral:
   value=INT;

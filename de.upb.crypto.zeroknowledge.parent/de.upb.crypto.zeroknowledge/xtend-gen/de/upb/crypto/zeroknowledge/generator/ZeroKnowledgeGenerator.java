@@ -4,11 +4,11 @@
 package de.upb.crypto.zeroknowledge.generator;
 
 import com.google.common.base.Objects;
-import de.upb.crypto.zeroknowledge.helpers.BranchState;
-import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
-import de.upb.crypto.zeroknowledge.helpers.ModelPrinter;
-import de.upb.crypto.zeroknowledge.helpers.Type;
-import de.upb.crypto.zeroknowledge.helpers.TypeResolution;
+import de.upb.crypto.zeroknowledge.model.BranchState;
+import de.upb.crypto.zeroknowledge.model.ModelHelper;
+import de.upb.crypto.zeroknowledge.type.Type;
+import de.upb.crypto.zeroknowledge.type.TypeResolution;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -85,8 +85,6 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   
   private String INDENT = "  ";
   
-  private String PREDEFINED_FUNCTIONS = "predefinedFunctions";
-  
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     HashSet<String> _hashSet = new HashSet<String>();
@@ -112,12 +110,16 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     EObject _next = resource.getContents().iterator().next();
     final Model model = ((Model) _next);
     final boolean inline = false;
+    boolean _isCanceled = context.getCancelIndicator().isCanceled();
+    if (_isCanceled) {
+      return;
+    }
     if (inline) {
       ModelHelper.inlineFunctions(model);
     }
     ModelHelper.normalizeNegatives(model);
-    this.types = TypeResolution.resolveTypes(model);
-    ModelPrinter.print(model);
+    TypeResolution.resolveTypes(model);
+    this.types = TypeResolution.getTypes();
     this.generateImports();
     BranchState _branchState = new BranchState();
     this.generateFunctions(model, _branchState);
@@ -161,8 +163,8 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     }
     this.codeBuilder.append(code);
     System.out.println(this.codeBuilder.toString());
-    boolean _isCanceled = context.getCancelIndicator().isCanceled();
-    if (_isCanceled) {
+    boolean _isCanceled_1 = context.getCancelIndicator().isCanceled();
+    if (_isCanceled_1) {
       return;
     }
     fsa.generateFile("first.java", this.codeBuilder.toString());
@@ -223,9 +225,16 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   
   protected String _generateCode(final Model model, final BranchState state) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.append("private static boolean proof() {");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("return ");
     String _generateCode = this.generateCode(model.getProof(), state);
-    _builder.append(_generateCode);
+    _builder.append(_generateCode, "\t");
     _builder.append(";");
+    _builder.newLineIfNotEmpty();
+    _builder.append("}");
+    _builder.newLine();
     return _builder.toString();
   }
   
@@ -417,6 +426,10 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     return _builder.toString();
   }
   
+  protected String _generateCode(final Argument argument, final BranchState state) {
+    return this.generateCode(argument.getExpression(), state);
+  }
+  
   protected String _generateCode(final Variable variable, final BranchState state) {
     final String name = ModelHelper.convertToJavaName(variable.getName());
     boolean _contains = this.variables.contains(name);
@@ -480,6 +493,8 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   public String generateCode(final EObject variable, final BranchState state) {
     if (variable instanceof LocalVariable) {
       return _generateCode((LocalVariable)variable, state);
+    } else if (variable instanceof Argument) {
+      return _generateCode((Argument)variable, state);
     } else if (variable instanceof Brackets) {
       return _generateCode((Brackets)variable, state);
     } else if (variable instanceof Comparison) {

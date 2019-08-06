@@ -169,13 +169,22 @@ public interface ZeroKnowledgePackage extends EPackage
   int PARAMETER_LIST__PARAMETERS = 0;
 
   /**
+   * The feature id for the '<em><b>Symbol</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PARAMETER_LIST__SYMBOL = 1;
+
+  /**
    * The number of structural features of the '<em>Parameter List</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PARAMETER_LIST_FEATURE_COUNT = 1;
+  int PARAMETER_LIST_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ParameterImpl <em>Parameter</em>}' class.
@@ -225,13 +234,22 @@ public interface ZeroKnowledgePackage extends EPackage
   int WITNESS_LIST__WITNESSES = 0;
 
   /**
+   * The feature id for the '<em><b>Symbol</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int WITNESS_LIST__SYMBOL = 1;
+
+  /**
    * The number of structural features of the '<em>Witness List</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int WITNESS_LIST_FEATURE_COUNT = 1;
+  int WITNESS_LIST_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessImpl <em>Witness</em>}' class.
@@ -614,13 +632,22 @@ public interface ZeroKnowledgePackage extends EPackage
   int POWER__LEFT = EXPRESSION_FEATURE_COUNT + 0;
 
   /**
+   * The feature id for the '<em><b>Operation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int POWER__OPERATION = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
    * The feature id for the '<em><b>Right</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int POWER__RIGHT = EXPRESSION_FEATURE_COUNT + 1;
+  int POWER__RIGHT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Power</em>' class.
@@ -629,7 +656,7 @@ public interface ZeroKnowledgePackage extends EPackage
    * @generated
    * @ordered
    */
-  int POWER_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+  int POWER_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.TupleImpl <em>Tuple</em>}' class.
@@ -670,13 +697,22 @@ public interface ZeroKnowledgePackage extends EPackage
   int NEGATIVE = 17;
 
   /**
+   * The feature id for the '<em><b>Operation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int NEGATIVE__OPERATION = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Term</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int NEGATIVE__TERM = EXPRESSION_FEATURE_COUNT + 0;
+  int NEGATIVE__TERM = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Negative</em>' class.
@@ -685,7 +721,7 @@ public interface ZeroKnowledgePackage extends EPackage
    * @generated
    * @ordered
    */
-  int NEGATIVE_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+  int NEGATIVE_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.FunctionCallImpl <em>Function Call</em>}' class.
@@ -725,6 +761,34 @@ public interface ZeroKnowledgePackage extends EPackage
   int FUNCTION_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
 
   /**
+   * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ArgumentImpl <em>Argument</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ArgumentImpl
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getArgument()
+   * @generated
+   */
+  int ARGUMENT = 19;
+
+  /**
+   * The feature id for the '<em><b>Expression</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARGUMENT__EXPRESSION = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Argument</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARGUMENT_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.LocalVariableImpl <em>Local Variable</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -732,7 +796,7 @@ public interface ZeroKnowledgePackage extends EPackage
    * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getLocalVariable()
    * @generated
    */
-  int LOCAL_VARIABLE = 19;
+  int LOCAL_VARIABLE = 20;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -762,6 +826,34 @@ public interface ZeroKnowledgePackage extends EPackage
   int LOCAL_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessVariableImpl <em>Witness Variable</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessVariableImpl
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getWitnessVariable()
+   * @generated
+   */
+  int WITNESS_VARIABLE = 21;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int WITNESS_VARIABLE__NAME = VARIABLE__NAME;
+
+  /**
+   * The number of structural features of the '<em>Witness Variable</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int WITNESS_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
+
+  /**
    * The meta object id for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.BracketsImpl <em>Brackets</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -769,7 +861,7 @@ public interface ZeroKnowledgePackage extends EPackage
    * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getBrackets()
    * @generated
    */
-  int BRACKETS = 20;
+  int BRACKETS = 22;
 
   /**
    * The feature id for the '<em><b>Content</b></em>' containment reference.
@@ -898,6 +990,17 @@ public interface ZeroKnowledgePackage extends EPackage
   EReference getParameterList_Parameters();
 
   /**
+   * Returns the meta object for the attribute '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList#getSymbol <em>Symbol</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Symbol</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList#getSymbol()
+   * @see #getParameterList()
+   * @generated
+   */
+  EAttribute getParameterList_Symbol();
+
+  /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter <em>Parameter</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -938,6 +1041,17 @@ public interface ZeroKnowledgePackage extends EPackage
    * @generated
    */
   EReference getWitnessList_Witnesses();
+
+  /**
+   * Returns the meta object for the attribute '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList#getSymbol <em>Symbol</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Symbol</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList#getSymbol()
+   * @see #getWitnessList()
+   * @generated
+   */
+  EAttribute getWitnessList_Symbol();
 
   /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Witness <em>Witness</em>}'.
@@ -1270,6 +1384,17 @@ public interface ZeroKnowledgePackage extends EPackage
   EReference getPower_Left();
 
   /**
+   * Returns the meta object for the attribute '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Power#getOperation <em>Operation</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Operation</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.Power#getOperation()
+   * @see #getPower()
+   * @generated
+   */
+  EAttribute getPower_Operation();
+
+  /**
    * Returns the meta object for the containment reference '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Power#getRight <em>Right</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1310,6 +1435,17 @@ public interface ZeroKnowledgePackage extends EPackage
    * @generated
    */
   EClass getNegative();
+
+  /**
+   * Returns the meta object for the attribute '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Negative#getOperation <em>Operation</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Operation</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.Negative#getOperation()
+   * @see #getNegative()
+   * @generated
+   */
+  EAttribute getNegative_Operation();
 
   /**
    * Returns the meta object for the containment reference '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Negative#getTerm <em>Term</em>}'.
@@ -1355,6 +1491,27 @@ public interface ZeroKnowledgePackage extends EPackage
   EReference getFunctionCall_Arguments();
 
   /**
+   * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Argument <em>Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Argument</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
+   * @generated
+   */
+  EClass getArgument();
+
+  /**
+   * Returns the meta object for the containment reference '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Argument#getExpression <em>Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Expression</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.Argument#getExpression()
+   * @see #getArgument()
+   * @generated
+   */
+  EReference getArgument_Expression();
+
+  /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable <em>Local Variable</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1374,6 +1531,16 @@ public interface ZeroKnowledgePackage extends EPackage
    * @generated
    */
   EAttribute getLocalVariable_Function();
+
+  /**
+   * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessVariable <em>Witness Variable</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Witness Variable</em>'.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessVariable
+   * @generated
+   */
+  EClass getWitnessVariable();
 
   /**
    * Returns the meta object for class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets <em>Brackets</em>}'.
@@ -1506,6 +1673,14 @@ public interface ZeroKnowledgePackage extends EPackage
     EReference PARAMETER_LIST__PARAMETERS = eINSTANCE.getParameterList_Parameters();
 
     /**
+     * The meta object literal for the '<em><b>Symbol</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PARAMETER_LIST__SYMBOL = eINSTANCE.getParameterList_Symbol();
+
+    /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ParameterImpl <em>Parameter</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1540,6 +1715,14 @@ public interface ZeroKnowledgePackage extends EPackage
      * @generated
      */
     EReference WITNESS_LIST__WITNESSES = eINSTANCE.getWitnessList_Witnesses();
+
+    /**
+     * The meta object literal for the '<em><b>Symbol</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute WITNESS_LIST__SYMBOL = eINSTANCE.getWitnessList_Symbol();
 
     /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessImpl <em>Witness</em>}' class.
@@ -1812,6 +1995,14 @@ public interface ZeroKnowledgePackage extends EPackage
     EReference POWER__LEFT = eINSTANCE.getPower_Left();
 
     /**
+     * The meta object literal for the '<em><b>Operation</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute POWER__OPERATION = eINSTANCE.getPower_Operation();
+
+    /**
      * The meta object literal for the '<em><b>Right</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1848,6 +2039,14 @@ public interface ZeroKnowledgePackage extends EPackage
     EClass NEGATIVE = eINSTANCE.getNegative();
 
     /**
+     * The meta object literal for the '<em><b>Operation</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute NEGATIVE__OPERATION = eINSTANCE.getNegative_Operation();
+
+    /**
      * The meta object literal for the '<em><b>Term</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1882,6 +2081,24 @@ public interface ZeroKnowledgePackage extends EPackage
     EReference FUNCTION_CALL__ARGUMENTS = eINSTANCE.getFunctionCall_Arguments();
 
     /**
+     * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ArgumentImpl <em>Argument</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ArgumentImpl
+     * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getArgument()
+     * @generated
+     */
+    EClass ARGUMENT = eINSTANCE.getArgument();
+
+    /**
+     * The meta object literal for the '<em><b>Expression</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ARGUMENT__EXPRESSION = eINSTANCE.getArgument_Expression();
+
+    /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.LocalVariableImpl <em>Local Variable</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1898,6 +2115,16 @@ public interface ZeroKnowledgePackage extends EPackage
      * @generated
      */
     EAttribute LOCAL_VARIABLE__FUNCTION = eINSTANCE.getLocalVariable_Function();
+
+    /**
+     * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessVariableImpl <em>Witness Variable</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.WitnessVariableImpl
+     * @see de.upb.crypto.zeroknowledge.zeroKnowledge.impl.ZeroKnowledgePackageImpl#getWitnessVariable()
+     * @generated
+     */
+    EClass WITNESS_VARIABLE = eINSTANCE.getWitnessVariable();
 
     /**
      * The meta object literal for the '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.BracketsImpl <em>Brackets</em>}' class.

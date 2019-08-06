@@ -171,9 +171,19 @@ public class ZeroKnowledgeAdapterFactory extends AdapterFactoryImpl
         return createFunctionCallAdapter();
       }
       @Override
+      public Adapter caseArgument(Argument object)
+      {
+        return createArgumentAdapter();
+      }
+      @Override
       public Adapter caseLocalVariable(LocalVariable object)
       {
         return createLocalVariableAdapter();
+      }
+      @Override
+      public Adapter caseWitnessVariable(WitnessVariable object)
+      {
+        return createWitnessVariableAdapter();
       }
       @Override
       public Adapter caseBrackets(Brackets object)
@@ -488,6 +498,21 @@ public class ZeroKnowledgeAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.Argument <em>Argument</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
+   * @generated
+   */
+  public Adapter createArgumentAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable <em>Local Variable</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -498,6 +523,21 @@ public class ZeroKnowledgeAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createLocalVariableAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessVariable <em>Witness Variable</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessVariable
+   * @generated
+   */
+  public Adapter createWitnessVariableAdapter()
   {
     return null;
   }

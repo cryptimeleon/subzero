@@ -5,6 +5,7 @@ package de.upb.crypto.zeroknowledge.serializer;
 
 import com.google.inject.Inject;
 import de.upb.crypto.zeroknowledge.services.ZeroKnowledgeGrammarAccess;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -24,6 +25,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessVariable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
@@ -50,6 +52,9 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 		Set<Parameter> parameters = context.getEnabledBooleanParameters();
 		if (epackage == ZeroKnowledgePackage.eINSTANCE)
 			switch (semanticObject.eClass().getClassifierID()) {
+			case ZeroKnowledgePackage.ARGUMENT:
+				sequence_Argument(context, (Argument) semanticObject); 
+				return; 
 			case ZeroKnowledgePackage.BRACKETS:
 				sequence_Brackets(context, (Brackets) semanticObject); 
 				return; 
@@ -110,10 +115,31 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 			case ZeroKnowledgePackage.WITNESS_LIST:
 				sequence_WitnessList(context, (WitnessList) semanticObject); 
 				return; 
+			case ZeroKnowledgePackage.WITNESS_VARIABLE:
+				sequence_WitnessVariable(context, (WitnessVariable) semanticObject); 
+				return; 
 			}
 		if (errorAcceptor != null)
 			errorAcceptor.accept(diagnosticProvider.createInvalidContextOrTypeDiagnostic(semanticObject, context));
 	}
+	
+	/**
+	 * Contexts:
+	 *     Argument returns Argument
+	 *
+	 * Constraint:
+	 *     expression=Conjunction
+	 */
+	protected void sequence_Argument(ISerializationContext context, Argument semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.ARGUMENT__EXPRESSION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.ARGUMENT__EXPRESSION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getArgumentAccess().getExpressionConjunctionParserRuleCall_1_0(), semanticObject.getExpression());
+		feeder.finish();
+	}
+	
 	
 	/**
 	 * Contexts:
@@ -265,7 +291,7 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     FunctionCall returns FunctionCall
 	 *
 	 * Constraint:
-	 *     (name=IDENTIFIER (arguments+=Conjunction arguments+=Conjunction*)?)
+	 *     (name=IDENTIFIER (arguments+=Argument arguments+=Argument*)?)
 	 */
 	protected void sequence_FunctionCall(ISerializationContext context, FunctionCall semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -355,14 +381,17 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     Negative returns Negative
 	 *
 	 * Constraint:
-	 *     term=Value
+	 *     (operation='-' term=Value)
 	 */
 	protected void sequence_Negative(ISerializationContext context, Negative semanticObject) {
 		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.NEGATIVE__OPERATION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.NEGATIVE__OPERATION));
 			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.NEGATIVE__TERM) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.NEGATIVE__TERM));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getNegativeAccess().getOperationHyphenMinusKeyword_0_1_0(), semanticObject.getOperation());
 		feeder.accept(grammarAccess.getNegativeAccess().getTermValueParserRuleCall_0_2_0(), semanticObject.getTerm());
 		feeder.finish();
 	}
@@ -414,7 +443,7 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     ParameterList returns ParameterList
 	 *
 	 * Constraint:
-	 *     (parameters+=Parameter parameters+=Parameter*)
+	 *     ((parameters+=Parameter parameters+=Parameter*)? symbol=')')
 	 */
 	protected void sequence_ParameterList(ISerializationContext context, ParameterList semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -462,17 +491,20 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     Power returns Power
 	 *
 	 * Constraint:
-	 *     (left=Power_Power_1_0 right=Power)
+	 *     (left=Power_Power_1_0 operation='^' right=Power)
 	 */
 	protected void sequence_Power(ISerializationContext context, Power semanticObject) {
 		if (errorAcceptor != null) {
 			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.POWER__LEFT) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.POWER__LEFT));
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.POWER__OPERATION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.POWER__OPERATION));
 			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.POWER__RIGHT) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.POWER__RIGHT));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getPowerAccess().getPowerLeftAction_1_0(), semanticObject.getLeft());
+		feeder.accept(grammarAccess.getPowerAccess().getOperationCircumflexAccentKeyword_1_1_0(), semanticObject.getOperation());
 		feeder.accept(grammarAccess.getPowerAccess().getRightPowerParserRuleCall_1_2_0(), semanticObject.getRight());
 		feeder.finish();
 	}
@@ -651,10 +683,28 @@ public class ZeroKnowledgeSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     WitnessList returns WitnessList
 	 *
 	 * Constraint:
-	 *     ((witnesses+=Witness witnesses+=Witness+) | witnesses+=Witness+)?
+	 *     ((witnesses+=Witness witnesses+=Witness*)? symbol=')')
 	 */
 	protected void sequence_WitnessList(ISerializationContext context, WitnessList semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     WitnessVariable returns WitnessVariable
+	 *
+	 * Constraint:
+	 *     name=IDENTIFIER
+	 */
+	protected void sequence_WitnessVariable(ISerializationContext context, WitnessVariable semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ZeroKnowledgePackage.Literals.VARIABLE__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ZeroKnowledgePackage.Literals.VARIABLE__NAME));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getWitnessVariableAccess().getNameIDENTIFIERTerminalRuleCall_1_0(), semanticObject.getName());
+		feeder.finish();
 	}
 	
 	

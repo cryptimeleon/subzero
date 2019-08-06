@@ -1,7 +1,8 @@
 package de.upb.crypto.zeroknowledge.latex;
 
 import com.google.common.base.Objects;
-import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
+import de.upb.crypto.zeroknowledge.model.ModelHelper;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -340,6 +341,10 @@ public class LatexPreview {
     this.generateList(call.getArguments());
   }
   
+  private void _generateLatex(final Argument argument) {
+    this.generateLatex(argument.getExpression());
+  }
+  
   private void _generateLatex(final Variable variable) {
     this.builder.append(this.formatIdentifier(variable.getName()));
   }
@@ -354,70 +359,73 @@ public class LatexPreview {
     this.builder.append(this.RIGHTPAREN);
   }
   
-  private void generateLatex(final EObject brackets) {
-    if (brackets instanceof Brackets) {
-      _generateLatex((Brackets)brackets);
+  private void generateLatex(final EObject argument) {
+    if (argument instanceof Argument) {
+      _generateLatex((Argument)argument);
       return;
-    } else if (brackets instanceof Comparison) {
-      _generateLatex((Comparison)brackets);
+    } else if (argument instanceof Brackets) {
+      _generateLatex((Brackets)argument);
       return;
-    } else if (brackets instanceof Conjunction) {
-      _generateLatex((Conjunction)brackets);
+    } else if (argument instanceof Comparison) {
+      _generateLatex((Comparison)argument);
       return;
-    } else if (brackets instanceof Disjunction) {
-      _generateLatex((Disjunction)brackets);
+    } else if (argument instanceof Conjunction) {
+      _generateLatex((Conjunction)argument);
       return;
-    } else if (brackets instanceof FunctionCall) {
-      _generateLatex((FunctionCall)brackets);
+    } else if (argument instanceof Disjunction) {
+      _generateLatex((Disjunction)argument);
       return;
-    } else if (brackets instanceof Negative) {
-      _generateLatex((Negative)brackets);
+    } else if (argument instanceof FunctionCall) {
+      _generateLatex((FunctionCall)argument);
       return;
-    } else if (brackets instanceof NumberLiteral) {
-      _generateLatex((NumberLiteral)brackets);
+    } else if (argument instanceof Negative) {
+      _generateLatex((Negative)argument);
       return;
-    } else if (brackets instanceof Power) {
-      _generateLatex((Power)brackets);
+    } else if (argument instanceof NumberLiteral) {
+      _generateLatex((NumberLiteral)argument);
       return;
-    } else if (brackets instanceof Product) {
-      _generateLatex((Product)brackets);
+    } else if (argument instanceof Power) {
+      _generateLatex((Power)argument);
       return;
-    } else if (brackets instanceof StringLiteral) {
-      _generateLatex((StringLiteral)brackets);
+    } else if (argument instanceof Product) {
+      _generateLatex((Product)argument);
       return;
-    } else if (brackets instanceof Sum) {
-      _generateLatex((Sum)brackets);
+    } else if (argument instanceof StringLiteral) {
+      _generateLatex((StringLiteral)argument);
       return;
-    } else if (brackets instanceof Tuple) {
-      _generateLatex((Tuple)brackets);
+    } else if (argument instanceof Sum) {
+      _generateLatex((Sum)argument);
       return;
-    } else if (brackets instanceof Variable) {
-      _generateLatex((Variable)brackets);
+    } else if (argument instanceof Tuple) {
+      _generateLatex((Tuple)argument);
       return;
-    } else if (brackets instanceof FunctionDefinition) {
-      _generateLatex((FunctionDefinition)brackets);
+    } else if (argument instanceof Variable) {
+      _generateLatex((Variable)argument);
       return;
-    } else if (brackets instanceof Model) {
-      _generateLatex((Model)brackets);
+    } else if (argument instanceof FunctionDefinition) {
+      _generateLatex((FunctionDefinition)argument);
       return;
-    } else if (brackets instanceof Parameter) {
-      _generateLatex((Parameter)brackets);
+    } else if (argument instanceof Model) {
+      _generateLatex((Model)argument);
       return;
-    } else if (brackets instanceof ParameterList) {
-      _generateLatex((ParameterList)brackets);
+    } else if (argument instanceof Parameter) {
+      _generateLatex((Parameter)argument);
       return;
-    } else if (brackets instanceof Witness) {
-      _generateLatex((Witness)brackets);
+    } else if (argument instanceof ParameterList) {
+      _generateLatex((ParameterList)argument);
       return;
-    } else if (brackets instanceof WitnessList) {
-      _generateLatex((WitnessList)brackets);
+    } else if (argument instanceof Witness) {
+      _generateLatex((Witness)argument);
       return;
-    } else if (brackets != null) {
-      _generateLatex(brackets);
+    } else if (argument instanceof WitnessList) {
+      _generateLatex((WitnessList)argument);
+      return;
+    } else if (argument != null) {
+      _generateLatex(argument);
       return;
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
-        Arrays.<Object>asList(brackets).toString());
+        Arrays.<Object>asList(argument).toString());
     }
   }
 }

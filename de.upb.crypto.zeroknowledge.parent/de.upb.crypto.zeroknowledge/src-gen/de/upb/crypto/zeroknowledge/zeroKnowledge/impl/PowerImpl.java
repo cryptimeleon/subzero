@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.PowerImpl#getLeft <em>Left</em>}</li>
+ *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.PowerImpl#getOperation <em>Operation</em>}</li>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.PowerImpl#getRight <em>Right</em>}</li>
  * </ul>
  *
@@ -40,6 +41,26 @@ public class PowerImpl extends ExpressionImpl implements Power
    * @ordered
    */
   protected Expression left;
+
+  /**
+   * The default value of the '{@link #getOperation() <em>Operation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOperation()
+   * @generated
+   * @ordered
+   */
+  protected static final String OPERATION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getOperation() <em>Operation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOperation()
+   * @generated
+   * @ordered
+   */
+  protected String operation = OPERATION_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getRight() <em>Right</em>}' containment reference.
@@ -128,6 +149,31 @@ public class PowerImpl extends ExpressionImpl implements Power
    * @generated
    */
   @Override
+  public String getOperation()
+  {
+    return operation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setOperation(String newOperation)
+  {
+    String oldOperation = operation;
+    operation = newOperation;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ZeroKnowledgePackage.POWER__OPERATION, oldOperation, operation));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Expression getRight()
   {
     return right;
@@ -202,6 +248,8 @@ public class PowerImpl extends ExpressionImpl implements Power
     {
       case ZeroKnowledgePackage.POWER__LEFT:
         return getLeft();
+      case ZeroKnowledgePackage.POWER__OPERATION:
+        return getOperation();
       case ZeroKnowledgePackage.POWER__RIGHT:
         return getRight();
     }
@@ -220,6 +268,9 @@ public class PowerImpl extends ExpressionImpl implements Power
     {
       case ZeroKnowledgePackage.POWER__LEFT:
         setLeft((Expression)newValue);
+        return;
+      case ZeroKnowledgePackage.POWER__OPERATION:
+        setOperation((String)newValue);
         return;
       case ZeroKnowledgePackage.POWER__RIGHT:
         setRight((Expression)newValue);
@@ -241,6 +292,9 @@ public class PowerImpl extends ExpressionImpl implements Power
       case ZeroKnowledgePackage.POWER__LEFT:
         setLeft((Expression)null);
         return;
+      case ZeroKnowledgePackage.POWER__OPERATION:
+        setOperation(OPERATION_EDEFAULT);
+        return;
       case ZeroKnowledgePackage.POWER__RIGHT:
         setRight((Expression)null);
         return;
@@ -260,10 +314,29 @@ public class PowerImpl extends ExpressionImpl implements Power
     {
       case ZeroKnowledgePackage.POWER__LEFT:
         return left != null;
+      case ZeroKnowledgePackage.POWER__OPERATION:
+        return OPERATION_EDEFAULT == null ? operation != null : !OPERATION_EDEFAULT.equals(operation);
       case ZeroKnowledgePackage.POWER__RIGHT:
         return right != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (operation: ");
+    result.append(operation);
+    result.append(')');
+    return result.toString();
   }
 
 } //PowerImpl

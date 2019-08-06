@@ -635,13 +635,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleParameterList"
-    // InternalZeroKnowledge.g:254:1: ruleParameterList returns [EObject current=null] : (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? otherlv_4= ')' ) ;
+    // InternalZeroKnowledge.g:254:1: ruleParameterList returns [EObject current=null] : (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? ( (lv_symbol_4_0= ')' ) ) ) ;
     public final EObject ruleParameterList() throws RecognitionException {
         EObject current = null;
 
         Token otherlv_0=null;
         Token otherlv_2=null;
-        Token otherlv_4=null;
+        Token lv_symbol_4_0=null;
         EObject lv_parameters_1_0 = null;
 
         EObject lv_parameters_3_0 = null;
@@ -651,11 +651,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:260:2: ( (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? otherlv_4= ')' ) )
-            // InternalZeroKnowledge.g:261:2: (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? otherlv_4= ')' )
+            // InternalZeroKnowledge.g:260:2: ( (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? ( (lv_symbol_4_0= ')' ) ) ) )
+            // InternalZeroKnowledge.g:261:2: (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? ( (lv_symbol_4_0= ')' ) ) )
             {
-            // InternalZeroKnowledge.g:261:2: (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? otherlv_4= ')' )
-            // InternalZeroKnowledge.g:262:3: otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? otherlv_4= ')'
+            // InternalZeroKnowledge.g:261:2: (otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? ( (lv_symbol_4_0= ')' ) ) )
+            // InternalZeroKnowledge.g:262:3: otherlv_0= '(' ( ( (lv_parameters_1_0= ruleParameter ) ) (otherlv_2= ',' ( (lv_parameters_3_0= ruleParameter ) ) )* )? ( (lv_symbol_4_0= ')' ) )
             {
             otherlv_0=(Token)match(input,13,FOLLOW_10); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -780,12 +780,32 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_4=(Token)match(input,15,FOLLOW_2); if (state.failed) return current;
+            // InternalZeroKnowledge.g:312:3: ( (lv_symbol_4_0= ')' ) )
+            // InternalZeroKnowledge.g:313:4: (lv_symbol_4_0= ')' )
+            {
+            // InternalZeroKnowledge.g:313:4: (lv_symbol_4_0= ')' )
+            // InternalZeroKnowledge.g:314:5: lv_symbol_4_0= ')'
+            {
+            lv_symbol_4_0=(Token)match(input,15,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
 
-              			newLeafNode(otherlv_4, grammarAccess.getParameterListAccess().getRightParenthesisKeyword_2());
-              		
+              					newLeafNode(lv_symbol_4_0, grammarAccess.getParameterListAccess().getSymbolRightParenthesisKeyword_2_0());
+              				
             }
+            if ( state.backtracking==0 ) {
+
+              					if (current==null) {
+              						current = createModelElement(grammarAccess.getParameterListRule());
+              					}
+              					setWithLastConsumed(current, "symbol", lv_symbol_4_0, ")");
+              				
+            }
+
+            }
+
+
+            }
+
 
             }
 
@@ -811,7 +831,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleParameter"
-    // InternalZeroKnowledge.g:320:1: entryRuleParameter returns [EObject current=null] : iv_ruleParameter= ruleParameter EOF ;
+    // InternalZeroKnowledge.g:330:1: entryRuleParameter returns [EObject current=null] : iv_ruleParameter= ruleParameter EOF ;
     public final EObject entryRuleParameter() throws RecognitionException {
         EObject current = null;
 
@@ -819,8 +839,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:320:50: (iv_ruleParameter= ruleParameter EOF )
-            // InternalZeroKnowledge.g:321:2: iv_ruleParameter= ruleParameter EOF
+            // InternalZeroKnowledge.g:330:50: (iv_ruleParameter= ruleParameter EOF )
+            // InternalZeroKnowledge.g:331:2: iv_ruleParameter= ruleParameter EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getParameterRule()); 
@@ -851,7 +871,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleParameter"
-    // InternalZeroKnowledge.g:327:1: ruleParameter returns [EObject current=null] : ( (lv_name_0_0= RULE_IDENTIFIER ) ) ;
+    // InternalZeroKnowledge.g:337:1: ruleParameter returns [EObject current=null] : ( (lv_name_0_0= RULE_IDENTIFIER ) ) ;
     public final EObject ruleParameter() throws RecognitionException {
         EObject current = null;
 
@@ -861,14 +881,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:333:2: ( ( (lv_name_0_0= RULE_IDENTIFIER ) ) )
-            // InternalZeroKnowledge.g:334:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:343:2: ( ( (lv_name_0_0= RULE_IDENTIFIER ) ) )
+            // InternalZeroKnowledge.g:344:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
             {
-            // InternalZeroKnowledge.g:334:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:335:3: (lv_name_0_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:344:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:345:3: (lv_name_0_0= RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:335:3: (lv_name_0_0= RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:336:4: lv_name_0_0= RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:345:3: (lv_name_0_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:346:4: lv_name_0_0= RULE_IDENTIFIER
             {
             lv_name_0_0=(Token)match(input,RULE_IDENTIFIER,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -916,7 +936,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWitnessList"
-    // InternalZeroKnowledge.g:355:1: entryRuleWitnessList returns [EObject current=null] : iv_ruleWitnessList= ruleWitnessList EOF ;
+    // InternalZeroKnowledge.g:365:1: entryRuleWitnessList returns [EObject current=null] : iv_ruleWitnessList= ruleWitnessList EOF ;
     public final EObject entryRuleWitnessList() throws RecognitionException {
         EObject current = null;
 
@@ -924,8 +944,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:355:52: (iv_ruleWitnessList= ruleWitnessList EOF )
-            // InternalZeroKnowledge.g:356:2: iv_ruleWitnessList= ruleWitnessList EOF
+            // InternalZeroKnowledge.g:365:52: (iv_ruleWitnessList= ruleWitnessList EOF )
+            // InternalZeroKnowledge.g:366:2: iv_ruleWitnessList= ruleWitnessList EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getWitnessListRule()); 
@@ -956,13 +976,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWitnessList"
-    // InternalZeroKnowledge.g:362:1: ruleWitnessList returns [EObject current=null] : (otherlv_0= '(' ( (lv_witnesses_1_0= ruleWitness ) )? (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* otherlv_4= ')' ) ;
+    // InternalZeroKnowledge.g:372:1: ruleWitnessList returns [EObject current=null] : (otherlv_0= '(' ( ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* )? ( (lv_symbol_4_0= ')' ) ) ) ;
     public final EObject ruleWitnessList() throws RecognitionException {
         EObject current = null;
 
         Token otherlv_0=null;
         Token otherlv_2=null;
-        Token otherlv_4=null;
+        Token lv_symbol_4_0=null;
         EObject lv_witnesses_1_0 = null;
 
         EObject lv_witnesses_3_0 = null;
@@ -972,36 +992,39 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:368:2: ( (otherlv_0= '(' ( (lv_witnesses_1_0= ruleWitness ) )? (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* otherlv_4= ')' ) )
-            // InternalZeroKnowledge.g:369:2: (otherlv_0= '(' ( (lv_witnesses_1_0= ruleWitness ) )? (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* otherlv_4= ')' )
+            // InternalZeroKnowledge.g:378:2: ( (otherlv_0= '(' ( ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* )? ( (lv_symbol_4_0= ')' ) ) ) )
+            // InternalZeroKnowledge.g:379:2: (otherlv_0= '(' ( ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* )? ( (lv_symbol_4_0= ')' ) ) )
             {
-            // InternalZeroKnowledge.g:369:2: (otherlv_0= '(' ( (lv_witnesses_1_0= ruleWitness ) )? (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* otherlv_4= ')' )
-            // InternalZeroKnowledge.g:370:3: otherlv_0= '(' ( (lv_witnesses_1_0= ruleWitness ) )? (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* otherlv_4= ')'
+            // InternalZeroKnowledge.g:379:2: (otherlv_0= '(' ( ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* )? ( (lv_symbol_4_0= ')' ) ) )
+            // InternalZeroKnowledge.g:380:3: otherlv_0= '(' ( ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* )? ( (lv_symbol_4_0= ')' ) )
             {
-            otherlv_0=(Token)match(input,13,FOLLOW_13); if (state.failed) return current;
+            otherlv_0=(Token)match(input,13,FOLLOW_10); if (state.failed) return current;
             if ( state.backtracking==0 ) {
 
               			newLeafNode(otherlv_0, grammarAccess.getWitnessListAccess().getLeftParenthesisKeyword_0());
               		
             }
-            // InternalZeroKnowledge.g:374:3: ( (lv_witnesses_1_0= ruleWitness ) )?
-            int alt8=2;
-            int LA8_0 = input.LA(1);
+            // InternalZeroKnowledge.g:384:3: ( ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )* )?
+            int alt9=2;
+            int LA9_0 = input.LA(1);
 
-            if ( (LA8_0==RULE_IDENTIFIER) ) {
-                alt8=1;
+            if ( (LA9_0==RULE_IDENTIFIER) ) {
+                alt9=1;
             }
-            switch (alt8) {
+            switch (alt9) {
                 case 1 :
-                    // InternalZeroKnowledge.g:375:4: (lv_witnesses_1_0= ruleWitness )
+                    // InternalZeroKnowledge.g:385:4: ( (lv_witnesses_1_0= ruleWitness ) ) (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )*
                     {
-                    // InternalZeroKnowledge.g:375:4: (lv_witnesses_1_0= ruleWitness )
-                    // InternalZeroKnowledge.g:376:5: lv_witnesses_1_0= ruleWitness
+                    // InternalZeroKnowledge.g:385:4: ( (lv_witnesses_1_0= ruleWitness ) )
+                    // InternalZeroKnowledge.g:386:5: (lv_witnesses_1_0= ruleWitness )
+                    {
+                    // InternalZeroKnowledge.g:386:5: (lv_witnesses_1_0= ruleWitness )
+                    // InternalZeroKnowledge.g:387:6: lv_witnesses_1_0= ruleWitness
                     {
                     if ( state.backtracking==0 ) {
 
-                      					newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_0());
-                      				
+                      						newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_0_0());
+                      					
                     }
                     pushFollow(FOLLOW_11);
                     lv_witnesses_1_0=ruleWitness();
@@ -1010,19 +1033,87 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     if (state.failed) return current;
                     if ( state.backtracking==0 ) {
 
-                      					if (current==null) {
-                      						current = createModelElementForParent(grammarAccess.getWitnessListRule());
-                      					}
-                      					add(
-                      						current,
-                      						"witnesses",
-                      						lv_witnesses_1_0,
-                      						"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
-                      					afterParserOrEnumRuleCall();
-                      				
+                      						if (current==null) {
+                      							current = createModelElementForParent(grammarAccess.getWitnessListRule());
+                      						}
+                      						add(
+                      							current,
+                      							"witnesses",
+                      							lv_witnesses_1_0,
+                      							"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
+                      						afterParserOrEnumRuleCall();
+                      					
                     }
 
                     }
+
+
+                    }
+
+                    // InternalZeroKnowledge.g:404:4: (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )*
+                    loop8:
+                    do {
+                        int alt8=2;
+                        int LA8_0 = input.LA(1);
+
+                        if ( (LA8_0==14) ) {
+                            alt8=1;
+                        }
+
+
+                        switch (alt8) {
+                    	case 1 :
+                    	    // InternalZeroKnowledge.g:405:5: otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) )
+                    	    {
+                    	    otherlv_2=(Token)match(input,14,FOLLOW_12); if (state.failed) return current;
+                    	    if ( state.backtracking==0 ) {
+
+                    	      					newLeafNode(otherlv_2, grammarAccess.getWitnessListAccess().getCommaKeyword_1_1_0());
+                    	      				
+                    	    }
+                    	    // InternalZeroKnowledge.g:409:5: ( (lv_witnesses_3_0= ruleWitness ) )
+                    	    // InternalZeroKnowledge.g:410:6: (lv_witnesses_3_0= ruleWitness )
+                    	    {
+                    	    // InternalZeroKnowledge.g:410:6: (lv_witnesses_3_0= ruleWitness )
+                    	    // InternalZeroKnowledge.g:411:7: lv_witnesses_3_0= ruleWitness
+                    	    {
+                    	    if ( state.backtracking==0 ) {
+
+                    	      							newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_1_1_0());
+                    	      						
+                    	    }
+                    	    pushFollow(FOLLOW_11);
+                    	    lv_witnesses_3_0=ruleWitness();
+
+                    	    state._fsp--;
+                    	    if (state.failed) return current;
+                    	    if ( state.backtracking==0 ) {
+
+                    	      							if (current==null) {
+                    	      								current = createModelElementForParent(grammarAccess.getWitnessListRule());
+                    	      							}
+                    	      							add(
+                    	      								current,
+                    	      								"witnesses",
+                    	      								lv_witnesses_3_0,
+                    	      								"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
+                    	      							afterParserOrEnumRuleCall();
+                    	      						
+                    	    }
+
+                    	    }
+
+
+                    	    }
+
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop8;
+                        }
+                    } while (true);
 
 
                     }
@@ -1030,77 +1121,32 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            // InternalZeroKnowledge.g:393:3: (otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) ) )*
-            loop9:
-            do {
-                int alt9=2;
-                int LA9_0 = input.LA(1);
-
-                if ( (LA9_0==14) ) {
-                    alt9=1;
-                }
-
-
-                switch (alt9) {
-            	case 1 :
-            	    // InternalZeroKnowledge.g:394:4: otherlv_2= ',' ( (lv_witnesses_3_0= ruleWitness ) )
-            	    {
-            	    otherlv_2=(Token)match(input,14,FOLLOW_12); if (state.failed) return current;
-            	    if ( state.backtracking==0 ) {
-
-            	      				newLeafNode(otherlv_2, grammarAccess.getWitnessListAccess().getCommaKeyword_2_0());
-            	      			
-            	    }
-            	    // InternalZeroKnowledge.g:398:4: ( (lv_witnesses_3_0= ruleWitness ) )
-            	    // InternalZeroKnowledge.g:399:5: (lv_witnesses_3_0= ruleWitness )
-            	    {
-            	    // InternalZeroKnowledge.g:399:5: (lv_witnesses_3_0= ruleWitness )
-            	    // InternalZeroKnowledge.g:400:6: lv_witnesses_3_0= ruleWitness
-            	    {
-            	    if ( state.backtracking==0 ) {
-
-            	      						newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_2_1_0());
-            	      					
-            	    }
-            	    pushFollow(FOLLOW_11);
-            	    lv_witnesses_3_0=ruleWitness();
-
-            	    state._fsp--;
-            	    if (state.failed) return current;
-            	    if ( state.backtracking==0 ) {
-
-            	      						if (current==null) {
-            	      							current = createModelElementForParent(grammarAccess.getWitnessListRule());
-            	      						}
-            	      						add(
-            	      							current,
-            	      							"witnesses",
-            	      							lv_witnesses_3_0,
-            	      							"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
-            	      						afterParserOrEnumRuleCall();
-            	      					
-            	    }
-
-            	    }
-
-
-            	    }
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop9;
-                }
-            } while (true);
-
-            otherlv_4=(Token)match(input,15,FOLLOW_2); if (state.failed) return current;
+            // InternalZeroKnowledge.g:430:3: ( (lv_symbol_4_0= ')' ) )
+            // InternalZeroKnowledge.g:431:4: (lv_symbol_4_0= ')' )
+            {
+            // InternalZeroKnowledge.g:431:4: (lv_symbol_4_0= ')' )
+            // InternalZeroKnowledge.g:432:5: lv_symbol_4_0= ')'
+            {
+            lv_symbol_4_0=(Token)match(input,15,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
 
-              			newLeafNode(otherlv_4, grammarAccess.getWitnessListAccess().getRightParenthesisKeyword_3());
-              		
+              					newLeafNode(lv_symbol_4_0, grammarAccess.getWitnessListAccess().getSymbolRightParenthesisKeyword_2_0());
+              				
             }
+            if ( state.backtracking==0 ) {
+
+              					if (current==null) {
+              						current = createModelElement(grammarAccess.getWitnessListRule());
+              					}
+              					setWithLastConsumed(current, "symbol", lv_symbol_4_0, ")");
+              				
+            }
+
+            }
+
+
+            }
+
 
             }
 
@@ -1126,7 +1172,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleWitness"
-    // InternalZeroKnowledge.g:426:1: entryRuleWitness returns [EObject current=null] : iv_ruleWitness= ruleWitness EOF ;
+    // InternalZeroKnowledge.g:448:1: entryRuleWitness returns [EObject current=null] : iv_ruleWitness= ruleWitness EOF ;
     public final EObject entryRuleWitness() throws RecognitionException {
         EObject current = null;
 
@@ -1134,8 +1180,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:426:48: (iv_ruleWitness= ruleWitness EOF )
-            // InternalZeroKnowledge.g:427:2: iv_ruleWitness= ruleWitness EOF
+            // InternalZeroKnowledge.g:448:48: (iv_ruleWitness= ruleWitness EOF )
+            // InternalZeroKnowledge.g:449:2: iv_ruleWitness= ruleWitness EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getWitnessRule()); 
@@ -1166,7 +1212,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleWitness"
-    // InternalZeroKnowledge.g:433:1: ruleWitness returns [EObject current=null] : ( (lv_name_0_0= RULE_IDENTIFIER ) ) ;
+    // InternalZeroKnowledge.g:455:1: ruleWitness returns [EObject current=null] : ( (lv_name_0_0= RULE_IDENTIFIER ) ) ;
     public final EObject ruleWitness() throws RecognitionException {
         EObject current = null;
 
@@ -1176,14 +1222,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:439:2: ( ( (lv_name_0_0= RULE_IDENTIFIER ) ) )
-            // InternalZeroKnowledge.g:440:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:461:2: ( ( (lv_name_0_0= RULE_IDENTIFIER ) ) )
+            // InternalZeroKnowledge.g:462:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
             {
-            // InternalZeroKnowledge.g:440:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:441:3: (lv_name_0_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:462:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:463:3: (lv_name_0_0= RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:441:3: (lv_name_0_0= RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:442:4: lv_name_0_0= RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:463:3: (lv_name_0_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:464:4: lv_name_0_0= RULE_IDENTIFIER
             {
             lv_name_0_0=(Token)match(input,RULE_IDENTIFIER,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -1231,7 +1277,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleExpression"
-    // InternalZeroKnowledge.g:461:1: entryRuleExpression returns [EObject current=null] : iv_ruleExpression= ruleExpression EOF ;
+    // InternalZeroKnowledge.g:483:1: entryRuleExpression returns [EObject current=null] : iv_ruleExpression= ruleExpression EOF ;
     public final EObject entryRuleExpression() throws RecognitionException {
         EObject current = null;
 
@@ -1239,8 +1285,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:461:51: (iv_ruleExpression= ruleExpression EOF )
-            // InternalZeroKnowledge.g:462:2: iv_ruleExpression= ruleExpression EOF
+            // InternalZeroKnowledge.g:483:51: (iv_ruleExpression= ruleExpression EOF )
+            // InternalZeroKnowledge.g:484:2: iv_ruleExpression= ruleExpression EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getExpressionRule()); 
@@ -1271,7 +1317,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleExpression"
-    // InternalZeroKnowledge.g:468:1: ruleExpression returns [EObject current=null] : this_Conjunction_0= ruleConjunction ;
+    // InternalZeroKnowledge.g:490:1: ruleExpression returns [EObject current=null] : this_Conjunction_0= ruleConjunction ;
     public final EObject ruleExpression() throws RecognitionException {
         EObject current = null;
 
@@ -1282,8 +1328,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:474:2: (this_Conjunction_0= ruleConjunction )
-            // InternalZeroKnowledge.g:475:2: this_Conjunction_0= ruleConjunction
+            // InternalZeroKnowledge.g:496:2: (this_Conjunction_0= ruleConjunction )
+            // InternalZeroKnowledge.g:497:2: this_Conjunction_0= ruleConjunction
             {
             if ( state.backtracking==0 ) {
 
@@ -1323,7 +1369,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleConjunction"
-    // InternalZeroKnowledge.g:486:1: entryRuleConjunction returns [EObject current=null] : iv_ruleConjunction= ruleConjunction EOF ;
+    // InternalZeroKnowledge.g:508:1: entryRuleConjunction returns [EObject current=null] : iv_ruleConjunction= ruleConjunction EOF ;
     public final EObject entryRuleConjunction() throws RecognitionException {
         EObject current = null;
 
@@ -1331,8 +1377,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:486:52: (iv_ruleConjunction= ruleConjunction EOF )
-            // InternalZeroKnowledge.g:487:2: iv_ruleConjunction= ruleConjunction EOF
+            // InternalZeroKnowledge.g:508:52: (iv_ruleConjunction= ruleConjunction EOF )
+            // InternalZeroKnowledge.g:509:2: iv_ruleConjunction= ruleConjunction EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getConjunctionRule()); 
@@ -1363,7 +1409,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleConjunction"
-    // InternalZeroKnowledge.g:493:1: ruleConjunction returns [EObject current=null] : (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* ) ;
+    // InternalZeroKnowledge.g:515:1: ruleConjunction returns [EObject current=null] : (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* ) ;
     public final EObject ruleConjunction() throws RecognitionException {
         EObject current = null;
 
@@ -1377,18 +1423,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:499:2: ( (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* ) )
-            // InternalZeroKnowledge.g:500:2: (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* )
+            // InternalZeroKnowledge.g:521:2: ( (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* ) )
+            // InternalZeroKnowledge.g:522:2: (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* )
             {
-            // InternalZeroKnowledge.g:500:2: (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* )
-            // InternalZeroKnowledge.g:501:3: this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )*
+            // InternalZeroKnowledge.g:522:2: (this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )* )
+            // InternalZeroKnowledge.g:523:3: this_Disjunction_0= ruleDisjunction ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )*
             {
             if ( state.backtracking==0 ) {
 
               			newCompositeNode(grammarAccess.getConjunctionAccess().getDisjunctionParserRuleCall_0());
               		
             }
-            pushFollow(FOLLOW_14);
+            pushFollow(FOLLOW_13);
             this_Disjunction_0=ruleDisjunction();
 
             state._fsp--;
@@ -1399,7 +1445,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               			afterParserOrEnumRuleCall();
               		
             }
-            // InternalZeroKnowledge.g:509:3: ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )*
+            // InternalZeroKnowledge.g:531:3: ( () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) ) )*
             loop10:
             do {
                 int alt10=2;
@@ -1412,10 +1458,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                 switch (alt10) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:510:4: () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) )
+            	    // InternalZeroKnowledge.g:532:4: () ( (lv_operation_2_0= '&' ) ) ( (lv_right_3_0= ruleDisjunction ) )
             	    {
-            	    // InternalZeroKnowledge.g:510:4: ()
-            	    // InternalZeroKnowledge.g:511:5: 
+            	    // InternalZeroKnowledge.g:532:4: ()
+            	    // InternalZeroKnowledge.g:533:5: 
             	    {
             	    if ( state.backtracking==0 ) {
 
@@ -1427,11 +1473,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	    }
 
-            	    // InternalZeroKnowledge.g:517:4: ( (lv_operation_2_0= '&' ) )
-            	    // InternalZeroKnowledge.g:518:5: (lv_operation_2_0= '&' )
+            	    // InternalZeroKnowledge.g:539:4: ( (lv_operation_2_0= '&' ) )
+            	    // InternalZeroKnowledge.g:540:5: (lv_operation_2_0= '&' )
             	    {
-            	    // InternalZeroKnowledge.g:518:5: (lv_operation_2_0= '&' )
-            	    // InternalZeroKnowledge.g:519:6: lv_operation_2_0= '&'
+            	    // InternalZeroKnowledge.g:540:5: (lv_operation_2_0= '&' )
+            	    // InternalZeroKnowledge.g:541:6: lv_operation_2_0= '&'
             	    {
             	    lv_operation_2_0=(Token)match(input,16,FOLLOW_4); if (state.failed) return current;
             	    if ( state.backtracking==0 ) {
@@ -1453,18 +1499,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	    }
 
-            	    // InternalZeroKnowledge.g:531:4: ( (lv_right_3_0= ruleDisjunction ) )
-            	    // InternalZeroKnowledge.g:532:5: (lv_right_3_0= ruleDisjunction )
+            	    // InternalZeroKnowledge.g:553:4: ( (lv_right_3_0= ruleDisjunction ) )
+            	    // InternalZeroKnowledge.g:554:5: (lv_right_3_0= ruleDisjunction )
             	    {
-            	    // InternalZeroKnowledge.g:532:5: (lv_right_3_0= ruleDisjunction )
-            	    // InternalZeroKnowledge.g:533:6: lv_right_3_0= ruleDisjunction
+            	    // InternalZeroKnowledge.g:554:5: (lv_right_3_0= ruleDisjunction )
+            	    // InternalZeroKnowledge.g:555:6: lv_right_3_0= ruleDisjunction
             	    {
             	    if ( state.backtracking==0 ) {
 
             	      						newCompositeNode(grammarAccess.getConjunctionAccess().getRightDisjunctionParserRuleCall_1_2_0());
             	      					
             	    }
-            	    pushFollow(FOLLOW_14);
+            	    pushFollow(FOLLOW_13);
             	    lv_right_3_0=ruleDisjunction();
 
             	    state._fsp--;
@@ -1522,7 +1568,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleDisjunction"
-    // InternalZeroKnowledge.g:555:1: entryRuleDisjunction returns [EObject current=null] : iv_ruleDisjunction= ruleDisjunction EOF ;
+    // InternalZeroKnowledge.g:577:1: entryRuleDisjunction returns [EObject current=null] : iv_ruleDisjunction= ruleDisjunction EOF ;
     public final EObject entryRuleDisjunction() throws RecognitionException {
         EObject current = null;
 
@@ -1530,8 +1576,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:555:52: (iv_ruleDisjunction= ruleDisjunction EOF )
-            // InternalZeroKnowledge.g:556:2: iv_ruleDisjunction= ruleDisjunction EOF
+            // InternalZeroKnowledge.g:577:52: (iv_ruleDisjunction= ruleDisjunction EOF )
+            // InternalZeroKnowledge.g:578:2: iv_ruleDisjunction= ruleDisjunction EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getDisjunctionRule()); 
@@ -1562,7 +1608,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleDisjunction"
-    // InternalZeroKnowledge.g:562:1: ruleDisjunction returns [EObject current=null] : (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* ) ;
+    // InternalZeroKnowledge.g:584:1: ruleDisjunction returns [EObject current=null] : (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* ) ;
     public final EObject ruleDisjunction() throws RecognitionException {
         EObject current = null;
 
@@ -1576,18 +1622,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:568:2: ( (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* ) )
-            // InternalZeroKnowledge.g:569:2: (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* )
+            // InternalZeroKnowledge.g:590:2: ( (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* ) )
+            // InternalZeroKnowledge.g:591:2: (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* )
             {
-            // InternalZeroKnowledge.g:569:2: (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* )
-            // InternalZeroKnowledge.g:570:3: this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )*
+            // InternalZeroKnowledge.g:591:2: (this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )* )
+            // InternalZeroKnowledge.g:592:3: this_Comparison_0= ruleComparison ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )*
             {
             if ( state.backtracking==0 ) {
 
               			newCompositeNode(grammarAccess.getDisjunctionAccess().getComparisonParserRuleCall_0());
               		
             }
-            pushFollow(FOLLOW_15);
+            pushFollow(FOLLOW_14);
             this_Comparison_0=ruleComparison();
 
             state._fsp--;
@@ -1598,7 +1644,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               			afterParserOrEnumRuleCall();
               		
             }
-            // InternalZeroKnowledge.g:578:3: ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )*
+            // InternalZeroKnowledge.g:600:3: ( () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) ) )*
             loop11:
             do {
                 int alt11=2;
@@ -1611,10 +1657,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                 switch (alt11) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:579:4: () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) )
+            	    // InternalZeroKnowledge.g:601:4: () ( (lv_operation_2_0= '|' ) ) ( (lv_right_3_0= ruleComparison ) )
             	    {
-            	    // InternalZeroKnowledge.g:579:4: ()
-            	    // InternalZeroKnowledge.g:580:5: 
+            	    // InternalZeroKnowledge.g:601:4: ()
+            	    // InternalZeroKnowledge.g:602:5: 
             	    {
             	    if ( state.backtracking==0 ) {
 
@@ -1626,11 +1672,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	    }
 
-            	    // InternalZeroKnowledge.g:586:4: ( (lv_operation_2_0= '|' ) )
-            	    // InternalZeroKnowledge.g:587:5: (lv_operation_2_0= '|' )
+            	    // InternalZeroKnowledge.g:608:4: ( (lv_operation_2_0= '|' ) )
+            	    // InternalZeroKnowledge.g:609:5: (lv_operation_2_0= '|' )
             	    {
-            	    // InternalZeroKnowledge.g:587:5: (lv_operation_2_0= '|' )
-            	    // InternalZeroKnowledge.g:588:6: lv_operation_2_0= '|'
+            	    // InternalZeroKnowledge.g:609:5: (lv_operation_2_0= '|' )
+            	    // InternalZeroKnowledge.g:610:6: lv_operation_2_0= '|'
             	    {
             	    lv_operation_2_0=(Token)match(input,17,FOLLOW_4); if (state.failed) return current;
             	    if ( state.backtracking==0 ) {
@@ -1652,18 +1698,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	    }
 
-            	    // InternalZeroKnowledge.g:600:4: ( (lv_right_3_0= ruleComparison ) )
-            	    // InternalZeroKnowledge.g:601:5: (lv_right_3_0= ruleComparison )
+            	    // InternalZeroKnowledge.g:622:4: ( (lv_right_3_0= ruleComparison ) )
+            	    // InternalZeroKnowledge.g:623:5: (lv_right_3_0= ruleComparison )
             	    {
-            	    // InternalZeroKnowledge.g:601:5: (lv_right_3_0= ruleComparison )
-            	    // InternalZeroKnowledge.g:602:6: lv_right_3_0= ruleComparison
+            	    // InternalZeroKnowledge.g:623:5: (lv_right_3_0= ruleComparison )
+            	    // InternalZeroKnowledge.g:624:6: lv_right_3_0= ruleComparison
             	    {
             	    if ( state.backtracking==0 ) {
 
             	      						newCompositeNode(grammarAccess.getDisjunctionAccess().getRightComparisonParserRuleCall_1_2_0());
             	      					
             	    }
-            	    pushFollow(FOLLOW_15);
+            	    pushFollow(FOLLOW_14);
             	    lv_right_3_0=ruleComparison();
 
             	    state._fsp--;
@@ -1721,7 +1767,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleComparison"
-    // InternalZeroKnowledge.g:624:1: entryRuleComparison returns [EObject current=null] : iv_ruleComparison= ruleComparison EOF ;
+    // InternalZeroKnowledge.g:646:1: entryRuleComparison returns [EObject current=null] : iv_ruleComparison= ruleComparison EOF ;
     public final EObject entryRuleComparison() throws RecognitionException {
         EObject current = null;
 
@@ -1729,8 +1775,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:624:51: (iv_ruleComparison= ruleComparison EOF )
-            // InternalZeroKnowledge.g:625:2: iv_ruleComparison= ruleComparison EOF
+            // InternalZeroKnowledge.g:646:51: (iv_ruleComparison= ruleComparison EOF )
+            // InternalZeroKnowledge.g:647:2: iv_ruleComparison= ruleComparison EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getComparisonRule()); 
@@ -1761,7 +1807,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleComparison"
-    // InternalZeroKnowledge.g:631:1: ruleComparison returns [EObject current=null] : (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? ) ;
+    // InternalZeroKnowledge.g:653:1: ruleComparison returns [EObject current=null] : (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? ) ;
     public final EObject ruleComparison() throws RecognitionException {
         EObject current = null;
 
@@ -1780,18 +1826,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:637:2: ( (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? ) )
-            // InternalZeroKnowledge.g:638:2: (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? )
+            // InternalZeroKnowledge.g:659:2: ( (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? ) )
+            // InternalZeroKnowledge.g:660:2: (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? )
             {
-            // InternalZeroKnowledge.g:638:2: (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? )
-            // InternalZeroKnowledge.g:639:3: this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )?
+            // InternalZeroKnowledge.g:660:2: (this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )? )
+            // InternalZeroKnowledge.g:661:3: this_Sum_0= ruleSum ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )?
             {
             if ( state.backtracking==0 ) {
 
               			newCompositeNode(grammarAccess.getComparisonAccess().getSumParserRuleCall_0());
               		
             }
-            pushFollow(FOLLOW_16);
+            pushFollow(FOLLOW_15);
             this_Sum_0=ruleSum();
 
             state._fsp--;
@@ -1802,7 +1848,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               			afterParserOrEnumRuleCall();
               		
             }
-            // InternalZeroKnowledge.g:647:3: ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )?
+            // InternalZeroKnowledge.g:669:3: ( ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) ) )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1811,9 +1857,9 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             }
             switch (alt13) {
                 case 1 :
-                    // InternalZeroKnowledge.g:648:4: ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) )
+                    // InternalZeroKnowledge.g:670:4: ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) ) ( (lv_right_13_0= ruleSum ) )
                     {
-                    // InternalZeroKnowledge.g:648:4: ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) )
+                    // InternalZeroKnowledge.g:670:4: ( ( () ( (lv_operation_2_0= '!=' ) ) ) | ( () ( (lv_operation_4_0= '=' ) ) ) | ( () ( (lv_operation_6_0= '>=' ) ) ) | ( () ( (lv_operation_8_0= '<=' ) ) ) | ( () ( (lv_operation_10_0= '>' ) ) ) | ( () ( (lv_operation_12_0= '<' ) ) ) )
                     int alt12=6;
                     switch ( input.LA(1) ) {
                     case 18:
@@ -1856,13 +1902,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                     switch (alt12) {
                         case 1 :
-                            // InternalZeroKnowledge.g:649:5: ( () ( (lv_operation_2_0= '!=' ) ) )
+                            // InternalZeroKnowledge.g:671:5: ( () ( (lv_operation_2_0= '!=' ) ) )
                             {
-                            // InternalZeroKnowledge.g:649:5: ( () ( (lv_operation_2_0= '!=' ) ) )
-                            // InternalZeroKnowledge.g:650:6: () ( (lv_operation_2_0= '!=' ) )
+                            // InternalZeroKnowledge.g:671:5: ( () ( (lv_operation_2_0= '!=' ) ) )
+                            // InternalZeroKnowledge.g:672:6: () ( (lv_operation_2_0= '!=' ) )
                             {
-                            // InternalZeroKnowledge.g:650:6: ()
-                            // InternalZeroKnowledge.g:651:7: 
+                            // InternalZeroKnowledge.g:672:6: ()
+                            // InternalZeroKnowledge.g:673:7: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -1874,11 +1920,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // InternalZeroKnowledge.g:657:6: ( (lv_operation_2_0= '!=' ) )
-                            // InternalZeroKnowledge.g:658:7: (lv_operation_2_0= '!=' )
+                            // InternalZeroKnowledge.g:679:6: ( (lv_operation_2_0= '!=' ) )
+                            // InternalZeroKnowledge.g:680:7: (lv_operation_2_0= '!=' )
                             {
-                            // InternalZeroKnowledge.g:658:7: (lv_operation_2_0= '!=' )
-                            // InternalZeroKnowledge.g:659:8: lv_operation_2_0= '!='
+                            // InternalZeroKnowledge.g:680:7: (lv_operation_2_0= '!=' )
+                            // InternalZeroKnowledge.g:681:8: lv_operation_2_0= '!='
                             {
                             lv_operation_2_0=(Token)match(input,18,FOLLOW_4); if (state.failed) return current;
                             if ( state.backtracking==0 ) {
@@ -1907,13 +1953,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                             }
                             break;
                         case 2 :
-                            // InternalZeroKnowledge.g:673:5: ( () ( (lv_operation_4_0= '=' ) ) )
+                            // InternalZeroKnowledge.g:695:5: ( () ( (lv_operation_4_0= '=' ) ) )
                             {
-                            // InternalZeroKnowledge.g:673:5: ( () ( (lv_operation_4_0= '=' ) ) )
-                            // InternalZeroKnowledge.g:674:6: () ( (lv_operation_4_0= '=' ) )
+                            // InternalZeroKnowledge.g:695:5: ( () ( (lv_operation_4_0= '=' ) ) )
+                            // InternalZeroKnowledge.g:696:6: () ( (lv_operation_4_0= '=' ) )
                             {
-                            // InternalZeroKnowledge.g:674:6: ()
-                            // InternalZeroKnowledge.g:675:7: 
+                            // InternalZeroKnowledge.g:696:6: ()
+                            // InternalZeroKnowledge.g:697:7: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -1925,11 +1971,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // InternalZeroKnowledge.g:681:6: ( (lv_operation_4_0= '=' ) )
-                            // InternalZeroKnowledge.g:682:7: (lv_operation_4_0= '=' )
+                            // InternalZeroKnowledge.g:703:6: ( (lv_operation_4_0= '=' ) )
+                            // InternalZeroKnowledge.g:704:7: (lv_operation_4_0= '=' )
                             {
-                            // InternalZeroKnowledge.g:682:7: (lv_operation_4_0= '=' )
-                            // InternalZeroKnowledge.g:683:8: lv_operation_4_0= '='
+                            // InternalZeroKnowledge.g:704:7: (lv_operation_4_0= '=' )
+                            // InternalZeroKnowledge.g:705:8: lv_operation_4_0= '='
                             {
                             lv_operation_4_0=(Token)match(input,19,FOLLOW_4); if (state.failed) return current;
                             if ( state.backtracking==0 ) {
@@ -1958,13 +2004,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                             }
                             break;
                         case 3 :
-                            // InternalZeroKnowledge.g:697:5: ( () ( (lv_operation_6_0= '>=' ) ) )
+                            // InternalZeroKnowledge.g:719:5: ( () ( (lv_operation_6_0= '>=' ) ) )
                             {
-                            // InternalZeroKnowledge.g:697:5: ( () ( (lv_operation_6_0= '>=' ) ) )
-                            // InternalZeroKnowledge.g:698:6: () ( (lv_operation_6_0= '>=' ) )
+                            // InternalZeroKnowledge.g:719:5: ( () ( (lv_operation_6_0= '>=' ) ) )
+                            // InternalZeroKnowledge.g:720:6: () ( (lv_operation_6_0= '>=' ) )
                             {
-                            // InternalZeroKnowledge.g:698:6: ()
-                            // InternalZeroKnowledge.g:699:7: 
+                            // InternalZeroKnowledge.g:720:6: ()
+                            // InternalZeroKnowledge.g:721:7: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -1976,11 +2022,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // InternalZeroKnowledge.g:705:6: ( (lv_operation_6_0= '>=' ) )
-                            // InternalZeroKnowledge.g:706:7: (lv_operation_6_0= '>=' )
+                            // InternalZeroKnowledge.g:727:6: ( (lv_operation_6_0= '>=' ) )
+                            // InternalZeroKnowledge.g:728:7: (lv_operation_6_0= '>=' )
                             {
-                            // InternalZeroKnowledge.g:706:7: (lv_operation_6_0= '>=' )
-                            // InternalZeroKnowledge.g:707:8: lv_operation_6_0= '>='
+                            // InternalZeroKnowledge.g:728:7: (lv_operation_6_0= '>=' )
+                            // InternalZeroKnowledge.g:729:8: lv_operation_6_0= '>='
                             {
                             lv_operation_6_0=(Token)match(input,20,FOLLOW_4); if (state.failed) return current;
                             if ( state.backtracking==0 ) {
@@ -2009,13 +2055,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                             }
                             break;
                         case 4 :
-                            // InternalZeroKnowledge.g:721:5: ( () ( (lv_operation_8_0= '<=' ) ) )
+                            // InternalZeroKnowledge.g:743:5: ( () ( (lv_operation_8_0= '<=' ) ) )
                             {
-                            // InternalZeroKnowledge.g:721:5: ( () ( (lv_operation_8_0= '<=' ) ) )
-                            // InternalZeroKnowledge.g:722:6: () ( (lv_operation_8_0= '<=' ) )
+                            // InternalZeroKnowledge.g:743:5: ( () ( (lv_operation_8_0= '<=' ) ) )
+                            // InternalZeroKnowledge.g:744:6: () ( (lv_operation_8_0= '<=' ) )
                             {
-                            // InternalZeroKnowledge.g:722:6: ()
-                            // InternalZeroKnowledge.g:723:7: 
+                            // InternalZeroKnowledge.g:744:6: ()
+                            // InternalZeroKnowledge.g:745:7: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -2027,11 +2073,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // InternalZeroKnowledge.g:729:6: ( (lv_operation_8_0= '<=' ) )
-                            // InternalZeroKnowledge.g:730:7: (lv_operation_8_0= '<=' )
+                            // InternalZeroKnowledge.g:751:6: ( (lv_operation_8_0= '<=' ) )
+                            // InternalZeroKnowledge.g:752:7: (lv_operation_8_0= '<=' )
                             {
-                            // InternalZeroKnowledge.g:730:7: (lv_operation_8_0= '<=' )
-                            // InternalZeroKnowledge.g:731:8: lv_operation_8_0= '<='
+                            // InternalZeroKnowledge.g:752:7: (lv_operation_8_0= '<=' )
+                            // InternalZeroKnowledge.g:753:8: lv_operation_8_0= '<='
                             {
                             lv_operation_8_0=(Token)match(input,21,FOLLOW_4); if (state.failed) return current;
                             if ( state.backtracking==0 ) {
@@ -2060,13 +2106,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                             }
                             break;
                         case 5 :
-                            // InternalZeroKnowledge.g:745:5: ( () ( (lv_operation_10_0= '>' ) ) )
+                            // InternalZeroKnowledge.g:767:5: ( () ( (lv_operation_10_0= '>' ) ) )
                             {
-                            // InternalZeroKnowledge.g:745:5: ( () ( (lv_operation_10_0= '>' ) ) )
-                            // InternalZeroKnowledge.g:746:6: () ( (lv_operation_10_0= '>' ) )
+                            // InternalZeroKnowledge.g:767:5: ( () ( (lv_operation_10_0= '>' ) ) )
+                            // InternalZeroKnowledge.g:768:6: () ( (lv_operation_10_0= '>' ) )
                             {
-                            // InternalZeroKnowledge.g:746:6: ()
-                            // InternalZeroKnowledge.g:747:7: 
+                            // InternalZeroKnowledge.g:768:6: ()
+                            // InternalZeroKnowledge.g:769:7: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -2078,11 +2124,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // InternalZeroKnowledge.g:753:6: ( (lv_operation_10_0= '>' ) )
-                            // InternalZeroKnowledge.g:754:7: (lv_operation_10_0= '>' )
+                            // InternalZeroKnowledge.g:775:6: ( (lv_operation_10_0= '>' ) )
+                            // InternalZeroKnowledge.g:776:7: (lv_operation_10_0= '>' )
                             {
-                            // InternalZeroKnowledge.g:754:7: (lv_operation_10_0= '>' )
-                            // InternalZeroKnowledge.g:755:8: lv_operation_10_0= '>'
+                            // InternalZeroKnowledge.g:776:7: (lv_operation_10_0= '>' )
+                            // InternalZeroKnowledge.g:777:8: lv_operation_10_0= '>'
                             {
                             lv_operation_10_0=(Token)match(input,22,FOLLOW_4); if (state.failed) return current;
                             if ( state.backtracking==0 ) {
@@ -2111,13 +2157,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                             }
                             break;
                         case 6 :
-                            // InternalZeroKnowledge.g:769:5: ( () ( (lv_operation_12_0= '<' ) ) )
+                            // InternalZeroKnowledge.g:791:5: ( () ( (lv_operation_12_0= '<' ) ) )
                             {
-                            // InternalZeroKnowledge.g:769:5: ( () ( (lv_operation_12_0= '<' ) ) )
-                            // InternalZeroKnowledge.g:770:6: () ( (lv_operation_12_0= '<' ) )
+                            // InternalZeroKnowledge.g:791:5: ( () ( (lv_operation_12_0= '<' ) ) )
+                            // InternalZeroKnowledge.g:792:6: () ( (lv_operation_12_0= '<' ) )
                             {
-                            // InternalZeroKnowledge.g:770:6: ()
-                            // InternalZeroKnowledge.g:771:7: 
+                            // InternalZeroKnowledge.g:792:6: ()
+                            // InternalZeroKnowledge.g:793:7: 
                             {
                             if ( state.backtracking==0 ) {
 
@@ -2129,11 +2175,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                             }
 
-                            // InternalZeroKnowledge.g:777:6: ( (lv_operation_12_0= '<' ) )
-                            // InternalZeroKnowledge.g:778:7: (lv_operation_12_0= '<' )
+                            // InternalZeroKnowledge.g:799:6: ( (lv_operation_12_0= '<' ) )
+                            // InternalZeroKnowledge.g:800:7: (lv_operation_12_0= '<' )
                             {
-                            // InternalZeroKnowledge.g:778:7: (lv_operation_12_0= '<' )
-                            // InternalZeroKnowledge.g:779:8: lv_operation_12_0= '<'
+                            // InternalZeroKnowledge.g:800:7: (lv_operation_12_0= '<' )
+                            // InternalZeroKnowledge.g:801:8: lv_operation_12_0= '<'
                             {
                             lv_operation_12_0=(Token)match(input,23,FOLLOW_4); if (state.failed) return current;
                             if ( state.backtracking==0 ) {
@@ -2164,11 +2210,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // InternalZeroKnowledge.g:793:4: ( (lv_right_13_0= ruleSum ) )
-                    // InternalZeroKnowledge.g:794:5: (lv_right_13_0= ruleSum )
+                    // InternalZeroKnowledge.g:815:4: ( (lv_right_13_0= ruleSum ) )
+                    // InternalZeroKnowledge.g:816:5: (lv_right_13_0= ruleSum )
                     {
-                    // InternalZeroKnowledge.g:794:5: (lv_right_13_0= ruleSum )
-                    // InternalZeroKnowledge.g:795:6: lv_right_13_0= ruleSum
+                    // InternalZeroKnowledge.g:816:5: (lv_right_13_0= ruleSum )
+                    // InternalZeroKnowledge.g:817:6: lv_right_13_0= ruleSum
                     {
                     if ( state.backtracking==0 ) {
 
@@ -2230,7 +2276,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleSum"
-    // InternalZeroKnowledge.g:817:1: entryRuleSum returns [EObject current=null] : iv_ruleSum= ruleSum EOF ;
+    // InternalZeroKnowledge.g:839:1: entryRuleSum returns [EObject current=null] : iv_ruleSum= ruleSum EOF ;
     public final EObject entryRuleSum() throws RecognitionException {
         EObject current = null;
 
@@ -2238,8 +2284,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:817:44: (iv_ruleSum= ruleSum EOF )
-            // InternalZeroKnowledge.g:818:2: iv_ruleSum= ruleSum EOF
+            // InternalZeroKnowledge.g:839:44: (iv_ruleSum= ruleSum EOF )
+            // InternalZeroKnowledge.g:840:2: iv_ruleSum= ruleSum EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getSumRule()); 
@@ -2270,7 +2316,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleSum"
-    // InternalZeroKnowledge.g:824:1: ruleSum returns [EObject current=null] : (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* ) ;
+    // InternalZeroKnowledge.g:846:1: ruleSum returns [EObject current=null] : (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* ) ;
     public final EObject ruleSum() throws RecognitionException {
         EObject current = null;
 
@@ -2285,18 +2331,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:830:2: ( (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* ) )
-            // InternalZeroKnowledge.g:831:2: (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* )
+            // InternalZeroKnowledge.g:852:2: ( (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* ) )
+            // InternalZeroKnowledge.g:853:2: (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* )
             {
-            // InternalZeroKnowledge.g:831:2: (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* )
-            // InternalZeroKnowledge.g:832:3: this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )*
+            // InternalZeroKnowledge.g:853:2: (this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )* )
+            // InternalZeroKnowledge.g:854:3: this_Product_0= ruleProduct ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )*
             {
             if ( state.backtracking==0 ) {
 
               			newCompositeNode(grammarAccess.getSumAccess().getProductParserRuleCall_0());
               		
             }
-            pushFollow(FOLLOW_17);
+            pushFollow(FOLLOW_16);
             this_Product_0=ruleProduct();
 
             state._fsp--;
@@ -2307,7 +2353,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               			afterParserOrEnumRuleCall();
               		
             }
-            // InternalZeroKnowledge.g:840:3: ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )*
+            // InternalZeroKnowledge.g:862:3: ( ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) ) )*
             loop15:
             do {
                 int alt15=2;
@@ -2320,9 +2366,9 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                 switch (alt15) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:841:4: ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) )
+            	    // InternalZeroKnowledge.g:863:4: ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) ) ( (lv_right_5_0= ruleProduct ) )
             	    {
-            	    // InternalZeroKnowledge.g:841:4: ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) )
+            	    // InternalZeroKnowledge.g:863:4: ( ( () ( (lv_operation_2_0= '+' ) ) ) | ( () ( (lv_operation_4_0= '-' ) ) ) )
             	    int alt14=2;
             	    int LA14_0 = input.LA(1);
 
@@ -2341,13 +2387,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             	    }
             	    switch (alt14) {
             	        case 1 :
-            	            // InternalZeroKnowledge.g:842:5: ( () ( (lv_operation_2_0= '+' ) ) )
+            	            // InternalZeroKnowledge.g:864:5: ( () ( (lv_operation_2_0= '+' ) ) )
             	            {
-            	            // InternalZeroKnowledge.g:842:5: ( () ( (lv_operation_2_0= '+' ) ) )
-            	            // InternalZeroKnowledge.g:843:6: () ( (lv_operation_2_0= '+' ) )
+            	            // InternalZeroKnowledge.g:864:5: ( () ( (lv_operation_2_0= '+' ) ) )
+            	            // InternalZeroKnowledge.g:865:6: () ( (lv_operation_2_0= '+' ) )
             	            {
-            	            // InternalZeroKnowledge.g:843:6: ()
-            	            // InternalZeroKnowledge.g:844:7: 
+            	            // InternalZeroKnowledge.g:865:6: ()
+            	            // InternalZeroKnowledge.g:866:7: 
             	            {
             	            if ( state.backtracking==0 ) {
 
@@ -2359,11 +2405,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	            }
 
-            	            // InternalZeroKnowledge.g:850:6: ( (lv_operation_2_0= '+' ) )
-            	            // InternalZeroKnowledge.g:851:7: (lv_operation_2_0= '+' )
+            	            // InternalZeroKnowledge.g:872:6: ( (lv_operation_2_0= '+' ) )
+            	            // InternalZeroKnowledge.g:873:7: (lv_operation_2_0= '+' )
             	            {
-            	            // InternalZeroKnowledge.g:851:7: (lv_operation_2_0= '+' )
-            	            // InternalZeroKnowledge.g:852:8: lv_operation_2_0= '+'
+            	            // InternalZeroKnowledge.g:873:7: (lv_operation_2_0= '+' )
+            	            // InternalZeroKnowledge.g:874:8: lv_operation_2_0= '+'
             	            {
             	            lv_operation_2_0=(Token)match(input,24,FOLLOW_4); if (state.failed) return current;
             	            if ( state.backtracking==0 ) {
@@ -2392,13 +2438,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             	            }
             	            break;
             	        case 2 :
-            	            // InternalZeroKnowledge.g:866:5: ( () ( (lv_operation_4_0= '-' ) ) )
+            	            // InternalZeroKnowledge.g:888:5: ( () ( (lv_operation_4_0= '-' ) ) )
             	            {
-            	            // InternalZeroKnowledge.g:866:5: ( () ( (lv_operation_4_0= '-' ) ) )
-            	            // InternalZeroKnowledge.g:867:6: () ( (lv_operation_4_0= '-' ) )
+            	            // InternalZeroKnowledge.g:888:5: ( () ( (lv_operation_4_0= '-' ) ) )
+            	            // InternalZeroKnowledge.g:889:6: () ( (lv_operation_4_0= '-' ) )
             	            {
-            	            // InternalZeroKnowledge.g:867:6: ()
-            	            // InternalZeroKnowledge.g:868:7: 
+            	            // InternalZeroKnowledge.g:889:6: ()
+            	            // InternalZeroKnowledge.g:890:7: 
             	            {
             	            if ( state.backtracking==0 ) {
 
@@ -2410,11 +2456,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	            }
 
-            	            // InternalZeroKnowledge.g:874:6: ( (lv_operation_4_0= '-' ) )
-            	            // InternalZeroKnowledge.g:875:7: (lv_operation_4_0= '-' )
+            	            // InternalZeroKnowledge.g:896:6: ( (lv_operation_4_0= '-' ) )
+            	            // InternalZeroKnowledge.g:897:7: (lv_operation_4_0= '-' )
             	            {
-            	            // InternalZeroKnowledge.g:875:7: (lv_operation_4_0= '-' )
-            	            // InternalZeroKnowledge.g:876:8: lv_operation_4_0= '-'
+            	            // InternalZeroKnowledge.g:897:7: (lv_operation_4_0= '-' )
+            	            // InternalZeroKnowledge.g:898:8: lv_operation_4_0= '-'
             	            {
             	            lv_operation_4_0=(Token)match(input,25,FOLLOW_4); if (state.failed) return current;
             	            if ( state.backtracking==0 ) {
@@ -2445,18 +2491,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	    }
 
-            	    // InternalZeroKnowledge.g:890:4: ( (lv_right_5_0= ruleProduct ) )
-            	    // InternalZeroKnowledge.g:891:5: (lv_right_5_0= ruleProduct )
+            	    // InternalZeroKnowledge.g:912:4: ( (lv_right_5_0= ruleProduct ) )
+            	    // InternalZeroKnowledge.g:913:5: (lv_right_5_0= ruleProduct )
             	    {
-            	    // InternalZeroKnowledge.g:891:5: (lv_right_5_0= ruleProduct )
-            	    // InternalZeroKnowledge.g:892:6: lv_right_5_0= ruleProduct
+            	    // InternalZeroKnowledge.g:913:5: (lv_right_5_0= ruleProduct )
+            	    // InternalZeroKnowledge.g:914:6: lv_right_5_0= ruleProduct
             	    {
             	    if ( state.backtracking==0 ) {
 
             	      						newCompositeNode(grammarAccess.getSumAccess().getRightProductParserRuleCall_1_1_0());
             	      					
             	    }
-            	    pushFollow(FOLLOW_17);
+            	    pushFollow(FOLLOW_16);
             	    lv_right_5_0=ruleProduct();
 
             	    state._fsp--;
@@ -2514,7 +2560,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleProduct"
-    // InternalZeroKnowledge.g:914:1: entryRuleProduct returns [EObject current=null] : iv_ruleProduct= ruleProduct EOF ;
+    // InternalZeroKnowledge.g:936:1: entryRuleProduct returns [EObject current=null] : iv_ruleProduct= ruleProduct EOF ;
     public final EObject entryRuleProduct() throws RecognitionException {
         EObject current = null;
 
@@ -2522,8 +2568,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:914:48: (iv_ruleProduct= ruleProduct EOF )
-            // InternalZeroKnowledge.g:915:2: iv_ruleProduct= ruleProduct EOF
+            // InternalZeroKnowledge.g:936:48: (iv_ruleProduct= ruleProduct EOF )
+            // InternalZeroKnowledge.g:937:2: iv_ruleProduct= ruleProduct EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getProductRule()); 
@@ -2554,7 +2600,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleProduct"
-    // InternalZeroKnowledge.g:921:1: ruleProduct returns [EObject current=null] : (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* ) ;
+    // InternalZeroKnowledge.g:943:1: ruleProduct returns [EObject current=null] : (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* ) ;
     public final EObject ruleProduct() throws RecognitionException {
         EObject current = null;
 
@@ -2569,18 +2615,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:927:2: ( (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* ) )
-            // InternalZeroKnowledge.g:928:2: (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* )
+            // InternalZeroKnowledge.g:949:2: ( (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* ) )
+            // InternalZeroKnowledge.g:950:2: (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* )
             {
-            // InternalZeroKnowledge.g:928:2: (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* )
-            // InternalZeroKnowledge.g:929:3: this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )*
+            // InternalZeroKnowledge.g:950:2: (this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )* )
+            // InternalZeroKnowledge.g:951:3: this_Power_0= rulePower ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )*
             {
             if ( state.backtracking==0 ) {
 
               			newCompositeNode(grammarAccess.getProductAccess().getPowerParserRuleCall_0());
               		
             }
-            pushFollow(FOLLOW_18);
+            pushFollow(FOLLOW_17);
             this_Power_0=rulePower();
 
             state._fsp--;
@@ -2591,7 +2637,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               			afterParserOrEnumRuleCall();
               		
             }
-            // InternalZeroKnowledge.g:937:3: ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )*
+            // InternalZeroKnowledge.g:959:3: ( ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) ) )*
             loop17:
             do {
                 int alt17=2;
@@ -2604,9 +2650,9 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                 switch (alt17) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:938:4: ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) )
+            	    // InternalZeroKnowledge.g:960:4: ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) ) ( (lv_right_5_0= rulePower ) )
             	    {
-            	    // InternalZeroKnowledge.g:938:4: ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) )
+            	    // InternalZeroKnowledge.g:960:4: ( ( () ( (lv_operation_2_0= '*' ) ) ) | ( () ( (lv_operation_4_0= '/' ) ) ) )
             	    int alt16=2;
             	    int LA16_0 = input.LA(1);
 
@@ -2625,13 +2671,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             	    }
             	    switch (alt16) {
             	        case 1 :
-            	            // InternalZeroKnowledge.g:939:5: ( () ( (lv_operation_2_0= '*' ) ) )
+            	            // InternalZeroKnowledge.g:961:5: ( () ( (lv_operation_2_0= '*' ) ) )
             	            {
-            	            // InternalZeroKnowledge.g:939:5: ( () ( (lv_operation_2_0= '*' ) ) )
-            	            // InternalZeroKnowledge.g:940:6: () ( (lv_operation_2_0= '*' ) )
+            	            // InternalZeroKnowledge.g:961:5: ( () ( (lv_operation_2_0= '*' ) ) )
+            	            // InternalZeroKnowledge.g:962:6: () ( (lv_operation_2_0= '*' ) )
             	            {
-            	            // InternalZeroKnowledge.g:940:6: ()
-            	            // InternalZeroKnowledge.g:941:7: 
+            	            // InternalZeroKnowledge.g:962:6: ()
+            	            // InternalZeroKnowledge.g:963:7: 
             	            {
             	            if ( state.backtracking==0 ) {
 
@@ -2643,11 +2689,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	            }
 
-            	            // InternalZeroKnowledge.g:947:6: ( (lv_operation_2_0= '*' ) )
-            	            // InternalZeroKnowledge.g:948:7: (lv_operation_2_0= '*' )
+            	            // InternalZeroKnowledge.g:969:6: ( (lv_operation_2_0= '*' ) )
+            	            // InternalZeroKnowledge.g:970:7: (lv_operation_2_0= '*' )
             	            {
-            	            // InternalZeroKnowledge.g:948:7: (lv_operation_2_0= '*' )
-            	            // InternalZeroKnowledge.g:949:8: lv_operation_2_0= '*'
+            	            // InternalZeroKnowledge.g:970:7: (lv_operation_2_0= '*' )
+            	            // InternalZeroKnowledge.g:971:8: lv_operation_2_0= '*'
             	            {
             	            lv_operation_2_0=(Token)match(input,26,FOLLOW_4); if (state.failed) return current;
             	            if ( state.backtracking==0 ) {
@@ -2676,13 +2722,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             	            }
             	            break;
             	        case 2 :
-            	            // InternalZeroKnowledge.g:963:5: ( () ( (lv_operation_4_0= '/' ) ) )
+            	            // InternalZeroKnowledge.g:985:5: ( () ( (lv_operation_4_0= '/' ) ) )
             	            {
-            	            // InternalZeroKnowledge.g:963:5: ( () ( (lv_operation_4_0= '/' ) ) )
-            	            // InternalZeroKnowledge.g:964:6: () ( (lv_operation_4_0= '/' ) )
+            	            // InternalZeroKnowledge.g:985:5: ( () ( (lv_operation_4_0= '/' ) ) )
+            	            // InternalZeroKnowledge.g:986:6: () ( (lv_operation_4_0= '/' ) )
             	            {
-            	            // InternalZeroKnowledge.g:964:6: ()
-            	            // InternalZeroKnowledge.g:965:7: 
+            	            // InternalZeroKnowledge.g:986:6: ()
+            	            // InternalZeroKnowledge.g:987:7: 
             	            {
             	            if ( state.backtracking==0 ) {
 
@@ -2694,11 +2740,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	            }
 
-            	            // InternalZeroKnowledge.g:971:6: ( (lv_operation_4_0= '/' ) )
-            	            // InternalZeroKnowledge.g:972:7: (lv_operation_4_0= '/' )
+            	            // InternalZeroKnowledge.g:993:6: ( (lv_operation_4_0= '/' ) )
+            	            // InternalZeroKnowledge.g:994:7: (lv_operation_4_0= '/' )
             	            {
-            	            // InternalZeroKnowledge.g:972:7: (lv_operation_4_0= '/' )
-            	            // InternalZeroKnowledge.g:973:8: lv_operation_4_0= '/'
+            	            // InternalZeroKnowledge.g:994:7: (lv_operation_4_0= '/' )
+            	            // InternalZeroKnowledge.g:995:8: lv_operation_4_0= '/'
             	            {
             	            lv_operation_4_0=(Token)match(input,27,FOLLOW_4); if (state.failed) return current;
             	            if ( state.backtracking==0 ) {
@@ -2729,18 +2775,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             	    }
 
-            	    // InternalZeroKnowledge.g:987:4: ( (lv_right_5_0= rulePower ) )
-            	    // InternalZeroKnowledge.g:988:5: (lv_right_5_0= rulePower )
+            	    // InternalZeroKnowledge.g:1009:4: ( (lv_right_5_0= rulePower ) )
+            	    // InternalZeroKnowledge.g:1010:5: (lv_right_5_0= rulePower )
             	    {
-            	    // InternalZeroKnowledge.g:988:5: (lv_right_5_0= rulePower )
-            	    // InternalZeroKnowledge.g:989:6: lv_right_5_0= rulePower
+            	    // InternalZeroKnowledge.g:1010:5: (lv_right_5_0= rulePower )
+            	    // InternalZeroKnowledge.g:1011:6: lv_right_5_0= rulePower
             	    {
             	    if ( state.backtracking==0 ) {
 
             	      						newCompositeNode(grammarAccess.getProductAccess().getRightPowerParserRuleCall_1_1_0());
             	      					
             	    }
-            	    pushFollow(FOLLOW_18);
+            	    pushFollow(FOLLOW_17);
             	    lv_right_5_0=rulePower();
 
             	    state._fsp--;
@@ -2798,7 +2844,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRulePower"
-    // InternalZeroKnowledge.g:1011:1: entryRulePower returns [EObject current=null] : iv_rulePower= rulePower EOF ;
+    // InternalZeroKnowledge.g:1033:1: entryRulePower returns [EObject current=null] : iv_rulePower= rulePower EOF ;
     public final EObject entryRulePower() throws RecognitionException {
         EObject current = null;
 
@@ -2806,8 +2852,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1011:46: (iv_rulePower= rulePower EOF )
-            // InternalZeroKnowledge.g:1012:2: iv_rulePower= rulePower EOF
+            // InternalZeroKnowledge.g:1033:46: (iv_rulePower= rulePower EOF )
+            // InternalZeroKnowledge.g:1034:2: iv_rulePower= rulePower EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getPowerRule()); 
@@ -2838,11 +2884,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "rulePower"
-    // InternalZeroKnowledge.g:1018:1: rulePower returns [EObject current=null] : (this_Construct_0= ruleConstruct ( () otherlv_2= '^' ( (lv_right_3_0= rulePower ) ) )? ) ;
+    // InternalZeroKnowledge.g:1040:1: rulePower returns [EObject current=null] : (this_Construct_0= ruleConstruct ( () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) ) )? ) ;
     public final EObject rulePower() throws RecognitionException {
         EObject current = null;
 
-        Token otherlv_2=null;
+        Token lv_operation_2_0=null;
         EObject this_Construct_0 = null;
 
         EObject lv_right_3_0 = null;
@@ -2852,18 +2898,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1024:2: ( (this_Construct_0= ruleConstruct ( () otherlv_2= '^' ( (lv_right_3_0= rulePower ) ) )? ) )
-            // InternalZeroKnowledge.g:1025:2: (this_Construct_0= ruleConstruct ( () otherlv_2= '^' ( (lv_right_3_0= rulePower ) ) )? )
+            // InternalZeroKnowledge.g:1046:2: ( (this_Construct_0= ruleConstruct ( () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) ) )? ) )
+            // InternalZeroKnowledge.g:1047:2: (this_Construct_0= ruleConstruct ( () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) ) )? )
             {
-            // InternalZeroKnowledge.g:1025:2: (this_Construct_0= ruleConstruct ( () otherlv_2= '^' ( (lv_right_3_0= rulePower ) ) )? )
-            // InternalZeroKnowledge.g:1026:3: this_Construct_0= ruleConstruct ( () otherlv_2= '^' ( (lv_right_3_0= rulePower ) ) )?
+            // InternalZeroKnowledge.g:1047:2: (this_Construct_0= ruleConstruct ( () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) ) )? )
+            // InternalZeroKnowledge.g:1048:3: this_Construct_0= ruleConstruct ( () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) ) )?
             {
             if ( state.backtracking==0 ) {
 
               			newCompositeNode(grammarAccess.getPowerAccess().getConstructParserRuleCall_0());
               		
             }
-            pushFollow(FOLLOW_19);
+            pushFollow(FOLLOW_18);
             this_Construct_0=ruleConstruct();
 
             state._fsp--;
@@ -2874,7 +2920,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               			afterParserOrEnumRuleCall();
               		
             }
-            // InternalZeroKnowledge.g:1034:3: ( () otherlv_2= '^' ( (lv_right_3_0= rulePower ) ) )?
+            // InternalZeroKnowledge.g:1056:3: ( () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) ) )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -2883,10 +2929,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             }
             switch (alt18) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1035:4: () otherlv_2= '^' ( (lv_right_3_0= rulePower ) )
+                    // InternalZeroKnowledge.g:1057:4: () ( (lv_operation_2_0= '^' ) ) ( (lv_right_3_0= rulePower ) )
                     {
-                    // InternalZeroKnowledge.g:1035:4: ()
-                    // InternalZeroKnowledge.g:1036:5: 
+                    // InternalZeroKnowledge.g:1057:4: ()
+                    // InternalZeroKnowledge.g:1058:5: 
                     {
                     if ( state.backtracking==0 ) {
 
@@ -2898,17 +2944,37 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    otherlv_2=(Token)match(input,28,FOLLOW_4); if (state.failed) return current;
+                    // InternalZeroKnowledge.g:1064:4: ( (lv_operation_2_0= '^' ) )
+                    // InternalZeroKnowledge.g:1065:5: (lv_operation_2_0= '^' )
+                    {
+                    // InternalZeroKnowledge.g:1065:5: (lv_operation_2_0= '^' )
+                    // InternalZeroKnowledge.g:1066:6: lv_operation_2_0= '^'
+                    {
+                    lv_operation_2_0=(Token)match(input,28,FOLLOW_4); if (state.failed) return current;
                     if ( state.backtracking==0 ) {
 
-                      				newLeafNode(otherlv_2, grammarAccess.getPowerAccess().getCircumflexAccentKeyword_1_1());
-                      			
+                      						newLeafNode(lv_operation_2_0, grammarAccess.getPowerAccess().getOperationCircumflexAccentKeyword_1_1_0());
+                      					
                     }
-                    // InternalZeroKnowledge.g:1046:4: ( (lv_right_3_0= rulePower ) )
-                    // InternalZeroKnowledge.g:1047:5: (lv_right_3_0= rulePower )
+                    if ( state.backtracking==0 ) {
+
+                      						if (current==null) {
+                      							current = createModelElement(grammarAccess.getPowerRule());
+                      						}
+                      						setWithLastConsumed(current, "operation", lv_operation_2_0, "^");
+                      					
+                    }
+
+                    }
+
+
+                    }
+
+                    // InternalZeroKnowledge.g:1078:4: ( (lv_right_3_0= rulePower ) )
+                    // InternalZeroKnowledge.g:1079:5: (lv_right_3_0= rulePower )
                     {
-                    // InternalZeroKnowledge.g:1047:5: (lv_right_3_0= rulePower )
-                    // InternalZeroKnowledge.g:1048:6: lv_right_3_0= rulePower
+                    // InternalZeroKnowledge.g:1079:5: (lv_right_3_0= rulePower )
+                    // InternalZeroKnowledge.g:1080:6: lv_right_3_0= rulePower
                     {
                     if ( state.backtracking==0 ) {
 
@@ -2970,7 +3036,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleConstruct"
-    // InternalZeroKnowledge.g:1070:1: entryRuleConstruct returns [EObject current=null] : iv_ruleConstruct= ruleConstruct EOF ;
+    // InternalZeroKnowledge.g:1102:1: entryRuleConstruct returns [EObject current=null] : iv_ruleConstruct= ruleConstruct EOF ;
     public final EObject entryRuleConstruct() throws RecognitionException {
         EObject current = null;
 
@@ -2978,8 +3044,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1070:50: (iv_ruleConstruct= ruleConstruct EOF )
-            // InternalZeroKnowledge.g:1071:2: iv_ruleConstruct= ruleConstruct EOF
+            // InternalZeroKnowledge.g:1102:50: (iv_ruleConstruct= ruleConstruct EOF )
+            // InternalZeroKnowledge.g:1103:2: iv_ruleConstruct= ruleConstruct EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getConstructRule()); 
@@ -3010,7 +3076,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleConstruct"
-    // InternalZeroKnowledge.g:1077:1: ruleConstruct returns [EObject current=null] : (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative ) ;
+    // InternalZeroKnowledge.g:1109:1: ruleConstruct returns [EObject current=null] : (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative ) ;
     public final EObject ruleConstruct() throws RecognitionException {
         EObject current = null;
 
@@ -3025,10 +3091,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1083:2: ( (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative ) )
-            // InternalZeroKnowledge.g:1084:2: (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative )
+            // InternalZeroKnowledge.g:1115:2: ( (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative ) )
+            // InternalZeroKnowledge.g:1116:2: (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative )
             {
-            // InternalZeroKnowledge.g:1084:2: (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative )
+            // InternalZeroKnowledge.g:1116:2: (this_StringLiteral_0= ruleStringLiteral | ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple ) | this_Negative_2= ruleNegative )
             int alt19=3;
             switch ( input.LA(1) ) {
             case RULE_STRING_LITERAL:
@@ -3072,7 +3138,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             switch (alt19) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1085:3: this_StringLiteral_0= ruleStringLiteral
+                    // InternalZeroKnowledge.g:1117:3: this_StringLiteral_0= ruleStringLiteral
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3094,10 +3160,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // InternalZeroKnowledge.g:1094:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple )
+                    // InternalZeroKnowledge.g:1126:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple )
                     {
-                    // InternalZeroKnowledge.g:1094:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple )
-                    // InternalZeroKnowledge.g:1095:4: ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple
+                    // InternalZeroKnowledge.g:1126:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple )
+                    // InternalZeroKnowledge.g:1127:4: ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=>this_Tuple_1= ruleTuple
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3122,7 +3188,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // InternalZeroKnowledge.g:1117:3: this_Negative_2= ruleNegative
+                    // InternalZeroKnowledge.g:1149:3: this_Negative_2= ruleNegative
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3168,7 +3234,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleStringLiteral"
-    // InternalZeroKnowledge.g:1129:1: entryRuleStringLiteral returns [EObject current=null] : iv_ruleStringLiteral= ruleStringLiteral EOF ;
+    // InternalZeroKnowledge.g:1161:1: entryRuleStringLiteral returns [EObject current=null] : iv_ruleStringLiteral= ruleStringLiteral EOF ;
     public final EObject entryRuleStringLiteral() throws RecognitionException {
         EObject current = null;
 
@@ -3176,8 +3242,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1129:54: (iv_ruleStringLiteral= ruleStringLiteral EOF )
-            // InternalZeroKnowledge.g:1130:2: iv_ruleStringLiteral= ruleStringLiteral EOF
+            // InternalZeroKnowledge.g:1161:54: (iv_ruleStringLiteral= ruleStringLiteral EOF )
+            // InternalZeroKnowledge.g:1162:2: iv_ruleStringLiteral= ruleStringLiteral EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getStringLiteralRule()); 
@@ -3208,7 +3274,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleStringLiteral"
-    // InternalZeroKnowledge.g:1136:1: ruleStringLiteral returns [EObject current=null] : ( (lv_value_0_0= RULE_STRING_LITERAL ) ) ;
+    // InternalZeroKnowledge.g:1168:1: ruleStringLiteral returns [EObject current=null] : ( (lv_value_0_0= RULE_STRING_LITERAL ) ) ;
     public final EObject ruleStringLiteral() throws RecognitionException {
         EObject current = null;
 
@@ -3218,14 +3284,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1142:2: ( ( (lv_value_0_0= RULE_STRING_LITERAL ) ) )
-            // InternalZeroKnowledge.g:1143:2: ( (lv_value_0_0= RULE_STRING_LITERAL ) )
+            // InternalZeroKnowledge.g:1174:2: ( ( (lv_value_0_0= RULE_STRING_LITERAL ) ) )
+            // InternalZeroKnowledge.g:1175:2: ( (lv_value_0_0= RULE_STRING_LITERAL ) )
             {
-            // InternalZeroKnowledge.g:1143:2: ( (lv_value_0_0= RULE_STRING_LITERAL ) )
-            // InternalZeroKnowledge.g:1144:3: (lv_value_0_0= RULE_STRING_LITERAL )
+            // InternalZeroKnowledge.g:1175:2: ( (lv_value_0_0= RULE_STRING_LITERAL ) )
+            // InternalZeroKnowledge.g:1176:3: (lv_value_0_0= RULE_STRING_LITERAL )
             {
-            // InternalZeroKnowledge.g:1144:3: (lv_value_0_0= RULE_STRING_LITERAL )
-            // InternalZeroKnowledge.g:1145:4: lv_value_0_0= RULE_STRING_LITERAL
+            // InternalZeroKnowledge.g:1176:3: (lv_value_0_0= RULE_STRING_LITERAL )
+            // InternalZeroKnowledge.g:1177:4: lv_value_0_0= RULE_STRING_LITERAL
             {
             lv_value_0_0=(Token)match(input,RULE_STRING_LITERAL,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -3273,7 +3339,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleTuple"
-    // InternalZeroKnowledge.g:1164:1: entryRuleTuple returns [EObject current=null] : iv_ruleTuple= ruleTuple EOF ;
+    // InternalZeroKnowledge.g:1196:1: entryRuleTuple returns [EObject current=null] : iv_ruleTuple= ruleTuple EOF ;
     public final EObject entryRuleTuple() throws RecognitionException {
         EObject current = null;
 
@@ -3281,8 +3347,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1164:46: (iv_ruleTuple= ruleTuple EOF )
-            // InternalZeroKnowledge.g:1165:2: iv_ruleTuple= ruleTuple EOF
+            // InternalZeroKnowledge.g:1196:46: (iv_ruleTuple= ruleTuple EOF )
+            // InternalZeroKnowledge.g:1197:2: iv_ruleTuple= ruleTuple EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getTupleRule()); 
@@ -3313,7 +3379,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleTuple"
-    // InternalZeroKnowledge.g:1171:1: ruleTuple returns [EObject current=null] : ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' ) ;
+    // InternalZeroKnowledge.g:1203:1: ruleTuple returns [EObject current=null] : ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' ) ;
     public final EObject ruleTuple() throws RecognitionException {
         EObject current = null;
 
@@ -3332,20 +3398,20 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1177:2: ( ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' ) )
-            // InternalZeroKnowledge.g:1178:2: ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' )
+            // InternalZeroKnowledge.g:1209:2: ( ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' ) )
+            // InternalZeroKnowledge.g:1210:2: ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' )
             {
-            // InternalZeroKnowledge.g:1178:2: ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' )
-            // InternalZeroKnowledge.g:1179:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')'
+            // InternalZeroKnowledge.g:1210:2: ( ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')' )
+            // InternalZeroKnowledge.g:1211:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) ) ( (lv_elements_4_0= ruleConjunction ) ) (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )* otherlv_7= ')'
             {
-            // InternalZeroKnowledge.g:1179:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) )
-            // InternalZeroKnowledge.g:1180:4: ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' )
+            // InternalZeroKnowledge.g:1211:3: ( ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' ) )
+            // InternalZeroKnowledge.g:1212:4: ( ( () '(' ( ( ruleConjunction ) ) ',' ) )=> ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' )
             {
-            // InternalZeroKnowledge.g:1192:4: ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' )
-            // InternalZeroKnowledge.g:1193:5: () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ','
+            // InternalZeroKnowledge.g:1224:4: ( () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ',' )
+            // InternalZeroKnowledge.g:1225:5: () otherlv_1= '(' ( (lv_elements_2_0= ruleConjunction ) ) otherlv_3= ','
             {
-            // InternalZeroKnowledge.g:1193:5: ()
-            // InternalZeroKnowledge.g:1194:6: 
+            // InternalZeroKnowledge.g:1225:5: ()
+            // InternalZeroKnowledge.g:1226:6: 
             {
             if ( state.backtracking==0 ) {
 
@@ -3363,18 +3429,18 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
               					newLeafNode(otherlv_1, grammarAccess.getTupleAccess().getLeftParenthesisKeyword_0_0_1());
               				
             }
-            // InternalZeroKnowledge.g:1204:5: ( (lv_elements_2_0= ruleConjunction ) )
-            // InternalZeroKnowledge.g:1205:6: (lv_elements_2_0= ruleConjunction )
+            // InternalZeroKnowledge.g:1236:5: ( (lv_elements_2_0= ruleConjunction ) )
+            // InternalZeroKnowledge.g:1237:6: (lv_elements_2_0= ruleConjunction )
             {
-            // InternalZeroKnowledge.g:1205:6: (lv_elements_2_0= ruleConjunction )
-            // InternalZeroKnowledge.g:1206:7: lv_elements_2_0= ruleConjunction
+            // InternalZeroKnowledge.g:1237:6: (lv_elements_2_0= ruleConjunction )
+            // InternalZeroKnowledge.g:1238:7: lv_elements_2_0= ruleConjunction
             {
             if ( state.backtracking==0 ) {
 
               							newCompositeNode(grammarAccess.getTupleAccess().getElementsConjunctionParserRuleCall_0_0_2_0());
               						
             }
-            pushFollow(FOLLOW_20);
+            pushFollow(FOLLOW_19);
             lv_elements_2_0=ruleConjunction();
 
             state._fsp--;
@@ -3410,11 +3476,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            // InternalZeroKnowledge.g:1229:3: ( (lv_elements_4_0= ruleConjunction ) )
-            // InternalZeroKnowledge.g:1230:4: (lv_elements_4_0= ruleConjunction )
+            // InternalZeroKnowledge.g:1261:3: ( (lv_elements_4_0= ruleConjunction ) )
+            // InternalZeroKnowledge.g:1262:4: (lv_elements_4_0= ruleConjunction )
             {
-            // InternalZeroKnowledge.g:1230:4: (lv_elements_4_0= ruleConjunction )
-            // InternalZeroKnowledge.g:1231:5: lv_elements_4_0= ruleConjunction
+            // InternalZeroKnowledge.g:1262:4: (lv_elements_4_0= ruleConjunction )
+            // InternalZeroKnowledge.g:1263:5: lv_elements_4_0= ruleConjunction
             {
             if ( state.backtracking==0 ) {
 
@@ -3445,7 +3511,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            // InternalZeroKnowledge.g:1248:3: (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )*
+            // InternalZeroKnowledge.g:1280:3: (otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) ) )*
             loop20:
             do {
                 int alt20=2;
@@ -3458,7 +3524,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                 switch (alt20) {
             	case 1 :
-            	    // InternalZeroKnowledge.g:1249:4: otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) )
+            	    // InternalZeroKnowledge.g:1281:4: otherlv_5= ',' ( (lv_elements_6_0= ruleConjunction ) )
             	    {
             	    otherlv_5=(Token)match(input,14,FOLLOW_4); if (state.failed) return current;
             	    if ( state.backtracking==0 ) {
@@ -3466,11 +3532,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             	      				newLeafNode(otherlv_5, grammarAccess.getTupleAccess().getCommaKeyword_2_0());
             	      			
             	    }
-            	    // InternalZeroKnowledge.g:1253:4: ( (lv_elements_6_0= ruleConjunction ) )
-            	    // InternalZeroKnowledge.g:1254:5: (lv_elements_6_0= ruleConjunction )
+            	    // InternalZeroKnowledge.g:1285:4: ( (lv_elements_6_0= ruleConjunction ) )
+            	    // InternalZeroKnowledge.g:1286:5: (lv_elements_6_0= ruleConjunction )
             	    {
-            	    // InternalZeroKnowledge.g:1254:5: (lv_elements_6_0= ruleConjunction )
-            	    // InternalZeroKnowledge.g:1255:6: lv_elements_6_0= ruleConjunction
+            	    // InternalZeroKnowledge.g:1286:5: (lv_elements_6_0= ruleConjunction )
+            	    // InternalZeroKnowledge.g:1287:6: lv_elements_6_0= ruleConjunction
             	    {
             	    if ( state.backtracking==0 ) {
 
@@ -3541,7 +3607,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleNegative"
-    // InternalZeroKnowledge.g:1281:1: entryRuleNegative returns [EObject current=null] : iv_ruleNegative= ruleNegative EOF ;
+    // InternalZeroKnowledge.g:1313:1: entryRuleNegative returns [EObject current=null] : iv_ruleNegative= ruleNegative EOF ;
     public final EObject entryRuleNegative() throws RecognitionException {
         EObject current = null;
 
@@ -3549,8 +3615,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1281:49: (iv_ruleNegative= ruleNegative EOF )
-            // InternalZeroKnowledge.g:1282:2: iv_ruleNegative= ruleNegative EOF
+            // InternalZeroKnowledge.g:1313:49: (iv_ruleNegative= ruleNegative EOF )
+            // InternalZeroKnowledge.g:1314:2: iv_ruleNegative= ruleNegative EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getNegativeRule()); 
@@ -3581,11 +3647,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleNegative"
-    // InternalZeroKnowledge.g:1288:1: ruleNegative returns [EObject current=null] : ( ( () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue ) ;
+    // InternalZeroKnowledge.g:1320:1: ruleNegative returns [EObject current=null] : ( ( () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue ) ;
     public final EObject ruleNegative() throws RecognitionException {
         EObject current = null;
 
-        Token otherlv_1=null;
+        Token lv_operation_1_0=null;
         EObject lv_term_2_0 = null;
 
         EObject this_Value_3 = null;
@@ -3595,10 +3661,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1294:2: ( ( ( () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue ) )
-            // InternalZeroKnowledge.g:1295:2: ( ( () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue )
+            // InternalZeroKnowledge.g:1326:2: ( ( ( () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue ) )
+            // InternalZeroKnowledge.g:1327:2: ( ( () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue )
             {
-            // InternalZeroKnowledge.g:1295:2: ( ( () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue )
+            // InternalZeroKnowledge.g:1327:2: ( ( () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) ) ) | this_Value_3= ruleValue )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -3617,13 +3683,13 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             }
             switch (alt21) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1296:3: ( () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) ) )
+                    // InternalZeroKnowledge.g:1328:3: ( () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) ) )
                     {
-                    // InternalZeroKnowledge.g:1296:3: ( () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) ) )
-                    // InternalZeroKnowledge.g:1297:4: () otherlv_1= '-' ( (lv_term_2_0= ruleValue ) )
+                    // InternalZeroKnowledge.g:1328:3: ( () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) ) )
+                    // InternalZeroKnowledge.g:1329:4: () ( (lv_operation_1_0= '-' ) ) ( (lv_term_2_0= ruleValue ) )
                     {
-                    // InternalZeroKnowledge.g:1297:4: ()
-                    // InternalZeroKnowledge.g:1298:5: 
+                    // InternalZeroKnowledge.g:1329:4: ()
+                    // InternalZeroKnowledge.g:1330:5: 
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3635,17 +3701,37 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    otherlv_1=(Token)match(input,25,FOLLOW_4); if (state.failed) return current;
+                    // InternalZeroKnowledge.g:1336:4: ( (lv_operation_1_0= '-' ) )
+                    // InternalZeroKnowledge.g:1337:5: (lv_operation_1_0= '-' )
+                    {
+                    // InternalZeroKnowledge.g:1337:5: (lv_operation_1_0= '-' )
+                    // InternalZeroKnowledge.g:1338:6: lv_operation_1_0= '-'
+                    {
+                    lv_operation_1_0=(Token)match(input,25,FOLLOW_4); if (state.failed) return current;
                     if ( state.backtracking==0 ) {
 
-                      				newLeafNode(otherlv_1, grammarAccess.getNegativeAccess().getHyphenMinusKeyword_0_1());
-                      			
+                      						newLeafNode(lv_operation_1_0, grammarAccess.getNegativeAccess().getOperationHyphenMinusKeyword_0_1_0());
+                      					
                     }
-                    // InternalZeroKnowledge.g:1308:4: ( (lv_term_2_0= ruleValue ) )
-                    // InternalZeroKnowledge.g:1309:5: (lv_term_2_0= ruleValue )
+                    if ( state.backtracking==0 ) {
+
+                      						if (current==null) {
+                      							current = createModelElement(grammarAccess.getNegativeRule());
+                      						}
+                      						setWithLastConsumed(current, "operation", lv_operation_1_0, "-");
+                      					
+                    }
+
+                    }
+
+
+                    }
+
+                    // InternalZeroKnowledge.g:1350:4: ( (lv_term_2_0= ruleValue ) )
+                    // InternalZeroKnowledge.g:1351:5: (lv_term_2_0= ruleValue )
                     {
-                    // InternalZeroKnowledge.g:1309:5: (lv_term_2_0= ruleValue )
-                    // InternalZeroKnowledge.g:1310:6: lv_term_2_0= ruleValue
+                    // InternalZeroKnowledge.g:1351:5: (lv_term_2_0= ruleValue )
+                    // InternalZeroKnowledge.g:1352:6: lv_term_2_0= ruleValue
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3683,7 +3769,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // InternalZeroKnowledge.g:1329:3: this_Value_3= ruleValue
+                    // InternalZeroKnowledge.g:1371:3: this_Value_3= ruleValue
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3729,7 +3815,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleValue"
-    // InternalZeroKnowledge.g:1341:1: entryRuleValue returns [EObject current=null] : iv_ruleValue= ruleValue EOF ;
+    // InternalZeroKnowledge.g:1383:1: entryRuleValue returns [EObject current=null] : iv_ruleValue= ruleValue EOF ;
     public final EObject entryRuleValue() throws RecognitionException {
         EObject current = null;
 
@@ -3737,8 +3823,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1341:46: (iv_ruleValue= ruleValue EOF )
-            // InternalZeroKnowledge.g:1342:2: iv_ruleValue= ruleValue EOF
+            // InternalZeroKnowledge.g:1383:46: (iv_ruleValue= ruleValue EOF )
+            // InternalZeroKnowledge.g:1384:2: iv_ruleValue= ruleValue EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getValueRule()); 
@@ -3769,7 +3855,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleValue"
-    // InternalZeroKnowledge.g:1348:1: ruleValue returns [EObject current=null] : (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) ) ;
+    // InternalZeroKnowledge.g:1390:1: ruleValue returns [EObject current=null] : (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) ) ;
     public final EObject ruleValue() throws RecognitionException {
         EObject current = null;
 
@@ -3788,21 +3874,21 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1354:2: ( (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) ) )
-            // InternalZeroKnowledge.g:1355:2: (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) )
+            // InternalZeroKnowledge.g:1396:2: ( (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) ) )
+            // InternalZeroKnowledge.g:1397:2: (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) )
             {
-            // InternalZeroKnowledge.g:1355:2: (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) )
+            // InternalZeroKnowledge.g:1397:2: (this_FunctionCall_0= ruleFunctionCall | this_Variable_1= ruleVariable | this_NumberLiteral_2= ruleNumberLiteral | (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' ) )
             int alt22=4;
             switch ( input.LA(1) ) {
             case RULE_IDENTIFIER:
                 {
                 int LA22_1 = input.LA(2);
 
-                if ( (LA22_1==13) ) {
-                    alt22=1;
-                }
-                else if ( (LA22_1==EOF||LA22_1==10||LA22_1==12||(LA22_1>=14 && LA22_1<=28)) ) {
+                if ( (LA22_1==EOF||LA22_1==10||LA22_1==12||(LA22_1>=14 && LA22_1<=28)) ) {
                     alt22=2;
+                }
+                else if ( (LA22_1==13) ) {
+                    alt22=1;
                 }
                 else {
                     if (state.backtracking>0) {state.failed=true; return current;}
@@ -3833,7 +3919,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             switch (alt22) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1356:3: this_FunctionCall_0= ruleFunctionCall
+                    // InternalZeroKnowledge.g:1398:3: this_FunctionCall_0= ruleFunctionCall
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3855,7 +3941,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 2 :
-                    // InternalZeroKnowledge.g:1365:3: this_Variable_1= ruleVariable
+                    // InternalZeroKnowledge.g:1407:3: this_Variable_1= ruleVariable
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3877,7 +3963,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 3 :
-                    // InternalZeroKnowledge.g:1374:3: this_NumberLiteral_2= ruleNumberLiteral
+                    // InternalZeroKnowledge.g:1416:3: this_NumberLiteral_2= ruleNumberLiteral
                     {
                     if ( state.backtracking==0 ) {
 
@@ -3899,10 +3985,10 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     }
                     break;
                 case 4 :
-                    // InternalZeroKnowledge.g:1383:3: (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' )
+                    // InternalZeroKnowledge.g:1425:3: (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' )
                     {
-                    // InternalZeroKnowledge.g:1383:3: (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' )
-                    // InternalZeroKnowledge.g:1384:4: otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')'
+                    // InternalZeroKnowledge.g:1425:3: (otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')' )
+                    // InternalZeroKnowledge.g:1426:4: otherlv_3= '(' this_Brackets_4= ruleBrackets otherlv_5= ')'
                     {
                     otherlv_3=(Token)match(input,13,FOLLOW_4); if (state.failed) return current;
                     if ( state.backtracking==0 ) {
@@ -3915,7 +4001,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                       				newCompositeNode(grammarAccess.getValueAccess().getBracketsParserRuleCall_3_1());
                       			
                     }
-                    pushFollow(FOLLOW_21);
+                    pushFollow(FOLLOW_20);
                     this_Brackets_4=ruleBrackets();
 
                     state._fsp--;
@@ -3963,7 +4049,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleFunctionCall"
-    // InternalZeroKnowledge.g:1405:1: entryRuleFunctionCall returns [EObject current=null] : iv_ruleFunctionCall= ruleFunctionCall EOF ;
+    // InternalZeroKnowledge.g:1447:1: entryRuleFunctionCall returns [EObject current=null] : iv_ruleFunctionCall= ruleFunctionCall EOF ;
     public final EObject entryRuleFunctionCall() throws RecognitionException {
         EObject current = null;
 
@@ -3971,8 +4057,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1405:53: (iv_ruleFunctionCall= ruleFunctionCall EOF )
-            // InternalZeroKnowledge.g:1406:2: iv_ruleFunctionCall= ruleFunctionCall EOF
+            // InternalZeroKnowledge.g:1447:53: (iv_ruleFunctionCall= ruleFunctionCall EOF )
+            // InternalZeroKnowledge.g:1448:2: iv_ruleFunctionCall= ruleFunctionCall EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getFunctionCallRule()); 
@@ -4003,7 +4089,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleFunctionCall"
-    // InternalZeroKnowledge.g:1412:1: ruleFunctionCall returns [EObject current=null] : ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')' ) ) ;
+    // InternalZeroKnowledge.g:1454:1: ruleFunctionCall returns [EObject current=null] : ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')' ) ) ;
     public final EObject ruleFunctionCall() throws RecognitionException {
         EObject current = null;
 
@@ -4020,14 +4106,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1418:2: ( ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')' ) ) )
-            // InternalZeroKnowledge.g:1419:2: ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')' ) )
+            // InternalZeroKnowledge.g:1460:2: ( ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')' ) ) )
+            // InternalZeroKnowledge.g:1461:2: ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')' ) )
             {
-            // InternalZeroKnowledge.g:1419:2: ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')' ) )
-            // InternalZeroKnowledge.g:1420:3: () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')' )
+            // InternalZeroKnowledge.g:1461:2: ( () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')' ) )
+            // InternalZeroKnowledge.g:1462:3: () ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')' )
             {
-            // InternalZeroKnowledge.g:1420:3: ()
-            // InternalZeroKnowledge.g:1421:4: 
+            // InternalZeroKnowledge.g:1462:3: ()
+            // InternalZeroKnowledge.g:1463:4: 
             {
             if ( state.backtracking==0 ) {
 
@@ -4039,20 +4125,20 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            // InternalZeroKnowledge.g:1427:3: ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')' )
-            // InternalZeroKnowledge.g:1428:4: ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )? otherlv_6= ')'
+            // InternalZeroKnowledge.g:1469:3: ( ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')' )
+            // InternalZeroKnowledge.g:1470:4: ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) ) ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )? otherlv_6= ')'
             {
-            // InternalZeroKnowledge.g:1428:4: ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) )
-            // InternalZeroKnowledge.g:1429:5: ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' )
+            // InternalZeroKnowledge.g:1470:4: ( ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' ) )
+            // InternalZeroKnowledge.g:1471:5: ( RULE_IDENTIFIER )=> ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' )
             {
-            // InternalZeroKnowledge.g:1430:5: ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' )
-            // InternalZeroKnowledge.g:1431:6: ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '('
+            // InternalZeroKnowledge.g:1472:5: ( ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '(' )
+            // InternalZeroKnowledge.g:1473:6: ( (lv_name_1_0= RULE_IDENTIFIER ) ) otherlv_2= '('
             {
-            // InternalZeroKnowledge.g:1431:6: ( (lv_name_1_0= RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:1432:7: (lv_name_1_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:1473:6: ( (lv_name_1_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:1474:7: (lv_name_1_0= RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:1432:7: (lv_name_1_0= RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:1433:8: lv_name_1_0= RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:1474:7: (lv_name_1_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:1475:8: lv_name_1_0= RULE_IDENTIFIER
             {
             lv_name_1_0=(Token)match(input,RULE_IDENTIFIER,FOLLOW_6); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -4078,7 +4164,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            otherlv_2=(Token)match(input,13,FOLLOW_22); if (state.failed) return current;
+            otherlv_2=(Token)match(input,13,FOLLOW_21); if (state.failed) return current;
             if ( state.backtracking==0 ) {
 
               						newLeafNode(otherlv_2, grammarAccess.getFunctionCallAccess().getLeftParenthesisKeyword_1_0_0_1());
@@ -4090,7 +4176,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            // InternalZeroKnowledge.g:1455:4: ( ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )* )?
+            // InternalZeroKnowledge.g:1497:4: ( ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )* )?
             int alt24=2;
             int LA24_0 = input.LA(1);
 
@@ -4099,21 +4185,21 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
             }
             switch (alt24) {
                 case 1 :
-                    // InternalZeroKnowledge.g:1456:5: ( (lv_arguments_3_0= ruleConjunction ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )*
+                    // InternalZeroKnowledge.g:1498:5: ( (lv_arguments_3_0= ruleArgument ) ) (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )*
                     {
-                    // InternalZeroKnowledge.g:1456:5: ( (lv_arguments_3_0= ruleConjunction ) )
-                    // InternalZeroKnowledge.g:1457:6: (lv_arguments_3_0= ruleConjunction )
+                    // InternalZeroKnowledge.g:1498:5: ( (lv_arguments_3_0= ruleArgument ) )
+                    // InternalZeroKnowledge.g:1499:6: (lv_arguments_3_0= ruleArgument )
                     {
-                    // InternalZeroKnowledge.g:1457:6: (lv_arguments_3_0= ruleConjunction )
-                    // InternalZeroKnowledge.g:1458:7: lv_arguments_3_0= ruleConjunction
+                    // InternalZeroKnowledge.g:1499:6: (lv_arguments_3_0= ruleArgument )
+                    // InternalZeroKnowledge.g:1500:7: lv_arguments_3_0= ruleArgument
                     {
                     if ( state.backtracking==0 ) {
 
-                      							newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsConjunctionParserRuleCall_1_1_0_0());
+                      							newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsArgumentParserRuleCall_1_1_0_0());
                       						
                     }
                     pushFollow(FOLLOW_11);
-                    lv_arguments_3_0=ruleConjunction();
+                    lv_arguments_3_0=ruleArgument();
 
                     state._fsp--;
                     if (state.failed) return current;
@@ -4126,7 +4212,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                       								current,
                       								"arguments",
                       								lv_arguments_3_0,
-                      								"de.upb.crypto.zeroknowledge.ZeroKnowledge.Conjunction");
+                      								"de.upb.crypto.zeroknowledge.ZeroKnowledge.Argument");
                       							afterParserOrEnumRuleCall();
                       						
                     }
@@ -4136,7 +4222,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                     }
 
-                    // InternalZeroKnowledge.g:1475:5: (otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) ) )*
+                    // InternalZeroKnowledge.g:1517:5: (otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) ) )*
                     loop23:
                     do {
                         int alt23=2;
@@ -4149,7 +4235,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
                         switch (alt23) {
                     	case 1 :
-                    	    // InternalZeroKnowledge.g:1476:6: otherlv_4= ',' ( (lv_arguments_5_0= ruleConjunction ) )
+                    	    // InternalZeroKnowledge.g:1518:6: otherlv_4= ',' ( (lv_arguments_5_0= ruleArgument ) )
                     	    {
                     	    otherlv_4=(Token)match(input,14,FOLLOW_4); if (state.failed) return current;
                     	    if ( state.backtracking==0 ) {
@@ -4157,19 +4243,19 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     	      						newLeafNode(otherlv_4, grammarAccess.getFunctionCallAccess().getCommaKeyword_1_1_1_0());
                     	      					
                     	    }
-                    	    // InternalZeroKnowledge.g:1480:6: ( (lv_arguments_5_0= ruleConjunction ) )
-                    	    // InternalZeroKnowledge.g:1481:7: (lv_arguments_5_0= ruleConjunction )
+                    	    // InternalZeroKnowledge.g:1522:6: ( (lv_arguments_5_0= ruleArgument ) )
+                    	    // InternalZeroKnowledge.g:1523:7: (lv_arguments_5_0= ruleArgument )
                     	    {
-                    	    // InternalZeroKnowledge.g:1481:7: (lv_arguments_5_0= ruleConjunction )
-                    	    // InternalZeroKnowledge.g:1482:8: lv_arguments_5_0= ruleConjunction
+                    	    // InternalZeroKnowledge.g:1523:7: (lv_arguments_5_0= ruleArgument )
+                    	    // InternalZeroKnowledge.g:1524:8: lv_arguments_5_0= ruleArgument
                     	    {
                     	    if ( state.backtracking==0 ) {
 
-                    	      								newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsConjunctionParserRuleCall_1_1_1_1_0());
+                    	      								newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsArgumentParserRuleCall_1_1_1_1_0());
                     	      							
                     	    }
                     	    pushFollow(FOLLOW_11);
-                    	    lv_arguments_5_0=ruleConjunction();
+                    	    lv_arguments_5_0=ruleArgument();
 
                     	    state._fsp--;
                     	    if (state.failed) return current;
@@ -4182,7 +4268,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
                     	      									current,
                     	      									"arguments",
                     	      									lv_arguments_5_0,
-                    	      									"de.upb.crypto.zeroknowledge.ZeroKnowledge.Conjunction");
+                    	      									"de.upb.crypto.zeroknowledge.ZeroKnowledge.Argument");
                     	      								afterParserOrEnumRuleCall();
                     	      							
                     	    }
@@ -4240,8 +4326,138 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
     // $ANTLR end "ruleFunctionCall"
 
 
+    // $ANTLR start "entryRuleArgument"
+    // InternalZeroKnowledge.g:1552:1: entryRuleArgument returns [EObject current=null] : iv_ruleArgument= ruleArgument EOF ;
+    public final EObject entryRuleArgument() throws RecognitionException {
+        EObject current = null;
+
+        EObject iv_ruleArgument = null;
+
+
+        try {
+            // InternalZeroKnowledge.g:1552:49: (iv_ruleArgument= ruleArgument EOF )
+            // InternalZeroKnowledge.g:1553:2: iv_ruleArgument= ruleArgument EOF
+            {
+            if ( state.backtracking==0 ) {
+               newCompositeNode(grammarAccess.getArgumentRule()); 
+            }
+            pushFollow(FOLLOW_1);
+            iv_ruleArgument=ruleArgument();
+
+            state._fsp--;
+            if (state.failed) return current;
+            if ( state.backtracking==0 ) {
+               current =iv_ruleArgument; 
+            }
+            match(input,EOF,FOLLOW_2); if (state.failed) return current;
+
+            }
+
+        }
+
+            catch (RecognitionException re) {
+                recover(input,re);
+                appendSkippedTokens();
+            }
+        finally {
+        }
+        return current;
+    }
+    // $ANTLR end "entryRuleArgument"
+
+
+    // $ANTLR start "ruleArgument"
+    // InternalZeroKnowledge.g:1559:1: ruleArgument returns [EObject current=null] : ( () ( (lv_expression_1_0= ruleConjunction ) ) ) ;
+    public final EObject ruleArgument() throws RecognitionException {
+        EObject current = null;
+
+        EObject lv_expression_1_0 = null;
+
+
+
+        	enterRule();
+
+        try {
+            // InternalZeroKnowledge.g:1565:2: ( ( () ( (lv_expression_1_0= ruleConjunction ) ) ) )
+            // InternalZeroKnowledge.g:1566:2: ( () ( (lv_expression_1_0= ruleConjunction ) ) )
+            {
+            // InternalZeroKnowledge.g:1566:2: ( () ( (lv_expression_1_0= ruleConjunction ) ) )
+            // InternalZeroKnowledge.g:1567:3: () ( (lv_expression_1_0= ruleConjunction ) )
+            {
+            // InternalZeroKnowledge.g:1567:3: ()
+            // InternalZeroKnowledge.g:1568:4: 
+            {
+            if ( state.backtracking==0 ) {
+
+              				current = forceCreateModelElement(
+              					grammarAccess.getArgumentAccess().getArgumentAction_0(),
+              					current);
+              			
+            }
+
+            }
+
+            // InternalZeroKnowledge.g:1574:3: ( (lv_expression_1_0= ruleConjunction ) )
+            // InternalZeroKnowledge.g:1575:4: (lv_expression_1_0= ruleConjunction )
+            {
+            // InternalZeroKnowledge.g:1575:4: (lv_expression_1_0= ruleConjunction )
+            // InternalZeroKnowledge.g:1576:5: lv_expression_1_0= ruleConjunction
+            {
+            if ( state.backtracking==0 ) {
+
+              					newCompositeNode(grammarAccess.getArgumentAccess().getExpressionConjunctionParserRuleCall_1_0());
+              				
+            }
+            pushFollow(FOLLOW_2);
+            lv_expression_1_0=ruleConjunction();
+
+            state._fsp--;
+            if (state.failed) return current;
+            if ( state.backtracking==0 ) {
+
+              					if (current==null) {
+              						current = createModelElementForParent(grammarAccess.getArgumentRule());
+              					}
+              					set(
+              						current,
+              						"expression",
+              						lv_expression_1_0,
+              						"de.upb.crypto.zeroknowledge.ZeroKnowledge.Conjunction");
+              					afterParserOrEnumRuleCall();
+              				
+            }
+
+            }
+
+
+            }
+
+
+            }
+
+
+            }
+
+            if ( state.backtracking==0 ) {
+
+              	leaveRule();
+
+            }
+        }
+
+            catch (RecognitionException re) {
+                recover(input,re);
+                appendSkippedTokens();
+            }
+        finally {
+        }
+        return current;
+    }
+    // $ANTLR end "ruleArgument"
+
+
     // $ANTLR start "entryRuleVariable"
-    // InternalZeroKnowledge.g:1510:1: entryRuleVariable returns [EObject current=null] : iv_ruleVariable= ruleVariable EOF ;
+    // InternalZeroKnowledge.g:1597:1: entryRuleVariable returns [EObject current=null] : iv_ruleVariable= ruleVariable EOF ;
     public final EObject entryRuleVariable() throws RecognitionException {
         EObject current = null;
 
@@ -4249,8 +4465,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1510:49: (iv_ruleVariable= ruleVariable EOF )
-            // InternalZeroKnowledge.g:1511:2: iv_ruleVariable= ruleVariable EOF
+            // InternalZeroKnowledge.g:1597:49: (iv_ruleVariable= ruleVariable EOF )
+            // InternalZeroKnowledge.g:1598:2: iv_ruleVariable= ruleVariable EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getVariableRule()); 
@@ -4281,7 +4497,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleVariable"
-    // InternalZeroKnowledge.g:1517:1: ruleVariable returns [EObject current=null] : ( (lv_name_0_0= RULE_IDENTIFIER ) ) ;
+    // InternalZeroKnowledge.g:1604:1: ruleVariable returns [EObject current=null] : ( (lv_name_0_0= RULE_IDENTIFIER ) ) ;
     public final EObject ruleVariable() throws RecognitionException {
         EObject current = null;
 
@@ -4291,14 +4507,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1523:2: ( ( (lv_name_0_0= RULE_IDENTIFIER ) ) )
-            // InternalZeroKnowledge.g:1524:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:1610:2: ( ( (lv_name_0_0= RULE_IDENTIFIER ) ) )
+            // InternalZeroKnowledge.g:1611:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
             {
-            // InternalZeroKnowledge.g:1524:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
-            // InternalZeroKnowledge.g:1525:3: (lv_name_0_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:1611:2: ( (lv_name_0_0= RULE_IDENTIFIER ) )
+            // InternalZeroKnowledge.g:1612:3: (lv_name_0_0= RULE_IDENTIFIER )
             {
-            // InternalZeroKnowledge.g:1525:3: (lv_name_0_0= RULE_IDENTIFIER )
-            // InternalZeroKnowledge.g:1526:4: lv_name_0_0= RULE_IDENTIFIER
+            // InternalZeroKnowledge.g:1612:3: (lv_name_0_0= RULE_IDENTIFIER )
+            // InternalZeroKnowledge.g:1613:4: lv_name_0_0= RULE_IDENTIFIER
             {
             lv_name_0_0=(Token)match(input,RULE_IDENTIFIER,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -4346,7 +4562,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleNumberLiteral"
-    // InternalZeroKnowledge.g:1545:1: entryRuleNumberLiteral returns [EObject current=null] : iv_ruleNumberLiteral= ruleNumberLiteral EOF ;
+    // InternalZeroKnowledge.g:1632:1: entryRuleNumberLiteral returns [EObject current=null] : iv_ruleNumberLiteral= ruleNumberLiteral EOF ;
     public final EObject entryRuleNumberLiteral() throws RecognitionException {
         EObject current = null;
 
@@ -4354,8 +4570,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1545:54: (iv_ruleNumberLiteral= ruleNumberLiteral EOF )
-            // InternalZeroKnowledge.g:1546:2: iv_ruleNumberLiteral= ruleNumberLiteral EOF
+            // InternalZeroKnowledge.g:1632:54: (iv_ruleNumberLiteral= ruleNumberLiteral EOF )
+            // InternalZeroKnowledge.g:1633:2: iv_ruleNumberLiteral= ruleNumberLiteral EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getNumberLiteralRule()); 
@@ -4386,7 +4602,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleNumberLiteral"
-    // InternalZeroKnowledge.g:1552:1: ruleNumberLiteral returns [EObject current=null] : ( (lv_value_0_0= RULE_INT ) ) ;
+    // InternalZeroKnowledge.g:1639:1: ruleNumberLiteral returns [EObject current=null] : ( (lv_value_0_0= RULE_INT ) ) ;
     public final EObject ruleNumberLiteral() throws RecognitionException {
         EObject current = null;
 
@@ -4396,14 +4612,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1558:2: ( ( (lv_value_0_0= RULE_INT ) ) )
-            // InternalZeroKnowledge.g:1559:2: ( (lv_value_0_0= RULE_INT ) )
+            // InternalZeroKnowledge.g:1645:2: ( ( (lv_value_0_0= RULE_INT ) ) )
+            // InternalZeroKnowledge.g:1646:2: ( (lv_value_0_0= RULE_INT ) )
             {
-            // InternalZeroKnowledge.g:1559:2: ( (lv_value_0_0= RULE_INT ) )
-            // InternalZeroKnowledge.g:1560:3: (lv_value_0_0= RULE_INT )
+            // InternalZeroKnowledge.g:1646:2: ( (lv_value_0_0= RULE_INT ) )
+            // InternalZeroKnowledge.g:1647:3: (lv_value_0_0= RULE_INT )
             {
-            // InternalZeroKnowledge.g:1560:3: (lv_value_0_0= RULE_INT )
-            // InternalZeroKnowledge.g:1561:4: lv_value_0_0= RULE_INT
+            // InternalZeroKnowledge.g:1647:3: (lv_value_0_0= RULE_INT )
+            // InternalZeroKnowledge.g:1648:4: lv_value_0_0= RULE_INT
             {
             lv_value_0_0=(Token)match(input,RULE_INT,FOLLOW_2); if (state.failed) return current;
             if ( state.backtracking==0 ) {
@@ -4451,7 +4667,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "entryRuleBrackets"
-    // InternalZeroKnowledge.g:1580:1: entryRuleBrackets returns [EObject current=null] : iv_ruleBrackets= ruleBrackets EOF ;
+    // InternalZeroKnowledge.g:1667:1: entryRuleBrackets returns [EObject current=null] : iv_ruleBrackets= ruleBrackets EOF ;
     public final EObject entryRuleBrackets() throws RecognitionException {
         EObject current = null;
 
@@ -4459,8 +4675,8 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
         try {
-            // InternalZeroKnowledge.g:1580:49: (iv_ruleBrackets= ruleBrackets EOF )
-            // InternalZeroKnowledge.g:1581:2: iv_ruleBrackets= ruleBrackets EOF
+            // InternalZeroKnowledge.g:1667:49: (iv_ruleBrackets= ruleBrackets EOF )
+            // InternalZeroKnowledge.g:1668:2: iv_ruleBrackets= ruleBrackets EOF
             {
             if ( state.backtracking==0 ) {
                newCompositeNode(grammarAccess.getBracketsRule()); 
@@ -4491,7 +4707,7 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleBrackets"
-    // InternalZeroKnowledge.g:1587:1: ruleBrackets returns [EObject current=null] : ( () ( (lv_content_1_0= ruleExpression ) ) ) ;
+    // InternalZeroKnowledge.g:1674:1: ruleBrackets returns [EObject current=null] : ( () ( (lv_content_1_0= ruleExpression ) ) ) ;
     public final EObject ruleBrackets() throws RecognitionException {
         EObject current = null;
 
@@ -4502,14 +4718,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
         	enterRule();
 
         try {
-            // InternalZeroKnowledge.g:1593:2: ( ( () ( (lv_content_1_0= ruleExpression ) ) ) )
-            // InternalZeroKnowledge.g:1594:2: ( () ( (lv_content_1_0= ruleExpression ) ) )
+            // InternalZeroKnowledge.g:1680:2: ( ( () ( (lv_content_1_0= ruleExpression ) ) ) )
+            // InternalZeroKnowledge.g:1681:2: ( () ( (lv_content_1_0= ruleExpression ) ) )
             {
-            // InternalZeroKnowledge.g:1594:2: ( () ( (lv_content_1_0= ruleExpression ) ) )
-            // InternalZeroKnowledge.g:1595:3: () ( (lv_content_1_0= ruleExpression ) )
+            // InternalZeroKnowledge.g:1681:2: ( () ( (lv_content_1_0= ruleExpression ) ) )
+            // InternalZeroKnowledge.g:1682:3: () ( (lv_content_1_0= ruleExpression ) )
             {
-            // InternalZeroKnowledge.g:1595:3: ()
-            // InternalZeroKnowledge.g:1596:4: 
+            // InternalZeroKnowledge.g:1682:3: ()
+            // InternalZeroKnowledge.g:1683:4: 
             {
             if ( state.backtracking==0 ) {
 
@@ -4521,11 +4737,11 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
             }
 
-            // InternalZeroKnowledge.g:1602:3: ( (lv_content_1_0= ruleExpression ) )
-            // InternalZeroKnowledge.g:1603:4: (lv_content_1_0= ruleExpression )
+            // InternalZeroKnowledge.g:1689:3: ( (lv_content_1_0= ruleExpression ) )
+            // InternalZeroKnowledge.g:1690:4: (lv_content_1_0= ruleExpression )
             {
-            // InternalZeroKnowledge.g:1603:4: (lv_content_1_0= ruleExpression )
-            // InternalZeroKnowledge.g:1604:5: lv_content_1_0= ruleExpression
+            // InternalZeroKnowledge.g:1690:4: (lv_content_1_0= ruleExpression )
+            // InternalZeroKnowledge.g:1691:5: lv_content_1_0= ruleExpression
             {
             if ( state.backtracking==0 ) {
 
@@ -4581,25 +4797,25 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
 
     // $ANTLR start synpred1_InternalZeroKnowledge
     public final void synpred1_InternalZeroKnowledge_fragment() throws RecognitionException {   
-        // InternalZeroKnowledge.g:1095:4: ( ( () '(' ( ( ruleConjunction ) ) ',' ) )
-        // InternalZeroKnowledge.g:1095:5: ( () '(' ( ( ruleConjunction ) ) ',' )
+        // InternalZeroKnowledge.g:1127:4: ( ( () '(' ( ( ruleConjunction ) ) ',' ) )
+        // InternalZeroKnowledge.g:1127:5: ( () '(' ( ( ruleConjunction ) ) ',' )
         {
-        // InternalZeroKnowledge.g:1095:5: ( () '(' ( ( ruleConjunction ) ) ',' )
-        // InternalZeroKnowledge.g:1096:5: () '(' ( ( ruleConjunction ) ) ','
+        // InternalZeroKnowledge.g:1127:5: ( () '(' ( ( ruleConjunction ) ) ',' )
+        // InternalZeroKnowledge.g:1128:5: () '(' ( ( ruleConjunction ) ) ','
         {
-        // InternalZeroKnowledge.g:1096:5: ()
-        // InternalZeroKnowledge.g:1097:5: 
+        // InternalZeroKnowledge.g:1128:5: ()
+        // InternalZeroKnowledge.g:1129:5: 
         {
         }
 
         match(input,13,FOLLOW_4); if (state.failed) return ;
-        // InternalZeroKnowledge.g:1099:5: ( ( ruleConjunction ) )
-        // InternalZeroKnowledge.g:1100:6: ( ruleConjunction )
+        // InternalZeroKnowledge.g:1131:5: ( ( ruleConjunction ) )
+        // InternalZeroKnowledge.g:1132:6: ( ruleConjunction )
         {
-        // InternalZeroKnowledge.g:1100:6: ( ruleConjunction )
-        // InternalZeroKnowledge.g:1101:7: ruleConjunction
+        // InternalZeroKnowledge.g:1132:6: ( ruleConjunction )
+        // InternalZeroKnowledge.g:1133:7: ruleConjunction
         {
-        pushFollow(FOLLOW_20);
+        pushFollow(FOLLOW_19);
         ruleConjunction();
 
         state._fsp--;
@@ -4651,15 +4867,14 @@ public class InternalZeroKnowledgeParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_10 = new BitSet(new long[]{0x0000000000008010L});
     public static final BitSet FOLLOW_11 = new BitSet(new long[]{0x000000000000C000L});
     public static final BitSet FOLLOW_12 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_13 = new BitSet(new long[]{0x000000000000C010L});
-    public static final BitSet FOLLOW_14 = new BitSet(new long[]{0x0000000000010002L});
-    public static final BitSet FOLLOW_15 = new BitSet(new long[]{0x0000000000020002L});
-    public static final BitSet FOLLOW_16 = new BitSet(new long[]{0x0000000000FC0002L});
-    public static final BitSet FOLLOW_17 = new BitSet(new long[]{0x0000000003000002L});
-    public static final BitSet FOLLOW_18 = new BitSet(new long[]{0x000000000C000002L});
-    public static final BitSet FOLLOW_19 = new BitSet(new long[]{0x0000000010000002L});
-    public static final BitSet FOLLOW_20 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_21 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_22 = new BitSet(new long[]{0x000000000200A470L});
+    public static final BitSet FOLLOW_13 = new BitSet(new long[]{0x0000000000010002L});
+    public static final BitSet FOLLOW_14 = new BitSet(new long[]{0x0000000000020002L});
+    public static final BitSet FOLLOW_15 = new BitSet(new long[]{0x0000000000FC0002L});
+    public static final BitSet FOLLOW_16 = new BitSet(new long[]{0x0000000003000002L});
+    public static final BitSet FOLLOW_17 = new BitSet(new long[]{0x000000000C000002L});
+    public static final BitSet FOLLOW_18 = new BitSet(new long[]{0x0000000010000002L});
+    public static final BitSet FOLLOW_19 = new BitSet(new long[]{0x0000000000004000L});
+    public static final BitSet FOLLOW_20 = new BitSet(new long[]{0x0000000000008000L});
+    public static final BitSet FOLLOW_21 = new BitSet(new long[]{0x000000000200A470L});
 
 }

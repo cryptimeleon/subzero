@@ -8,13 +8,22 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 
-import java.util.ArrayList
-import java.util.Map
 import java.util.HashMap
-import java.util.Set
 import java.util.HashSet
 
-import de.upb.crypto.zeroknowledge.helpers.BranchState
+import org.eclipse.emf.ecore.EObject
+
+import de.upb.crypto.math.expressions.*;
+
+import de.upb.crypto.zeroknowledge.model.ModelPrinter
+import de.upb.crypto.zeroknowledge.model.BranchState
+import de.upb.crypto.zeroknowledge.model.ModelHelper
+
+import de.upb.crypto.zeroknowledge.type.Type
+import de.upb.crypto.zeroknowledge.type.TypeResolution
+
+import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper
+
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Disjunction
@@ -27,22 +36,12 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Negative
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
-import de.upb.crypto.zeroknowledge.helpers.ModelMap
-import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
-import org.eclipse.emf.ecore.EObject
-import de.upb.crypto.zeroknowledge.helpers.ModelHelper
-
-import de.upb.crypto.math.expressions.*;
-import de.upb.crypto.zeroknowledge.helpers.ModelPrinter
-import de.upb.crypto.zeroknowledge.helpers.Type
-import de.upb.crypto.zeroknowledge.helpers.TypeResolution
-import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
-import de.upb.crypto.zeroknowledge.helpers.FunctionSignature
-import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
 
 /**
  * Generates code from your model files on save.
@@ -53,19 +52,19 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
 	HashMap<EObject, Type> types;
 
-	HashSet<String> variables;
-	HashSet<String> numberLiterals;
-	HashSet<String> stringLiterals;
+	HashSet<String> variables; // Contains the set of names of variables
+	HashSet<String> numberLiterals; // Contains the set of names of number literals
+	HashSet<String> stringLiterals; // Contains the set of values of string literals
 	
-	StringBuilder codeBuilder;
-	StringBuilder importBuilder;
-	StringBuilder functionBuilder;
-	StringBuilder exponentVariableBuilder;
-	StringBuilder groupVariableBuilder;
-	StringBuilder numberLiteralBuilder;
-	StringBuilder stringLiteralBuilder;
+	StringBuilder codeBuilder; // Builds the entire generated Java code
+	StringBuilder importBuilder; // Builds the required import statements
+	StringBuilder functionBuilder; // Builds the function definitions for user functions
+	StringBuilder exponentVariableBuilder; // Builds the required exponent variable initializations
+	StringBuilder groupVariableBuilder; // Builds the required group variable initializations
+	StringBuilder numberLiteralBuilder; // Builds the required number literal initializations
+	StringBuilder stringLiteralBuilder; // Builds the required string literal initializations
 	
-	int stringLiteralCount;
+	int stringLiteralCount; // Counter used to name new string literals
 	
 	String OPERATOR_EQUAL = "=";
 	String OPERATOR_INEQUAL = "!=";
@@ -75,7 +74,6 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	String OPERATOR_GREATEREQUAL = ">=";
 	String NEWLINE = "\n";
 	String INDENT = "  ";
-	String PREDEFINED_FUNCTIONS = "predefinedFunctions";
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 	
@@ -95,16 +93,18 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		val Model model = resource.getContents().iterator().next() as Model;
 		val boolean inline = false;
 		
+		// If build is canceled, stop code generation
+		if (context.getCancelIndicator.isCanceled()) return;
+		
 		// If option is set, inline all functions
 		if (inline) ModelHelper.inlineFunctions(model);
 		
 		// Replace all subtraction operations with sum operations of negative nodes
 		ModelHelper.normalizeNegatives(model);
 
-	
-		types = TypeResolution.resolveTypes(model);	
-
-		ModelPrinter.print(model);
+		// Perform type resolution on the model
+		TypeResolution.resolveTypes(model);	
+		types = TypeResolution.getTypes();
 
 		generateImports();
 		generateFunctions(model, new BranchState());
@@ -125,7 +125,8 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		codeBuilder.append(code);
 		
 		System.out.println(codeBuilder.toString());
-				
+		
+		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
 
 //		if (!inline) return;
@@ -166,7 +167,12 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
 	// Generates the Java code for the main expression
 	def dispatch String generateCode(Model model, BranchState state) {
-		return '''«generateCode(model.getProof(), state)»;''';
+		return 
+		'''
+		private static boolean proof() {
+			return «generateCode(model.getProof(), state)»;
+		}
+		''';
 	}
 	
 	def dispatch String generateCode(Conjunction conjunction, BranchState state) {
@@ -265,6 +271,10 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		val String name = ModelHelper.convertToJavaName(call.getName());
 		
 		return '''«name»(«FOR argument : call.getArguments() SEPARATOR ','»«generateCode(argument, state)»«ENDFOR»)'''
+	}
+	
+	def dispatch String generateCode(Argument argument, BranchState state) {
+		generateCode(argument.getExpression(), state);
 	}
 	
 	def dispatch String generateCode(Variable variable, BranchState state) {

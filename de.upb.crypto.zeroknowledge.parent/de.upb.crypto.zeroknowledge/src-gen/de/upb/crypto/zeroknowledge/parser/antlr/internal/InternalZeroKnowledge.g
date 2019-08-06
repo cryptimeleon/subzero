@@ -309,10 +309,20 @@ ruleParameterList returns [EObject current=null]
 				)
 			)*
 		)?
-		otherlv_4=')'
-		{
-			newLeafNode(otherlv_4, grammarAccess.getParameterListAccess().getRightParenthesisKeyword_2());
-		}
+		(
+			(
+				lv_symbol_4_0=')'
+				{
+					newLeafNode(lv_symbol_4_0, grammarAccess.getParameterListAccess().getSymbolRightParenthesisKeyword_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getParameterListRule());
+					}
+					setWithLastConsumed($current, "symbol", lv_symbol_4_0, ")");
+				}
+			)
+		)
 	)
 ;
 
@@ -373,34 +383,11 @@ ruleWitnessList returns [EObject current=null]
 		}
 		(
 			(
-				{
-					newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_0());
-				}
-				lv_witnesses_1_0=ruleWitness
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getWitnessListRule());
-					}
-					add(
-						$current,
-						"witnesses",
-						lv_witnesses_1_0,
-						"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)?
-		(
-			otherlv_2=','
-			{
-				newLeafNode(otherlv_2, grammarAccess.getWitnessListAccess().getCommaKeyword_2_0());
-			}
-			(
 				(
 					{
-						newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_2_1_0());
+						newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_0_0());
 					}
-					lv_witnesses_3_0=ruleWitness
+					lv_witnesses_1_0=ruleWitness
 					{
 						if ($current==null) {
 							$current = createModelElementForParent(grammarAccess.getWitnessListRule());
@@ -408,17 +395,52 @@ ruleWitnessList returns [EObject current=null]
 						add(
 							$current,
 							"witnesses",
-							lv_witnesses_3_0,
+							lv_witnesses_1_0,
 							"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
 						afterParserOrEnumRuleCall();
 					}
 				)
 			)
-		)*
-		otherlv_4=')'
-		{
-			newLeafNode(otherlv_4, grammarAccess.getWitnessListAccess().getRightParenthesisKeyword_3());
-		}
+			(
+				otherlv_2=','
+				{
+					newLeafNode(otherlv_2, grammarAccess.getWitnessListAccess().getCommaKeyword_1_1_0());
+				}
+				(
+					(
+						{
+							newCompositeNode(grammarAccess.getWitnessListAccess().getWitnessesWitnessParserRuleCall_1_1_1_0());
+						}
+						lv_witnesses_3_0=ruleWitness
+						{
+							if ($current==null) {
+								$current = createModelElementForParent(grammarAccess.getWitnessListRule());
+							}
+							add(
+								$current,
+								"witnesses",
+								lv_witnesses_3_0,
+								"de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
+							afterParserOrEnumRuleCall();
+						}
+					)
+				)
+			)*
+		)?
+		(
+			(
+				lv_symbol_4_0=')'
+				{
+					newLeafNode(lv_symbol_4_0, grammarAccess.getWitnessListAccess().getSymbolRightParenthesisKeyword_2_0());
+				}
+				{
+					if ($current==null) {
+						$current = createModelElement(grammarAccess.getWitnessListRule());
+					}
+					setWithLastConsumed($current, "symbol", lv_symbol_4_0, ")");
+				}
+			)
+		)
 	)
 ;
 
@@ -1039,10 +1061,20 @@ rulePower returns [EObject current=null]
 						$current);
 				}
 			)
-			otherlv_2='^'
-			{
-				newLeafNode(otherlv_2, grammarAccess.getPowerAccess().getCircumflexAccentKeyword_1_1());
-			}
+			(
+				(
+					lv_operation_2_0='^'
+					{
+						newLeafNode(lv_operation_2_0, grammarAccess.getPowerAccess().getOperationCircumflexAccentKeyword_1_1_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getPowerRule());
+						}
+						setWithLastConsumed($current, "operation", lv_operation_2_0, "^");
+					}
+				)
+			)
 			(
 				(
 					{
@@ -1301,10 +1333,20 @@ ruleNegative returns [EObject current=null]
 						$current);
 				}
 			)
-			otherlv_1='-'
-			{
-				newLeafNode(otherlv_1, grammarAccess.getNegativeAccess().getHyphenMinusKeyword_0_1());
-			}
+			(
+				(
+					lv_operation_1_0='-'
+					{
+						newLeafNode(lv_operation_1_0, grammarAccess.getNegativeAccess().getOperationHyphenMinusKeyword_0_1_0());
+					}
+					{
+						if ($current==null) {
+							$current = createModelElement(grammarAccess.getNegativeRule());
+						}
+						setWithLastConsumed($current, "operation", lv_operation_1_0, "-");
+					}
+				)
+			)
 			(
 				(
 					{
@@ -1456,9 +1498,9 @@ ruleFunctionCall returns [EObject current=null]
 				(
 					(
 						{
-							newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsConjunctionParserRuleCall_1_1_0_0());
+							newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsArgumentParserRuleCall_1_1_0_0());
 						}
-						lv_arguments_3_0=ruleConjunction
+						lv_arguments_3_0=ruleArgument
 						{
 							if ($current==null) {
 								$current = createModelElementForParent(grammarAccess.getFunctionCallRule());
@@ -1467,7 +1509,7 @@ ruleFunctionCall returns [EObject current=null]
 								$current,
 								"arguments",
 								lv_arguments_3_0,
-								"de.upb.crypto.zeroknowledge.ZeroKnowledge.Conjunction");
+								"de.upb.crypto.zeroknowledge.ZeroKnowledge.Argument");
 							afterParserOrEnumRuleCall();
 						}
 					)
@@ -1480,9 +1522,9 @@ ruleFunctionCall returns [EObject current=null]
 					(
 						(
 							{
-								newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsConjunctionParserRuleCall_1_1_1_1_0());
+								newCompositeNode(grammarAccess.getFunctionCallAccess().getArgumentsArgumentParserRuleCall_1_1_1_1_0());
 							}
-							lv_arguments_5_0=ruleConjunction
+							lv_arguments_5_0=ruleArgument
 							{
 								if ($current==null) {
 									$current = createModelElementForParent(grammarAccess.getFunctionCallRule());
@@ -1491,7 +1533,7 @@ ruleFunctionCall returns [EObject current=null]
 									$current,
 									"arguments",
 									lv_arguments_5_0,
-									"de.upb.crypto.zeroknowledge.ZeroKnowledge.Conjunction");
+									"de.upb.crypto.zeroknowledge.ZeroKnowledge.Argument");
 								afterParserOrEnumRuleCall();
 							}
 						)
@@ -1502,6 +1544,51 @@ ruleFunctionCall returns [EObject current=null]
 			{
 				newLeafNode(otherlv_6, grammarAccess.getFunctionCallAccess().getRightParenthesisKeyword_1_2());
 			}
+		)
+	)
+;
+
+// Entry rule entryRuleArgument
+entryRuleArgument returns [EObject current=null]:
+	{ newCompositeNode(grammarAccess.getArgumentRule()); }
+	iv_ruleArgument=ruleArgument
+	{ $current=$iv_ruleArgument.current; }
+	EOF;
+
+// Rule Argument
+ruleArgument returns [EObject current=null]
+@init {
+	enterRule();
+}
+@after {
+	leaveRule();
+}:
+	(
+		(
+			{
+				$current = forceCreateModelElement(
+					grammarAccess.getArgumentAccess().getArgumentAction_0(),
+					$current);
+			}
+		)
+		(
+			(
+				{
+					newCompositeNode(grammarAccess.getArgumentAccess().getExpressionConjunctionParserRuleCall_1_0());
+				}
+				lv_expression_1_0=ruleConjunction
+				{
+					if ($current==null) {
+						$current = createModelElementForParent(grammarAccess.getArgumentRule());
+					}
+					set(
+						$current,
+						"expression",
+						lv_expression_1_0,
+						"de.upb.crypto.zeroknowledge.ZeroKnowledge.Conjunction");
+					afterParserOrEnumRuleCall();
+				}
+			)
 		)
 	)
 ;

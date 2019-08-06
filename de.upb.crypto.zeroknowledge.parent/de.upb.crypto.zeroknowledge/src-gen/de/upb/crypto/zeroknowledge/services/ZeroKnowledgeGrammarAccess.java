@@ -127,13 +127,14 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cCommaKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
 		private final Assignment cParametersAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
 		private final RuleCall cParametersParameterParserRuleCall_1_1_1_0 = (RuleCall)cParametersAssignment_1_1_1.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cSymbolAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final Keyword cSymbolRightParenthesisKeyword_2_0 = (Keyword)cSymbolAssignment_2.eContents().get(0);
 		
 		//ParameterList:
-		//	'(' (parameters+=Parameter (',' parameters+=Parameter)*)? ')';
+		//	'(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'(' (parameters+=Parameter (',' parameters+=Parameter)*)? ')'
+		//'(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')'
 		public Group getGroup() { return cGroup; }
 		
 		//'('
@@ -160,8 +161,11 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		//Parameter
 		public RuleCall getParametersParameterParserRuleCall_1_1_1_0() { return cParametersParameterParserRuleCall_1_1_1_0; }
 		
+		//symbol=')'
+		public Assignment getSymbolAssignment_2() { return cSymbolAssignment_2; }
+		
 		//')'
-		public Keyword getRightParenthesisKeyword_2() { return cRightParenthesisKeyword_2; }
+		public Keyword getSymbolRightParenthesisKeyword_2_0() { return cSymbolRightParenthesisKeyword_2_0; }
 	}
 	public class ParameterElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.Parameter");
@@ -182,44 +186,52 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.WitnessList");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cLeftParenthesisKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cWitnessesAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cWitnessesWitnessParserRuleCall_1_0 = (RuleCall)cWitnessesAssignment_1.eContents().get(0);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cCommaKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cWitnessesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cWitnessesWitnessParserRuleCall_2_1_0 = (RuleCall)cWitnessesAssignment_2_1.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Assignment cWitnessesAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
+		private final RuleCall cWitnessesWitnessParserRuleCall_1_0_0 = (RuleCall)cWitnessesAssignment_1_0.eContents().get(0);
+		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
+		private final Keyword cCommaKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
+		private final Assignment cWitnessesAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
+		private final RuleCall cWitnessesWitnessParserRuleCall_1_1_1_0 = (RuleCall)cWitnessesAssignment_1_1_1.eContents().get(0);
+		private final Assignment cSymbolAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final Keyword cSymbolRightParenthesisKeyword_2_0 = (Keyword)cSymbolAssignment_2.eContents().get(0);
 		
 		//WitnessList:
-		//	'(' witnesses+=Witness? (',' witnesses+=Witness)* ')';
+		//	'(' (witnesses+=Witness (',' witnesses+=Witness)*)? symbol=')';
 		@Override public ParserRule getRule() { return rule; }
 		
-		//'(' witnesses+=Witness? (',' witnesses+=Witness)* ')'
+		//'(' (witnesses+=Witness (',' witnesses+=Witness)*)? symbol=')'
 		public Group getGroup() { return cGroup; }
 		
 		//'('
 		public Keyword getLeftParenthesisKeyword_0() { return cLeftParenthesisKeyword_0; }
 		
-		//witnesses+=Witness?
-		public Assignment getWitnessesAssignment_1() { return cWitnessesAssignment_1; }
-		
-		//Witness
-		public RuleCall getWitnessesWitnessParserRuleCall_1_0() { return cWitnessesWitnessParserRuleCall_1_0; }
-		
-		//(',' witnesses+=Witness)*
-		public Group getGroup_2() { return cGroup_2; }
-		
-		//','
-		public Keyword getCommaKeyword_2_0() { return cCommaKeyword_2_0; }
+		//(witnesses+=Witness (',' witnesses+=Witness)*)?
+		public Group getGroup_1() { return cGroup_1; }
 		
 		//witnesses+=Witness
-		public Assignment getWitnessesAssignment_2_1() { return cWitnessesAssignment_2_1; }
+		public Assignment getWitnessesAssignment_1_0() { return cWitnessesAssignment_1_0; }
 		
 		//Witness
-		public RuleCall getWitnessesWitnessParserRuleCall_2_1_0() { return cWitnessesWitnessParserRuleCall_2_1_0; }
+		public RuleCall getWitnessesWitnessParserRuleCall_1_0_0() { return cWitnessesWitnessParserRuleCall_1_0_0; }
+		
+		//(',' witnesses+=Witness)*
+		public Group getGroup_1_1() { return cGroup_1_1; }
+		
+		//','
+		public Keyword getCommaKeyword_1_1_0() { return cCommaKeyword_1_1_0; }
+		
+		//witnesses+=Witness
+		public Assignment getWitnessesAssignment_1_1_1() { return cWitnessesAssignment_1_1_1; }
+		
+		//Witness
+		public RuleCall getWitnessesWitnessParserRuleCall_1_1_1_0() { return cWitnessesWitnessParserRuleCall_1_1_1_0; }
+		
+		//symbol=')'
+		public Assignment getSymbolAssignment_2() { return cSymbolAssignment_2; }
 		
 		//')'
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
+		public Keyword getSymbolRightParenthesisKeyword_2_0() { return cSymbolRightParenthesisKeyword_2_0; }
 	}
 	public class WitnessElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.Witness");
@@ -592,28 +604,32 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cConstructParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
 		private final Action cPowerLeftAction_1_0 = (Action)cGroup_1.eContents().get(0);
-		private final Keyword cCircumflexAccentKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Assignment cOperationAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final Keyword cOperationCircumflexAccentKeyword_1_1_0 = (Keyword)cOperationAssignment_1_1.eContents().get(0);
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightPowerParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
 		//Power Expression:
-		//	Construct ({Power.left=current} '^' right=Power)?;
+		//	Construct ({Power.left=current} operation='^' right=Power)?;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//Construct ({Power.left=current} '^' right=Power)?
+		//Construct ({Power.left=current} operation='^' right=Power)?
 		public Group getGroup() { return cGroup; }
 		
 		//Construct
 		public RuleCall getConstructParserRuleCall_0() { return cConstructParserRuleCall_0; }
 		
-		//({Power.left=current} '^' right=Power)?
+		//({Power.left=current} operation='^' right=Power)?
 		public Group getGroup_1() { return cGroup_1; }
 		
 		//{Power.left=current}
 		public Action getPowerLeftAction_1_0() { return cPowerLeftAction_1_0; }
 		
+		//operation='^'
+		public Assignment getOperationAssignment_1_1() { return cOperationAssignment_1_1; }
+		
 		//'^'
-		public Keyword getCircumflexAccentKeyword_1_1() { return cCircumflexAccentKeyword_1_1; }
+		public Keyword getOperationCircumflexAccentKeyword_1_1_0() { return cOperationCircumflexAccentKeyword_1_1_0; }
 		
 		//right=Power
 		public Assignment getRightAssignment_1_2() { return cRightAssignment_1_2; }
@@ -731,26 +747,30 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
 		private final Action cNegativeAction_0_0 = (Action)cGroup_0.eContents().get(0);
-		private final Keyword cHyphenMinusKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
+		private final Assignment cOperationAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
+		private final Keyword cOperationHyphenMinusKeyword_0_1_0 = (Keyword)cOperationAssignment_0_1.eContents().get(0);
 		private final Assignment cTermAssignment_0_2 = (Assignment)cGroup_0.eContents().get(2);
 		private final RuleCall cTermValueParserRuleCall_0_2_0 = (RuleCall)cTermAssignment_0_2.eContents().get(0);
 		private final RuleCall cValueParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//Negative Expression:
-		//	{Negative} '-' term=Value | Value;
+		//	{Negative} operation='-' term=Value | Value;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//{Negative} '-' term=Value | Value
+		//{Negative} operation='-' term=Value | Value
 		public Alternatives getAlternatives() { return cAlternatives; }
 		
-		//{Negative} '-' term=Value
+		//{Negative} operation='-' term=Value
 		public Group getGroup_0() { return cGroup_0; }
 		
 		//{Negative}
 		public Action getNegativeAction_0_0() { return cNegativeAction_0_0; }
 		
+		//operation='-'
+		public Assignment getOperationAssignment_0_1() { return cOperationAssignment_0_1; }
+		
 		//'-'
-		public Keyword getHyphenMinusKeyword_0_1() { return cHyphenMinusKeyword_0_1; }
+		public Keyword getOperationHyphenMinusKeyword_0_1_0() { return cOperationHyphenMinusKeyword_0_1_0; }
 		
 		//term=Value
 		public Assignment getTermAssignment_0_2() { return cTermAssignment_0_2; }
@@ -812,24 +832,24 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cLeftParenthesisKeyword_1_0_0_1 = (Keyword)cGroup_1_0_0.eContents().get(1);
 		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
 		private final Assignment cArgumentsAssignment_1_1_0 = (Assignment)cGroup_1_1.eContents().get(0);
-		private final RuleCall cArgumentsConjunctionParserRuleCall_1_1_0_0 = (RuleCall)cArgumentsAssignment_1_1_0.eContents().get(0);
+		private final RuleCall cArgumentsArgumentParserRuleCall_1_1_0_0 = (RuleCall)cArgumentsAssignment_1_1_0.eContents().get(0);
 		private final Group cGroup_1_1_1 = (Group)cGroup_1_1.eContents().get(1);
 		private final Keyword cCommaKeyword_1_1_1_0 = (Keyword)cGroup_1_1_1.eContents().get(0);
 		private final Assignment cArgumentsAssignment_1_1_1_1 = (Assignment)cGroup_1_1_1.eContents().get(1);
-		private final RuleCall cArgumentsConjunctionParserRuleCall_1_1_1_1_0 = (RuleCall)cArgumentsAssignment_1_1_1_1.eContents().get(0);
+		private final RuleCall cArgumentsArgumentParserRuleCall_1_1_1_1_0 = (RuleCall)cArgumentsAssignment_1_1_1_1.eContents().get(0);
 		private final Keyword cRightParenthesisKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
 		
 		//FunctionCall Expression:
-		//	{FunctionCall} (-> (name=IDENTIFIER '(') (arguments+=Conjunction (',' arguments+=Conjunction)*)? ')');
+		//	{FunctionCall} (-> (name=IDENTIFIER '(') (arguments+=Argument (',' arguments+=Argument)*)? ')');
 		@Override public ParserRule getRule() { return rule; }
 		
-		//{FunctionCall} (-> (name=IDENTIFIER '(') (arguments+=Conjunction (',' arguments+=Conjunction)*)? ')')
+		//{FunctionCall} (-> (name=IDENTIFIER '(') (arguments+=Argument (',' arguments+=Argument)*)? ')')
 		public Group getGroup() { return cGroup; }
 		
 		//{FunctionCall}
 		public Action getFunctionCallAction_0() { return cFunctionCallAction_0; }
 		
-		//-> (name=IDENTIFIER '(') (arguments+=Conjunction (',' arguments+=Conjunction)*)? ')'
+		//-> (name=IDENTIFIER '(') (arguments+=Argument (',' arguments+=Argument)*)? ')'
 		public Group getGroup_1() { return cGroup_1; }
 		
 		//-> (name=IDENTIFIER '(')
@@ -847,29 +867,52 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		//'('
 		public Keyword getLeftParenthesisKeyword_1_0_0_1() { return cLeftParenthesisKeyword_1_0_0_1; }
 		
-		//(arguments+=Conjunction (',' arguments+=Conjunction)*)?
+		//(arguments+=Argument (',' arguments+=Argument)*)?
 		public Group getGroup_1_1() { return cGroup_1_1; }
 		
-		//arguments+=Conjunction
+		//arguments+=Argument
 		public Assignment getArgumentsAssignment_1_1_0() { return cArgumentsAssignment_1_1_0; }
 		
-		//Conjunction
-		public RuleCall getArgumentsConjunctionParserRuleCall_1_1_0_0() { return cArgumentsConjunctionParserRuleCall_1_1_0_0; }
+		//Argument
+		public RuleCall getArgumentsArgumentParserRuleCall_1_1_0_0() { return cArgumentsArgumentParserRuleCall_1_1_0_0; }
 		
-		//(',' arguments+=Conjunction)*
+		//(',' arguments+=Argument)*
 		public Group getGroup_1_1_1() { return cGroup_1_1_1; }
 		
 		//','
 		public Keyword getCommaKeyword_1_1_1_0() { return cCommaKeyword_1_1_1_0; }
 		
-		//arguments+=Conjunction
+		//arguments+=Argument
 		public Assignment getArgumentsAssignment_1_1_1_1() { return cArgumentsAssignment_1_1_1_1; }
 		
-		//Conjunction
-		public RuleCall getArgumentsConjunctionParserRuleCall_1_1_1_1_0() { return cArgumentsConjunctionParserRuleCall_1_1_1_1_0; }
+		//Argument
+		public RuleCall getArgumentsArgumentParserRuleCall_1_1_1_1_0() { return cArgumentsArgumentParserRuleCall_1_1_1_1_0; }
 		
 		//')'
 		public Keyword getRightParenthesisKeyword_1_2() { return cRightParenthesisKeyword_1_2; }
+	}
+	public class ArgumentElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.Argument");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cArgumentAction_0 = (Action)cGroup.eContents().get(0);
+		private final Assignment cExpressionAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cExpressionConjunctionParserRuleCall_1_0 = (RuleCall)cExpressionAssignment_1.eContents().get(0);
+		
+		//Argument Expression:
+		//	{Argument} expression=Conjunction;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{Argument} expression=Conjunction
+		public Group getGroup() { return cGroup; }
+		
+		//{Argument}
+		public Action getArgumentAction_0() { return cArgumentAction_0; }
+		
+		//expression=Conjunction
+		public Assignment getExpressionAssignment_1() { return cExpressionAssignment_1; }
+		
+		//Conjunction
+		public RuleCall getExpressionConjunctionParserRuleCall_1_0() { return cExpressionConjunctionParserRuleCall_1_0; }
 	}
 	public class VariableElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.Variable");
@@ -916,6 +959,29 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//IDENTIFIER
 		public RuleCall getFunctionIDENTIFIERTerminalRuleCall_2_0() { return cFunctionIDENTIFIERTerminalRuleCall_2_0; }
+	}
+	public class WitnessVariableElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.WitnessVariable");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cWitnessVariableAction_0 = (Action)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameIDENTIFIERTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		
+		//WitnessVariable Variable:
+		//	{WitnessVariable} name=IDENTIFIER;
+		@Override public ParserRule getRule() { return rule; }
+		
+		//{WitnessVariable} name=IDENTIFIER
+		public Group getGroup() { return cGroup; }
+		
+		//{WitnessVariable}
+		public Action getWitnessVariableAction_0() { return cWitnessVariableAction_0; }
+		
+		//name=IDENTIFIER
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		
+		//IDENTIFIER
+		public RuleCall getNameIDENTIFIERTerminalRuleCall_1_0() { return cNameIDENTIFIERTerminalRuleCall_1_0; }
 	}
 	public class NumberLiteralElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.NumberLiteral");
@@ -976,8 +1042,10 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	private final NegativeElements pNegative;
 	private final ValueElements pValue;
 	private final FunctionCallElements pFunctionCall;
+	private final ArgumentElements pArgument;
 	private final VariableElements pVariable;
 	private final LocalVariableElements pLocalVariable;
+	private final WitnessVariableElements pWitnessVariable;
 	private final NumberLiteralElements pNumberLiteral;
 	private final BracketsElements pBrackets;
 	private final TerminalRule tINT;
@@ -1011,8 +1079,10 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		this.pNegative = new NegativeElements();
 		this.pValue = new ValueElements();
 		this.pFunctionCall = new FunctionCallElements();
+		this.pArgument = new ArgumentElements();
 		this.pVariable = new VariableElements();
 		this.pLocalVariable = new LocalVariableElements();
+		this.pWitnessVariable = new WitnessVariableElements();
 		this.pNumberLiteral = new NumberLiteralElements();
 		this.pBrackets = new BracketsElements();
 		this.tINT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "de.upb.crypto.zeroknowledge.ZeroKnowledge.INT");
@@ -1067,7 +1137,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//ParameterList:
-	//	'(' (parameters+=Parameter (',' parameters+=Parameter)*)? ')';
+	//	'(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')';
 	public ParameterListElements getParameterListAccess() {
 		return pParameterList;
 	}
@@ -1087,7 +1157,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//WitnessList:
-	//	'(' witnesses+=Witness? (',' witnesses+=Witness)* ')';
+	//	'(' (witnesses+=Witness (',' witnesses+=Witness)*)? symbol=')';
 	public WitnessListElements getWitnessListAccess() {
 		return pWitnessList;
 	}
@@ -1169,7 +1239,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Power Expression:
-	//	Construct ({Power.left=current} '^' right=Power)?;
+	//	Construct ({Power.left=current} operation='^' right=Power)?;
 	public PowerElements getPowerAccess() {
 		return pPower;
 	}
@@ -1209,7 +1279,7 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//Negative Expression:
-	//	{Negative} '-' term=Value | Value;
+	//	{Negative} operation='-' term=Value | Value;
 	public NegativeElements getNegativeAccess() {
 		return pNegative;
 	}
@@ -1229,13 +1299,23 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	//FunctionCall Expression:
-	//	{FunctionCall} (-> (name=IDENTIFIER '(') (arguments+=Conjunction (',' arguments+=Conjunction)*)? ')');
+	//	{FunctionCall} (-> (name=IDENTIFIER '(') (arguments+=Argument (',' arguments+=Argument)*)? ')');
 	public FunctionCallElements getFunctionCallAccess() {
 		return pFunctionCall;
 	}
 	
 	public ParserRule getFunctionCallRule() {
 		return getFunctionCallAccess().getRule();
+	}
+	
+	//Argument Expression:
+	//	{Argument} expression=Conjunction;
+	public ArgumentElements getArgumentAccess() {
+		return pArgument;
+	}
+	
+	public ParserRule getArgumentRule() {
+		return getArgumentAccess().getRule();
 	}
 	
 	//Variable:
@@ -1256,6 +1336,16 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getLocalVariableRule() {
 		return getLocalVariableAccess().getRule();
+	}
+	
+	//WitnessVariable Variable:
+	//	{WitnessVariable} name=IDENTIFIER;
+	public WitnessVariableElements getWitnessVariableAccess() {
+		return pWitnessVariable;
+	}
+	
+	public ParserRule getWitnessVariableRule() {
+		return getWitnessVariableAccess().getRule();
 	}
 	
 	//NumberLiteral:

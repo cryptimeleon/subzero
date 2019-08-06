@@ -43,7 +43,8 @@ public class ZeroKnowledgeParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getParameterListAccess().getGroup_1(), "rule__ParameterList__Group_1__0");
 			builder.put(grammarAccess.getParameterListAccess().getGroup_1_1(), "rule__ParameterList__Group_1_1__0");
 			builder.put(grammarAccess.getWitnessListAccess().getGroup(), "rule__WitnessList__Group__0");
-			builder.put(grammarAccess.getWitnessListAccess().getGroup_2(), "rule__WitnessList__Group_2__0");
+			builder.put(grammarAccess.getWitnessListAccess().getGroup_1(), "rule__WitnessList__Group_1__0");
+			builder.put(grammarAccess.getWitnessListAccess().getGroup_1_1(), "rule__WitnessList__Group_1_1__0");
 			builder.put(grammarAccess.getConjunctionAccess().getGroup(), "rule__Conjunction__Group__0");
 			builder.put(grammarAccess.getConjunctionAccess().getGroup_1(), "rule__Conjunction__Group_1__0");
 			builder.put(grammarAccess.getDisjunctionAccess().getGroup(), "rule__Disjunction__Group__0");
@@ -78,7 +79,9 @@ public class ZeroKnowledgeParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFunctionCallAccess().getGroup_1_0_0(), "rule__FunctionCall__Group_1_0_0__0");
 			builder.put(grammarAccess.getFunctionCallAccess().getGroup_1_1(), "rule__FunctionCall__Group_1_1__0");
 			builder.put(grammarAccess.getFunctionCallAccess().getGroup_1_1_1(), "rule__FunctionCall__Group_1_1_1__0");
+			builder.put(grammarAccess.getArgumentAccess().getGroup(), "rule__Argument__Group__0");
 			builder.put(grammarAccess.getLocalVariableAccess().getGroup(), "rule__LocalVariable__Group__0");
+			builder.put(grammarAccess.getWitnessVariableAccess().getGroup(), "rule__WitnessVariable__Group__0");
 			builder.put(grammarAccess.getBracketsAccess().getGroup(), "rule__Brackets__Group__0");
 			builder.put(grammarAccess.getModelAccess().getFunctionsAssignment_0(), "rule__Model__FunctionsAssignment_0");
 			builder.put(grammarAccess.getModelAccess().getWitnessListAssignment_1(), "rule__Model__WitnessListAssignment_1");
@@ -88,9 +91,11 @@ public class ZeroKnowledgeParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getFunctionDefinitionAccess().getBodyAssignment_3(), "rule__FunctionDefinition__BodyAssignment_3");
 			builder.put(grammarAccess.getParameterListAccess().getParametersAssignment_1_0(), "rule__ParameterList__ParametersAssignment_1_0");
 			builder.put(grammarAccess.getParameterListAccess().getParametersAssignment_1_1_1(), "rule__ParameterList__ParametersAssignment_1_1_1");
+			builder.put(grammarAccess.getParameterListAccess().getSymbolAssignment_2(), "rule__ParameterList__SymbolAssignment_2");
 			builder.put(grammarAccess.getParameterAccess().getNameAssignment(), "rule__Parameter__NameAssignment");
-			builder.put(grammarAccess.getWitnessListAccess().getWitnessesAssignment_1(), "rule__WitnessList__WitnessesAssignment_1");
-			builder.put(grammarAccess.getWitnessListAccess().getWitnessesAssignment_2_1(), "rule__WitnessList__WitnessesAssignment_2_1");
+			builder.put(grammarAccess.getWitnessListAccess().getWitnessesAssignment_1_0(), "rule__WitnessList__WitnessesAssignment_1_0");
+			builder.put(grammarAccess.getWitnessListAccess().getWitnessesAssignment_1_1_1(), "rule__WitnessList__WitnessesAssignment_1_1_1");
+			builder.put(grammarAccess.getWitnessListAccess().getSymbolAssignment_2(), "rule__WitnessList__SymbolAssignment_2");
 			builder.put(grammarAccess.getWitnessAccess().getNameAssignment(), "rule__Witness__NameAssignment");
 			builder.put(grammarAccess.getConjunctionAccess().getOperationAssignment_1_1(), "rule__Conjunction__OperationAssignment_1_1");
 			builder.put(grammarAccess.getConjunctionAccess().getRightAssignment_1_2(), "rule__Conjunction__RightAssignment_1_2");
@@ -109,18 +114,22 @@ public class ZeroKnowledgeParser extends AbstractContentAssistParser {
 			builder.put(grammarAccess.getProductAccess().getOperationAssignment_1_0_0_1(), "rule__Product__OperationAssignment_1_0_0_1");
 			builder.put(grammarAccess.getProductAccess().getOperationAssignment_1_0_1_1(), "rule__Product__OperationAssignment_1_0_1_1");
 			builder.put(grammarAccess.getProductAccess().getRightAssignment_1_1(), "rule__Product__RightAssignment_1_1");
+			builder.put(grammarAccess.getPowerAccess().getOperationAssignment_1_1(), "rule__Power__OperationAssignment_1_1");
 			builder.put(grammarAccess.getPowerAccess().getRightAssignment_1_2(), "rule__Power__RightAssignment_1_2");
 			builder.put(grammarAccess.getStringLiteralAccess().getValueAssignment(), "rule__StringLiteral__ValueAssignment");
 			builder.put(grammarAccess.getTupleAccess().getElementsAssignment_0_0_2(), "rule__Tuple__ElementsAssignment_0_0_2");
 			builder.put(grammarAccess.getTupleAccess().getElementsAssignment_1(), "rule__Tuple__ElementsAssignment_1");
 			builder.put(grammarAccess.getTupleAccess().getElementsAssignment_2_1(), "rule__Tuple__ElementsAssignment_2_1");
+			builder.put(grammarAccess.getNegativeAccess().getOperationAssignment_0_1(), "rule__Negative__OperationAssignment_0_1");
 			builder.put(grammarAccess.getNegativeAccess().getTermAssignment_0_2(), "rule__Negative__TermAssignment_0_2");
 			builder.put(grammarAccess.getFunctionCallAccess().getNameAssignment_1_0_0_0(), "rule__FunctionCall__NameAssignment_1_0_0_0");
 			builder.put(grammarAccess.getFunctionCallAccess().getArgumentsAssignment_1_1_0(), "rule__FunctionCall__ArgumentsAssignment_1_1_0");
 			builder.put(grammarAccess.getFunctionCallAccess().getArgumentsAssignment_1_1_1_1(), "rule__FunctionCall__ArgumentsAssignment_1_1_1_1");
+			builder.put(grammarAccess.getArgumentAccess().getExpressionAssignment_1(), "rule__Argument__ExpressionAssignment_1");
 			builder.put(grammarAccess.getVariableAccess().getNameAssignment(), "rule__Variable__NameAssignment");
 			builder.put(grammarAccess.getLocalVariableAccess().getNameAssignment_1(), "rule__LocalVariable__NameAssignment_1");
 			builder.put(grammarAccess.getLocalVariableAccess().getFunctionAssignment_2(), "rule__LocalVariable__FunctionAssignment_2");
+			builder.put(grammarAccess.getWitnessVariableAccess().getNameAssignment_1(), "rule__WitnessVariable__NameAssignment_1");
 			builder.put(grammarAccess.getNumberLiteralAccess().getValueAssignment(), "rule__NumberLiteral__ValueAssignment");
 			builder.put(grammarAccess.getBracketsAccess().getContentAssignment_1(), "rule__Brackets__ContentAssignment_1");
 		}

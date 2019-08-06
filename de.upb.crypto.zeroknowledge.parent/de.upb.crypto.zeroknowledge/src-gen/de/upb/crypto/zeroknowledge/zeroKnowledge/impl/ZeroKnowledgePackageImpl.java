@@ -3,6 +3,7 @@
  */
 package de.upb.crypto.zeroknowledge.zeroKnowledge.impl;
 
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -24,6 +25,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessVariable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage;
 
@@ -180,7 +182,21 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass argumentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass localVariableEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass witnessVariableEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -368,6 +384,17 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
    * @generated
    */
   @Override
+  public EAttribute getParameterList_Symbol()
+  {
+    return (EAttribute)parameterListEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getParameter()
   {
     return parameterEClass;
@@ -404,6 +431,17 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
   public EReference getWitnessList_Witnesses()
   {
     return (EReference)witnessListEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getWitnessList_Symbol()
+  {
+    return (EAttribute)witnessListEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -753,9 +791,20 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
    * @generated
    */
   @Override
+  public EAttribute getPower_Operation()
+  {
+    return (EAttribute)powerEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EReference getPower_Right()
   {
-    return (EReference)powerEClass.getEStructuralFeatures().get(1);
+    return (EReference)powerEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -797,9 +846,20 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
    * @generated
    */
   @Override
+  public EAttribute getNegative_Operation()
+  {
+    return (EAttribute)negativeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EReference getNegative_Term()
   {
-    return (EReference)negativeEClass.getEStructuralFeatures().get(0);
+    return (EReference)negativeEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -841,6 +901,28 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
    * @generated
    */
   @Override
+  public EClass getArgument()
+  {
+    return argumentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getArgument_Expression()
+  {
+    return (EReference)argumentEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EClass getLocalVariable()
   {
     return localVariableEClass;
@@ -855,6 +937,17 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
   public EAttribute getLocalVariable_Function()
   {
     return (EAttribute)localVariableEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getWitnessVariable()
+  {
+    return witnessVariableEClass;
   }
 
   /**
@@ -922,12 +1015,14 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
 
     parameterListEClass = createEClass(PARAMETER_LIST);
     createEReference(parameterListEClass, PARAMETER_LIST__PARAMETERS);
+    createEAttribute(parameterListEClass, PARAMETER_LIST__SYMBOL);
 
     parameterEClass = createEClass(PARAMETER);
     createEAttribute(parameterEClass, PARAMETER__NAME);
 
     witnessListEClass = createEClass(WITNESS_LIST);
     createEReference(witnessListEClass, WITNESS_LIST__WITNESSES);
+    createEAttribute(witnessListEClass, WITNESS_LIST__SYMBOL);
 
     witnessEClass = createEClass(WITNESS);
     createEAttribute(witnessEClass, WITNESS__NAME);
@@ -970,20 +1065,27 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
 
     powerEClass = createEClass(POWER);
     createEReference(powerEClass, POWER__LEFT);
+    createEAttribute(powerEClass, POWER__OPERATION);
     createEReference(powerEClass, POWER__RIGHT);
 
     tupleEClass = createEClass(TUPLE);
     createEReference(tupleEClass, TUPLE__ELEMENTS);
 
     negativeEClass = createEClass(NEGATIVE);
+    createEAttribute(negativeEClass, NEGATIVE__OPERATION);
     createEReference(negativeEClass, NEGATIVE__TERM);
 
     functionCallEClass = createEClass(FUNCTION_CALL);
     createEAttribute(functionCallEClass, FUNCTION_CALL__NAME);
     createEReference(functionCallEClass, FUNCTION_CALL__ARGUMENTS);
 
+    argumentEClass = createEClass(ARGUMENT);
+    createEReference(argumentEClass, ARGUMENT__EXPRESSION);
+
     localVariableEClass = createEClass(LOCAL_VARIABLE);
     createEAttribute(localVariableEClass, LOCAL_VARIABLE__FUNCTION);
+
+    witnessVariableEClass = createEClass(WITNESS_VARIABLE);
 
     bracketsEClass = createEClass(BRACKETS);
     createEReference(bracketsEClass, BRACKETS__CONTENT);
@@ -1030,7 +1132,9 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
     tupleEClass.getESuperTypes().add(this.getExpression());
     negativeEClass.getESuperTypes().add(this.getExpression());
     functionCallEClass.getESuperTypes().add(this.getExpression());
+    argumentEClass.getESuperTypes().add(this.getExpression());
     localVariableEClass.getESuperTypes().add(this.getVariable());
+    witnessVariableEClass.getESuperTypes().add(this.getVariable());
     bracketsEClass.getESuperTypes().add(this.getExpression());
 
     // Initialize classes and features; add operations and parameters
@@ -1046,12 +1150,14 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
 
     initEClass(parameterListEClass, ParameterList.class, "ParameterList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getParameterList_Parameters(), this.getParameter(), null, "parameters", null, 0, -1, ParameterList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getParameterList_Symbol(), ecorePackage.getEString(), "symbol", null, 0, 1, ParameterList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(parameterEClass, Parameter.class, "Parameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getParameter_Name(), ecorePackage.getEString(), "name", null, 0, 1, Parameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(witnessListEClass, WitnessList.class, "WitnessList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getWitnessList_Witnesses(), this.getWitness(), null, "witnesses", null, 0, -1, WitnessList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getWitnessList_Symbol(), ecorePackage.getEString(), "symbol", null, 0, 1, WitnessList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(witnessEClass, Witness.class, "Witness", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getWitness_Name(), ecorePackage.getEString(), "name", null, 0, 1, Witness.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1094,20 +1200,27 @@ public class ZeroKnowledgePackageImpl extends EPackageImpl implements ZeroKnowle
 
     initEClass(powerEClass, Power.class, "Power", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getPower_Left(), this.getExpression(), null, "left", null, 0, 1, Power.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getPower_Operation(), ecorePackage.getEString(), "operation", null, 0, 1, Power.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getPower_Right(), this.getExpression(), null, "right", null, 0, 1, Power.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(tupleEClass, Tuple.class, "Tuple", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getTuple_Elements(), this.getExpression(), null, "elements", null, 0, -1, Tuple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(negativeEClass, Negative.class, "Negative", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getNegative_Operation(), ecorePackage.getEString(), "operation", null, 0, 1, Negative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getNegative_Term(), this.getExpression(), null, "term", null, 0, 1, Negative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(functionCallEClass, FunctionCall.class, "FunctionCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFunctionCall_Name(), ecorePackage.getEString(), "name", null, 0, 1, FunctionCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getFunctionCall_Arguments(), this.getExpression(), null, "arguments", null, 0, -1, FunctionCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(argumentEClass, Argument.class, "Argument", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getArgument_Expression(), this.getExpression(), null, "expression", null, 0, 1, Argument.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     initEClass(localVariableEClass, LocalVariable.class, "LocalVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getLocalVariable_Function(), ecorePackage.getEString(), "function", null, 0, 1, LocalVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(witnessVariableEClass, WitnessVariable.class, "WitnessVariable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(bracketsEClass, Brackets.class, "Brackets", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getBrackets_Content(), this.getExpression(), null, "content", null, 0, 1, Brackets.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

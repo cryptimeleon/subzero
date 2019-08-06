@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
+ *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.NegativeImpl#getOperation <em>Operation</em>}</li>
  *   <li>{@link de.upb.crypto.zeroknowledge.zeroKnowledge.impl.NegativeImpl#getTerm <em>Term</em>}</li>
  * </ul>
  *
@@ -30,6 +31,26 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class NegativeImpl extends ExpressionImpl implements Negative
 {
+  /**
+   * The default value of the '{@link #getOperation() <em>Operation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOperation()
+   * @generated
+   * @ordered
+   */
+  protected static final String OPERATION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getOperation() <em>Operation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOperation()
+   * @generated
+   * @ordered
+   */
+  protected String operation = OPERATION_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getTerm() <em>Term</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -59,6 +80,31 @@ public class NegativeImpl extends ExpressionImpl implements Negative
   protected EClass eStaticClass()
   {
     return ZeroKnowledgePackage.Literals.NEGATIVE;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String getOperation()
+  {
+    return operation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setOperation(String newOperation)
+  {
+    String oldOperation = operation;
+    operation = newOperation;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, ZeroKnowledgePackage.NEGATIVE__OPERATION, oldOperation, operation));
   }
 
   /**
@@ -137,6 +183,8 @@ public class NegativeImpl extends ExpressionImpl implements Negative
   {
     switch (featureID)
     {
+      case ZeroKnowledgePackage.NEGATIVE__OPERATION:
+        return getOperation();
       case ZeroKnowledgePackage.NEGATIVE__TERM:
         return getTerm();
     }
@@ -153,6 +201,9 @@ public class NegativeImpl extends ExpressionImpl implements Negative
   {
     switch (featureID)
     {
+      case ZeroKnowledgePackage.NEGATIVE__OPERATION:
+        setOperation((String)newValue);
+        return;
       case ZeroKnowledgePackage.NEGATIVE__TERM:
         setTerm((Expression)newValue);
         return;
@@ -170,6 +221,9 @@ public class NegativeImpl extends ExpressionImpl implements Negative
   {
     switch (featureID)
     {
+      case ZeroKnowledgePackage.NEGATIVE__OPERATION:
+        setOperation(OPERATION_EDEFAULT);
+        return;
       case ZeroKnowledgePackage.NEGATIVE__TERM:
         setTerm((Expression)null);
         return;
@@ -187,10 +241,29 @@ public class NegativeImpl extends ExpressionImpl implements Negative
   {
     switch (featureID)
     {
+      case ZeroKnowledgePackage.NEGATIVE__OPERATION:
+        return OPERATION_EDEFAULT == null ? operation != null : !OPERATION_EDEFAULT.equals(operation);
       case ZeroKnowledgePackage.NEGATIVE__TERM:
         return term != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (operation: ");
+    result.append(operation);
+    result.append(')');
+    return result.toString();
   }
 
 } //NegativeImpl

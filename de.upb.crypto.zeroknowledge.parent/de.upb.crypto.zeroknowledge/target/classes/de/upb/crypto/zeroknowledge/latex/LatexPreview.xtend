@@ -5,7 +5,7 @@ import java.lang.StringBuilder;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.common.util.EList;
 
-import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
+import de.upb.crypto.zeroknowledge.model.ModelHelper;
 
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -26,6 +26,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
 
 // Converts a syntax tree to valid Latex output
 class LatexPreview {
@@ -270,6 +271,10 @@ class LatexPreview {
 		builder.append(call.getName());
 		generateList(call.getArguments());
 	}
+	
+	def dispatch private void generateLatex(Argument argument) {
+		generateLatex(argument.getExpression());
+	}
 
 	def dispatch private void generateLatex(Variable variable) {
 		builder.append(formatIdentifier(variable.getName()));
@@ -284,7 +289,5 @@ class LatexPreview {
 		generateLatex(brackets.getContent());
 		builder.append(RIGHTPAREN);
 	}
-
-
 
 }

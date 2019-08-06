@@ -3,7 +3,6 @@
  */
 package de.upb.crypto.zeroknowledge.validation
 
-import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.HashSet;
@@ -11,16 +10,22 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.validation.Check;
 
 // Temporary imports, remove later
 import de.upb.crypto.zeroknowledge.latex.LatexPreview;
-import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper;
-import de.upb.crypto.zeroknowledge.helpers.ModelPrinter;
+import de.upb.crypto.zeroknowledge.model.ModelPrinter;
 
-import de.upb.crypto.zeroknowledge.helpers.ModelMap
-import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
-import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
+import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper;
+
+import de.upb.crypto.zeroknowledge.model.ModelMap
+import de.upb.crypto.zeroknowledge.model.ModelHelper;
+import de.upb.crypto.zeroknowledge.model.FunctionSignature;
+import de.upb.crypto.zeroknowledge.model.BranchState
+
+import de.upb.crypto.zeroknowledge.type.Type
+import de.upb.crypto.zeroknowledge.type.TypeResolution
 
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -41,12 +46,11 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage;
-import de.upb.crypto.zeroknowledge.helpers.BranchState
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList
-import java.util.Set
-import de.upb.crypto.zeroknowledge.helpers.Type
-import de.upb.crypto.zeroknowledge.helpers.TypeResolution
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
+import de.upb.crypto.zeroknowledge.model.ModelMapControl
 
 /**
  * This class contains custom validation rules. 
@@ -55,45 +59,47 @@ import de.upb.crypto.zeroknowledge.helpers.TypeResolution
  */
 class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
-	var Map<EObject, Type> nodeType;
-	var Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-	var Map<String, FunctionSignature> userFunctions;
-	var HashSet<String> witnessNames;
+	var HashMap<EObject, Type> types;
+	var HashMap<EObject, Integer> sizes;
+	var HashMap<String, FunctionSignature> userFunctions;
+	val HashMap<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 	
+	// Validation proceeds in a topdown, preorder traversal of the syntax tree,
+	// starting at the root Model node
+	// checkModel is the only function with the @Check annotation (to be called by the EValidator)
+	// checkNode is a dispatch function to call corresponding validation functions for each
+	// different type of syntax tree nodes
+	// Any other function prefixed with 'check' can create validation errors or warnings
+	// All other functions are helper functions
 	@Check
 	def void checkModel(Model model) {
-//		ModelPrinter.print(model);
+		ModelPrinter.print(model);
 		
-		userFunctions = fetchUserFunctions(model);
-		witnessNames = fetchWitnessNames(model);
+		TypeResolution.resolveTypes(model);
+		types = TypeResolution.getTypes();
+		sizes = TypeResolution.getSizes();
+		
+		ModelPrinter.print(model);
+		System.out.println("THISIS");
+		try {
+			
+		userFunctions = ModelHelper.getUserFunctionSignatures(model, types, sizes);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		System.out.println("WHAAAT");
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
+			try {
+				
 			checkNode(node, state);
+			} catch (Exception e) {
+			System.out.print("EXCEPTION " + e);				
+			}
 		]);
-	}
-	
-	def HashMap<String, FunctionSignature> fetchUserFunctions(Model model) {
-		val HashMap<String, FunctionSignature> functions = new HashMap<String, FunctionSignature>();
-		for (FunctionDefinition function: model.getFunctions()) {
-			functions.put(function.getName(), new FunctionSignature(function.getName(), "", function.getParameterList().getParameters().size(), #[]));				
-		}
-		
-		return functions;
-	}
-	
-	def HashSet<String> fetchWitnessNames(Model model) {
-		val HashSet<String> witnesses = new HashSet<String>();
-		for (Witness witness : model.getWitnessList().getWitnesses()) {
-			witnesses.add(witness.getName());
-		}
-		
-		return witnesses;
 	}
 	
 	def dispatch void checkNode(Model model, BranchState state) {
 		checkFunctionNamesAreUnique(model);
-		
-		System.out.println("model");
-		return;
 	}
 	
 	def dispatch void checkNode(FunctionDefinition function, BranchState state) {
@@ -101,153 +107,122 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		checkFunctionNameIsNotPredefined(function);
 		checkFunctionIsCalled(function);
 		checkFunctionParametersAreUsed(function);
-		
-		System.out.println("function");
-		return;
 	}
 
 	def dispatch void checkNode(ParameterList parameterList, BranchState state) {
 		checkFunctionParameterNamesAreUnique(parameterList);
-		
-		System.out.println("parameterlist");
-		return;
 	}
 	
 	def dispatch void checkNode(Parameter parameter, BranchState state) {
 		checkParameterNameFormat(parameter);
-		
-		System.out.println("parameter");
-		return;
 	}
 	
 	def dispatch void checkNode(WitnessList witnessList, BranchState state) {
 		checkWitnessListIsNonempty(witnessList);
 		checkWitnessNamesAreUnique(witnessList);
-		
-		System.out.println("witnesslist");
-		return;
 	}
 	
 	def dispatch void checkNode(Witness witness, BranchState state) {
 		checkWitnessNameFormat(witness);
-		
-		System.out.println("witness");
-		return;
 	}
 	
 	def dispatch void checkNode(Conjunction conjunction, BranchState state) {
 		checkValidConjunctionPosition(conjunction, state);
-		
-		System.out.println("conjunction");
-		return;
+		checkIsBoolean(conjunction);
+		checkConjunctionOperands(conjunction);
+		checkHasNoSize(conjunction);
 	}
 	
 	def dispatch void checkNode(Disjunction disjunction, BranchState state) {
 		checkValidDisjunctionPosition(disjunction, state);
-
-		System.out.println("disjunction");
-		return;
+		checkIsBoolean(disjunction);
+		checkDisjunctionOperands(disjunction);
+		checkHasNoSize(disjunction);
 	}
 	
 	def dispatch void checkNode(Comparison comparison, BranchState state) {
-//		System.out.println("branchstate" + state.has);
 		checkValidComparisonPosition(comparison, state);
-		
-		System.out.println("comparison");
-		return;
+		checkIsBoolean(comparison);
+		checkComparisonOperands(comparison);
+		checkHasNoSize(comparison);
 	}
 	
 	def dispatch void checkNode(Sum sum, BranchState state) {
+		checkProofAlgebraicPosition(sum, state);
 		checkValidAlgebraicPosition(sum, state);
-		
-		System.out.println("sum");
-		return;
+		checkIsExponent(sum);
+		checkSumOperands(sum);
 	}
 	
 	def dispatch void checkNode(Product product, BranchState state) {
+		checkProofAlgebraicPosition(product, state);
 		checkValidAlgebraicPosition(product, state);
-		
-		System.out.println("product");
-		return;
+		checkProductOperands(product);
 	}
 	
 	def dispatch void checkNode(Power power, BranchState state) {
+		checkProofAlgebraicPosition(power, state);
 		checkValidAlgebraicPosition(power, state);
-		
-		System.out.println("power");
-		return;
+		checkIsExponent(power.getRight());
+		checkPowerOperands(power);
 	}
 	
 	def dispatch void checkNode(StringLiteral stringLiteral, BranchState state) {
 		checkValidStringLiteralPosition(stringLiteral, state);
-		
-		System.out.println("string");
-		return;
+		checkIsString(stringLiteral);
+		checkHasNoSize(stringLiteral);
 	}
 	
 	def dispatch void checkNode(Tuple tuple, BranchState state) {
-		checkValidAlgebraicPosition(tuple, state);
-		
-		System.out.println("tuple");
-		return;
+		checkProofAlgebraicPosition(tuple, state);
+		checkTupleElementsAreSameType(tuple);
+		checkValidTuplePosition(tuple, state);
+		checkTupleSize(tuple);
+		checkIsTuple(tuple);
 	}
 	
 	def dispatch void checkNode(Negative negative, BranchState state) {
-		checkValidAlgebraicPosition(negative, state);
-		
-		System.out.println("negative");
-		return;
+		checkProofAlgebraicPosition(negative, state);
+		checkIsExponent(negative);
 	}
 	
 	def dispatch void checkNode(FunctionCall call, BranchState state) {
 		checkValidFunctionCall(call);
 		checkFunctionHasNoUserFunctionCalls(call, state);
-		
-		checkValidAlgebraicPosition(call, state);
-		
-		return;
+		checkValidFunctionCallPosition(call, state);
+		checkPredefinedFunctionCallType(call);
+	}
+	
+	def dispatch void checkNode(Argument argument, BranchState state) {
 	}
 	
 	def dispatch void checkNode(Variable variable, BranchState state) {
 		checkVariableNameFormat(variable);
-		
-		checkValidAlgebraicPosition(variable, state);
-		
-		System.out.println("variable");
-		return;
+		checkProofAlgebraicPosition(variable, state);
 	}
 	
 	def dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
-		checkValidAlgebraicPosition(numberLiteral, state);
-		
-//		checkNumberLiteralIsExponentLiteral(numberLiteral, state);
-		
-		System.out.println("number");
-		return;
+		checkProofAlgebraicPosition(numberLiteral, state);
+		checkIsExponent(numberLiteral);
+		checkIsScalar(numberLiteral);
 	}
 	
 	def dispatch void checkNode(Brackets brackets, BranchState state) {
-		checkValidAlgebraicPosition(brackets, state);
-		
-		System.out.println("brackets");
-		return;
+		checkProofAlgebraicPosition(brackets, state);
 	}
 	
-	
-
-
 	/*
 	 * Validate the format of identifier names
 	 */
 	// User defined function names must start with a letter, and contain only letters and numbers
 	def private void checkFunctionNameFormat(FunctionDefinition function) {
 		if (function.getName().contains("_")) {
-			error("Function names can not contain underscores", function,
-				ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+			error("Function names cannot contain underscores", function,
+				getStructuralFeature(function));
 		}
 		if (function.getName().contains("'")) {
-			error("Function names can not contain single quotes", function,
-				ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+			error("Function names cannot contain single quotes", function,
+				getStructuralFeature(function));
 		}
 	}
 
@@ -256,7 +231,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private void checkWitnessNameFormat(Witness witness) {
 		var List<String> errors = nameFormatErrors(witness.getName(), "Witness");
 		for (val Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-			error(iterator.next(), witness, ZeroKnowledgePackage.Literals.WITNESS__NAME);
+			error(iterator.next(), witness, getStructuralFeature(witness));
 		}
 	}
 
@@ -265,7 +240,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private void checkVariableNameFormat(Variable variable) {
 		var List<String> errors = nameFormatErrors(variable.getName(), "Variable");
 		for (val Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-			error(iterator.next(), variable, ZeroKnowledgePackage.Literals.VARIABLE__NAME);
+			error(iterator.next(), variable, getStructuralFeature(variable));
 		}
 	}
 
@@ -274,7 +249,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private void checkParameterNameFormat(Parameter parameter) {
 		var List<String> name_errors = nameFormatErrors(parameter.getName(), "Parameter");
 		for (String name_error : name_errors) {
-			error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+			error(name_error, parameter, getStructuralFeature(parameter));
 		}
 	}
 
@@ -303,7 +278,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}
 
 		if (identifier.charAt(identifier.length() - 1) == '_') {
-			name_errors.add(type + " name can not end with an underscore");
+			name_errors.add(type + " name cannot end with an underscore");
 		}
 
 		return name_errors;
@@ -318,7 +293,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		for (FunctionDefinition function : model.getFunctions()) {
 			val String name = function.getName();
 			if (functions.contains(name)) {
-				error("Function names must be unique", function, ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+				error("Function names must be unique", function, getStructuralFeature(function));
 			} else {
 				functions.add(name);
 			}
@@ -327,32 +302,33 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 
 	// User defined functions cannot have the same name as a predefined function
 	def private void checkFunctionNameIsNotPredefined(FunctionDefinition function) {
-		if (FunctionSignature.getAllNames(predefinedFunctions).contains(function.getName())) {
-			error("Function name is already used by a predefined function", function, ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+		if (predefinedFunctions.containsKey(function.getName())) {
+			error("Function name is already used by a predefined function", function, getStructuralFeature(function));
 		}
 	}
 
 	// Witness names must be unique
 	def private void checkWitnessNamesAreUnique(WitnessList witnessList) {
-		val Set<String> witnesses = new HashSet<String>();
+		val HashSet<String> witnesses = new HashSet<String>();
 		for (Witness witness : witnessList.getWitnesses()) {
 			val String name = witness.getName();
 			if (witnesses.contains(name)) {
-				error("Witness names must be unique", witness, ZeroKnowledgePackage.Literals.WITNESS__NAME);
+				error("Witness names must be unique", witness, getStructuralFeature(witness));
 			} else {
 				witnesses.add(name);				
 			}
 		}
 	}
 
-
 	// Function parameter names must be unique within a function signature
 	def private void checkFunctionParameterNamesAreUnique(ParameterList parameterList) {
-		val Set<String> parameters = new HashSet<String>();
+		val HashSet<String> parameters = new HashSet<String>();
 		for (Parameter parameter : parameterList.getParameters()) {
 			val String name = parameter.getName();
 			if (parameters.contains(name)) {
-				error("Function parameters must be unique within a function's signature", parameterList, ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__PARAMETER_LIST);
+				error("Function parameters must be unique within a function's signature", parameter, getStructuralFeature(parameter));
+			} else {
+				parameters.add(name);
 			}
 		}
 	}
@@ -363,22 +339,23 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// Function definitions cannot contain function calls to other user functions
 	def private void checkFunctionHasNoUserFunctionCalls(FunctionCall call, BranchState state) {
 		if (state.hasFunctionDefinitionAncestor() && userFunctions.containsKey(call.getName())) {
-			error("Can not call user functions from within a user function", call, ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
+			error("Cannot call user functions from within a user function", call, getStructuralFeature(call));
 		}
 	}
 
 	// Every function parameter should be used at least once in the function definition
 	def private void checkFunctionParametersAreUsed(FunctionDefinition function) {
+		val HashSet<String> functionVariables = new HashSet<String>();
+		
+		ModelMap.postorder(function.getBody(), [EObject node |
+			if (node instanceof LocalVariable) {
+				functionVariables.add(node.getName());
+			}
+		])
+		
 		for (Parameter parameter: function.getParameterList().getParameters()) {
-			if (!ModelMap.postorderAny(function.getBody(), [EObject node |
-				if (node instanceof Variable) {
-					if (node.getName() == parameter.getName()) {
-						return true;
-					}
-				}
-				return false;
-			])) {
-				warning('''Parameter '«parameter.getName()»' should be used within the function definition''', parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+			if (!functionVariables.contains(parameter.getName())) {
+				warning('''Parameter '«parameter.getName()»' should be used within the function definition''', parameter, getStructuralFeature(parameter));
 			}
 		}
 	}
@@ -398,7 +375,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		])) {
 			warning(
 				"Function is never used in the proof expression, and will not be included in the generated Java code", function,
-				ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+				getStructuralFeature(function));
 		}
 	}
 
@@ -409,7 +386,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def private void checkWitnessListIsNonempty(WitnessList witnessList) {
 		if (witnessList.getWitnesses().size() === 0) {
 			error("The witness list must include at least one witness", witnessList,
-				ZeroKnowledgePackage.Literals.WITNESS_LIST__WITNESSES);
+				getStructuralFeature(witnessList));
 		}
 	}
 
@@ -421,27 +398,48 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
 	def private void checkValidFunctionCall(FunctionCall call) {
 		val String name = call.getName();
-		var FunctionSignature signature = userFunctions.get(name);
-		if (signature !== null) {
-			if (signature.getParameterCount() !== call.getArguments().size()) {
-				error(
-					'''The number of arguments in the function call («call.getArguments().size()») must match the number of parameters in the function definition («signature.getParameterCount()»)''', call,
-					ZeroKnowledgePackage.Literals.FUNCTION_CALL__ARGUMENTS);
-			}
+
+		if (userFunctions.containsKey(name)) {
+			val FunctionSignature signature = userFunctions.get(name);
+			checkValidFunctionCallHelper(call, signature);
 			return;
 		}
 
-		signature = predefinedFunctions.get(name);
-		if (signature !== null) {
-			if (signature.getParameterCount() !== call.getArguments().size()) {
-				error(
-					'''The number of arguments in the function call («call.getArguments.size()») must match the number of parameters in the function definition («signature.getParameterCount()»)''', call,
-					ZeroKnowledgePackage.Literals.FUNCTION_CALL__ARGUMENTS);
-			}
+		if (predefinedFunctions.containsKey(name)) {
+			val FunctionSignature signature = predefinedFunctions.get(name);
+			checkValidFunctionCallHelper(call, signature);
 			return;
 		}
+		
 		error("Function call references a function that does not exist", call,
-			ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
+			getStructuralFeature(call));
+	}
+	
+	def private void checkValidFunctionCallHelper(FunctionCall call, FunctionSignature signature) {
+		if (signature.getParameterCount() !== call.getArguments().size()) {
+			error(
+				'''The number of arguments in the function call («call.getArguments().size()») must match the number of parameters in the function definition («signature.getParameterCount()»)''', call,
+				getStructuralFeature(call));
+			return;
+		}
+		
+		val Iterator<Type> parameterTypesIterator = signature.getParameterTypes.iterator();
+		val Iterator<Integer> parameterSizesIterator = signature.getParameterSizes.iterator();
+		val Iterator<Expression> argumentsIterator = call.getArguments().iterator();
+		
+		while (parameterTypesIterator.hasNext() && parameterSizesIterator.hasNext() && argumentsIterator.hasNext()) {
+			val Type parameterType = parameterTypesIterator.next();
+			val int parameterSize = parameterSizesIterator.next();
+			val EObject argument = argumentsIterator.next();
+			
+			if (types.get(argument) !== parameterType) {
+				error('''The argument type («types.get(argument)») does not match the function parameter type («parameterType»)''', argument, getStructuralFeature(argument));
+			}
+			
+			if (sizes.get(argument) !== parameterSize) {
+				error('''The argument size («sizes.get(argument)») does not match the function parameter size («parameterSize»)''', argument, getStructuralFeature(argument));
+			}
+		}
 	}
 	
 	/*
@@ -450,137 +448,329 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// String literals must be directly nested within a tuple, a comparison, or a function call
 	def private void checkValidStringLiteralPosition(StringLiteral stringLiteral, BranchState state) {
 		val EObject parent = state.getParent();
-		if (!(parent instanceof Tuple || parent instanceof Comparison || parent instanceof FunctionCall)) {
-			error("String literals must be contained within a tuple, a function call, or a comparison expression", stringLiteral,
-				ZeroKnowledgePackage.Literals.STRING_LITERAL__VALUE);
+		
+		if (!(parent instanceof FunctionCall)) {
+			error("String literals can only be used as arguments in function calls", stringLiteral, getStructuralFeature(stringLiteral));
 		}
+		
 	}
 
 	// Conjunctions cannot be nested within algebraic expressions or comparison expressions
 	def private void checkValidConjunctionPosition(Conjunction conjunction, BranchState state) {
-		if (isIllegallyNested(conjunction, state)) {
-			error("Conjunctions can not be nested within algebraic or comparison expressions", conjunction,
-				ZeroKnowledgePackage.Literals.CONJUNCTION__OPERATION);
+		if (!isValidBooleanPosition(conjunction, state)) {
+			error("Conjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", conjunction,
+				getStructuralFeature(conjunction));
 		}
 	}
 
 	// Disjunctions cannot be nested within algebraic expressions or comparison expressions
 	def private void checkValidDisjunctionPosition(Disjunction disjunction, BranchState state) {
-		if (isIllegallyNested(disjunction, state)) {
-			error("Disjunctions can not be nested within algebraic or comparison expressions", disjunction,
-				ZeroKnowledgePackage.Literals.DISJUNCTION__OPERATION);
+		if (!isValidBooleanPosition(disjunction, state)) {
+			error("Disjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", disjunction,
+				getStructuralFeature(disjunction));
 		}
 	}
 
 	// Comparisons cannot be nested within algebraic expressions or comparison expressions
 	def private void checkValidComparisonPosition(Comparison comparison, BranchState state) {
-		if (isIllegallyNested(comparison, state)) {
-			error("Comparisons can not be nested within algebraic expressions or other comparison expressions", comparison,
-				ZeroKnowledgePackage.Literals.COMPARISON__OPERATION);
+		if (!isValidBooleanPosition(comparison, state)) {
+			error("Comparisons cannot be nested within algebraic expressions, other comparison expressions, or function calls", comparison,
+				getStructuralFeature(comparison));
 		}
 	}
 	
-	
-	def private boolean isIllegallyNested(EObject node, BranchState state) {
+	// Helper function for checkValidConjunctionPosition, checkValidDisjunctionPosition, and checkValidComparisonPosition
+	def private boolean isValidBooleanPosition(EObject node, BranchState state) {
 		val EObject parent = state.getParent();
 		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Conjunction || parent instanceof Disjunction) {
-			return false;
-		}
-		return true;
-	}
-
-	// Helper function for checkValidConjunctionPosition, checkValidDisjunctionPosition, checkValidComparisonPosition
-//	def private boolean isIllegallyNested(EObject node) {
-//		var EObject parent = node.eContainer();
-//		if (parent instanceof Model || parent instanceof FunctionDefinition) {
-//			return false;
-//		} else if (!(parent instanceof Conjunction || parent instanceof Disjunction)) {
-//			return true;
-//		} else {
-//			return isIllegallyNested(parent);
-//		}
-//	}
-
-//	def private void checkAlgebraicPosition(EObject node, BranchState state) {
-//		if (state.hasComparisonBeforePropositional()) {
-//			error("Algebraic expression must be nested within a comparison expression before being nested within a propositional expression", null);
-//		}
-//	}
-	
-	
-	// Algebraic expressions must be nested within a comparison expression before being nested within a propositional expression
-	@Check
-	def void checkAlgebraicPosition(EObject node) {
-		if (!ModelHelper.isAlgebraic(node) || node instanceof FunctionCall) {
-			return;
-		}
-
-		if (!hasComparisonBeforePropositional(node.eContainer())) {
-			error(
-				"Algebraic expression must be nested within a comparison expression before being nested within a propositional expression",
-				null);
-		}
-	}
-
-	// Helper function for checkAlgebraicPosition
-	def private boolean hasComparisonBeforePropositional(EObject node) {
-		if (node instanceof Conjunction || node instanceof Disjunction) {
-			return false;
-		} else if (node instanceof Comparison || node instanceof FunctionCall || node instanceof Model) {
 			return true;
 		}
-		return hasComparisonBeforePropositional(node.eContainer());
+		return false;
+	}
+
+	// Algebraic expressions must be nested within a comparison expression before being nested within a propositional expression
+	def private void checkValidAlgebraicPosition(EObject node, BranchState state) {
+		if (state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor()) return;
+
+		if (state.hasPropositionalBeforeComparison()) {
+			error("Algebraic expression must be nested within a comparison expression before being nested within a propositional expression", node, getStructuralFeature(node))
+		}
 	}
 
 	// Algebraic expressions in the proof expression must be nested within a comparison expression or function call
-	def private void checkValidAlgebraicPosition(EObject object, BranchState state) {
-		if (!(state.hasComparisonAncestor() || state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor())) {
-			error("Algebraic expressions must be nested within a comparison expression", null);
+	def private void checkProofAlgebraicPosition(EObject object, BranchState state) {
+		if (state.hasFunctionDefinitionAncestor()) return;
+		
+		if (!(state.hasComparisonAncestor() || state.hasFunctionCallAncestor())) {
+			error("Algebraic expressions in the proof expression must be nested within a comparison expression or function call", object, getStructuralFeature(object));
 		}
 	}
-		
 	
-//	@Check
-//	def private void checkNumberLiteralIsExponentLiteral(NumberLiteral numberLiteral, BranchState state) {
-//		if (!(state.hasSumAncestor() || state.isInPowerRightBranch())) {
-//			error(
-//				"Number literals must be contained within a sum expression or the right operand of a power expression", numberLiteral,
-//				ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE);
-//		}
-//	}
-
-	// Function calls which return a boolean value cannot be nested within algebraic expressions, and
-	// function calls which return algebraic values must be nested within a comparison expression
-//	@Check
-//	def void checkValidFunctionCallPosition(FunctionCall call, BranchState state) {
-//		if (ModelHelper.isBooleanFunction(call)) {
-//			if (isIllegallyNested(call, state)) {
-//				error("Functions which return a boolean value can not be nested within algebraic expressions", call,
-//					ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
-//			}
-//		} else {
-//			if (!ModelHelper.hasComparisonOrFunctionAncestor(call)) {
-//				error("Functions which return an algebraic value must be nested within a comparison expression", call,
-//					ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
-//			}
-//		}
-//	}
-	
-
-//	@Check
-//	def void checkInline(Model model) {
-//		ModelPrinter.print(model);
-//		var LatexPreview output = new LatexPreview(model, false);
-//		error(output.getRawLatex(), null);
-//	}
-
-	@Check
-	def void check(Model model) {
-		ModelPrinter.print(model);
-		System.out.println("RESOLVING--------");
-		TypeResolution.resolveTypes(model);
-		ModelPrinter.print(model);
-		System.out.println("DONE-------------");
+	// Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls
+	def private void checkValidFunctionCallPosition(FunctionCall call, BranchState state) {
+		if (types.get(call) === Type.BOOLEAN) {
+			if (!isValidBooleanPosition(call, state)) {
+				error("Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls", call, getStructuralFeature(call));
+			};
+		} else {			
+			checkProofAlgebraicPosition(call, state);
+		}
 	}
+	
+	def private void checkPredefinedFunctionCallType(FunctionCall call) {
+		if (predefinedFunctions.containsKey(call.getName())) {
+			val Type currentType = types.get(call);
+			val Type correctType = predefinedFunctions.get(call.getName()).getReturnType();
+			
+			if (currentType !== correctType) {
+				error('''Predefined function call should have type «correctType», not type «currentType»''', call, getStructuralFeature(call));
+			}
+		}
+	}
+	
+	/*
+	 * Validate that the operands of a binary operation are of compatible type
+	 */
+	def private void checkConjunctionOperands(Conjunction conjunction) {
+		val Type leftType = types.get(conjunction.getLeft());
+		val Type rightType = types.get(conjunction.getRight());
+		
+		if (types.get(conjunction.getLeft()) !== Type.BOOLEAN || types.get(conjunction.getRight()) !== Type.BOOLEAN) {
+			error('''Conjunction operands must both have type BOOLEAN. The left operand is of type «leftType» but the right operand is of type «rightType»''', conjunction, getStructuralFeature(conjunction));
+		}
+	} 
+	
+	def private void checkDisjunctionOperands(Disjunction disjunction) {
+		val Type leftType = types.get(disjunction.getLeft());
+		val Type rightType = types.get(disjunction.getRight());
+		
+		if (types.get(disjunction.getLeft()) !== Type.BOOLEAN || types.get(disjunction.getRight()) !== Type.BOOLEAN) {
+			error('''Disjunction operands must both have type BOOLEAN. The left operand is of type «leftType» but the right operand is of type «rightType»''', disjunction, getStructuralFeature(disjunction));
+		}
+	}
+	
+	def private void checkComparisonOperands(Comparison comparison) {
+		val Type leftType = types.get(comparison.getLeft());
+		val Type rightType = types.get(comparison.getRight());
+		val int leftSize = sizes.get(comparison.getLeft());
+		val int rightSize = sizes.get(comparison.getRight());
+		
+		if (leftType !== rightType) {
+			error('''The operands of a comparison node must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', comparison, getStructuralFeature(comparison));
+		}
+		
+		if (leftSize !== rightSize) {
+			error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getStructuralFeature(comparison));
+		}
+	}
+	
+	def private void checkSumOperands(Sum sum) {
+		val Type leftType = types.get(sum.getLeft());
+		val Type rightType = types.get(sum.getRight());
+		val int leftSize = sizes.get(sum.getLeft());
+		val int rightSize = sizes.get(sum.getRight());
+		
+		if (leftType !== Type.EXPONENT || rightType !== Type.EXPONENT) {
+			error('''Sum operands must both have type EXPONENT. The left operand is of type «leftType» but the right operand is of type «rightType»''', sum, getStructuralFeature(sum));
+		}
+		
+		if (leftSize !== rightSize) {
+			error('''The operands of a sum node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', sum, getStructuralFeature(sum));
+		}
+	}
+	
+	def private void checkProductOperands(Product product) {
+		val Type leftType = types.get(product.getLeft());
+		val Type rightType = types.get(product.getRight());
+		val int leftSize = sizes.get(product.getLeft());
+		val int rightSize = sizes.get(product.getRight());
+		
+		if (leftType !== rightType) {
+			error('''The operands of a product node must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', product, getStructuralFeature(product));
+		}
+		
+		if (leftType === Type.GROUP_ELEMENT && rightType === Type.GROUP_ELEMENT && leftSize !== rightSize) {
+			error('''The operands of a GROUP_ELEMENT product node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', product, getStructuralFeature(product));
+		}		
+	}
+	
+	def private void checkPowerOperands(Power power) {
+		val Type type = types.get(power);
+		val Type leftType = types.get(power.getLeft());
+		val Type rightType = types.get(power.getRight());
+		val int rightTuple = sizes.get(power.getRight());
 
+		if (!(leftType === Type.EXPONENT || leftType === Type.GROUP_ELEMENT)) {
+			error('''The left operand of a power node must be of type EXPONENT or GROUP_ELEMENT, not type «leftType»''', power, getStructuralFeature(power));
+		}
+		
+		if (rightType !== Type.EXPONENT) {
+			error('''The right operand of a power node must be of type EXPONENT, not type «rightType»''', power, getStructuralFeature(power));
+		}
+		
+		if (type !== leftType) {
+			error('''The type of a power node must be the same as the type of the right operand. The power node is of type «type» but the left operand is of type «leftType»''', power, getStructuralFeature(power));
+		}
+		
+		if (rightTuple > 1) {
+			error('''The right operand of a power node cannot be a tuple''', power, getStructuralFeature(power));
+		}
+	}
+	
+	def private void checkTupleElementsAreSameType(Tuple tuple) {
+		val Type tupleType = types.get(tuple);
+		
+		for (EObject element : tuple.getElements()) {
+			val Type elementType = types.get(element);
+			
+			if (tupleType !== elementType) {
+				error('''Tuple elements must be the same type as the tuple. The tuple has type «tupleType», but the element has type «elementType»''', element, getStructuralFeature(element));
+			}
+		}
+	}
+	
+	/*
+	 * Check that nodes with a predetermined type have this type
+	 */	
+	def private void checkIsBoolean(EObject node) {
+		checkIsType(node, Type.BOOLEAN);
+	}
+	
+	def private void checkIsExponent(EObject node) {
+		checkIsType(node, Type.EXPONENT);
+	}
+	
+	def private void checkIsGroupElement(EObject node) {
+		checkIsType(node, Type.GROUP_ELEMENT);
+	}
+	
+	def private void checkIsExponentOrGroupElement(EObject node) {
+		if (!types.containsKey(node)) {
+			error('''«capitalize(getName(node))» must be of type EXPONENT or GROUP_ELEMENT''', node, getStructuralFeature(node));
+		} else {
+			error('''«capitalize(getName(node))» must be of type EXPONENT or GROUP_ELEMENT, not type «types.get(node).toString()»''', node, getStructuralFeature(node));
+		}
+	}
+	
+	def private void checkIsString(EObject node) {
+		checkIsType(node, Type.STRING);
+	}
+	
+	def private void checkIsType(EObject node, Type type) {
+		if (!types.containsKey(node)) {
+			error('''«capitalize(getName(node))» must be of type «type.toString()»''', node, getStructuralFeature(node));
+		} else if (types.get(node) !== type) {
+			error('''«capitalize(getName(node))» must be of type «type.toString()», not type «types.get(node).toString()»''', node, getStructuralFeature(node));
+		}
+	}
+	
+	def private void checkIsScalar(EObject node) {
+		if (!sizes.containsKey(node)) {
+			error('''«capitalize(getName(node))» must be a scalar''', node, getStructuralFeature(node));	
+		} else if (sizes.get(node) !== 1) {
+			error('''«capitalize(getName(node))» must be a scalar, not a tuple of size «sizes.get(node)»''', node, getStructuralFeature(node));
+		}
+	}
+	
+	def private void checkIsTuple(EObject node) {
+		if (!sizes.containsKey(node)) {
+			error('''«capitalize(getName(node))» must be a tuple''', node, getStructuralFeature(node));		
+		} else if (sizes.get(node) <= 1) {
+			error('''«capitalize(getName(node))» must be a tuple, not a scalar''', node, getStructuralFeature(node));
+		}
+	}
+	
+	def private void checkHasNoSize(EObject node) {
+		if (!sizes.containsKey(node)) return;
+		
+		val int size = sizes.get(node);
+		
+		if (size === 1) {
+			error('''«capitalize(getName(node))» has no size and cannot be a scalar''', node, getStructuralFeature(node));
+		} else if (size > 1) {
+			error('''«capitalize(getName(node))» has no size and cannot be a tuple of size «size»''', node, getStructuralFeature(node));
+		}
+	}
+	
+	/*
+	 * Tuples
+	 */
+	
+	// Tuples must be nested within a function call before being nested within another tuple
+	def private void checkValidTuplePosition(Tuple tuple, BranchState state) {
+		System.out.println("TUPLEPOSITIOn");
+		if (state.hasTupleBeforeFunctionCall()) {
+			error('''Tuples must be nested within a function call before being nested within another tuple''', tuple, getStructuralFeature(tuple));
+		}
+	}
+	
+	def private void checkTupleSize(Tuple tuple) {
+		val int currentSize = sizes.get(tuple);
+		val int correctSize = tuple.getElements().size();
+		
+		if (currentSize !== correctSize) {
+			error('''The operands of operations between tuples must have the same size. This tuple of size «correctSize» is in an operation with a tuple of size «currentSize»''', tuple ,getStructuralFeature(tuple));
+		}
+	}
+	
+	/*
+	 * Additional helper functions
+	 */	
+	
+	// Capitalizes the first letter of the string
+	def private String capitalize(String string) {
+		if (string === "") return "";
+		return string.substring(0, 1).toUpperCase() + string.substring(1);
+	}
+	
+	// Returns the name of the type of node
+	def private String getName(EObject object) {
+		switch object {
+			Model:				return "model"
+			FunctionDefinition:	return "function definition"
+			ParameterList:		return "parameter list"
+			Parameter:			return "parameter"
+			WitnessList:		return "witness list"
+			Witness:			return "witness"
+			Conjunction: 		return "conjunction"
+			Disjunction: 		return "disjunction"
+			Comparison: 		return "comparison"
+			Sum: 				return "sum"
+			Product: 			return "product"
+			Power: 				return "power"
+			StringLiteral: 		return "string literal"
+			Tuple: 				return "tuple"
+			Negative: 			return "negative"
+			FunctionCall: 		return "function call"
+			Argument:			return "argument"
+			LocalVariable: 		return "local variable"
+			Variable: 			return "variable"
+			NumberLiteral: 		return "number literal"
+		}	
+	}
+	
+	// Returns the corresponding package literal for an EObject
+	def private EStructuralFeature getStructuralFeature(EObject object) {
+		switch object {
+			FunctionDefinition:	return ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME
+			ParameterList:		return ZeroKnowledgePackage.Literals.PARAMETER_LIST__PARAMETERS
+			Parameter:			return ZeroKnowledgePackage.Literals.PARAMETER__NAME
+			WitnessList:		return ZeroKnowledgePackage.Literals.WITNESS_LIST__WITNESSES
+			Witness:			return ZeroKnowledgePackage.Literals.WITNESS__NAME
+			Conjunction: 		return ZeroKnowledgePackage.Literals.CONJUNCTION__OPERATION
+			Disjunction: 		return ZeroKnowledgePackage.Literals.DISJUNCTION__OPERATION
+			Comparison: 		return ZeroKnowledgePackage.Literals.COMPARISON__OPERATION
+			Sum: 				return ZeroKnowledgePackage.Literals.SUM__OPERATION
+			Product: 			return ZeroKnowledgePackage.Literals.PRODUCT__OPERATION
+			Power: 				return ZeroKnowledgePackage.Literals.POWER__OPERATION
+			StringLiteral: 		return ZeroKnowledgePackage.Literals.STRING_LITERAL__VALUE
+			Tuple: 				return ZeroKnowledgePackage.Literals.TUPLE__ELEMENTS
+			Negative: 			return ZeroKnowledgePackage.Literals.NEGATIVE__OPERATION
+			FunctionCall: 		return ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME
+			LocalVariable: 		return ZeroKnowledgePackage.Literals.VARIABLE__NAME
+			Variable: 			return ZeroKnowledgePackage.Literals.VARIABLE__NAME
+			NumberLiteral: 		return ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE
+		}
+	}
+	
 }

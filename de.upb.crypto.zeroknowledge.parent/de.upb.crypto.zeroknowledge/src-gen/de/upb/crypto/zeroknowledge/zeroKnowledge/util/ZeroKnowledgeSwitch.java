@@ -218,12 +218,29 @@ public class ZeroKnowledgeSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case ZeroKnowledgePackage.ARGUMENT:
+      {
+        Argument argument = (Argument)theEObject;
+        T result = caseArgument(argument);
+        if (result == null) result = caseExpression(argument);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case ZeroKnowledgePackage.LOCAL_VARIABLE:
       {
         LocalVariable localVariable = (LocalVariable)theEObject;
         T result = caseLocalVariable(localVariable);
         if (result == null) result = caseVariable(localVariable);
         if (result == null) result = caseExpression(localVariable);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case ZeroKnowledgePackage.WITNESS_VARIABLE:
+      {
+        WitnessVariable witnessVariable = (WitnessVariable)theEObject;
+        T result = caseWitnessVariable(witnessVariable);
+        if (result == null) result = caseVariable(witnessVariable);
+        if (result == null) result = caseExpression(witnessVariable);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -544,6 +561,22 @@ public class ZeroKnowledgeSwitch<T> extends Switch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Argument</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Argument</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseArgument(Argument object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Local Variable</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -555,6 +588,22 @@ public class ZeroKnowledgeSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseLocalVariable(LocalVariable object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Witness Variable</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Witness Variable</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseWitnessVariable(WitnessVariable object)
   {
     return null;
   }

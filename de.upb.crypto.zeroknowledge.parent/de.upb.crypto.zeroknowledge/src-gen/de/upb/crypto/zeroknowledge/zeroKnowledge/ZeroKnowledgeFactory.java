@@ -195,6 +195,15 @@ public interface ZeroKnowledgeFactory extends EFactory
   FunctionCall createFunctionCall();
 
   /**
+   * Returns a new object of class '<em>Argument</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Argument</em>'.
+   * @generated
+   */
+  Argument createArgument();
+
+  /**
    * Returns a new object of class '<em>Local Variable</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -202,6 +211,15 @@ public interface ZeroKnowledgeFactory extends EFactory
    * @generated
    */
   LocalVariable createLocalVariable();
+
+  /**
+   * Returns a new object of class '<em>Witness Variable</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Witness Variable</em>'.
+   * @generated
+   */
+  WitnessVariable createWitnessVariable();
 
   /**
    * Returns a new object of class '<em>Brackets</em>'.

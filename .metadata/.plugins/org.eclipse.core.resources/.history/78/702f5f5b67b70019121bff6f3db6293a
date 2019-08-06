@@ -1,0 +1,68 @@
+package de.upb.crypto.zeroknowledge.type
+
+import java.util.HashMap
+import org.eclipse.emf.ecore.EObject
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Model
+import de.upb.crypto.zeroknowledge.model.ModelHelper
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Tuple
+import de.upb.crypto.zeroknowledge.model.ModelMap
+import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
+import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Disjunction
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Sum
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Product
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
+import de.upb.crypto.zeroknowledge.model.FunctionSignature
+import java.util.ArrayList
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
+import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper
+
+class TupleResolution {
+	
+	// Stores the resolved multiplicity for every node in the syntax tree that could be a scalar or tuple	
+	static private HashMap<EObject, Integer> tuples;
+	
+	// Stores the resolved Type for every node in the syntax tree that requires a type
+	static HashMap<EObject, Type> types;
+	
+	// Stores whether a node has been visited (inference has been attempted)
+	static HashMap<EObject, Boolean> visited;
+	
+	// A map from predefined function names to the function signature
+	static HashMap<String, FunctionSignature> predefinedFunctionsMap;
+	
+	// A map from function names to user function definition nodes
+	static HashMap<String, FunctionDefinition> userFunctionsMap;
+	
+	// A map from function names to user function calls
+	static HashMap<String, ArrayList<FunctionCall>> userFunctionCallsMap;
+	
+	// A map from variable names to variable nodes
+	static HashMap<String, ArrayList<Variable>> variablesMap;
+	
+	// A map from witness names to witness nodes
+	static HashMap<String, Witness> witnessesMap;
+	
+	// A map from function names and parameter names to local variable nodes
+	static HashMap<String, HashMap<String, ArrayList<LocalVariable>>> localVariablesMap;
+	
+	// A map from user function names and local variable names to the corresponding Parameter node in the function definition
+	static HashMap<String, HashMap<String, Parameter>> parametersMap;	
+	
+	// A map from user function names and parameter names to corresponding arguments in function calls
+	static HashMap<String, HashMap<String, ArrayList<Argument>>> argumentsMap;
+	
+	
+	
+	def static HashMap<EObject, Integer> getTuples() {
+		return tuples;
+	}
+	
+	
+	
+}

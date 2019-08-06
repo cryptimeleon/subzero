@@ -84,7 +84,9 @@ public class ZeroKnowledgeFactoryImpl extends EFactoryImpl implements ZeroKnowle
       case ZeroKnowledgePackage.TUPLE: return createTuple();
       case ZeroKnowledgePackage.NEGATIVE: return createNegative();
       case ZeroKnowledgePackage.FUNCTION_CALL: return createFunctionCall();
+      case ZeroKnowledgePackage.ARGUMENT: return createArgument();
       case ZeroKnowledgePackage.LOCAL_VARIABLE: return createLocalVariable();
+      case ZeroKnowledgePackage.WITNESS_VARIABLE: return createWitnessVariable();
       case ZeroKnowledgePackage.BRACKETS: return createBrackets();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -325,10 +327,34 @@ public class ZeroKnowledgeFactoryImpl extends EFactoryImpl implements ZeroKnowle
    * @generated
    */
   @Override
+  public Argument createArgument()
+  {
+    ArgumentImpl argument = new ArgumentImpl();
+    return argument;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public LocalVariable createLocalVariable()
   {
     LocalVariableImpl localVariable = new LocalVariableImpl();
     return localVariable;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public WitnessVariable createWitnessVariable()
+  {
+    WitnessVariableImpl witnessVariable = new WitnessVariableImpl();
+    return witnessVariable;
   }
 
   /**

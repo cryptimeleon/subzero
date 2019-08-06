@@ -4,21 +4,24 @@
 package de.upb.crypto.zeroknowledge.validation;
 
 import com.google.common.base.Objects;
-import de.upb.crypto.zeroknowledge.helpers.BranchState;
-import de.upb.crypto.zeroknowledge.helpers.FunctionSignature;
-import de.upb.crypto.zeroknowledge.helpers.ModelHelper;
-import de.upb.crypto.zeroknowledge.helpers.ModelMap;
-import de.upb.crypto.zeroknowledge.helpers.ModelPrinter;
-import de.upb.crypto.zeroknowledge.helpers.PredefinedFunctionsHelper;
-import de.upb.crypto.zeroknowledge.helpers.Type;
-import de.upb.crypto.zeroknowledge.helpers.TypeResolution;
+import de.upb.crypto.zeroknowledge.model.BranchState;
+import de.upb.crypto.zeroknowledge.model.FunctionSignature;
+import de.upb.crypto.zeroknowledge.model.ModelHelper;
+import de.upb.crypto.zeroknowledge.model.ModelMap;
+import de.upb.crypto.zeroknowledge.model.ModelPrinter;
+import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper;
+import de.upb.crypto.zeroknowledge.type.Type;
+import de.upb.crypto.zeroknowledge.type.TypeResolution;
 import de.upb.crypto.zeroknowledge.validation.AbstractZeroKnowledgeValidator;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Disjunction;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.Expression;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition;
+import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Negative;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
@@ -39,13 +42,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
 /**
@@ -55,51 +59,51 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
  */
 @SuppressWarnings("all")
 public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
-  private Map<EObject, Type> nodeType;
+  private HashMap<EObject, Type> types;
   
-  private Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+  private HashMap<EObject, Integer> sizes;
   
-  private Map<String, FunctionSignature> userFunctions;
+  private HashMap<String, FunctionSignature> userFunctions;
   
-  private HashSet<String> witnessNames;
+  private final HashMap<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
   
   @Check
   public void checkModel(final Model model) {
-    this.userFunctions = this.fetchUserFunctions(model);
-    this.witnessNames = this.fetchWitnessNames(model);
+    ModelPrinter.print(model);
+    TypeResolution.resolveTypes(model);
+    this.types = TypeResolution.getTypes();
+    this.sizes = TypeResolution.getSizes();
+    ModelPrinter.print(model);
+    System.out.println("THISIS");
+    try {
+      this.userFunctions = ModelHelper.getUserFunctionSignatures(model, this.types, this.sizes);
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        final Exception e = (Exception)_t;
+        System.out.println(e);
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    System.out.println("WHAAAT");
     BranchState _branchState = new BranchState();
     final Procedure2<EObject, BranchState> _function = (EObject node, BranchState state) -> {
-      this.checkNode(node, state);
+      try {
+        this.checkNode(node, state);
+      } catch (final Throwable _t_1) {
+        if (_t_1 instanceof Exception) {
+          final Exception e_1 = (Exception)_t_1;
+          System.out.print(("EXCEPTION " + e_1));
+        } else {
+          throw Exceptions.sneakyThrow(_t_1);
+        }
+      }
     };
     ModelMap.preorderWithState(model, _branchState, _function);
   }
   
-  public HashMap<String, FunctionSignature> fetchUserFunctions(final Model model) {
-    final HashMap<String, FunctionSignature> functions = new HashMap<String, FunctionSignature>();
-    EList<FunctionDefinition> _functions = model.getFunctions();
-    for (final FunctionDefinition function : _functions) {
-      String _name = function.getName();
-      String _name_1 = function.getName();
-      int _size = function.getParameterList().getParameters().size();
-      FunctionSignature _functionSignature = new FunctionSignature(_name_1, "", _size, new String[] {});
-      functions.put(_name, _functionSignature);
-    }
-    return functions;
-  }
-  
-  public HashSet<String> fetchWitnessNames(final Model model) {
-    final HashSet<String> witnesses = new HashSet<String>();
-    EList<Witness> _witnesses = model.getWitnessList().getWitnesses();
-    for (final Witness witness : _witnesses) {
-      witnesses.add(witness.getName());
-    }
-    return witnesses;
-  }
-  
   protected void _checkNode(final Model model, final BranchState state) {
     this.checkFunctionNamesAreUnique(model);
-    System.out.println("model");
-    return;
   }
   
   protected void _checkNode(final FunctionDefinition function, final BranchState state) {
@@ -107,113 +111,108 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     this.checkFunctionNameIsNotPredefined(function);
     this.checkFunctionIsCalled(function);
     this.checkFunctionParametersAreUsed(function);
-    System.out.println("function");
-    return;
   }
   
   protected void _checkNode(final ParameterList parameterList, final BranchState state) {
     this.checkFunctionParameterNamesAreUnique(parameterList);
-    System.out.println("parameterlist");
-    return;
   }
   
   protected void _checkNode(final Parameter parameter, final BranchState state) {
     this.checkParameterNameFormat(parameter);
-    System.out.println("parameter");
-    return;
   }
   
   protected void _checkNode(final WitnessList witnessList, final BranchState state) {
     this.checkWitnessListIsNonempty(witnessList);
     this.checkWitnessNamesAreUnique(witnessList);
-    System.out.println("witnesslist");
-    return;
   }
   
   protected void _checkNode(final Witness witness, final BranchState state) {
     this.checkWitnessNameFormat(witness);
-    System.out.println("witness");
-    return;
   }
   
   protected void _checkNode(final Conjunction conjunction, final BranchState state) {
     this.checkValidConjunctionPosition(conjunction, state);
-    System.out.println("conjunction");
-    return;
+    this.checkIsBoolean(conjunction);
+    this.checkConjunctionOperands(conjunction);
+    this.checkHasNoSize(conjunction);
   }
   
   protected void _checkNode(final Disjunction disjunction, final BranchState state) {
     this.checkValidDisjunctionPosition(disjunction, state);
-    System.out.println("disjunction");
-    return;
+    this.checkIsBoolean(disjunction);
+    this.checkDisjunctionOperands(disjunction);
+    this.checkHasNoSize(disjunction);
   }
   
   protected void _checkNode(final Comparison comparison, final BranchState state) {
     this.checkValidComparisonPosition(comparison, state);
-    System.out.println("comparison");
-    return;
+    this.checkIsBoolean(comparison);
+    this.checkComparisonOperands(comparison);
+    this.checkHasNoSize(comparison);
   }
   
   protected void _checkNode(final Sum sum, final BranchState state) {
+    this.checkProofAlgebraicPosition(sum, state);
     this.checkValidAlgebraicPosition(sum, state);
-    System.out.println("sum");
-    return;
+    this.checkIsExponent(sum);
+    this.checkSumOperands(sum);
   }
   
   protected void _checkNode(final Product product, final BranchState state) {
+    this.checkProofAlgebraicPosition(product, state);
     this.checkValidAlgebraicPosition(product, state);
-    System.out.println("product");
-    return;
+    this.checkProductOperands(product);
   }
   
   protected void _checkNode(final Power power, final BranchState state) {
+    this.checkProofAlgebraicPosition(power, state);
     this.checkValidAlgebraicPosition(power, state);
-    System.out.println("power");
-    return;
+    this.checkIsExponent(power.getRight());
+    this.checkPowerOperands(power);
   }
   
   protected void _checkNode(final StringLiteral stringLiteral, final BranchState state) {
     this.checkValidStringLiteralPosition(stringLiteral, state);
-    System.out.println("string");
-    return;
+    this.checkIsString(stringLiteral);
+    this.checkHasNoSize(stringLiteral);
   }
   
   protected void _checkNode(final Tuple tuple, final BranchState state) {
-    this.checkValidAlgebraicPosition(tuple, state);
-    System.out.println("tuple");
-    return;
+    this.checkProofAlgebraicPosition(tuple, state);
+    this.checkTupleElementsAreSameType(tuple);
+    this.checkValidTuplePosition(tuple, state);
+    this.checkTupleSize(tuple);
+    this.checkIsTuple(tuple);
   }
   
   protected void _checkNode(final Negative negative, final BranchState state) {
-    this.checkValidAlgebraicPosition(negative, state);
-    System.out.println("negative");
-    return;
+    this.checkProofAlgebraicPosition(negative, state);
+    this.checkIsExponent(negative);
   }
   
   protected void _checkNode(final FunctionCall call, final BranchState state) {
     this.checkValidFunctionCall(call);
     this.checkFunctionHasNoUserFunctionCalls(call, state);
-    this.checkValidAlgebraicPosition(call, state);
-    return;
+    this.checkValidFunctionCallPosition(call, state);
+    this.checkPredefinedFunctionCallType(call);
+  }
+  
+  protected void _checkNode(final Argument argument, final BranchState state) {
   }
   
   protected void _checkNode(final Variable variable, final BranchState state) {
     this.checkVariableNameFormat(variable);
-    this.checkValidAlgebraicPosition(variable, state);
-    System.out.println("variable");
-    return;
+    this.checkProofAlgebraicPosition(variable, state);
   }
   
   protected void _checkNode(final NumberLiteral numberLiteral, final BranchState state) {
-    this.checkValidAlgebraicPosition(numberLiteral, state);
-    System.out.println("number");
-    return;
+    this.checkProofAlgebraicPosition(numberLiteral, state);
+    this.checkIsExponent(numberLiteral);
+    this.checkIsScalar(numberLiteral);
   }
   
   protected void _checkNode(final Brackets brackets, final BranchState state) {
-    this.checkValidAlgebraicPosition(brackets, state);
-    System.out.println("brackets");
-    return;
+    this.checkProofAlgebraicPosition(brackets, state);
   }
   
   /**
@@ -222,34 +221,34 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   private void checkFunctionNameFormat(final FunctionDefinition function) {
     boolean _contains = function.getName().contains("_");
     if (_contains) {
-      this.error("Function names can not contain underscores", function, 
-        ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+      this.error("Function names cannot contain underscores", function, 
+        this.getStructuralFeature(function));
     }
     boolean _contains_1 = function.getName().contains("\'");
     if (_contains_1) {
-      this.error("Function names can not contain single quotes", function, 
-        ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+      this.error("Function names cannot contain single quotes", function, 
+        this.getStructuralFeature(function));
     }
   }
   
   private void checkWitnessNameFormat(final Witness witness) {
     List<String> errors = this.nameFormatErrors(witness.getName(), "Witness");
     for (final Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-      this.error(iterator.next(), witness, ZeroKnowledgePackage.Literals.WITNESS__NAME);
+      this.error(iterator.next(), witness, this.getStructuralFeature(witness));
     }
   }
   
   private void checkVariableNameFormat(final Variable variable) {
     List<String> errors = this.nameFormatErrors(variable.getName(), "Variable");
     for (final Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-      this.error(iterator.next(), variable, ZeroKnowledgePackage.Literals.VARIABLE__NAME);
+      this.error(iterator.next(), variable, this.getStructuralFeature(variable));
     }
   }
   
   private void checkParameterNameFormat(final Parameter parameter) {
     List<String> name_errors = this.nameFormatErrors(parameter.getName(), "Parameter");
     for (final String name_error : name_errors) {
-      this.error(name_error, parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+      this.error(name_error, parameter, this.getStructuralFeature(parameter));
     }
   }
   
@@ -284,7 +283,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     char _charAt = identifier.charAt(_minus);
     boolean _equals = Objects.equal(Character.valueOf(_charAt), "_");
     if (_equals) {
-      name_errors.add((type + " name can not end with an underscore"));
+      name_errors.add((type + " name cannot end with an underscore"));
     }
     return name_errors;
   }
@@ -300,7 +299,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
         final String name = function.getName();
         boolean _contains = functions.contains(name);
         if (_contains) {
-          this.error("Function names must be unique", function, ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+          this.error("Function names must be unique", function, this.getStructuralFeature(function));
         } else {
           functions.add(name);
         }
@@ -309,21 +308,21 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   private void checkFunctionNameIsNotPredefined(final FunctionDefinition function) {
-    boolean _contains = FunctionSignature.getAllNames(this.predefinedFunctions).contains(function.getName());
-    if (_contains) {
-      this.error("Function name is already used by a predefined function", function, ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+    boolean _containsKey = this.predefinedFunctions.containsKey(function.getName());
+    if (_containsKey) {
+      this.error("Function name is already used by a predefined function", function, this.getStructuralFeature(function));
     }
   }
   
   private void checkWitnessNamesAreUnique(final WitnessList witnessList) {
-    final Set<String> witnesses = new HashSet<String>();
+    final HashSet<String> witnesses = new HashSet<String>();
     EList<Witness> _witnesses = witnessList.getWitnesses();
     for (final Witness witness : _witnesses) {
       {
         final String name = witness.getName();
         boolean _contains = witnesses.contains(name);
         if (_contains) {
-          this.error("Witness names must be unique", witness, ZeroKnowledgePackage.Literals.WITNESS__NAME);
+          this.error("Witness names must be unique", witness, this.getStructuralFeature(witness));
         } else {
           witnesses.add(name);
         }
@@ -332,14 +331,16 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   private void checkFunctionParameterNamesAreUnique(final ParameterList parameterList) {
-    final Set<String> parameters = new HashSet<String>();
+    final HashSet<String> parameters = new HashSet<String>();
     EList<Parameter> _parameters = parameterList.getParameters();
     for (final Parameter parameter : _parameters) {
       {
         final String name = parameter.getName();
         boolean _contains = parameters.contains(name);
         if (_contains) {
-          this.error("Function parameters must be unique within a function\'s signature", parameterList, ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__PARAMETER_LIST);
+          this.error("Function parameters must be unique within a function\'s signature", parameter, this.getStructuralFeature(parameter));
+        } else {
+          parameters.add(name);
         }
       }
     }
@@ -350,33 +351,29 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
    */
   private void checkFunctionHasNoUserFunctionCalls(final FunctionCall call, final BranchState state) {
     if ((state.hasFunctionDefinitionAncestor() && this.userFunctions.containsKey(call.getName()))) {
-      this.error("Can not call user functions from within a user function", call, ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
+      this.error("Cannot call user functions from within a user function", call, this.getStructuralFeature(call));
     }
   }
   
   private void checkFunctionParametersAreUsed(final FunctionDefinition function) {
+    final HashSet<String> functionVariables = new HashSet<String>();
+    final Procedure1<EObject> _function = (EObject node) -> {
+      if ((node instanceof LocalVariable)) {
+        functionVariables.add(((LocalVariable)node).getName());
+      }
+    };
+    ModelMap.postorder(function.getBody(), _function);
     EList<Parameter> _parameters = function.getParameterList().getParameters();
     for (final Parameter parameter : _parameters) {
-      final Function1<EObject, Boolean> _function = (EObject node) -> {
-        if ((node instanceof Variable)) {
-          String _name = ((Variable)node).getName();
-          String _name_1 = parameter.getName();
-          boolean _equals = Objects.equal(_name, _name_1);
-          if (_equals) {
-            return true;
-          }
-        }
-        return false;
-      };
-      boolean _postorderAny = ModelMap.postorderAny(function.getBody(), _function);
-      boolean _not = (!_postorderAny);
+      boolean _contains = functionVariables.contains(parameter.getName());
+      boolean _not = (!_contains);
       if (_not) {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("Parameter \'");
         String _name = parameter.getName();
         _builder.append(_name);
         _builder.append("\' should be used within the function definition");
-        this.warning(_builder.toString(), parameter, ZeroKnowledgePackage.Literals.PARAMETER__NAME);
+        this.warning(_builder.toString(), parameter, this.getStructuralFeature(parameter));
       }
     }
   }
@@ -399,7 +396,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     if (_not) {
       this.warning(
         "Function is never used in the proof expression, and will not be included in the generated Java code", function, 
-        ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME);
+        this.getStructuralFeature(function));
     }
   }
   
@@ -411,7 +408,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     boolean _tripleEquals = (_size == 0);
     if (_tripleEquals) {
       this.error("The witness list must include at least one witness", witnessList, 
-        ZeroKnowledgePackage.Literals.WITNESS_LIST__WITNESSES);
+        this.getStructuralFeature(witnessList));
     }
   }
   
@@ -420,46 +417,73 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
    */
   private void checkValidFunctionCall(final FunctionCall call) {
     final String name = call.getName();
-    FunctionSignature signature = this.userFunctions.get(name);
-    if ((signature != null)) {
-      int _parameterCount = signature.getParameterCount();
-      int _size = call.getArguments().size();
-      boolean _tripleNotEquals = (_parameterCount != _size);
-      if (_tripleNotEquals) {
-        StringConcatenation _builder = new StringConcatenation();
-        _builder.append("The number of arguments in the function call (");
-        int _size_1 = call.getArguments().size();
-        _builder.append(_size_1);
-        _builder.append(") must match the number of parameters in the function definition (");
-        int _parameterCount_1 = signature.getParameterCount();
-        _builder.append(_parameterCount_1);
-        _builder.append(")");
-        this.error(_builder.toString(), call, 
-          ZeroKnowledgePackage.Literals.FUNCTION_CALL__ARGUMENTS);
-      }
+    boolean _containsKey = this.userFunctions.containsKey(name);
+    if (_containsKey) {
+      final FunctionSignature signature = this.userFunctions.get(name);
+      this.checkValidFunctionCallHelper(call, signature);
       return;
     }
-    signature = this.predefinedFunctions.get(name);
-    if ((signature != null)) {
-      int _parameterCount_2 = signature.getParameterCount();
-      int _size_2 = call.getArguments().size();
-      boolean _tripleNotEquals_1 = (_parameterCount_2 != _size_2);
-      if (_tripleNotEquals_1) {
-        StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append("The number of arguments in the function call (");
-        int _size_3 = call.getArguments().size();
-        _builder_1.append(_size_3);
-        _builder_1.append(") must match the number of parameters in the function definition (");
-        int _parameterCount_3 = signature.getParameterCount();
-        _builder_1.append(_parameterCount_3);
-        _builder_1.append(")");
-        this.error(_builder_1.toString(), call, 
-          ZeroKnowledgePackage.Literals.FUNCTION_CALL__ARGUMENTS);
-      }
+    boolean _containsKey_1 = this.predefinedFunctions.containsKey(name);
+    if (_containsKey_1) {
+      final FunctionSignature signature_1 = this.predefinedFunctions.get(name);
+      this.checkValidFunctionCallHelper(call, signature_1);
       return;
     }
     this.error("Function call references a function that does not exist", call, 
-      ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME);
+      this.getStructuralFeature(call));
+  }
+  
+  private void checkValidFunctionCallHelper(final FunctionCall call, final FunctionSignature signature) {
+    int _parameterCount = signature.getParameterCount();
+    int _size = call.getArguments().size();
+    boolean _tripleNotEquals = (_parameterCount != _size);
+    if (_tripleNotEquals) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("The number of arguments in the function call (");
+      int _size_1 = call.getArguments().size();
+      _builder.append(_size_1);
+      _builder.append(") must match the number of parameters in the function definition (");
+      int _parameterCount_1 = signature.getParameterCount();
+      _builder.append(_parameterCount_1);
+      _builder.append(")");
+      this.error(_builder.toString(), call, 
+        this.getStructuralFeature(call));
+      return;
+    }
+    final Iterator<Type> parameterTypesIterator = signature.getParameterTypes().iterator();
+    final Iterator<Integer> parameterSizesIterator = signature.getParameterSizes().iterator();
+    final Iterator<Expression> argumentsIterator = call.getArguments().iterator();
+    while (((parameterTypesIterator.hasNext() && parameterSizesIterator.hasNext()) && argumentsIterator.hasNext())) {
+      {
+        final Type parameterType = parameterTypesIterator.next();
+        final int parameterSize = (parameterSizesIterator.next()).intValue();
+        final EObject argument = argumentsIterator.next();
+        Type _get = this.types.get(argument);
+        boolean _tripleNotEquals_1 = (_get != parameterType);
+        if (_tripleNotEquals_1) {
+          StringConcatenation _builder_1 = new StringConcatenation();
+          _builder_1.append("The argument type (");
+          Type _get_1 = this.types.get(argument);
+          _builder_1.append(_get_1);
+          _builder_1.append(") does not match the function parameter type (");
+          _builder_1.append(parameterType);
+          _builder_1.append(")");
+          this.error(_builder_1.toString(), argument, this.getStructuralFeature(argument));
+        }
+        Integer _get_2 = this.sizes.get(argument);
+        boolean _tripleNotEquals_2 = ((_get_2).intValue() != parameterSize);
+        if (_tripleNotEquals_2) {
+          StringConcatenation _builder_2 = new StringConcatenation();
+          _builder_2.append("The argument size (");
+          Integer _get_3 = this.sizes.get(argument);
+          _builder_2.append(_get_3);
+          _builder_2.append(") does not match the function parameter size (");
+          _builder_2.append(parameterSize);
+          _builder_2.append(")");
+          this.error(_builder_2.toString(), argument, this.getStructuralFeature(argument));
+        }
+      }
+    }
   }
   
   /**
@@ -467,146 +491,720 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
    */
   private void checkValidStringLiteralPosition(final StringLiteral stringLiteral, final BranchState state) {
     final EObject parent = state.getParent();
-    if ((!(((parent instanceof Tuple) || (parent instanceof Comparison)) || (parent instanceof FunctionCall)))) {
-      this.error("String literals must be contained within a tuple, a function call, or a comparison expression", stringLiteral, 
-        ZeroKnowledgePackage.Literals.STRING_LITERAL__VALUE);
+    if ((!(parent instanceof FunctionCall))) {
+      this.error("String literals can only be used as arguments in function calls", stringLiteral, this.getStructuralFeature(stringLiteral));
     }
   }
   
   private void checkValidConjunctionPosition(final Conjunction conjunction, final BranchState state) {
-    boolean _isIllegallyNested = this.isIllegallyNested(conjunction, state);
-    if (_isIllegallyNested) {
-      this.error("Conjunctions can not be nested within algebraic or comparison expressions", conjunction, 
-        ZeroKnowledgePackage.Literals.CONJUNCTION__OPERATION);
+    boolean _isValidBooleanPosition = this.isValidBooleanPosition(conjunction, state);
+    boolean _not = (!_isValidBooleanPosition);
+    if (_not) {
+      this.error("Conjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", conjunction, 
+        this.getStructuralFeature(conjunction));
     }
   }
   
   private void checkValidDisjunctionPosition(final Disjunction disjunction, final BranchState state) {
-    boolean _isIllegallyNested = this.isIllegallyNested(disjunction, state);
-    if (_isIllegallyNested) {
-      this.error("Disjunctions can not be nested within algebraic or comparison expressions", disjunction, 
-        ZeroKnowledgePackage.Literals.DISJUNCTION__OPERATION);
+    boolean _isValidBooleanPosition = this.isValidBooleanPosition(disjunction, state);
+    boolean _not = (!_isValidBooleanPosition);
+    if (_not) {
+      this.error("Disjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", disjunction, 
+        this.getStructuralFeature(disjunction));
     }
   }
   
   private void checkValidComparisonPosition(final Comparison comparison, final BranchState state) {
-    boolean _isIllegallyNested = this.isIllegallyNested(comparison, state);
-    if (_isIllegallyNested) {
-      this.error("Comparisons can not be nested within algebraic expressions or other comparison expressions", comparison, 
-        ZeroKnowledgePackage.Literals.COMPARISON__OPERATION);
+    boolean _isValidBooleanPosition = this.isValidBooleanPosition(comparison, state);
+    boolean _not = (!_isValidBooleanPosition);
+    if (_not) {
+      this.error("Comparisons cannot be nested within algebraic expressions, other comparison expressions, or function calls", comparison, 
+        this.getStructuralFeature(comparison));
     }
   }
   
-  private boolean isIllegallyNested(final EObject node, final BranchState state) {
+  private boolean isValidBooleanPosition(final EObject node, final BranchState state) {
     final EObject parent = state.getParent();
     if (((((parent instanceof Model) || (parent instanceof FunctionDefinition)) || (parent instanceof Conjunction)) || (parent instanceof Disjunction))) {
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
   
-  @Check
-  public void checkAlgebraicPosition(final EObject node) {
-    if (((!ModelHelper.isAlgebraic(node)) || (node instanceof FunctionCall))) {
+  private void checkValidAlgebraicPosition(final EObject node, final BranchState state) {
+    if ((state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor())) {
       return;
     }
-    boolean _hasComparisonBeforePropositional = this.hasComparisonBeforePropositional(node.eContainer());
-    boolean _not = (!_hasComparisonBeforePropositional);
-    if (_not) {
-      this.error(
-        "Algebraic expression must be nested within a comparison expression before being nested within a propositional expression", 
-        null);
+    boolean _hasPropositionalBeforeComparison = state.hasPropositionalBeforeComparison();
+    if (_hasPropositionalBeforeComparison) {
+      this.error("Algebraic expression must be nested within a comparison expression before being nested within a propositional expression", node, this.getStructuralFeature(node));
     }
   }
   
-  private boolean hasComparisonBeforePropositional(final EObject node) {
-    if (((node instanceof Conjunction) || (node instanceof Disjunction))) {
-      return false;
+  private void checkProofAlgebraicPosition(final EObject object, final BranchState state) {
+    boolean _hasFunctionDefinitionAncestor = state.hasFunctionDefinitionAncestor();
+    if (_hasFunctionDefinitionAncestor) {
+      return;
+    }
+    boolean _not = (!(state.hasComparisonAncestor() || state.hasFunctionCallAncestor()));
+    if (_not) {
+      this.error("Algebraic expressions in the proof expression must be nested within a comparison expression or function call", object, this.getStructuralFeature(object));
+    }
+  }
+  
+  private void checkValidFunctionCallPosition(final FunctionCall call, final BranchState state) {
+    Type _get = this.types.get(call);
+    boolean _tripleEquals = (_get == Type.BOOLEAN);
+    if (_tripleEquals) {
+      boolean _isValidBooleanPosition = this.isValidBooleanPosition(call, state);
+      boolean _not = (!_isValidBooleanPosition);
+      if (_not) {
+        this.error("Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls", call, this.getStructuralFeature(call));
+      }
     } else {
-      if ((((node instanceof Comparison) || (node instanceof FunctionCall)) || (node instanceof Model))) {
-        return true;
+      this.checkProofAlgebraicPosition(call, state);
+    }
+  }
+  
+  private void checkPredefinedFunctionCallType(final FunctionCall call) {
+    boolean _containsKey = this.predefinedFunctions.containsKey(call.getName());
+    if (_containsKey) {
+      final Type currentType = this.types.get(call);
+      final Type correctType = this.predefinedFunctions.get(call.getName()).getReturnType();
+      if ((currentType != correctType)) {
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("Predefined function call should have type ");
+        _builder.append(correctType);
+        _builder.append(", not type ");
+        _builder.append(currentType);
+        this.error(_builder.toString(), call, this.getStructuralFeature(call));
       }
     }
-    return this.hasComparisonBeforePropositional(node.eContainer());
   }
   
-  private void checkValidAlgebraicPosition(final EObject object, final BranchState state) {
-    boolean _not = (!((state.hasComparisonAncestor() || state.hasFunctionDefinitionAncestor()) || state.hasFunctionCallAncestor()));
-    if (_not) {
-      this.error("Algebraic expressions must be nested within a comparison expression", null);
+  /**
+   * Validate that the operands of a binary operation are of compatible type
+   */
+  private void checkConjunctionOperands(final Conjunction conjunction) {
+    final Type leftType = this.types.get(conjunction.getLeft());
+    final Type rightType = this.types.get(conjunction.getRight());
+    if (((this.types.get(conjunction.getLeft()) != Type.BOOLEAN) || (this.types.get(conjunction.getRight()) != Type.BOOLEAN))) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("Conjunction operands must both have type BOOLEAN. The left operand is of type ");
+      _builder.append(leftType);
+      _builder.append(" but the right operand is of type ");
+      _builder.append(rightType);
+      this.error(_builder.toString(), conjunction, this.getStructuralFeature(conjunction));
     }
   }
   
-  @Check
-  public void check(final Model model) {
-    ModelPrinter.print(model);
-    System.out.println("RESOLVING--------");
-    TypeResolution.resolveTypes(model);
-    ModelPrinter.print(model);
-    System.out.println("DONE-------------");
+  private void checkDisjunctionOperands(final Disjunction disjunction) {
+    final Type leftType = this.types.get(disjunction.getLeft());
+    final Type rightType = this.types.get(disjunction.getRight());
+    if (((this.types.get(disjunction.getLeft()) != Type.BOOLEAN) || (this.types.get(disjunction.getRight()) != Type.BOOLEAN))) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("Disjunction operands must both have type BOOLEAN. The left operand is of type ");
+      _builder.append(leftType);
+      _builder.append(" but the right operand is of type ");
+      _builder.append(rightType);
+      this.error(_builder.toString(), disjunction, this.getStructuralFeature(disjunction));
+    }
   }
   
-  public void checkNode(final EObject brackets, final BranchState state) {
-    if (brackets instanceof Brackets) {
-      _checkNode((Brackets)brackets, state);
+  private void checkComparisonOperands(final Comparison comparison) {
+    final Type leftType = this.types.get(comparison.getLeft());
+    final Type rightType = this.types.get(comparison.getRight());
+    final int leftSize = (this.sizes.get(comparison.getLeft())).intValue();
+    final int rightSize = (this.sizes.get(comparison.getRight())).intValue();
+    if ((leftType != rightType)) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("The operands of a comparison node must be the same type. The left operand is of type ");
+      _builder.append(leftType);
+      _builder.append(" but the right operand is of type ");
+      _builder.append(rightType);
+      this.error(_builder.toString(), comparison, this.getStructuralFeature(comparison));
+    }
+    if ((leftSize != rightSize)) {
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("The operands of a comparison node must be the same size. The left operand is of size ");
+      _builder_1.append(leftSize);
+      _builder_1.append(" but the right operand is of size ");
+      _builder_1.append(rightSize);
+      this.error(_builder_1.toString(), comparison, this.getStructuralFeature(comparison));
+    }
+  }
+  
+  private void checkSumOperands(final Sum sum) {
+    final Type leftType = this.types.get(sum.getLeft());
+    final Type rightType = this.types.get(sum.getRight());
+    final int leftSize = (this.sizes.get(sum.getLeft())).intValue();
+    final int rightSize = (this.sizes.get(sum.getRight())).intValue();
+    if (((leftType != Type.EXPONENT) || (rightType != Type.EXPONENT))) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("Sum operands must both have type EXPONENT. The left operand is of type ");
+      _builder.append(leftType);
+      _builder.append(" but the right operand is of type ");
+      _builder.append(rightType);
+      this.error(_builder.toString(), sum, this.getStructuralFeature(sum));
+    }
+    if ((leftSize != rightSize)) {
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("The operands of a sum node must be the same size. The left operand is of size ");
+      _builder_1.append(leftSize);
+      _builder_1.append(" but the right operand is of size ");
+      _builder_1.append(rightSize);
+      this.error(_builder_1.toString(), sum, this.getStructuralFeature(sum));
+    }
+  }
+  
+  private void checkProductOperands(final Product product) {
+    final Type leftType = this.types.get(product.getLeft());
+    final Type rightType = this.types.get(product.getRight());
+    final int leftSize = (this.sizes.get(product.getLeft())).intValue();
+    final int rightSize = (this.sizes.get(product.getRight())).intValue();
+    if ((leftType != rightType)) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("The operands of a product node must be the same type. The left operand is of type ");
+      _builder.append(leftType);
+      _builder.append(" but the right operand is of type ");
+      _builder.append(rightType);
+      this.error(_builder.toString(), product, this.getStructuralFeature(product));
+    }
+    if ((((leftType == Type.GROUP_ELEMENT) && (rightType == Type.GROUP_ELEMENT)) && (leftSize != rightSize))) {
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("The operands of a GROUP_ELEMENT product node must be the same size. The left operand is of size ");
+      _builder_1.append(leftSize);
+      _builder_1.append(" but the right operand is of size ");
+      _builder_1.append(rightSize);
+      this.error(_builder_1.toString(), product, this.getStructuralFeature(product));
+    }
+  }
+  
+  private void checkPowerOperands(final Power power) {
+    final Type type = this.types.get(power);
+    final Type leftType = this.types.get(power.getLeft());
+    final Type rightType = this.types.get(power.getRight());
+    final int rightTuple = (this.sizes.get(power.getRight())).intValue();
+    if ((!((leftType == Type.EXPONENT) || (leftType == Type.GROUP_ELEMENT)))) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("The left operand of a power node must be of type EXPONENT or GROUP_ELEMENT, not type ");
+      _builder.append(leftType);
+      this.error(_builder.toString(), power, this.getStructuralFeature(power));
+    }
+    if ((rightType != Type.EXPONENT)) {
+      StringConcatenation _builder_1 = new StringConcatenation();
+      _builder_1.append("The right operand of a power node must be of type EXPONENT, not type ");
+      _builder_1.append(rightType);
+      this.error(_builder_1.toString(), power, this.getStructuralFeature(power));
+    }
+    if ((type != leftType)) {
+      StringConcatenation _builder_2 = new StringConcatenation();
+      _builder_2.append("The type of a power node must be the same as the type of the right operand. The power node is of type ");
+      _builder_2.append(type);
+      _builder_2.append(" but the left operand is of type ");
+      _builder_2.append(leftType);
+      this.error(_builder_2.toString(), power, this.getStructuralFeature(power));
+    }
+    if ((rightTuple > 1)) {
+      StringConcatenation _builder_3 = new StringConcatenation();
+      _builder_3.append("The right operand of a power node cannot be a tuple");
+      this.error(_builder_3.toString(), power, this.getStructuralFeature(power));
+    }
+  }
+  
+  private void checkTupleElementsAreSameType(final Tuple tuple) {
+    final Type tupleType = this.types.get(tuple);
+    EList<Expression> _elements = tuple.getElements();
+    for (final EObject element : _elements) {
+      {
+        final Type elementType = this.types.get(element);
+        if ((tupleType != elementType)) {
+          StringConcatenation _builder = new StringConcatenation();
+          _builder.append("Tuple elements must be the same type as the tuple. The tuple has type ");
+          _builder.append(tupleType);
+          _builder.append(", but the element has type ");
+          _builder.append(elementType);
+          this.error(_builder.toString(), element, this.getStructuralFeature(element));
+        }
+      }
+    }
+  }
+  
+  /**
+   * Check that nodes with a predetermined type have this type
+   */
+  private void checkIsBoolean(final EObject node) {
+    this.checkIsType(node, Type.BOOLEAN);
+  }
+  
+  private void checkIsExponent(final EObject node) {
+    this.checkIsType(node, Type.EXPONENT);
+  }
+  
+  private void checkIsGroupElement(final EObject node) {
+    this.checkIsType(node, Type.GROUP_ELEMENT);
+  }
+  
+  private void checkIsExponentOrGroupElement(final EObject node) {
+    boolean _containsKey = this.types.containsKey(node);
+    boolean _not = (!_containsKey);
+    if (_not) {
+      StringConcatenation _builder = new StringConcatenation();
+      String _capitalize = this.capitalize(this.getName(node));
+      _builder.append(_capitalize);
+      _builder.append(" must be of type EXPONENT or GROUP_ELEMENT");
+      this.error(_builder.toString(), node, this.getStructuralFeature(node));
+    } else {
+      StringConcatenation _builder_1 = new StringConcatenation();
+      String _capitalize_1 = this.capitalize(this.getName(node));
+      _builder_1.append(_capitalize_1);
+      _builder_1.append(" must be of type EXPONENT or GROUP_ELEMENT, not type ");
+      String _string = this.types.get(node).toString();
+      _builder_1.append(_string);
+      this.error(_builder_1.toString(), node, this.getStructuralFeature(node));
+    }
+  }
+  
+  private void checkIsString(final EObject node) {
+    this.checkIsType(node, Type.STRING);
+  }
+  
+  private void checkIsType(final EObject node, final Type type) {
+    boolean _containsKey = this.types.containsKey(node);
+    boolean _not = (!_containsKey);
+    if (_not) {
+      StringConcatenation _builder = new StringConcatenation();
+      String _capitalize = this.capitalize(this.getName(node));
+      _builder.append(_capitalize);
+      _builder.append(" must be of type ");
+      String _string = type.toString();
+      _builder.append(_string);
+      this.error(_builder.toString(), node, this.getStructuralFeature(node));
+    } else {
+      Type _get = this.types.get(node);
+      boolean _tripleNotEquals = (_get != type);
+      if (_tripleNotEquals) {
+        StringConcatenation _builder_1 = new StringConcatenation();
+        String _capitalize_1 = this.capitalize(this.getName(node));
+        _builder_1.append(_capitalize_1);
+        _builder_1.append(" must be of type ");
+        String _string_1 = type.toString();
+        _builder_1.append(_string_1);
+        _builder_1.append(", not type ");
+        String _string_2 = this.types.get(node).toString();
+        _builder_1.append(_string_2);
+        this.error(_builder_1.toString(), node, this.getStructuralFeature(node));
+      }
+    }
+  }
+  
+  private void checkIsScalar(final EObject node) {
+    boolean _containsKey = this.sizes.containsKey(node);
+    boolean _not = (!_containsKey);
+    if (_not) {
+      StringConcatenation _builder = new StringConcatenation();
+      String _capitalize = this.capitalize(this.getName(node));
+      _builder.append(_capitalize);
+      _builder.append(" must be a scalar");
+      this.error(_builder.toString(), node, this.getStructuralFeature(node));
+    } else {
+      Integer _get = this.sizes.get(node);
+      boolean _tripleNotEquals = ((_get).intValue() != 1);
+      if (_tripleNotEquals) {
+        StringConcatenation _builder_1 = new StringConcatenation();
+        String _capitalize_1 = this.capitalize(this.getName(node));
+        _builder_1.append(_capitalize_1);
+        _builder_1.append(" must be a scalar, not a tuple of size ");
+        Integer _get_1 = this.sizes.get(node);
+        _builder_1.append(_get_1);
+        this.error(_builder_1.toString(), node, this.getStructuralFeature(node));
+      }
+    }
+  }
+  
+  private void checkIsTuple(final EObject node) {
+    boolean _containsKey = this.sizes.containsKey(node);
+    boolean _not = (!_containsKey);
+    if (_not) {
+      StringConcatenation _builder = new StringConcatenation();
+      String _capitalize = this.capitalize(this.getName(node));
+      _builder.append(_capitalize);
+      _builder.append(" must be a tuple");
+      this.error(_builder.toString(), node, this.getStructuralFeature(node));
+    } else {
+      Integer _get = this.sizes.get(node);
+      boolean _lessEqualsThan = ((_get).intValue() <= 1);
+      if (_lessEqualsThan) {
+        StringConcatenation _builder_1 = new StringConcatenation();
+        String _capitalize_1 = this.capitalize(this.getName(node));
+        _builder_1.append(_capitalize_1);
+        _builder_1.append(" must be a tuple, not a scalar");
+        this.error(_builder_1.toString(), node, this.getStructuralFeature(node));
+      }
+    }
+  }
+  
+  private void checkHasNoSize(final EObject node) {
+    boolean _containsKey = this.sizes.containsKey(node);
+    boolean _not = (!_containsKey);
+    if (_not) {
       return;
-    } else if (brackets instanceof Comparison) {
-      _checkNode((Comparison)brackets, state);
+    }
+    final int size = (this.sizes.get(node)).intValue();
+    if ((size == 1)) {
+      StringConcatenation _builder = new StringConcatenation();
+      String _capitalize = this.capitalize(this.getName(node));
+      _builder.append(_capitalize);
+      _builder.append(" has no size and cannot be a scalar");
+      this.error(_builder.toString(), node, this.getStructuralFeature(node));
+    } else {
+      if ((size > 1)) {
+        StringConcatenation _builder_1 = new StringConcatenation();
+        String _capitalize_1 = this.capitalize(this.getName(node));
+        _builder_1.append(_capitalize_1);
+        _builder_1.append(" has no size and cannot be a tuple of size ");
+        _builder_1.append(size);
+        this.error(_builder_1.toString(), node, this.getStructuralFeature(node));
+      }
+    }
+  }
+  
+  /**
+   * Tuples
+   */
+  private void checkValidTuplePosition(final Tuple tuple, final BranchState state) {
+    System.out.println("TUPLEPOSITIOn");
+    boolean _hasTupleBeforeFunctionCall = state.hasTupleBeforeFunctionCall();
+    if (_hasTupleBeforeFunctionCall) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("Tuples must be nested within a function call before being nested within another tuple");
+      this.error(_builder.toString(), tuple, this.getStructuralFeature(tuple));
+    }
+  }
+  
+  private void checkTupleSize(final Tuple tuple) {
+    final int currentSize = (this.sizes.get(tuple)).intValue();
+    final int correctSize = tuple.getElements().size();
+    if ((currentSize != correctSize)) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("The operands of operations between tuples must have the same size. This tuple of size ");
+      _builder.append(correctSize);
+      _builder.append(" is in an operation with a tuple of size ");
+      _builder.append(currentSize);
+      this.error(_builder.toString(), tuple, this.getStructuralFeature(tuple));
+    }
+  }
+  
+  /**
+   * Additional helper functions
+   */
+  private String capitalize(final String string) {
+    if ((string == "")) {
+      return "";
+    }
+    String _upperCase = string.substring(0, 1).toUpperCase();
+    String _substring = string.substring(1);
+    return (_upperCase + _substring);
+  }
+  
+  private String getName(final EObject object) {
+    boolean _matched = false;
+    if (object instanceof Model) {
+      _matched=true;
+      return "model";
+    }
+    if (!_matched) {
+      if (object instanceof FunctionDefinition) {
+        _matched=true;
+        return "function definition";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof ParameterList) {
+        _matched=true;
+        return "parameter list";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Parameter) {
+        _matched=true;
+        return "parameter";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof WitnessList) {
+        _matched=true;
+        return "witness list";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Witness) {
+        _matched=true;
+        return "witness";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Conjunction) {
+        _matched=true;
+        return "conjunction";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Disjunction) {
+        _matched=true;
+        return "disjunction";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Comparison) {
+        _matched=true;
+        return "comparison";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Sum) {
+        _matched=true;
+        return "sum";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Product) {
+        _matched=true;
+        return "product";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Power) {
+        _matched=true;
+        return "power";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof StringLiteral) {
+        _matched=true;
+        return "string literal";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Tuple) {
+        _matched=true;
+        return "tuple";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Negative) {
+        _matched=true;
+        return "negative";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof FunctionCall) {
+        _matched=true;
+        return "function call";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Argument) {
+        _matched=true;
+        return "argument";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof LocalVariable) {
+        _matched=true;
+        return "local variable";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Variable) {
+        _matched=true;
+        return "variable";
+      }
+    }
+    if (!_matched) {
+      if (object instanceof NumberLiteral) {
+        _matched=true;
+        return "number literal";
+      }
+    }
+    return null;
+  }
+  
+  private EStructuralFeature getStructuralFeature(final EObject object) {
+    boolean _matched = false;
+    if (object instanceof FunctionDefinition) {
+      _matched=true;
+      return ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME;
+    }
+    if (!_matched) {
+      if (object instanceof ParameterList) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.PARAMETER_LIST__PARAMETERS;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Parameter) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.PARAMETER__NAME;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof WitnessList) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.WITNESS_LIST__WITNESSES;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Witness) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.WITNESS__NAME;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Conjunction) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.CONJUNCTION__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Disjunction) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.DISJUNCTION__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Comparison) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.COMPARISON__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Sum) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.SUM__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Product) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.PRODUCT__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Power) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.POWER__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof StringLiteral) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.STRING_LITERAL__VALUE;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Tuple) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.TUPLE__ELEMENTS;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Negative) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.NEGATIVE__OPERATION;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof FunctionCall) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.FUNCTION_CALL__NAME;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof LocalVariable) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.VARIABLE__NAME;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof Variable) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.VARIABLE__NAME;
+      }
+    }
+    if (!_matched) {
+      if (object instanceof NumberLiteral) {
+        _matched=true;
+        return ZeroKnowledgePackage.Literals.NUMBER_LITERAL__VALUE;
+      }
+    }
+    return null;
+  }
+  
+  public void checkNode(final EObject argument, final BranchState state) {
+    if (argument instanceof Argument) {
+      _checkNode((Argument)argument, state);
       return;
-    } else if (brackets instanceof Conjunction) {
-      _checkNode((Conjunction)brackets, state);
+    } else if (argument instanceof Brackets) {
+      _checkNode((Brackets)argument, state);
       return;
-    } else if (brackets instanceof Disjunction) {
-      _checkNode((Disjunction)brackets, state);
+    } else if (argument instanceof Comparison) {
+      _checkNode((Comparison)argument, state);
       return;
-    } else if (brackets instanceof FunctionCall) {
-      _checkNode((FunctionCall)brackets, state);
+    } else if (argument instanceof Conjunction) {
+      _checkNode((Conjunction)argument, state);
       return;
-    } else if (brackets instanceof Negative) {
-      _checkNode((Negative)brackets, state);
+    } else if (argument instanceof Disjunction) {
+      _checkNode((Disjunction)argument, state);
       return;
-    } else if (brackets instanceof NumberLiteral) {
-      _checkNode((NumberLiteral)brackets, state);
+    } else if (argument instanceof FunctionCall) {
+      _checkNode((FunctionCall)argument, state);
       return;
-    } else if (brackets instanceof Power) {
-      _checkNode((Power)brackets, state);
+    } else if (argument instanceof Negative) {
+      _checkNode((Negative)argument, state);
       return;
-    } else if (brackets instanceof Product) {
-      _checkNode((Product)brackets, state);
+    } else if (argument instanceof NumberLiteral) {
+      _checkNode((NumberLiteral)argument, state);
       return;
-    } else if (brackets instanceof StringLiteral) {
-      _checkNode((StringLiteral)brackets, state);
+    } else if (argument instanceof Power) {
+      _checkNode((Power)argument, state);
       return;
-    } else if (brackets instanceof Sum) {
-      _checkNode((Sum)brackets, state);
+    } else if (argument instanceof Product) {
+      _checkNode((Product)argument, state);
       return;
-    } else if (brackets instanceof Tuple) {
-      _checkNode((Tuple)brackets, state);
+    } else if (argument instanceof StringLiteral) {
+      _checkNode((StringLiteral)argument, state);
       return;
-    } else if (brackets instanceof Variable) {
-      _checkNode((Variable)brackets, state);
+    } else if (argument instanceof Sum) {
+      _checkNode((Sum)argument, state);
       return;
-    } else if (brackets instanceof FunctionDefinition) {
-      _checkNode((FunctionDefinition)brackets, state);
+    } else if (argument instanceof Tuple) {
+      _checkNode((Tuple)argument, state);
       return;
-    } else if (brackets instanceof Model) {
-      _checkNode((Model)brackets, state);
+    } else if (argument instanceof Variable) {
+      _checkNode((Variable)argument, state);
       return;
-    } else if (brackets instanceof Parameter) {
-      _checkNode((Parameter)brackets, state);
+    } else if (argument instanceof FunctionDefinition) {
+      _checkNode((FunctionDefinition)argument, state);
       return;
-    } else if (brackets instanceof ParameterList) {
-      _checkNode((ParameterList)brackets, state);
+    } else if (argument instanceof Model) {
+      _checkNode((Model)argument, state);
       return;
-    } else if (brackets instanceof Witness) {
-      _checkNode((Witness)brackets, state);
+    } else if (argument instanceof Parameter) {
+      _checkNode((Parameter)argument, state);
       return;
-    } else if (brackets instanceof WitnessList) {
-      _checkNode((WitnessList)brackets, state);
+    } else if (argument instanceof ParameterList) {
+      _checkNode((ParameterList)argument, state);
+      return;
+    } else if (argument instanceof Witness) {
+      _checkNode((Witness)argument, state);
+      return;
+    } else if (argument instanceof WitnessList) {
+      _checkNode((WitnessList)argument, state);
       return;
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
-        Arrays.<Object>asList(brackets, state).toString());
+        Arrays.<Object>asList(argument, state).toString());
     }
   }
 }

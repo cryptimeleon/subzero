@@ -18,12 +18,14 @@
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//ParameterList">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//ParameterList/parameters"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//ParameterList/symbol"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Parameter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//Parameter/name"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//WitnessList">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//WitnessList/witnesses"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//WitnessList/symbol"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Witness">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//Witness/name"/>
@@ -65,21 +67,27 @@
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Power">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Power/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//Power/operation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Power/right"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Tuple">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Tuple/elements"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Negative">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//Negative/operation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Negative/term"/>
     </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//FunctionCall">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//FunctionCall/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//FunctionCall/arguments"/>
     </genClasses>
+    <genClasses ecoreClass="ZeroKnowledge.ecore#//Argument">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Argument/expression"/>
+    </genClasses>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//LocalVariable">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ZeroKnowledge.ecore#//LocalVariable/function"/>
     </genClasses>
+    <genClasses ecoreClass="ZeroKnowledge.ecore#//WitnessVariable"/>
     <genClasses ecoreClass="ZeroKnowledge.ecore#//Brackets">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ZeroKnowledge.ecore#//Brackets/content"/>
     </genClasses>

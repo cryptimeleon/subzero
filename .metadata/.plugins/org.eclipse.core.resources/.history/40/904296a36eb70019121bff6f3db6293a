@@ -1,0 +1,10 @@
+package de.upb.crypto.zeroknowledge.model
+
+import java.lang.annotation.Target
+import java.lang.annotation.Retention
+
+@Retention(RUNTIME)
+@Target(METHOD)
+annotation TupleParameters {
+	int value = {}
+}
