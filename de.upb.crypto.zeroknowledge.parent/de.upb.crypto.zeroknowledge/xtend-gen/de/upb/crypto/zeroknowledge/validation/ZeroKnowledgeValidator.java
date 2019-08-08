@@ -134,21 +134,21 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     this.checkValidConjunctionPosition(conjunction, state);
     this.checkIsBoolean(conjunction);
     this.checkConjunctionOperands(conjunction);
-    this.checkHasNoSize(conjunction);
+    this.checkIsScalar(conjunction);
   }
   
   protected void _checkNode(final Disjunction disjunction, final BranchState state) {
     this.checkValidDisjunctionPosition(disjunction, state);
     this.checkIsBoolean(disjunction);
     this.checkDisjunctionOperands(disjunction);
-    this.checkHasNoSize(disjunction);
+    this.checkIsScalar(disjunction);
   }
   
   protected void _checkNode(final Comparison comparison, final BranchState state) {
     this.checkValidComparisonPosition(comparison, state);
     this.checkIsBoolean(comparison);
     this.checkComparisonOperands(comparison);
-    this.checkHasNoSize(comparison);
+    this.checkIsScalar(comparison);
   }
   
   protected void _checkNode(final Sum sum, final BranchState state) {
@@ -174,7 +174,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   protected void _checkNode(final StringLiteral stringLiteral, final BranchState state) {
     this.checkValidStringLiteralPosition(stringLiteral, state);
     this.checkIsString(stringLiteral);
-    this.checkHasNoSize(stringLiteral);
+    this.checkIsScalar(stringLiteral);
   }
   
   protected void _checkNode(final Tuple tuple, final BranchState state) {
@@ -844,36 +844,10 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     }
   }
   
-  private void checkHasNoSize(final EObject node) {
-    boolean _containsKey = this.sizes.containsKey(node);
-    boolean _not = (!_containsKey);
-    if (_not) {
-      return;
-    }
-    final int size = (this.sizes.get(node)).intValue();
-    if ((size == 1)) {
-      StringConcatenation _builder = new StringConcatenation();
-      String _capitalize = this.capitalize(this.getName(node));
-      _builder.append(_capitalize);
-      _builder.append(" has no size and cannot be a scalar");
-      this.error(_builder.toString(), node, this.getStructuralFeature(node));
-    } else {
-      if ((size > 1)) {
-        StringConcatenation _builder_1 = new StringConcatenation();
-        String _capitalize_1 = this.capitalize(this.getName(node));
-        _builder_1.append(_capitalize_1);
-        _builder_1.append(" has no size and cannot be a tuple of size ");
-        _builder_1.append(size);
-        this.error(_builder_1.toString(), node, this.getStructuralFeature(node));
-      }
-    }
-  }
-  
   /**
    * Tuples
    */
   private void checkValidTuplePosition(final Tuple tuple, final BranchState state) {
-    System.out.println("TUPLEPOSITIOn");
     boolean _hasTupleBeforeFunctionCall = state.hasTupleBeforeFunctionCall();
     if (_hasTupleBeforeFunctionCall) {
       StringConcatenation _builder = new StringConcatenation();

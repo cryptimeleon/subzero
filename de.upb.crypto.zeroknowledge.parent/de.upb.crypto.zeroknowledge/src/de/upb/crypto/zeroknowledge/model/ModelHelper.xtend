@@ -408,21 +408,6 @@ class ModelHelper {
 			}
 		]);
 	}
-		
-//	def static ArrayList<Tuple> getAllTuples(Model model) {
-//		val ArrayList<Tuple> tuples = new ArrayList<Tuple>();
-//	
-//		ModelMap.preorderWithControl(model, [EObject node, ModelMapControl controller |
-//			if (node instanceof Tuple) {
-//				tuples.add(node);
-//				controller.continueTraversal();
-//			}
-//		]);
-//		return tuples;
-//	}
-
-	
-	
 	
 	// Returns a map from predefined function names to predefined function call nodes
 	def static HashMap<String, ArrayList<FunctionCall>> getAllPredefinedFunctionCalls(Model model, HashMap<String, FunctionSignature> predefinedFunctionsMap) {

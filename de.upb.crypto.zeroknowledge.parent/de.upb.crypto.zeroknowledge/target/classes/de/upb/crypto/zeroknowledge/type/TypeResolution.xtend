@@ -628,14 +628,14 @@ class TypeResolution {
 	// Labels all remaining nodes with size 1 (scalar)
 	def private static void fillDefaults(Model model) {
 		ModelMap.preorder(model.getProof(), [EObject node |
-			fillDefaultsHelper(node);
+			sizes.putIfAbsent(node, 1);
 		]);
 		
 		for (FunctionDefinition function : model.getFunctions()) {
 			sizes.putIfAbsent(function, 1);
 			
 			ModelMap.preorder(function.getBody(), [EObject node |
-				fillDefaultsHelper(node);
+				sizes.putIfAbsent(node, 1);
 			]);
 			
 			for (Parameter parameter : function.getParameterList.getParameters()) {
@@ -734,7 +734,7 @@ class TypeResolution {
 			
 		}
 		
-		// Label all remaining nodes as scalars (multiplicity 1)
+		// Label all remaining nodes with their corresponding default size
 		fillDefaults(model);
 		
 		return;

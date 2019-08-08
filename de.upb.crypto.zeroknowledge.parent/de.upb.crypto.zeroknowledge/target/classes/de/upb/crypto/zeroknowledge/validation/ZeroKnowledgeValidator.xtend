@@ -130,21 +130,21 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		checkValidConjunctionPosition(conjunction, state);
 		checkIsBoolean(conjunction);
 		checkConjunctionOperands(conjunction);
-		checkHasNoSize(conjunction);
+		checkIsScalar(conjunction);
 	}
 	
 	def dispatch void checkNode(Disjunction disjunction, BranchState state) {
 		checkValidDisjunctionPosition(disjunction, state);
 		checkIsBoolean(disjunction);
 		checkDisjunctionOperands(disjunction);
-		checkHasNoSize(disjunction);
+		checkIsScalar(disjunction);
 	}
 	
 	def dispatch void checkNode(Comparison comparison, BranchState state) {
 		checkValidComparisonPosition(comparison, state);
 		checkIsBoolean(comparison);
 		checkComparisonOperands(comparison);
-		checkHasNoSize(comparison);
+		checkIsScalar(comparison);
 	}
 	
 	def dispatch void checkNode(Sum sum, BranchState state) {
@@ -170,7 +170,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def dispatch void checkNode(StringLiteral stringLiteral, BranchState state) {
 		checkValidStringLiteralPosition(stringLiteral, state);
 		checkIsString(stringLiteral);
-		checkHasNoSize(stringLiteral);
+		checkIsScalar(stringLiteral);
 	}
 	
 	def dispatch void checkNode(Tuple tuple, BranchState state) {
@@ -680,25 +680,12 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}
 	}
 	
-	def private void checkHasNoSize(EObject node) {
-		if (!sizes.containsKey(node)) return;
-		
-		val int size = sizes.get(node);
-		
-		if (size === 1) {
-			error('''«capitalize(getName(node))» has no size and cannot be a scalar''', node, getStructuralFeature(node));
-		} else if (size > 1) {
-			error('''«capitalize(getName(node))» has no size and cannot be a tuple of size «size»''', node, getStructuralFeature(node));
-		}
-	}
-	
 	/*
 	 * Tuples
 	 */
 	
 	// Tuples must be nested within a function call before being nested within another tuple
 	def private void checkValidTuplePosition(Tuple tuple, BranchState state) {
-		System.out.println("TUPLEPOSITIOn");
 		if (state.hasTupleBeforeFunctionCall()) {
 			error('''Tuples must be nested within a function call before being nested within another tuple''', tuple, getStructuralFeature(tuple));
 		}

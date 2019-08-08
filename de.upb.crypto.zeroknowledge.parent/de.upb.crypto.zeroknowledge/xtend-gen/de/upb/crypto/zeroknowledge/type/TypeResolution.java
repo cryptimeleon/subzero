@@ -777,7 +777,7 @@ public class TypeResolution {
   
   private static void fillDefaults(final Model model) {
     final Procedure1<EObject> _function = (EObject node) -> {
-      TypeResolution.fillDefaultsHelper(node);
+      TypeResolution.sizes.putIfAbsent(node, Integer.valueOf(1));
     };
     ModelMap.preorder(model.getProof(), _function);
     EList<FunctionDefinition> _functions = model.getFunctions();
@@ -785,7 +785,7 @@ public class TypeResolution {
       {
         TypeResolution.sizes.putIfAbsent(function, Integer.valueOf(1));
         final Procedure1<EObject> _function_1 = (EObject node) -> {
-          TypeResolution.fillDefaultsHelper(node);
+          TypeResolution.sizes.putIfAbsent(node, Integer.valueOf(1));
         };
         ModelMap.preorder(function.getBody(), _function_1);
         EList<Parameter> _parameters = function.getParameterList().getParameters();
