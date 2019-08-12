@@ -8,6 +8,14 @@ body {
 	zoom: 100%;
 }
 
+::selection {
+	background: #27ae60;
+	color: white;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+}
 
 a {
 	color: #22a;
@@ -66,8 +74,6 @@ a:hover {
 	float: left;
 }
 
-
-
 #container {
 	display: block;
 	position: relative;
@@ -100,7 +106,8 @@ a:hover {
 	margin-left: 10px;
 	font-size: 22px;
 	color: white;
-	font-family: Helvetica;
+	font-family: Monospace;
+	font-weight: normal;
 	float: left;
 }
 
@@ -186,8 +193,8 @@ a:hover {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 70%;
-	max-height: 70%;
+	height: 65%;
+	max-height: 65%;
 	width: 100%;
 	max-width: 100%;
 	align-items: center;
@@ -200,6 +207,43 @@ a:hover {
 	border-color: #2F3129;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	font-size: 16px;
+	font-family: monospace;
+}
+
+#preview-zoom {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	right: 97%;
+	top: 0;
+	bottom: 0;
+	height: 10%;
+	max-height: 10%;
+	width: 100%;
+	max-width: 100%;
+}
+
+.zoom-button {
+	display: flex;
+	height: 25px;
+	width: 25px;
+	align-items: center;
+	justify-content: center;
+	background-color: #424242;
+	border-style: solid;
+	border-width: 3px;
+	border-color: #2F3129;
+	font-size: 30px;
+	font-family: monospace;
+	color: white;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.zoom-button:hover {
+	border-color: #424242;
+	background-color: #5e5e5e;
 }
 
 #raw-latex {
@@ -213,8 +257,8 @@ a:hover {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 30%;
-	max-height: 30%;
+	height: 35%;
+	max-height: 35%;
 	width: 100%;
 	max-width: 100%;
 }
@@ -239,13 +283,13 @@ a:hover {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 70%;
-	max-height: 70%;
+	height: 75%;
+	max-height: 75%;
 	width: 100%;
 	max-width: 100%;
-	padding: 5px;
 	border-style: solid;
 	border-width: 10px;
+	border-top-width: 0;
 	border-color: #303030;
 	background-color: #424242;
 	-webkit-box-sizing: border-box;
@@ -267,28 +311,32 @@ a:hover {
 }
 
 .option-checkbox {
-	margin-left: 20px;
+	margin-left: 10px;
 	margin-right: 10px;
 	outline: 0;
-	transform: scale(1.5);
-}
-
-.checkbox-label {
-	font-family: Arial;
-	font-size: 15px;
-	color: white;
-}
-
-.checkbox-off, .checkbox-on {
-	height: 90%;
-	width: 10%;
-	margin: 5px;
+	height: 3vh;
+	width: 3vh;
 	cursor: pointer;
 	border-radius: 5px;
 	-webkit-transition: background-color 0.3s;
+	-moz-transition: background-color 0.3s;
 	outline: 0;
 	padding: 0;
 	border-style: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.checkbox-text {
+	font-family: Arial;
+	font-size: 15px;
+	color: white;
+	-moz-user-select: -moz-none;
+  -webkit-user-select: none;
+}
+
+.checkbox-text.disabled {
+	color: #777777;
 }
 
 .checkbox-off {
@@ -303,10 +351,16 @@ a:hover {
 	background-color: #66BB6A;
 }
 
+.option-checkbox.disabled, .checkbox-off.disabled, .checkbox-on.disabled {
+	background-color: #777777;
+	cursor: default;
+}
+
 .checkbox-icon {
-	height: 15px;
-	width: 15px;
-	margin: 5px;
+	height: 75%;
+	width: 75%;
+	-webkit-user-drag: none;
+	-moz-user-drag: none;
 }
 
 #options-buttons {
@@ -316,11 +370,12 @@ a:hover {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 30%;
-	max-height: 30%;
+	height: 25%;
+	max-height: 25%;
 	width: 100%;
 	max-width: 100%;
 	background-color: #27ae60;
+
 }
 
 .options-button {
@@ -333,11 +388,14 @@ a:hover {
 	left: auto;
 	right: auto;
 	outline: 0;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: Arial;
 	color: white;
 	border-color: #4CB050;
 	background-color: #66BB6A;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	cursor: pointer;
 }
 
 .options-button:hover, .options-button:focus {
@@ -348,9 +406,8 @@ a:hover {
 .options-button:disabled{
 	border-color: #607D8B;
 	background-color: #78909C;
+	cursor: default;
 }
-
-
 
 #console {
 	display: inline-block;
@@ -364,17 +421,23 @@ a:hover {
 	max-width: 100%;
 	background-color: #424242;
 	border-style: solid;
-	border-width: 5px;
+	border-width: 10px;
 	border-color: #303030;
 	padding: 5px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	color: white;
 	font-family: monospace;
+	font-size: 14px;
 }
 
 #console::selection {
 	background: #27ae60;
+}
+
+.info::selection, .error::selection, .warning::selection {
+	background: #27ae60;
+	color: white;
 }
 
 .error {

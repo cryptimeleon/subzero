@@ -4,6 +4,7 @@
 package de.upb.crypto.zeroknowledge.validation;
 
 import com.google.common.base.Objects;
+import de.upb.crypto.zeroknowledge.latex.LatexPreview;
 import de.upb.crypto.zeroknowledge.model.BranchState;
 import de.upb.crypto.zeroknowledge.model.FunctionSignature;
 import de.upb.crypto.zeroknowledge.model.ModelHelper;
@@ -1113,6 +1114,11 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
       }
     }
     return null;
+  }
+  
+  @Check
+  public void check(final Model model) {
+    System.out.println(new LatexPreview(model).getRawLatex());
   }
   
   public void checkNode(final EObject argument, final BranchState state) {

@@ -1,8 +1,10 @@
 // Describes a blank icon, used as an image source when no icon should be displayed
-var BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
+// var BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 var CHECK = "images/check.svg";
+var BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 var currentEditorFontSize = 18;
+var currentPreviewFontSize = 18;
 
 // Writes a message to the console box in the lower right corner
 // Prefixes the message with a colored message type
@@ -29,6 +31,32 @@ function zoomEditorIn() {
 function zoomEditorOut() {
   if (currentEditorFontSize <= 8) return;
   ace.edit("xtext-editor").setFontSize(currentEditorFontSize -= 2);
+}
+
+function zoomPreviewIn() {
+  if (currentPreviewFontSize >= 40) return;
+  document.getElementById("latex-preview").style.fontSize = (currentPreviewFontSize += 2);
+}
+
+function zoomPreviewOut() {
+  if (currentPreviewFontSize <= 8) return;
+  document.getElementById("latex-preview").style.fontSize = (currentPreviewFontSize -= 2);
+}
+
+function isLatexPreviewEnabled() {
+  return document.getElementById("enable-latex-preview").classList.contains("checkbox-on");
+}
+
+function isContinuousPreviewEnabled() {
+  return document.getElementById("enable-continuous-preview").classList.contains("checkbox-on");
+}
+
+function isLatexInliningEnabled() {
+  return document.getElementById("enable-inlined-latex").classList.contains("checkbox-on");
+}
+
+function isJavaInliningEnabled() {
+  return document.getElementById("enable-inlined-java").classList.contains("checkbox-on");
 }
 
 // Downloads a file to the client's default download folder
@@ -86,8 +114,31 @@ function compileCode() {
 }
 
 // Updates the latex preview box based on the current contents of the code editor
-function updateLatexPreview() {
+function updateLatexPreview(code) {
+  // This should implement an HTTP request to the server to parse the code editor and produce latex text
+  // It should then call updateLatexPreviewDisplay to update the website displays
+  if (code === "") {
+    document.getElementById("preview").innerHTML = "";
+  } else {
+    // HTTP request
 
+    updateLatexPreviewBox(code);
+  }
+}
+
+// Updates the latex preview box
+function updateLatexPreviewBox(latex) {
+  var box = document.getElementById("preview");
+  box.innerHTML = latex;
+  MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+}
+
+function disableLatexPreviewBox() {
+  document.getElementById("preview").innerHTML = "Latex preview currently&nbsp<span class='error'>disabled</span>";
+}
+
+function enableLatexPreviewBox() {
+  updateLatexPreviewBox(ace.editor("xtext-editor").getValue());
 }
 
 /*
@@ -119,8 +170,7 @@ document.getElementById("update-latex-preview").addEventListener("click", functi
 */
 for (let checkbox of document.getElementsByClassName("option-checkbox")) {
   checkbox.addEventListener("mouseenter", function() {
-		if (this.classList.contains("checkbox-off")) {
-      console.log(this.firstChild);
+		if (this.classList.contains("checkbox-off") && !this.classList.contains("disabled")) {
 			this.getElementsByClassName("checkbox-icon")[0].src = CHECK;
 		}
 	});
@@ -144,6 +194,7 @@ for (let checkbox of document.getElementsByClassName("option-checkbox")) {
 	});
 
 	checkbox.addEventListener("click", function() {
+    this.blur();
     if (this.classList.contains("checkbox-off")) {
       this.classList.remove("checkbox-off");
       this.classList.add("checkbox-on");
@@ -156,35 +207,53 @@ for (let checkbox of document.getElementsByClassName("option-checkbox")) {
 	});
 }
 
-
-document.getElementById("enable-latex-preview").addEventListener("change", function() {
-  this.blur();
-  if (this.checked) {
+document.getElementById("enable-latex-preview").addEventListener("click", function() {
+  if (this.classList.contains("checkbox-on")) {
+    updateLatexPreview(ace.edit("xtext-editor").getValue());
     document.getElementById("update-latex-preview").disabled = false;
-    document.getElementById("enable-continuous-preview").disabled = false;
+    document.getElementById("enable-continuous-preview").classList.remove("disabled");
+    document.getElementById("enable-continuous-preview-text").classList.remove("disabled");
   } else {
+    disableLatexPreviewBox();
     document.getElementById("update-latex-preview").disabled = true;
-    document.getElementById("enable-continuous-preview").checked = false;
-    document.getElementById("enable-continuous-preview").disabled = true;
+    document.getElementById("enable-continuous-preview").classList.remove("checkbox-on");
+    document.getElementById("enable-continuous-preview").classList.add("disabled");
+    document.getElementById("enable-continuous-preview-icon").src = BLANK_IMAGE;
+    document.getElementById("enable-continuous-preview-text").classList.add("disabled");
   }
 });
 
-document.getElementById("enable-continuous-preview").addEventListener("change", function() {
-  this.blur();
-  if (this.checked) {
+document.getElementById("enable-continuous-preview").addEventListener("click", function() {
+  if (this.classList.contains("checkbox-on")) {
+    updateLatexPreview(ace.edit("xtext-editor").getValue());
     document.getElementById("update-latex-preview").disabled = true;
-  } else if (document.getElementById("enable-latex-preview").checked) {
+  } else if (isLatexPreviewEnabled()) {
     document.getElementById("update-latex-preview").disabled = false;
   }
 });
 
-document.getElementById("enable-inlined-latex").addEventListener("change", function() {
+document.getElementById("enable-inlined-latex").addEventListener("click", function() {
 
 });
 
-document.getElementById("enable-inlined-java").addEventListener("change", function() {
+document.getElementById("enable-inlined-java").addEventListener("click", function() {
 
 });
+
+/*
+ * Zoom button listeners
+*/
+document.getElementById("zoom-out-button").addEventListener("click", function() {
+  zoomPreviewOut();
+});
+
+document.getElementById("zoom-in-button").addEventListener("click", function() {
+  zoomPreviewIn();
+});
+
+/*
+ * Global listeners
+*/
 
 
 // Overrides default browser zooming in/out and replaces it
@@ -194,5 +263,12 @@ document.addEventListener("keydown", function(event) {
     event.preventDefault();
     event.stopPropagation();
     event.keyCode === 187 ? zoomEditorIn() : zoomEditorOut();
+  }
+});
+
+document.addEventListener("wheel", function(event) {
+  if (event.ctrlKey) {
+    event.preventDefault();
+    event.deltaY > 0 ? zoomEditorOut() : zoomEditorIn();
   }
 });

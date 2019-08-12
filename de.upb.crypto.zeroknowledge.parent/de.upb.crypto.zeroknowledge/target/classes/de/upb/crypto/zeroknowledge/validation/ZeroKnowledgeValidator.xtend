@@ -760,4 +760,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}
 	}
 	
+	
+	@Check
+	def void check(Model model) {
+		System.out.println((new LatexPreview(model).getRawLatex()));
+	}
 }
