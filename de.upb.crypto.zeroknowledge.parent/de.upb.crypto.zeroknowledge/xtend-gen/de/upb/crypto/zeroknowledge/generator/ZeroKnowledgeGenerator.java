@@ -69,6 +69,10 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   
   private int stringLiteralCount;
   
+  private String OPERATOR_MULTIPLICATION = "*";
+  
+  private String OPERATOR_DIVISION = "/";
+  
   private String OPERATOR_EQUAL = "=";
   
   private String OPERATOR_INEQUAL = "!=";
@@ -326,22 +330,44 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   protected String _generateCode(final Product product, final BranchState state) {
     final String left = this.generateCode(product.getLeft(), state);
     final String right = this.generateCode(product.getRight(), state);
-    Type _get = this.types.get(product);
-    boolean _tripleEquals = (_get == Type.EXPONENT);
+    String _operation = product.getOperation();
+    boolean _tripleEquals = (_operation == this.OPERATOR_MULTIPLICATION);
     if (_tripleEquals) {
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append(left);
-      _builder.append(".mul(");
-      _builder.append(right);
-      _builder.append(")");
-      return _builder.toString();
+      Type _get = this.types.get(product);
+      boolean _tripleEquals_1 = (_get == Type.EXPONENT);
+      if (_tripleEquals_1) {
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append(left);
+        _builder.append(".mul(");
+        _builder.append(right);
+        _builder.append(")");
+        return _builder.toString();
+      } else {
+        StringConcatenation _builder_1 = new StringConcatenation();
+        _builder_1.append(left);
+        _builder_1.append(".op(");
+        _builder_1.append(right);
+        _builder_1.append(")");
+        return _builder_1.toString();
+      }
     } else {
-      StringConcatenation _builder_1 = new StringConcatenation();
-      _builder_1.append(left);
-      _builder_1.append(".op(");
-      _builder_1.append(right);
-      _builder_1.append(")");
-      return _builder_1.toString();
+      Type _get_1 = this.types.get(product);
+      boolean _tripleEquals_2 = (_get_1 == Type.EXPONENT);
+      if (_tripleEquals_2) {
+        StringConcatenation _builder_2 = new StringConcatenation();
+        _builder_2.append(left);
+        _builder_2.append(".mul(");
+        _builder_2.append(right);
+        _builder_2.append(".inv())");
+        return _builder_2.toString();
+      } else {
+        StringConcatenation _builder_3 = new StringConcatenation();
+        _builder_3.append(left);
+        _builder_3.append(".op(");
+        _builder_3.append(right);
+        _builder_3.append(".inv())");
+        return _builder_3.toString();
+      }
     }
   }
   

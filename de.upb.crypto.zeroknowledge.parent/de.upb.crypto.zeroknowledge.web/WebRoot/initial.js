@@ -1,5 +1,5 @@
-var timer;
 var TIMER_INTERVAL = 500;
+var timer;
 var baseUrl = window.location.pathname;
 var fileIndex = baseUrl.indexOf("index.html");
 if (fileIndex > 0)
@@ -30,7 +30,6 @@ require(["webjars/ace/1.3.3/src/ace"], function() {
           timer = setTimeout(updateLatexPreview, TIMER_INTERVAL, code);
       }
     })
-
 
   });
 });

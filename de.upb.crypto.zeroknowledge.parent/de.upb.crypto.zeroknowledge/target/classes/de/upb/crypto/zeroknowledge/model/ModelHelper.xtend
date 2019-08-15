@@ -67,11 +67,6 @@ class ModelHelper {
 		ModelMap.postorder(model.getProof(), [ EObject node |
 			replaceFunctionCallWithDefinition(node, functions);
 		]);
-
-	// This loop causes a crash
-//		for (FunctionDefinition function : new ArrayList(model.getFunctions())) {
-//			EcoreUtil.remove(function);
-//		}
 	}
 
 	def private static dispatch void replaceFunctionCallWithDefinition(EObject node, HashMap<String, FunctionDefinition> functions) {

@@ -4,12 +4,10 @@
 package de.upb.crypto.zeroknowledge.validation;
 
 import com.google.common.base.Objects;
-import de.upb.crypto.zeroknowledge.latex.LatexPreview;
 import de.upb.crypto.zeroknowledge.model.BranchState;
 import de.upb.crypto.zeroknowledge.model.FunctionSignature;
 import de.upb.crypto.zeroknowledge.model.ModelHelper;
 import de.upb.crypto.zeroknowledge.model.ModelMap;
-import de.upb.crypto.zeroknowledge.model.ModelPrinter;
 import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper;
 import de.upb.crypto.zeroknowledge.type.Type;
 import de.upb.crypto.zeroknowledge.type.TypeResolution;
@@ -48,7 +46,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.validation.Check;
-import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
@@ -70,35 +67,13 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   
   @Check
   public void checkModel(final Model model) {
-    ModelPrinter.print(model);
     TypeResolution.resolveTypes(model);
     this.types = TypeResolution.getTypes();
     this.sizes = TypeResolution.getSizes();
-    ModelPrinter.print(model);
-    System.out.println("THISIS");
-    try {
-      this.userFunctions = ModelHelper.getUserFunctionSignatures(model, this.types, this.sizes);
-    } catch (final Throwable _t) {
-      if (_t instanceof Exception) {
-        final Exception e = (Exception)_t;
-        System.out.println(e);
-      } else {
-        throw Exceptions.sneakyThrow(_t);
-      }
-    }
-    System.out.println("WHAAAT");
+    this.userFunctions = ModelHelper.getUserFunctionSignatures(model, this.types, this.sizes);
     BranchState _branchState = new BranchState();
     final Procedure2<EObject, BranchState> _function = (EObject node, BranchState state) -> {
-      try {
-        this.checkNode(node, state);
-      } catch (final Throwable _t_1) {
-        if (_t_1 instanceof Exception) {
-          final Exception e_1 = (Exception)_t_1;
-          System.out.print(("EXCEPTION " + e_1));
-        } else {
-          throw Exceptions.sneakyThrow(_t_1);
-        }
-      }
+      this.checkNode(node, state);
     };
     ModelMap.preorderWithState(model, _branchState, _function);
   }
@@ -700,7 +675,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
     }
     if ((type != leftType)) {
       StringConcatenation _builder_2 = new StringConcatenation();
-      _builder_2.append("The type of a power node must be the same as the type of the right operand. The power node is of type ");
+      _builder_2.append("The type of a power node must be the same as the type of the left operand. The power node is of type ");
       _builder_2.append(type);
       _builder_2.append(" but the left operand is of type ");
       _builder_2.append(leftType);
@@ -1114,11 +1089,6 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
       }
     }
     return null;
-  }
-  
-  @Check
-  public void check(final Model model) {
-    System.out.println(new LatexPreview(model).getRawLatex());
   }
   
   public void checkNode(final EObject argument, final BranchState state) {

@@ -66,6 +66,8 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
 	int stringLiteralCount; // Counter used to name new string literals
 	
+	String OPERATOR_MULTIPLICATION = "*";
+	String OPERATOR_DIVISION = "/";
 	String OPERATOR_EQUAL = "=";
 	String OPERATOR_INEQUAL = "!=";
 	String OPERATOR_LESS = "<";
@@ -128,8 +130,6 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
-
-//		if (!inline) return;
 		
 		fsa.generateFile('first.java', codeBuilder.toString());
 	}
@@ -225,11 +225,21 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		val String left = generateCode(product.getLeft(), state);
 		val String right = generateCode(product.getRight(), state);
 		
-		if (types.get(product) === Type.EXPONENT) {
-			return '''«left».mul(«right»)'''
+		if (product.getOperation === OPERATOR_MULTIPLICATION) {
+			if (types.get(product) === Type.EXPONENT) {
+				return '''«left».mul(«right»)''';
+			} else {
+				return '''«left».op(«right»)''';
+			}
 		} else {
-			return '''«left».op(«right»)''';
+			if (types.get(product) === Type.EXPONENT) {
+				return '''«left».mul(«right».inv())''';
+			} else {
+				return '''«left».op(«right».inv())''';
+			}
 		}
+		
+		
 
 	}
 	

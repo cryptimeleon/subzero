@@ -73,28 +73,14 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// All other functions are helper functions
 	@Check
 	def void checkModel(Model model) {
-		ModelPrinter.print(model);
-		
 		TypeResolution.resolveTypes(model);
 		types = TypeResolution.getTypes();
 		sizes = TypeResolution.getSizes();
 		
-		ModelPrinter.print(model);
-		System.out.println("THISIS");
-		try {
-			
 		userFunctions = ModelHelper.getUserFunctionSignatures(model, types, sizes);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		System.out.println("WHAAAT");
+
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
-			try {
-				
 			checkNode(node, state);
-			} catch (Exception e) {
-			System.out.print("EXCEPTION " + e);				
-			}
 		]);
 	}
 	
@@ -609,7 +595,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}
 		
 		if (type !== leftType) {
-			error('''The type of a power node must be the same as the type of the right operand. The power node is of type «type» but the left operand is of type «leftType»''', power, getStructuralFeature(power));
+			error('''The type of a power node must be the same as the type of the left operand. The power node is of type «type» but the left operand is of type «leftType»''', power, getStructuralFeature(power));
 		}
 		
 		if (rightTuple > 1) {
@@ -760,9 +746,4 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}
 	}
 	
-	
-	@Check
-	def void check(Model model) {
-		System.out.println((new LatexPreview(model).getRawLatex()));
-	}
 }

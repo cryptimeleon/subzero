@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="generateBraces"/>
+		<item key="selection" value="checkPower"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="checkPower"/>
+			<item value="checkIsTu"/>
+			<item value="checkIsScalar"/>
+			<item value="checkIsScalar`"/>
+			<item value="Tuples"/>
+			<item value="getOpe"/>
+			<item value="Product"/>
 			<item value="generateBraces"/>
 			<item value="BRACE"/>
 			<item value="{"/>
@@ -16,13 +23,6 @@
 			<item value="HasNoSize"/>
 			<item value="fillDefaults"/>
 			<item value="getStructuralFea"/>
-			<item value="void getStructuralFea"/>
-			<item value="checkValidTuplePosition"/>
-			<item value="setTupleBefore"/>
-			<item value="AreNot"/>
-			<item value="AreNotNested"/>
-			<item value="checkTuple"/>
-			<item value="propositionalbefore"/>
 		</list>
 		<list key="replacehistory">
 			<item value="fillDefaults"/>

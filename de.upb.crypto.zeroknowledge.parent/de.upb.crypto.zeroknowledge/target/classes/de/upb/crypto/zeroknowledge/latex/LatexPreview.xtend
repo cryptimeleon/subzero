@@ -29,6 +29,8 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
 
 // Converts a syntax tree to valid Latex output
+// Precondition: the Model object used to create the LatexPreview object
+// must be free of validation errors
 class LatexPreview {
 
 	var String latexCode;
