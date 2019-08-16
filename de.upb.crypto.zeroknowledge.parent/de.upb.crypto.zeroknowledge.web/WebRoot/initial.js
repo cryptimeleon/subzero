@@ -29,7 +29,34 @@ require(["webjars/ace/1.3.3/src/ace"], function() {
           var code = editor.getValue()
           timer = setTimeout(updateLatexPreview, TIMER_INTERVAL, code);
       }
-    })
+    });
+
+    editor.getSession().setOptions({
+      tabSize: 2,
+      useSoftTabs: true
+    });
+
+    // Stores whether the last char typed in the editor was a '}'
+    // Used for auto-indentation
+    var lastCharWasLeftCurlyBrace = false;
+
+    // Auto-indentation
+    // Adds an indent when writing a function definition
+    // A better solution might be possible for this
+    editor.textInput.getElement().addEventListener("keydown", function(event) {
+      if (event.key === "(") matchingParentheses();
+      if (event.key === ")") {
+        // Stop the ')' from being typed in the code editor
+        event.preventDefault();
+        closingParentheses();
+      }
+
+      if (lastCharWasLeftCurlyBrace && event.key === "Enter") {
+        setTimeout(matchingBrace, 1);
+      }
+
+      lastCharWasLeftCurlyBrace = event.key === "{"
+    });
 
   });
 });

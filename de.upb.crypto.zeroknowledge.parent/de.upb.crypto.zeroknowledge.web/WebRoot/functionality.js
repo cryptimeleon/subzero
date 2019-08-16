@@ -1,11 +1,67 @@
 // Checkmark icon
 var CHECK = "images/check.svg";
 
+var INDENT_SPACES = 2;
+
 // Blank transparent icon
 var BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 var currentEditorFontSize = 18;
 var currentPreviewFontSize = 18;
+
+// Stores whether the last key pressed was
+var lastCharWasLeftCurlyBrace = false;
+
+function getEditor() {
+  return ace.edit("xtext-editor");
+}
+
+// Adds indentation and a closing right brace
+function matchingBrace() {
+  var editor = getEditor();
+  editor.indent();
+  var code = editor.getValue();
+  var cursorIndex = editor.session.doc.positionToIndex(editor.selection.getCursor());
+  var cursorPosition = editor.getCursorPosition();
+  var column = cursorPosition.column;
+  var row = cursorPosition.row;
+  var nextLine = "\n";
+  for (let i = 0; i < column - INDENT_SPACES; i++) nextLine += " ";
+  nextLine += "}"
+  editor.setValue(code.substring(0, cursorIndex) + nextLine + code.substring(cursorIndex));
+  editor.gotoLine(row + 1, column);
+}
+
+// Adds a matching closing parentheses when an open parenthese is typed
+function matchingParentheses() {
+  var editor = getEditor();
+  var code = editor.getValue();
+  var cursorIndex = editor.session.doc.positionToIndex(editor.selection.getCursor());
+  var cursorPosition = editor.getCursorPosition();
+  var column = cursorPosition.column;
+  var row = cursorPosition.row;
+  editor.setValue(code.substring(0, cursorIndex) + ")" + code.substring(cursorIndex));
+  editor.gotoLine(row + 1, column);
+}
+
+// Handles when a closing parentheses is typed
+function closingParentheses() {
+  var editor = getEditor();
+  var code = editor.getValue();
+  var cursorIndex = editor.session.doc.positionToIndex(editor.selection.getCursor());
+  var cursorPosition = editor.getCursorPosition();
+  var column = cursorPosition.column;
+  var row = cursorPosition.row;
+  // Note: cursorIndex is always less than or equal to code length
+  if (cursorIndex === code.length) {
+    // Cursor is at the very end of the document
+    editor.setValue(code + ")");
+  } else if (code.charAt(cursorIndex) !== ")"){
+    editor.setValue(code.substring(0, cursorIndex) + ")" + code.substring(cursorIndex));
+  }
+
+  editor.gotoLine(row + 1, column + 1);
+}
 
 // Writes an error message to the console box in the lower right corner
 function consoleError(message) {
@@ -25,13 +81,13 @@ function consoleInfo(message) {
 // Increases editor font size by 2pts, up to a max of 40
 function zoomEditorIn() {
   if (currentEditorFontSize >= 40) return;
-  ace.edit("xtext-editor").setFontSize(currentEditorFontSize += 2);
+  getEditor().setFontSize(currentEditorFontSize += 2);
 }
 
 // Decreases editor font size by 2pts, down to a min of 8
 function zoomEditorOut() {
   if (currentEditorFontSize <= 8) return;
-  ace.edit("xtext-editor").setFontSize(currentEditorFontSize -= 2);
+  getEditor().setFontSize(currentEditorFontSize -= 2);
 }
 
 function zoomPreviewIn() {
@@ -81,7 +137,7 @@ function downloadFile(filename, data) {
 
 // Downloads the code editor's contents
 function downloadCode() {
-  var code = ace.edit("xtext-editor").getValue();
+  var code = getEditor().getValue();
 
   if (code === "") {
     consoleError("There is no code to download");
@@ -116,7 +172,7 @@ function downloadRawLatex() {
 
 // Returns true if there are no syntax errors or validation errors in the code editor
 function noCodeErrors(annotations) {
-  var editor = ace.edit("xtext-editor");
+  var editor = getEditor();
   var annotations = editor.getSession().getAnnotations();
 
   return annotations === 0 || !annotations.some(function(annotation) {
@@ -128,7 +184,7 @@ function noCodeErrors(annotations) {
 function compileCode() {
   if (noCodeErrors()) {
     // HTTP request
-    // ace.edit("xtext-editor").xtextServices.generate().then(function(errors) {
+    // getEditor().xtextServices.generate().then(function(errors) {
     //
     // });
   } else {
@@ -138,7 +194,7 @@ function compileCode() {
 
 // Updates the latex preview box based on the current contents of the code editor
 function updateLatexPreview() {
-  var code = ace.edit("xtext-editor").getValue();
+  var code = getEditor().getValue();
 
   if (code === "") {
     document.getElementById("latex-preview").innerHTML = "";
@@ -281,10 +337,11 @@ document.getElementById("zoom-in-button").addEventListener("click", function() {
 // Overrides default browser zooming in/out and replaces it
 // with zoom for the code editor
 document.addEventListener("keydown", function(event) {
-  if (event.ctrlKey && (event.code === "Minus" || event.code === "Equal")) {
+
+  if (event.ctrlKey && (event.key === '-' || event.key === "=")) {
     event.preventDefault();
     event.stopPropagation();
-    event.code === "Equal" ? zoomEditorIn() : zoomEditorOut();
+    event.key === "=" ? zoomEditorIn() : zoomEditorOut();
   }
 });
 
