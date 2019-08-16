@@ -1,6 +1,7 @@
 // Checkmark icon
 var CHECK = "images/check.svg";
 
+// The length of indentation when pressing tab in the code editor
 var INDENT_SPACES = 2;
 
 // Blank transparent icon
@@ -16,20 +17,30 @@ function getEditor() {
   return ace.edit("xtext-editor");
 }
 
+function getIndentation(text) {
+  for (var i = 0; i < text.length; i++) {
+    if (text.charAt(i) !== " ") {
+      return text.substring(0, i);
+    }
+  }
+  return text;
+}
+
 // Adds indentation and a closing right brace
 function matchingBrace() {
   var editor = getEditor();
-  editor.indent();
   var code = editor.getValue();
   var cursorIndex = editor.session.doc.positionToIndex(editor.selection.getCursor());
   var cursorPosition = editor.getCursorPosition();
   var column = cursorPosition.column;
   var row = cursorPosition.row;
-  var nextLine = "\n";
-  for (let i = 0; i < column - INDENT_SPACES; i++) nextLine += " ";
-  nextLine += "}"
+  var currentLine = editor.getSession().getLine(row);
+  var indentation = getIndentation(currentLine);
+  var nextLine = "\n" + indentation;
+  for (let i = 0; i < INDENT_SPACES; i++) nextLine += " ";
+  nextLine += "\n" + indentation + "}"
   editor.setValue(code.substring(0, cursorIndex) + nextLine + code.substring(cursorIndex));
-  editor.gotoLine(row + 1, column);
+  editor.gotoLine(row + 2, indentation.length + INDENT_SPACES);
 }
 
 // Adds a matching closing parentheses when an open parenthese is typed
@@ -197,6 +208,7 @@ function updateLatexPreview() {
   var code = getEditor().getValue();
 
   if (code === "") {
+    document.getElementById("latex-code").value = "";
     document.getElementById("latex-preview").innerHTML = "";
   } else {
     // HTTP request to the server to produce latex text, and store the result in formatted_latex
@@ -208,8 +220,8 @@ function updateLatexPreview() {
 
 // Updates the latex preview box
 function updateLatexPreviewBox(latex) {
-  var box = document.getElementById("latex-preview");
-  box.innerHTML = latex;
+  document.getElementById("latex-code").value = latex;
+  document.getElementById("latex-preview").innerHTML = latex;
   MathJax.Hub.Queue(["Typeset", MathJax.Hub, "latex-preview"]);
 }
 

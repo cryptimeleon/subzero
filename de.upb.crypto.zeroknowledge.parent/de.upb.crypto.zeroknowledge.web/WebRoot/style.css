@@ -30,22 +30,6 @@ a:hover {
 	display: none;
 }
 
-.left, .right {
-	display: flex;
-	position: relative;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	width: 50%;
-	max-width: 50%;
-	height: 100%;
-	max-height: 100%;
-	float: left;
-	align-items: center;
-	justify-content: center;
-}
-
 #container {
 	display: block;
 	position: relative;
@@ -377,6 +361,22 @@ a:hover {
 	max-width: 100%;
 	background-color: #27ae60;
 
+}
+
+.left, .right {
+	display: flex;
+	position: relative;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 50%;
+	max-width: 50%;
+	height: 100%;
+	max-height: 100%;
+	float: left;
+	align-items: center;
+	justify-content: center;
 }
 
 .options-button {

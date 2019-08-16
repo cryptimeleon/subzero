@@ -12,6 +12,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness
 
+// Debugging class to print the a formatted view of the model to the console
 class ModelPrinter {
 		
 	def static void print(Model model) {

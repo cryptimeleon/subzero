@@ -1,5 +1,7 @@
+// Timer for continuous LaTEX preview updating
 var TIMER_INTERVAL = 500;
 var timer;
+
 var baseUrl = window.location.pathname;
 var fileIndex = baseUrl.indexOf("index.html");
 if (fileIndex > 0)
@@ -26,8 +28,7 @@ require(["webjars/ace/1.3.3/src/ace"], function() {
     editor.on("change", function() {
       if (isContinuousPreviewEnabled()) {
           clearTimeout(timer);
-          var code = editor.getValue()
-          timer = setTimeout(updateLatexPreview, TIMER_INTERVAL, code);
+          timer = setTimeout(updateLatexPreview, TIMER_INTERVAL);
       }
     });
 
@@ -52,7 +53,9 @@ require(["webjars/ace/1.3.3/src/ace"], function() {
       }
 
       if (lastCharWasLeftCurlyBrace && event.key === "Enter") {
-        setTimeout(matchingBrace, 1);
+        // Stop a new line from being created in the code editor
+        event.preventDefault();
+        matchingBrace();
       }
 
       lastCharWasLeftCurlyBrace = event.key === "{"

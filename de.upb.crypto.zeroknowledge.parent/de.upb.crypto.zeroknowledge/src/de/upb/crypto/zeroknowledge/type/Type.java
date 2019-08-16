@@ -12,6 +12,7 @@ public enum Type {
 			case "boolean": return Type.BOOLEAN;
 			case "GroupElementExpression": return Type.GROUP_ELEMENT;
 			case "ExponentExpr": return Type.EXPONENT;
+			case "String" : return Type.STRING;
 			default: return Type.UNKNOWN;
 		}
 	}
@@ -21,6 +22,7 @@ public enum Type {
 			case BOOLEAN: return "boolean";
 			case GROUP_ELEMENT: return "GroupElementExpression";
 			case EXPONENT: return "ExponentExpr";
+			case STRING: return "String";
 			default: return "void";
 		}
 	}

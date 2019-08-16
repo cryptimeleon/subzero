@@ -97,15 +97,6 @@ class FunctionSignature {
 	def ArrayList<Integer> getParameterSizes() {
 		return parameterSizes;
 	}
-	
-	// Returns a map of all function names to their corresponding function signature
-	def static ArrayList<String> getAllNames(HashMap<String, FunctionSignature> map) {
-		val ArrayList<String> names = new ArrayList<String>();
-		for (HashMap.Entry<String, FunctionSignature> entry : map.entrySet()) {
-			names.add(entry.getValue().getName());
-		}
-		return names;
-	}
 		
 	// Converts internal class name to simpler form
 	// Possibly remove and simply use fully qualified name?

@@ -7,10 +7,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.xtext.xbase.lib.Conversions;
 
 @SuppressWarnings("all")
@@ -114,15 +111,6 @@ public class FunctionSignature {
   
   public ArrayList<Integer> getParameterSizes() {
     return this.parameterSizes;
-  }
-  
-  public static ArrayList<String> getAllNames(final HashMap<String, FunctionSignature> map) {
-    final ArrayList<String> names = new ArrayList<String>();
-    Set<Map.Entry<String, FunctionSignature>> _entrySet = map.entrySet();
-    for (final Map.Entry<String, FunctionSignature> entry : _entrySet) {
-      names.add(entry.getValue().getName());
-    }
-    return names;
   }
   
   private static String trimTypeName(final String type) {

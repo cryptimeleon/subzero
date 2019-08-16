@@ -45,8 +45,6 @@ public class BranchState {
   
   private boolean inPower;
   
-  private boolean inPowerRightBranch;
-  
   private boolean inNegative;
   
   private boolean inFunctionCall;
@@ -68,7 +66,6 @@ public class BranchState {
     this.inSum = false;
     this.inProduct = false;
     this.inPower = false;
-    this.inPowerRightBranch = false;
     this.inNegative = false;
     this.inFunctionCall = false;
     this.inTuple = false;
@@ -87,7 +84,6 @@ public class BranchState {
     this.inSum = state.inSum;
     this.inProduct = state.inProduct;
     this.inPower = state.inPower;
-    this.inPowerRightBranch = state.inPowerRightBranch;
     this.inNegative = state.inNegative;
     this.inFunctionCall = state.inFunctionCall;
     this.inTuple = state.inTuple;
@@ -143,10 +139,6 @@ public class BranchState {
     return this.inPower;
   }
   
-  public boolean isInPowerRightBranch() {
-    return this.inPowerRightBranch;
-  }
-  
   public boolean hasNegativeAncestor() {
     return this.inNegative;
   }
@@ -197,10 +189,6 @@ public class BranchState {
   
   public void setPowerAncestor(final boolean inPower) {
     this.inPower = inPower;
-  }
-  
-  public void setInPowerRightBranch(final boolean inPowerRightBranch) {
-    this.inPowerRightBranch = inPowerRightBranch;
   }
   
   public void setNegativeAncestor(final boolean inNegative) {

@@ -19,7 +19,7 @@ class PredefinedFunctionsHelper {
 	    for (Method method : predefinedClass.getDeclaredMethods) {
 	      val String name = method.getName();
 	      val FunctionSignature signature = new FunctionSignature(method);    
-	      functions.put(name,  signature);
+	      functions.put(name, signature);
 	    }
   	}
   	

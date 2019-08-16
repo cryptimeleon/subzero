@@ -37,7 +37,6 @@ class BranchState {
 	boolean inSum;
 	boolean inProduct;
 	boolean inPower;
-	boolean inPowerRightBranch;
 	boolean inNegative;
 	boolean inFunctionCall;
 	boolean inTuple;
@@ -57,7 +56,6 @@ class BranchState {
 		this.inSum = false;
 		this.inProduct = false;
 		this.inPower = false;
-		this.inPowerRightBranch = false;
 		this.inNegative = false;
 		this.inFunctionCall = false;
 		this.inTuple = false;
@@ -79,7 +77,6 @@ class BranchState {
 		this.inSum = state.inSum;
 		this.inProduct = state.inProduct;
 		this.inPower = state.inPower;
-		this.inPowerRightBranch = state.inPowerRightBranch;
 		this.inNegative = state.inNegative;
 		this.inFunctionCall = state.inFunctionCall;
 		this.inTuple = state.inTuple;
@@ -102,7 +99,6 @@ class BranchState {
 	def boolean hasSumAncestor() {return this.inSum;}
 	def boolean hasProductAncestor() {return this.inProduct;}
 	def boolean hasPowerAncestor() {return this.inPower;}
-	def boolean isInPowerRightBranch() {return this.inPowerRightBranch;}
 	def boolean hasNegativeAncestor() {return this.inNegative;}
 	def boolean hasFunctionCallAncestor() {return this.inFunctionCall;}
 	def boolean hasTupleAncestor() {return this.inTuple;}
@@ -118,7 +114,6 @@ class BranchState {
 	def void setSumAncestor(boolean inSum) {this.inSum = inSum;}
 	def void setProductAncestor(boolean inProduct) {this.inProduct = inProduct;}
 	def void setPowerAncestor(boolean inPower) {this.inPower = inPower;}
-	def void setInPowerRightBranch(boolean inPowerRightBranch) {this.inPowerRightBranch = inPowerRightBranch;}
 	def void setNegativeAncestor(boolean inNegative) {this.inNegative = inNegative;}
 	def void setFunctionCallAncestor(boolean inFunctionCall) {this.inFunctionCall = inFunctionCall;}
 	def void setTupleAncestor(boolean inTuple) {this.inTuple = inTuple;}

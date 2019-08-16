@@ -12,6 +12,7 @@ import org.eclipse.xtext.formatting2.IFormattableDocument
 import static de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage.Literals.*
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 
+// This class is incomplete, and does not properly format the code yet
 class ZeroKnowledgeFormatter extends AbstractFormatter2 {
 	
 	@Inject extension ZeroKnowledgeGrammarAccess

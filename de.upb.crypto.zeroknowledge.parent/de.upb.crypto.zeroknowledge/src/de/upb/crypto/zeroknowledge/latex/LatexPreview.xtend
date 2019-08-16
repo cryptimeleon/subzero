@@ -254,9 +254,9 @@ class LatexPreview {
 	def dispatch private void generateLatex(StringLiteral literal) {
 		// Uncomment if getValue() is changed
 		// Change quote to use some Latex notation
-//		builder.append(QUOTE);
+		// builder.append(QUOTE);
 		builder.append(literal.getValue());
-//		builder.append(QUOTE);
+		// builder.append(QUOTE);
 	}
 
 	def dispatch private void generateLatex(Tuple tuple) {

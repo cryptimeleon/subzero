@@ -47,6 +47,8 @@ import org.eclipse.xtext.generator.IGeneratorContext;
 public class ZeroKnowledgeGenerator extends AbstractGenerator {
   private HashMap<EObject, Type> types;
   
+  private HashMap<EObject, Integer> sizes;
+  
   private HashSet<String> variables;
   
   private HashSet<String> numberLiterals;
@@ -124,6 +126,7 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     ModelHelper.normalizeNegatives(model);
     TypeResolution.resolveTypes(model);
     this.types = TypeResolution.getTypes();
+    this.sizes = TypeResolution.getSizes();
     this.generateImports();
     BranchState _branchState = new BranchState();
     this.generateFunctions(model, _branchState);

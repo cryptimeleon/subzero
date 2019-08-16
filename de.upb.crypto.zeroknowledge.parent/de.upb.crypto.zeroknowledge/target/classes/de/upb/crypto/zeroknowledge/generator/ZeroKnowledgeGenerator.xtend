@@ -48,9 +48,12 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
  * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
+ 
+// Precondition: model must be free of validation errors before Java code generation can occur
 class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
 	HashMap<EObject, Type> types;
+	HashMap<EObject, Integer> sizes;
 
 	HashSet<String> variables; // Contains the set of names of variables
 	HashSet<String> numberLiterals; // Contains the set of names of number literals
@@ -107,6 +110,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		// Perform type resolution on the model
 		TypeResolution.resolveTypes(model);	
 		types = TypeResolution.getTypes();
+		sizes = TypeResolution.getSizes();
 
 		generateImports();
 		generateFunctions(model, new BranchState());
@@ -150,15 +154,19 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			
 			if (types.containsKey(function)) {
 				
+				// TODO: if the function type is EXPONENT, and the function size is greater than 1,
+				// then the returnType should instead be ExponentExprTuple
 				val String returnType = Type.toString(types.get(function));
 				
+				// TODO: for each parameter, if the function type is EXPONENT, and the parameter size is greater than 1,
+				// then the type should instead be ExponentExprTuple
 				functionBuilder.append(
 					'''
 					private static «returnType» «function.getName()»(«FOR Parameter parameter : function.getParameterList().getParameters() SEPARATOR ', '»«Type.toString(types.get(parameter))» «parameter.getName()»«ENDFOR») {
 					  return «generateCode(function.getBody(), state)»;
 					}
 					'''
-				);			
+				);
 			}
 			// Maybe throw a console warning above if the type cannot be determined for the variable
 			// Or possibly move this warning to validation
@@ -294,6 +302,8 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			variables.add(name);
 			
 			if (types.get(variable) === Type.EXPONENT) {
+				// TODO: if the variable type is EXPONENT, and the variable size is greater than 1,
+				// then this should instead be ExponentExprTuple
 				exponentVariableBuilder.append(
 					'''
 					ExponentVariableExpr «name» = new ExponentVariableExpr("«name»");

@@ -58,6 +58,7 @@ class ModelHelper {
 	}
 
 	// Takes the user functions of a syntax tree and inlines them for each corresponding function call
+	// Precondition: model has passed all validation rules
 	def static void inlineFunctions(Model model) {
 		val HashMap<String, FunctionDefinition> functions = new HashMap<String, FunctionDefinition>();
 		for (FunctionDefinition function : model.getFunctions()) {
@@ -72,7 +73,6 @@ class ModelHelper {
 	def private static dispatch void replaceFunctionCallWithDefinition(EObject node, HashMap<String, FunctionDefinition> functions) {
 		return;
 	}
-
 	def private static dispatch void replaceFunctionCallWithDefinition(FunctionCall call, HashMap<String, FunctionDefinition> functions) {
 		// Precondition: validation ensures that function call is valid
 		val FunctionDefinition definition = EcoreUtil.copy(functions.get(call.getName()));
@@ -99,9 +99,8 @@ class ModelHelper {
 		replaceParentReferenceToSelf(call, definition.getBody());
 	}
 
-	// Replace all occurrences of Sum nodes that have the subtraction operation
-	// with a Sum node with the addition operation, where the right operand
-	// is now a Negative node
+	// Replace all occurrences of Sum nodes that have the subtraction operation with a Sum 
+	// node with the addition operation, where the right operand is now a Negative node
 	def static void normalizeNegatives(Model model) {
 		ModelMap.postorder(model, [ EObject node |
 			if (node instanceof Sum) {
@@ -111,10 +110,9 @@ class ModelHelper {
 					val Negative negative = ZeroKnowledgeFactory.eINSTANCE.createNegative();
 					ModelHelper.replaceParentReferenceToSelf(rightSide, negative);
 					negative.setTerm(rightSide);
-					sum.setOperation('+');
+					sum.setOperation("+");
 				}
 			}
-
 		]);
 	}
 	
@@ -173,11 +171,12 @@ class ModelHelper {
 		}
 	}
 	
-	
+	// For an argument in a function call, get the function name
 	def static String getArgumentFunction(Argument argument) {
 		return (argument.eContainer() as FunctionCall).getName();
 	}
 	
+	// For an argument in a function call, get the position (0-based) of the argument in the call
 	def static int getArgumentIndex(Argument argument) {
 		return (argument.eContainer() as FunctionCall).getArguments().indexOf(argument);
 	}
