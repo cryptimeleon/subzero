@@ -1,6 +1,6 @@
 0K - Zero Knowledge Compiler
 ============================
-0K is a DSL (domain-specific language) that enables the specification of zero knowledge protocols.
+0K is a DSL (domain-specific language) that enables the specification of zero knowledge protocols. It is written in Java and uses the [Xtext](https://www.eclipse.org/Xtext/) language development framework.
 This website features a code editor for writing 0K programs, and a compiler to generate a Java project that can execute the protocol described by 0K code.
 
 0K Syntax
@@ -60,7 +60,7 @@ There are 4 types of value.
 STRING is used for string literals, and can only be used as an argument in function calls to predefined functions.
 BOOLEAN is the result of evaluating a logical expression.
 EXPONENT and GROUP_ELEMENT are the possible results of evaluting an algebraic expression.
-There is no type declaration, all types are inferred (explained later).
+There is no type declaration and all types are inferred (explained later).
 
 ### Operators
 ---
@@ -115,7 +115,7 @@ Division
 ---
 
 #### Function calls
-A function call consists of the name of a valid function followed by a comma delimited list of arguments enclosed in parantheses, where each argument is some algebraic expression or string literal
+A function call consists of the name of a valid function followed by a comma-delimited list of arguments enclosed in parantheses, where each argument is some algebraic expression or string literal.
 
 ```functionCall(a + b, "string", x, y^(a+b))```
 
@@ -123,7 +123,7 @@ A function call consists of the name of a valid function followed by a comma del
 Any integer
 
 #### Variables
-Variable names must start with a letter, can contain letters and numbers, can contain at most one underscore, and any number of terminating single quotes
+Variable names must start with a letter, can contain letters and numbers, can contain at most one underscore, and any number of terminating single quotes. Single quotes and one underscore are allowed so that names can contain subscripts or the prime symbol, respectively, which allows for nicer LaTeX output.
 Variables can either be of type EXPONENT or GROUP_ELEMENT, not STRING or BOOLEAN.
 Variables can also be scalar or be a tuple of some arbitrary size.
 
@@ -133,7 +133,7 @@ Any string of characters, enclosed in double quotes. Only used as arguments in f
 ```"This is a string"```
 
 ### Tuples
-Tuples are a comma delimited list of at least 2 expressions enclosed in parentheses.
+Tuples are a comma-delimited list of at least 2 expressions enclosed in parentheses.
 All expressions within the tuple must be either all EXPONENT or all GROUP_ELEMENT.
 
 ### Associativity and Precedence
@@ -159,8 +159,8 @@ Operators are listed in descending precedence from top to bottom.
 | 8 | x & y | Conjunction | Left |
 
 ### Comments
-Single line comments start with //
-Multi line comments start with /* and end with */
+Single line comments start with `//`.
+Multi line comments start with `/*` and end with `*/`.
 
 ```
 // This is a single line comment
@@ -181,7 +181,7 @@ When the protocol is run, this expression returns either true or false, signifyi
 
 #### Witness list
 The witness list follows any user defined functions.
-It is a comma delimited list of witness names enclosed in parentheses, ending with an optional semicolon.
+It is a comma-delimited list of witness names enclosed in parentheses, ending with an optional semicolon.
 A witness name starts with a letter, can contain letters and numbers, can contain at most 1 underscore, and can contain any number of terminating single quotes.
 
 ```(x1, x2, x3, x4, x5);```
@@ -189,7 +189,7 @@ A witness name starts with a letter, can contain letters and numbers, can contai
 #### Function definitions
 The user can define zero or more functions at the start of the program.
 A function definition starts with a function name, which must begin with a letter, and can contain letters and numbers.
-This is followed by a comma delimited list of parameter names enclosed in parentheses, and finally a 0K expression (followed by an optional semicolon) enclosed in curly braces, with an optional terminating semicolon.
+This is followed by a comma-delimited list of parameter names enclosed in parentheses, and finally a 0K expression (followed by an optional semicolon) enclosed in curly braces, with an optional terminating semicolon.
 A parameter name starts with a letter, can contain letters and numbers, can contain at most 1 underscore, and can contain any number of terminating single quotes.
 
 ```
@@ -206,45 +206,48 @@ A warning will appear if there is a parameter in the parameter list with no vari
 
 Note that user defined functions cannot contain function calls to user defined functions, only to predefined functions, thus recursion is not supported.
 
+### Variable declaration
+Witnesses and function parameters must be declared. All other variables are global, and do not need to be declared.
+
 ### Type Inference
 In 0K there is no need to declare the type of a variable; it supports full type inference.
 The type of each variable is determined based on its context. The parser will label as many variables as possible as EXPONENT, and then all remaining variables will be labeled as GROUP_ELEMENT.
 
 ### Size inference
 0K supports both scalar and tuple variables. There is also no need to declare the size of a variable.
-The size of a variable will be inferred based on the context, and will default to a scalar (thus it becomes a tuple only if it is involved in an operation with some other explicit tuple, that is, a parantheses-enclosed list of expressions).
+The size of a variable will be inferred based on the context, and will default to a scalar. Thus, it becomes a tuple only if it is involved in an operation with some other explicit tuple, that is, a parentheses-enclosed list of expressions).
 
 Compiler Website Features
 -------------------------
 
 ### Code editor
-The website uses Ace to provide an easy to use code editor.
+The website uses [Ace](https://ace.c9.io/) to provide an easy to use code editor.
 Syntax errors will occur when the entered text does not match the described EBNF grammar.
 Validation errors and warnings will occur when the entered text does not match the additional validation rules that dictate the structure of 0K programs.
 Errors will be displayed with a red X, and the corresponding error location will be underlined in red.
 Warnings will be displayed with a yellow triangle, and the corresponding warning location will be underlined in yellow.
 The red X and yellow triangle can be hovered over with the mouse to display information about the error/warning.
-The code editor font size can be increased and decreased by pressing Ctrl+'+' and Ctrl+'-' respectively.
+The code editor font size can be increased and decreased by pressing `Ctrl+'+'` and `Ctrl+'-'` respectively.
 
-### LaTEX preview
-The website uses MathJax to display formatted LaTEX based on the code in the editor.
-If the entered text in the code editor is free of syntax and validation errors, and if the corresponding checkboxes are enabled, this box will display a formatted LaTEX interpretation of the 0K code.
-The LaTEX preview font size can be increased and decreased by pressing the corresponding buttons in the top left corner of the display box.
+### LaTeX preview
+The website uses [MathJax](https://www.mathjax.org/) to display formatted LaTeX based on the code in the editor.
+If the entered text in the code editor is free of syntax and validation errors, and if the corresponding checkboxes are enabled, this box will display a formatted LaTeX interpretation of the 0K code.
+The LaTeX preview font size can be increased and decreased by pressing the corresponding buttons in the top left corner of the display box.
 
 ### Checkboxes
 ---
 There are 4 checkboxes which toggle various functionality on the website.
 
-#### Enable LaTEX preview
-The LaTEX preview box will now display formatted LaTEX.
-By default, enabling this option will generate the formatted LaTEX once, and subsequent updates are done by pressing the 'Update LaTEX preview' button.
+#### Enable LaTeX preview
+The LaTeX preview box will now display formatted LaTeX.
+By default, enabling this option will generate the formatted LaTeX once, and subsequent updates are done by pressing the 'Update LaTeX preview' button.
 
-#### Enable continuous LaTEX preview update
-This option can only be enabled if 'Enable LaTEX preview' is checked.
-The LaTEX preview box will now be continuously updated, after a short pause after the user stops typing in the text editor.
+#### Enable continuous LaTeX preview update
+This option can only be enabled if 'Enable LaTeX preview' is checked.
+The LaTeX preview box will now be continuously updated, after a short pause after the user stops typing in the text editor.
 
-#### Enable inlining functions in LaTEX preview
-If this is enabled, functions will be inlined before the editor code is displayed as formatted LaTEX.
+#### Enable inlining functions in LaTeX preview
+If this is enabled, functions will be inlined before the editor code is displayed as formatted LaTeX.
 Inlining means that any function call in the code will be replaced with the corresponding function definition, where all local variables have been replaced by the corresponding arguments in the function call.
 The exception to this is function calls to predefined functions, which will not be inlined.
 
@@ -259,19 +262,19 @@ The exception to this is function calls to predefined functions, which will not 
 #### Download editor code
 Downloads a text file with the .zkak extension containing the current contents of the code editor.
 
-#### Download LaTEX code
-Downloads a file with the .tex extension containing the LaTEX code used to generate the current LaTEX preview.
+#### Download LaTeX code
+Downloads a file with the .tex extension containing the LaTeX code used to generate the current LaTeX preview.
 
 #### Compile and download Java code
 If the current contents of the code editor are free of syntax and validation errors, parses the code into a syntax tree model, then compiles this to Java code.
 A Java project is then created and downloaded by the user.
 
-#### Update LaTEX preview
-This button is only enabled when 'Enable LaTEX preview' is checked and 'Enable continuous LaTEX preview update' is unchecked.
-Manually updates the LaTEX preview box based on the current contents of the code editor.
+#### Update LaTeX preview
+This button is only enabled when 'Enable LaTeX preview' is checked and 'Enable continuous LaTeX preview update' is unchecked.
+Manually updates the LaTeX preview box based on the current contents of the code editor.
 
 ### Console
-The console box in the bottom right corner of the page displays error, warning, and info messages. These messages can be generated when downloading editor code, downloading LaTEX code, or during compilation to Java code.
+The console box in the bottom right corner of the page displays error, warning, and info messages. These messages can be generated when downloading editor code, downloading LaTeX code, or during compilation to Java code.
 
 
 Validation rules
