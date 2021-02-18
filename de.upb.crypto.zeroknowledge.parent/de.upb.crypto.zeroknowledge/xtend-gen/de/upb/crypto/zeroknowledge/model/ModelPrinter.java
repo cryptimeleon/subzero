@@ -2,7 +2,7 @@ package de.upb.crypto.zeroknowledge.model;
 
 import de.upb.crypto.zeroknowledge.model.BranchState;
 import de.upb.crypto.zeroknowledge.model.ModelMap;
-import de.upb.crypto.zeroknowledge.type.TypeResolution;
+import de.upb.crypto.zeroknowledge.type.TypeInference;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
@@ -13,6 +13,9 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
+/**
+ * A debugging class to print out a formatted view of the model to the console
+ */
 @SuppressWarnings("all")
 public class ModelPrinter {
   public static void print(final Model model) {
@@ -79,15 +82,15 @@ public class ModelPrinter {
       if (!_matched) {
         System.out.print("");
       }
-      if (((TypeResolution.getTypes() != null) && TypeResolution.getTypes().containsKey(node))) {
-        String _string = TypeResolution.getTypes().get(node).toString();
+      if (((TypeInference.getTypes() != null) && TypeInference.getTypes().containsKey(node))) {
+        String _string = TypeInference.getTypes().get(node).toString();
         String _plus = (" - " + _string);
         System.out.print(_plus);
       } else {
         System.out.print("");
       }
-      if (((TypeResolution.getSizes() != null) && TypeResolution.getSizes().containsKey(node))) {
-        String _string_1 = TypeResolution.getSizes().get(node).toString();
+      if (((TypeInference.getSizes() != null) && TypeInference.getSizes().containsKey(node))) {
+        String _string_1 = TypeInference.getSizes().get(node).toString();
         String _plus_1 = (" (" + _string_1);
         String _plus_2 = (_plus_1 + ")");
         System.out.print(_plus_2);

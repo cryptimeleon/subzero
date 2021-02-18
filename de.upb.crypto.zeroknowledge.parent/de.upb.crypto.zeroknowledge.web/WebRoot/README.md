@@ -389,8 +389,8 @@ Contains code for working with the model produced by the parser
 - `ModelMap.xtend` contains functions for traversing the model tree and applying functions to each node
 - `ModelMapController.xtend` is a class that allows control of a traversal of the parse tree model. This allows nodes to end traversals early or prune branches when deeper traversal is not necessary.
 - `ModelPrinter.xtend` is a debugging class for printing out a text representation of the parse tree model
-- `ReturnsTuple.xtend` is a custome annotation used on predefined functions to indicate that it returns a tuple.
-- `TupleParameters.java` is a custom annotation used on predefined functions that return a tuple to specify tthe multiplicity of the tuple. A better method of indicating this might be possible.
+- `ReturnsTuple.xtend` is a custom annotation used on predefined functions to indicate that it returns a tuple, and specify its multiplicity
+- `TupleParameters.java` is a custom annotation used on predefined functions to indicate that it has tuple parameters, and specify their multiplicities. A better method of indicating this might be possible.
 
 ### de.upb.crypto.zeroknowledge.predefined
 - `PredefinedFunctions.java` is a class to hold all predefined functions
@@ -398,7 +398,7 @@ Contains code for working with the model produced by the parser
 
 ### de.upb.crypto.type
 - `Type.java` is an enum class representing valid 0K types
-- `TypeResolution.xtend` implements type inference. Depends on the `predefined` package for handling predefined functions. Type inference is working, but may have some edge case issues still.
+- `TypeInference.xtend` implements type inference. Depends on the `predefined` package for handling predefined functions. Type inference is working, but may have some edge case issues still.
 
 ### de.upb.crypto.zeroknowledge.validation
 - `ZeroKnowledgeValidator.xtend` contains all validation rules that are checked against a parsed model.
@@ -409,3 +409,24 @@ Contains all code for the compiler website. All important files are in the WebRo
 - `initial.js` loads all required libraries, and implements some editor features
 - `functionality.js` contains the major website functionality
 - `style.css` is the main stylesheet
+
+Using language editor in Eclipse
+--------------------------------
+The following steps will bring up an Eclipse editor for the 0K language, with validation feedback and allowing compilation to Java code.
+- Open the project in Eclipse
+- Right-click on the root de.upb.crypto.zeroknowledge package
+- Under 'Run As', select 'Eclipse Application'
+- Click 'Launch Runtime Eclipse' and OK
+- This will create a new runtime-EclipseXtext workspace
+- Click 'Create a project' and select 'Java Project'
+- Give it a name and click Next
+- Click the Libraries tab, click 'Add Library', select 'Xtend Library' and click Next
+- Click Finish twice, and then 'Don't create' for the module-info
+- Any additional popups can be exited
+- Right-click the src folder, and go to New -> Other -> File (type File to find it in the dropdown)
+- Click Next and give the file a name with the extension `.zkak`, then click Finish
+- When a popup occurs for converting the project to an Xtext project, click Yes
+- Write a valid 0K program (free of syntax and validation errors)
+- Press `Ctrl+s`. The file will be saved, a new `src-gen` folder will be created, and the 0K code will be compiled to `proof.java` in that folder
+- Every time the `.zkak` file is saved it will be recompiled to Java code
+- If a popup error ever occurs, just ignore it and click OK

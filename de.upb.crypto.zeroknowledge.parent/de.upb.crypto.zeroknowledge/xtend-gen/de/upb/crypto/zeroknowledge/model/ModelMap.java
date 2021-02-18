@@ -1,13 +1,17 @@
 package de.upb.crypto.zeroknowledge.model;
 
 import de.upb.crypto.zeroknowledge.model.BranchState;
-import de.upb.crypto.zeroknowledge.model.ModelMapControl;
+import de.upb.crypto.zeroknowledge.model.ModelMapController;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
+/**
+ * A helper class for applying general functions to each node of the model
+ * through various tree traversals
+ */
 @SuppressWarnings("all")
 public class ModelMap {
   public static void preorder(final EObject node, final Procedure1<? super EObject> function) {
@@ -62,12 +66,12 @@ public class ModelMap {
     }
   }
   
-  public static void preorderWithControl(final EObject node, final Procedure2<? super EObject, ? super ModelMapControl> function) {
-    final ModelMapControl controller = new ModelMapControl();
+  public static void preorderWithControl(final EObject node, final Procedure2<? super EObject, ? super ModelMapController> function) {
+    final ModelMapController controller = new ModelMapController();
     ModelMap.preorderWithControlHelper(node, controller, function);
   }
   
-  public static void preorderWithControlHelper(final EObject node, final ModelMapControl controller, final Procedure2<? super EObject, ? super ModelMapControl> function) {
+  private static void preorderWithControlHelper(final EObject node, final ModelMapController controller, final Procedure2<? super EObject, ? super ModelMapController> function) {
     boolean _triggerBreak = controller.triggerBreak();
     if (_triggerBreak) {
       return;

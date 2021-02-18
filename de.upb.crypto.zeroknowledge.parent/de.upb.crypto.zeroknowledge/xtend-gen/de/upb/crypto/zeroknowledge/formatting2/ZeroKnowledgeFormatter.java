@@ -21,6 +21,11 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
+/**
+ * A class for specifying formatting rules for the DSL code. When formatting functions
+ * are called, they clean up the written code (such as the amount of whitespace).
+ * Currently only partially working and unused (should remain unused too).
+ */
 @SuppressWarnings("all")
 public class ZeroKnowledgeFormatter extends AbstractFormatter2 {
   @Inject

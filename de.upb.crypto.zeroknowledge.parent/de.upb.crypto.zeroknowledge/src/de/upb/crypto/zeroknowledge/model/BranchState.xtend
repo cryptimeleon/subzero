@@ -22,8 +22,10 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
 
-// Contains information about the current branch of the abstract syntax tree
-// and all ancestor nodes of the node which receives the BranchState object
+/**
+ * Contains information about the current branch of the abstract syntax tree
+ * and all ancestor nodes of the node which receives the BranchState object
+ */
 class BranchState {
 	
 	int depth;

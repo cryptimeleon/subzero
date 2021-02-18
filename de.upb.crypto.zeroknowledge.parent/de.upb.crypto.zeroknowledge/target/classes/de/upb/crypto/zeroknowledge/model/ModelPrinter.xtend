@@ -3,7 +3,6 @@ package de.upb.crypto.zeroknowledge.model
 
 import org.eclipse.emf.ecore.EObject;
 
-import de.upb.crypto.zeroknowledge.type.TypeResolution;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Model;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Variable;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral;
@@ -11,8 +10,11 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionCall
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Witness
+import de.upb.crypto.zeroknowledge.type.TypeInference
 
-// Debugging class to print the a formatted view of the model to the console
+/**
+ * A debugging class to print out a formatted view of the model to the console
+ */
 class ModelPrinter {
 		
 	def static void print(Model model) {
@@ -39,14 +41,14 @@ class ModelPrinter {
 				default: System.out.print("")
 			}
 			
-			if (TypeResolution.getTypes() !== null && TypeResolution.getTypes().containsKey(node)) {
-				System.out.print(" - " + TypeResolution.getTypes().get(node).toString());
+			if (TypeInference.getTypes() !== null && TypeInference.getTypes().containsKey(node)) {
+				System.out.print(" - " + TypeInference.getTypes().get(node).toString());
 			} else {
 				System.out.print("");
 			}
 			
-			if (TypeResolution.getSizes() !== null && TypeResolution.getSizes().containsKey(node)) {
-				System.out.print(" (" + TypeResolution.getSizes().get(node).toString() + ")");
+			if (TypeInference.getSizes() !== null && TypeInference.getSizes().containsKey(node)) {
+				System.out.print(" (" + TypeInference.getSizes().get(node).toString() + ")");
 			} else {
 				System.out.print("");
 			}

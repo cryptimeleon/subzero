@@ -23,6 +23,10 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList;
 import java.util.Arrays;
 import org.eclipse.emf.ecore.EObject;
 
+/**
+ * Contains information about the current branch of the abstract syntax tree
+ * and all ancestor nodes of the node which receives the BranchState object
+ */
 @SuppressWarnings("all")
 public class BranchState {
   private int depth;

@@ -2,7 +2,13 @@ package de.upb.crypto.zeroknowledge.model
 
 import org.eclipse.emf.ecore.EObject
 
+/**
+ * A helper class for applying general functions to each node of the model
+ * through various tree traversals
+ */
+
 class ModelMap {
+	
 	// Recurses through the abstract syntax tree and applies the function to each node
 	// Applies the function to the node, and then to its subtrees	
 	def static void preorder(EObject node, (EObject) => void function) {
@@ -33,6 +39,8 @@ class ModelMap {
 	// Recurses through the abstract syntax tree and applies the function to each node
 	// Applies the function to the node, and then to its subtrees
 	// If for any node the function returns true, then the original call returns true
+	// The traversal ends as soon as the function returns true for any node, so the 
+	// function should not have any side effects
 	def static boolean preorderAny(EObject node, (EObject) => boolean function) {
 		
 		if (function.apply(node)) {
@@ -51,6 +59,8 @@ class ModelMap {
 	// Recurses through the abstract syntax tree and applies the function to each node
 	// Applies to all of a node's subtrees before applying the function to the node
 	// If for any node the function returns true, then the original call returns true
+	// The traversal ends as soon as the function returns true for any node, so the 
+	// function should not have any side effects
 	def static boolean postorderAny(EObject node, (EObject) => boolean function) {
 		
 		// Recurse through child nodes
@@ -79,12 +89,12 @@ class ModelMap {
 		}
 	}
 
-	def static void preorderWithControl(EObject node, (EObject, ModelMapControl) => void function) {
-		val ModelMapControl controller = new ModelMapControl();
+	def static void preorderWithControl(EObject node, (EObject, ModelMapController) => void function) {
+		val ModelMapController controller = new ModelMapController();
 		preorderWithControlHelper(node, controller, function);
 	}
 	
-	def static void preorderWithControlHelper(EObject node, ModelMapControl controller, (EObject, ModelMapControl) => void function) {
+	def private static void preorderWithControlHelper(EObject node, ModelMapController controller, (EObject, ModelMapController) => void function) {
 		
 		// End all traversal if break was called in a function
 		if (controller.triggerBreak()) {

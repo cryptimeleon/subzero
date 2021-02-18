@@ -6,11 +6,16 @@ import java.util.Map;
 
 import de.upb.crypto.zeroknowledge.model.FunctionSignature;
 
+/**
+ * A helper class to get the function signatures of all predefined functions
+ * using reflection
+ */
 class PredefinedFunctionsHelper {
 
   private static HashMap<String, FunctionSignature> functions;
 
   // Returns a map between the function names and signatures of all predefined functions
+  // The map is cached after the first call for subsequent calls
   def static HashMap<String, FunctionSignature> getAllPredefinedFunctions() {
   	if (functions === null) {
 	    functions = new HashMap<String, FunctionSignature>();

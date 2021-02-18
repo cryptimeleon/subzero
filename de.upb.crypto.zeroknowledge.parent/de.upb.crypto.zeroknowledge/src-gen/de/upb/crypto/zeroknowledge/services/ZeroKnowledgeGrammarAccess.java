@@ -34,7 +34,12 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cProofExpressionParserRuleCall_3_0 = (RuleCall)cProofAssignment_3.eContents().get(0);
 		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
-		//Model:
+		///*
+		// * This file specifies the syntax and grammar of the 0K language, and is written using
+		// * the Xtend grammar language
+		// * 
+		// * See https://www.eclipse.org/Xtext/documentation/301_grammarlanguage.html
+		// */ Model:
 		//	functions+=FunctionDefinition* witnessList=WitnessList ';'? proof=Expression ';'?;
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -938,7 +943,11 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cFunctionAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cFunctionIDENTIFIERTerminalRuleCall_2_0 = (RuleCall)cFunctionAssignment_2.eContents().get(0);
 		
-		//LocalVariable Variable:
+		///*
+		// * This object will not be created during parsing, but Variable objects
+		// * corresponding to arguments in function definitions will be converted
+		// * to LocalVariable objects after parsing
+		// */ LocalVariable Variable:
 		//	{LocalVariable} name=IDENTIFIER function=IDENTIFIER;
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -967,7 +976,11 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameIDENTIFIERTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		
-		//WitnessVariable Variable:
+		///*
+		// * This object will not be created during parsing, but Variable objects
+		// * corresponding to witnesses will be converted to WitnessVariable
+		// * objects after parsing
+		// */ WitnessVariable Variable:
 		//	{WitnessVariable} name=IDENTIFIER;
 		@Override public ParserRule getRule() { return rule; }
 		
@@ -1116,7 +1129,12 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 	
 
 	
-	//Model:
+	///*
+	// * This file specifies the syntax and grammar of the 0K language, and is written using
+	// * the Xtend grammar language
+	// * 
+	// * See https://www.eclipse.org/Xtext/documentation/301_grammarlanguage.html
+	// */ Model:
 	//	functions+=FunctionDefinition* witnessList=WitnessList ';'? proof=Expression ';'?;
 	public ModelElements getModelAccess() {
 		return pModel;
@@ -1328,7 +1346,11 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		return getVariableAccess().getRule();
 	}
 	
-	//LocalVariable Variable:
+	///*
+	// * This object will not be created during parsing, but Variable objects
+	// * corresponding to arguments in function definitions will be converted
+	// * to LocalVariable objects after parsing
+	// */ LocalVariable Variable:
 	//	{LocalVariable} name=IDENTIFIER function=IDENTIFIER;
 	public LocalVariableElements getLocalVariableAccess() {
 		return pLocalVariable;
@@ -1338,7 +1360,11 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		return getLocalVariableAccess().getRule();
 	}
 	
-	//WitnessVariable Variable:
+	///*
+	// * This object will not be created during parsing, but Variable objects
+	// * corresponding to witnesses will be converted to WitnessVariable
+	// * objects after parsing
+	// */ WitnessVariable Variable:
 	//	{WitnessVariable} name=IDENTIFIER;
 	public WitnessVariableElements getWitnessVariableAccess() {
 		return pWitnessVariable;

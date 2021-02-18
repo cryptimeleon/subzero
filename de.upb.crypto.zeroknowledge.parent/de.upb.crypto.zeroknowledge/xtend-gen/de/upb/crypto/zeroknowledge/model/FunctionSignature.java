@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.xtext.xbase.lib.Conversions;
 
+/**
+ * Contains information about a function's name, return type, and parameters
+ */
 @SuppressWarnings("all")
 public class FunctionSignature {
   private String name;

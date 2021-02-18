@@ -32,6 +32,9 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Product
 import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper
 import de.upb.crypto.zeroknowledge.zeroKnowledge.NumberLiteral
 
+/*
+ * A helper class providing functions for working with a model
+ */
 class ModelHelper {
 
 	// Helper function to get the root Model object
@@ -386,7 +389,7 @@ class ModelHelper {
 		return tuples;
 	}
 	def private static void getAllTuplesHelper1(ArrayList<Tuple> tuples, EObject node) {
-		ModelMap.preorderWithControl(node, [EObject child, ModelMapControl controller |
+		ModelMap.preorderWithControl(node, [EObject child, ModelMapController controller |
 			if (child instanceof Tuple) {
 				tuples.add(child);
 				getAllTuplesHelper2(tuples, child);				
@@ -395,7 +398,7 @@ class ModelHelper {
 		]);
 	}
 	def private static void getAllTuplesHelper2(ArrayList<Tuple> tuples, EObject node) {
-		ModelMap.preorderWithControl(node, [EObject child, ModelMapControl controller |
+		ModelMap.preorderWithControl(node, [EObject child, ModelMapController controller |
 			if (child instanceof FunctionCall) {
 				getAllTuplesHelper1(tuples, child);
 				controller.continueTraversal();

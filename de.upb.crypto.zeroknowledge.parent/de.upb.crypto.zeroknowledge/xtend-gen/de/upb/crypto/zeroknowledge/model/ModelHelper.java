@@ -2,7 +2,7 @@ package de.upb.crypto.zeroknowledge.model;
 
 import de.upb.crypto.zeroknowledge.model.FunctionSignature;
 import de.upb.crypto.zeroknowledge.model.ModelMap;
-import de.upb.crypto.zeroknowledge.model.ModelMapControl;
+import de.upb.crypto.zeroknowledge.model.ModelMapController;
 import de.upb.crypto.zeroknowledge.type.Type;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
@@ -33,6 +33,9 @@ import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
+/**
+ * A helper class providing functions for working with a model
+ */
 @SuppressWarnings("all")
 public class ModelHelper {
   public static Model getRoot(final EObject node) {
@@ -380,7 +383,7 @@ public class ModelHelper {
   }
   
   private static void getAllTuplesHelper1(final ArrayList<Tuple> tuples, final EObject node) {
-    final Procedure2<EObject, ModelMapControl> _function = (EObject child, ModelMapControl controller) -> {
+    final Procedure2<EObject, ModelMapController> _function = (EObject child, ModelMapController controller) -> {
       if ((child instanceof Tuple)) {
         tuples.add(((Tuple)child));
         ModelHelper.getAllTuplesHelper2(tuples, child);
@@ -391,7 +394,7 @@ public class ModelHelper {
   }
   
   private static void getAllTuplesHelper2(final ArrayList<Tuple> tuples, final EObject node) {
-    final Procedure2<EObject, ModelMapControl> _function = (EObject child, ModelMapControl controller) -> {
+    final Procedure2<EObject, ModelMapController> _function = (EObject child, ModelMapController controller) -> {
       if ((child instanceof FunctionCall)) {
         ModelHelper.getAllTuplesHelper1(tuples, child);
         controller.continueTraversal();

@@ -20,7 +20,6 @@ import de.upb.crypto.zeroknowledge.model.BranchState
 import de.upb.crypto.zeroknowledge.model.ModelHelper
 
 import de.upb.crypto.zeroknowledge.type.Type
-import de.upb.crypto.zeroknowledge.type.TypeResolution
 
 import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper
 
@@ -42,15 +41,18 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets
 import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
+import de.upb.crypto.zeroknowledge.type.TypeInference
 
 /**
  * Generates code from your model files on save.
  * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
+ * 
+ * Precondition: model must be free of validation errors before Java code generation can occur
  */
- 
-// Precondition: model must be free of validation errors before Java code generation can occur
 class ZeroKnowledgeGenerator extends AbstractGenerator {
+	
+	static val OUTPUT_FILE = 'proof.java';
 	
 	HashMap<EObject, Type> types;
 	HashMap<EObject, Integer> sizes;
@@ -108,9 +110,9 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		ModelHelper.normalizeNegatives(model);
 
 		// Perform type resolution on the model
-		TypeResolution.resolveTypes(model);	
-		types = TypeResolution.getTypes();
-		sizes = TypeResolution.getSizes();
+		TypeInference.inferTypes(model);	
+		types = TypeInference.getTypes();
+		sizes = TypeInference.getSizes();
 
 		generateImports();
 		generateFunctions(model, new BranchState());
@@ -135,7 +137,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
 		
-		fsa.generateFile('first.java', codeBuilder.toString());
+		fsa.generateFile(OUTPUT_FILE, codeBuilder.toString());
 	}
 	
 	// Generates all required import statements

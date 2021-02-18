@@ -1,5 +1,8 @@
 package de.upb.crypto.zeroknowledge.type;
 
+/**
+ * An enum to represent the 0K type of a variable or return value
+ */
 public enum Type {
 	BOOLEAN,
 	GROUP_ELEMENT,

@@ -28,57 +28,65 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
 
-// Converts a syntax tree to valid Latex output
-// Precondition: the Model object used to create the LatexPreview object
-// must be free of validation errors
+
+
+/**
+ * Converts a syntax tree to valid LaTeX output
+ * 
+ * Precondition: the Model object used to create the LatexPreview object
+ * must be free of validation errors
+ */
 class LatexPreview {
 
+	// Contains the final generated LaTeX output
 	var String latexCode;
+	
 	var StringBuilder builder;
 
 	// Token constants
-	val String CONJUNCTION = "\\land";
-	val String DISJUNCTION = "\\lor";
-	val String EQUAL = "=";
-	val String INEQUAL = "\\neq";
-	val String LESS = "<";
-	val String GREATER = ">";
-	val String LESSEQUAL = "\\leq";
-	val String GREATEREQUAL = "\\geq";
-	val String ADDITION = "+";
-	val String SUBTRACTION = "-";
-	val String MULTIPLICATION = "\\cdot";
-	val String DIVISION = "\\frac";
-	val String EXPONENTIATION = "^";
-	val String NEGATION = "-";
-	val String NEWLINE = "\\\\";
-	val String SPACE = " ";
-	val String COMMA = ",";
-	val String COLON = ":";
-	val String SEMICOLON = ";";
-	val String QUOTE = "'";
-	val String LEFTPAREN = "(";
-	val String RIGHTPAREN = ")";
-	val String LEFTBRACE = "{";
-	val String RIGHTBRACE = "}";
-	val String DELIMITER = "$$";
-	val String OPERATOR_ADDITION = "+";
-	val String OPERATOR_SUBTRACTION = "-";
-	val String OPERATOR_MULTIPLICATION = "*";
-	val String OPERATOR_DIVISION = "/";
-	val String OPERATOR_EXPONENTIATION = "^";
-	val String OPERATOR_EQUAL = "=";
-	val String OPERATOR_INEQUAL = "!=";
-	val String OPERATOR_LESS = "<";
-	val String OPERATOR_GREATER = ">";
-	val String OPERATOR_LESSEQUAL = "<=";
-	val String OPERATOR_GREATEREQUAL = ">=";
+	static val String CONJUNCTION = "\\land";
+	static val String DISJUNCTION = "\\lor";
+	static val String EQUAL = "=";
+	static val String INEQUAL = "\\neq";
+	static val String LESS = "<";
+	static val String GREATER = ">";
+	static val String LESSEQUAL = "\\leq";
+	static val String GREATEREQUAL = "\\geq";
+	static val String ADDITION = "+";
+	static val String SUBTRACTION = "-";
+	static val String MULTIPLICATION = "\\cdot";
+	static val String DIVISION = "\\frac";
+	static val String EXPONENTIATION = "^";
+	static val String NEGATION = "-";
+	static val String NEWLINE = "\\\\";
+	static val String SPACE = " ";
+	static val String COMMA = ",";
+	static val String COLON = ":";
+	static val String SEMICOLON = ";";
+	static val String QUOTE = "'";
+	static val String LEFTPAREN = "(";
+	static val String RIGHTPAREN = ")";
+	static val String LEFTBRACE = "{";
+	static val String RIGHTBRACE = "}";
+	static val String DELIMITER = "$$";
+	static val String OPERATOR_ADDITION = "+";
+	static val String OPERATOR_SUBTRACTION = "-";
+	static val String OPERATOR_MULTIPLICATION = "*";
+	static val String OPERATOR_DIVISION = "/";
+	static val String OPERATOR_EXPONENTIATION = "^";
+	static val String OPERATOR_EQUAL = "=";
+	static val String OPERATOR_INEQUAL = "!=";
+	static val String OPERATOR_LESS = "<";
+	static val String OPERATOR_GREATER = ">";
+	static val String OPERATOR_LESSEQUAL = "<=";
+	static val String OPERATOR_GREATEREQUAL = ">=";
 
 	// Counts the number of open curly braces, used for formatting exponents
 	var int openBraces = 0;
 	
-	// If true, all function calls will be inlined before converted to Latex
-	var boolean inline;
+	// If true, all function calls will be inlined (replaced with the full
+	// function definition) before being converted to LaTeX
+	var boolean inlineFunctions;
 
 	new(Model model) {
 		constructLatexPreview(model, false);
@@ -90,13 +98,16 @@ class LatexPreview {
 
 	def private void constructLatexPreview(Model model, boolean inline) {
 		builder = new StringBuilder();
-		this.inline = inline;
+		
+		this.inlineFunctions = inline;
 		if (inline) {
 			ModelHelper.inlineFunctions(model);
 		}
+		
 		builder.append(DELIMITER);
 		generateLatex(model);
 		builder.append(DELIMITER);
+		
 		latexCode = builder.toString();
 	}
 	
@@ -116,6 +127,7 @@ class LatexPreview {
 		return name;
 	}
 
+
 	def private void generateBraces(EObject node) {
 		builder.append(LEFTBRACE);
 		generateLatex(node);
@@ -131,10 +143,10 @@ class LatexPreview {
 	def private void generateList(EList<? extends EObject> items) {
 		builder.append(LEFTPAREN);
 
-		var boolean firstItem = true;
+		var boolean isFirstItem = true;
 		for (EObject item : items) {
-			if (firstItem) {
-				firstItem = false;
+			if (isFirstItem) {
+				isFirstItem = false;
 			} else {
 				builder.append(COMMA);
 			}
@@ -144,12 +156,13 @@ class LatexPreview {
 		builder.append(RIGHTPAREN);
 	}
 
+	// This function should never be called
 	def dispatch private void generateLatex(EObject node) {
 		System.err.println("Unhandled EObject type in Latex generation function");
 	}
 
 	def dispatch private void generateLatex(Model model) {
-		if (!inline) {
+		if (!inlineFunctions) {
 			for (FunctionDefinition function : model.getFunctions()) {
 				generateLatex(function);
 				builder.append(NEWLINE);
@@ -243,6 +256,9 @@ class LatexPreview {
 		openBraces++;
 		builder.append(LEFTBRACE);
 		generateLatex(power.getRight());
+		
+		// If the power object is not contained within another power object,
+		// then close all braces
 		if (!(power.eContainer() instanceof Power)) {
 			while (openBraces > 0) {
 				builder.append(RIGHTBRACE);

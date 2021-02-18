@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
 import de.upb.crypto.zeroknowledge.model.BranchState;
 import de.upb.crypto.zeroknowledge.model.ModelHelper;
 import de.upb.crypto.zeroknowledge.type.Type;
-import de.upb.crypto.zeroknowledge.type.TypeResolution;
+import de.upb.crypto.zeroknowledge.type.TypeInference;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
@@ -42,9 +42,13 @@ import org.eclipse.xtext.generator.IGeneratorContext;
  * Generates code from your model files on save.
  * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
+ * 
+ * Precondition: model must be free of validation errors before Java code generation can occur
  */
 @SuppressWarnings("all")
 public class ZeroKnowledgeGenerator extends AbstractGenerator {
+  private static final String OUTPUT_FILE = "proof.java";
+  
   private HashMap<EObject, Type> types;
   
   private HashMap<EObject, Integer> sizes;
@@ -124,9 +128,9 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
       ModelHelper.inlineFunctions(model);
     }
     ModelHelper.normalizeNegatives(model);
-    TypeResolution.resolveTypes(model);
-    this.types = TypeResolution.getTypes();
-    this.sizes = TypeResolution.getSizes();
+    TypeInference.inferTypes(model);
+    this.types = TypeInference.getTypes();
+    this.sizes = TypeInference.getSizes();
     this.generateImports();
     BranchState _branchState = new BranchState();
     this.generateFunctions(model, _branchState);
@@ -174,7 +178,7 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     if (_isCanceled_1) {
       return;
     }
-    fsa.generateFile("first.java", this.codeBuilder.toString());
+    fsa.generateFile(ZeroKnowledgeGenerator.OUTPUT_FILE, this.codeBuilder.toString());
   }
   
   public void generateImports() {

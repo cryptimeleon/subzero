@@ -12,7 +12,11 @@ import org.eclipse.xtext.formatting2.IFormattableDocument
 import static de.upb.crypto.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage.Literals.*
 import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 
-// This class is incomplete, and does not properly format the code yet
+/**
+ * A class for specifying formatting rules for the DSL code. When formatting functions
+ * are called, they clean up the written code (such as the amount of whitespace).
+ * Currently only partially working and unused (should remain unused too).
+ */
 class ZeroKnowledgeFormatter extends AbstractFormatter2 {
 	
 	@Inject extension ZeroKnowledgeGrammarAccess

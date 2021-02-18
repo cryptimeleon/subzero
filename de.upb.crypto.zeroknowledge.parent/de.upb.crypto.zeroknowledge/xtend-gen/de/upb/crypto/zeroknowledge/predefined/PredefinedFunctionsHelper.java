@@ -5,6 +5,10 @@ import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctions;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+/**
+ * A helper class to get the function signatures of all predefined functions
+ * using reflection
+ */
 @SuppressWarnings("all")
 public class PredefinedFunctionsHelper {
   private static HashMap<String, FunctionSignature> functions;

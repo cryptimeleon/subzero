@@ -1,5 +1,9 @@
 package de.upb.crypto.zeroknowledge.console;
 
+/**
+ * A class for sending messages to the compiler website's console box.
+ * Currently unused and not working.
+ */
 public class Console {
 
 	public static void warning(String message) {

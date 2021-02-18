@@ -10,7 +10,7 @@ import de.upb.crypto.zeroknowledge.model.ModelHelper;
 import de.upb.crypto.zeroknowledge.model.ModelMap;
 import de.upb.crypto.zeroknowledge.predefined.PredefinedFunctionsHelper;
 import de.upb.crypto.zeroknowledge.type.Type;
-import de.upb.crypto.zeroknowledge.type.TypeResolution;
+import de.upb.crypto.zeroknowledge.type.TypeInference;
 import de.upb.crypto.zeroknowledge.validation.AbstractZeroKnowledgeValidator;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Brackets;
@@ -51,9 +51,13 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure2;
 
 /**
- * This class contains custom validation rules.
+ * This class contains custom validation rules for validating the syntax tree
  * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
+ * 
+ * The language grammar specification is designed to be less strict, with stricter rules
+ * instead applied during validation. This allows for more descriptive errors/warnings in
+ * the editor, as opposed to generating less descriptive syntax errors
  */
 @SuppressWarnings("all")
 public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
@@ -65,11 +69,21 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   
   private final HashMap<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
   
+  /**
+   * Validation proceeds in a topdown, preorder traversal of the syntax tree,
+   * starting at the root Model node.
+   * 
+   * checkModel is the only function with the @Check annotation (it will be called by the EValidator)
+   * checkNode is a dispatch function to call the corresponding validation functions for each
+   * different type of syntax tree nodes
+   * Any other function prefixed with 'check' can create validation errors or warnings
+   * All other functions are helper functions
+   */
   @Check
   public void checkModel(final Model model) {
-    TypeResolution.resolveTypes(model);
-    this.types = TypeResolution.getTypes();
-    this.sizes = TypeResolution.getSizes();
+    TypeInference.inferTypes(model);
+    this.types = TypeInference.getTypes();
+    this.sizes = TypeInference.getSizes();
     this.userFunctions = ModelHelper.getUserFunctionSignatures(model, this.types, this.sizes);
     BranchState _branchState = new BranchState();
     final Procedure2<EObject, BranchState> _function = (EObject node, BranchState state) -> {
@@ -463,7 +477,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   /**
-   * Grammar structure
+   * Validate grammar structure
    */
   private void checkValidStringLiteralPosition(final StringLiteral stringLiteral, final BranchState state) {
     final EObject parent = state.getParent();
@@ -707,7 +721,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   /**
-   * Check that nodes with a predetermined type have this type
+   * Validate that nodes with a predetermined type are actually this type
    */
   private void checkIsBoolean(final EObject node) {
     this.checkIsType(node, Type.BOOLEAN);
@@ -821,7 +835,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
   }
   
   /**
-   * Tuples
+   * Validate tuples
    */
   private void checkValidTuplePosition(final Tuple tuple, final BranchState state) {
     boolean _hasTupleBeforeFunctionCall = state.hasTupleBeforeFunctionCall();

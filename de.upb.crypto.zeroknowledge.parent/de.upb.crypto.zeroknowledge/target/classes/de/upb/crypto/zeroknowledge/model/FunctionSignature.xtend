@@ -7,7 +7,9 @@ import java.lang.reflect.Method
 import java.lang.annotation.Annotation
 import java.util.Collections
 
-// Contains information about a function's name, return type, and parameters
+/**
+ * Contains information about a function's name, return type, and parameters
+ */
 class FunctionSignature {
 
 	String name;
@@ -98,7 +100,7 @@ class FunctionSignature {
 		return parameterSizes;
 	}
 		
-	// Converts internal class name to simpler form
+	// Converts internal class name to simpler form (without package prefix)
 	// Possibly remove and simply use fully qualified name?
 	def private static String trimTypeName(String type) {
 	  val int periodIndex = type.lastIndexOf('.');

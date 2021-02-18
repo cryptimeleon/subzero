@@ -25,7 +25,6 @@ import de.upb.crypto.zeroknowledge.model.FunctionSignature;
 import de.upb.crypto.zeroknowledge.model.BranchState
 
 import de.upb.crypto.zeroknowledge.type.Type
-import de.upb.crypto.zeroknowledge.type.TypeResolution
 
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Comparison;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Conjunction;
@@ -50,12 +49,17 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.WitnessList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.ParameterList
 import de.upb.crypto.zeroknowledge.zeroKnowledge.LocalVariable
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
-import de.upb.crypto.zeroknowledge.model.ModelMapControl
+import de.upb.crypto.zeroknowledge.type.TypeInference
+import de.upb.crypto.zeroknowledge.model.ModelMapController
 
 /**
- * This class contains custom validation rules. 
+ * This class contains custom validation rules for validating the syntax tree
  * 
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
+ * 
+ * The language grammar specification is designed to be less strict, with stricter rules
+ * instead applied during validation. This allows for more descriptive errors/warnings in
+ * the editor, as opposed to generating less descriptive syntax errors
  */
 class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
@@ -64,21 +68,26 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	var HashMap<String, FunctionSignature> userFunctions;
 	val HashMap<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 	
-	// Validation proceeds in a topdown, preorder traversal of the syntax tree,
-	// starting at the root Model node
-	// checkModel is the only function with the @Check annotation (to be called by the EValidator)
-	// checkNode is a dispatch function to call corresponding validation functions for each
-	// different type of syntax tree nodes
-	// Any other function prefixed with 'check' can create validation errors or warnings
-	// All other functions are helper functions
+	/*
+	 * Validation proceeds in a topdown, preorder traversal of the syntax tree,
+	 * starting at the root Model node.
+	 * 
+	 * checkModel is the only function with the @Check annotation (it will be called by the EValidator)
+	 * checkNode is a dispatch function to call the corresponding validation functions for each
+	 * different type of syntax tree nodes
+	 * Any other function prefixed with 'check' can create validation errors or warnings
+	 * All other functions are helper functions
+	 */
 	@Check
 	def void checkModel(Model model) {
-		TypeResolution.resolveTypes(model);
-		types = TypeResolution.getTypes();
-		sizes = TypeResolution.getSizes();
+		// Perform type inference and get the type and size of each node
+		TypeInference.inferTypes(model);
+		types = TypeInference.getTypes();
+		sizes = TypeInference.getSizes();
 		
 		userFunctions = ModelHelper.getUserFunctionSignatures(model, types, sizes);
 
+		// Iterate over the tree in a preorder traversal and perform validation on each node
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
 			checkNode(node, state);
 		]);
@@ -200,6 +209,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate the format of identifier names
 	 */
+	 
 	// User defined function names must start with a letter, and contain only letters and numbers
 	def private void checkFunctionNameFormat(FunctionDefinition function) {
 		if (function.getName().contains("_")) {
@@ -273,6 +283,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate the uniqueness of identifiers
 	 */
+	 
 	// User defined function names must be unique
 	def private void checkFunctionNamesAreUnique(Model model) {
 		val HashSet<String> functions = new HashSet<String>();
@@ -322,6 +333,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate user function definitions
 	 */
+	 
 	// Function definitions cannot contain function calls to other user functions
 	def private void checkFunctionHasNoUserFunctionCalls(FunctionCall call, BranchState state) {
 		if (state.hasFunctionDefinitionAncestor() && userFunctions.containsKey(call.getName())) {
@@ -368,6 +380,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate the witness list
 	 */
+	 
 	// The witness list must contain at least one witness
 	def private void checkWitnessListIsNonempty(WitnessList witnessList) {
 		if (witnessList.getWitnesses().size() === 0) {
@@ -379,6 +392,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate function calls
 	 */
+	 
 	// Function calls must reference either a user defined function or a predefined function
 	// The number of arguments in a function call must match the number of parameters in the function definition
 	
@@ -429,8 +443,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	/*
-	 * Grammar structure
+	 * Validate grammar structure
 	 */
+	 
 	// String literals must be directly nested within a tuple, a comparison, or a function call
 	def private void checkValidStringLiteralPosition(StringLiteral stringLiteral, BranchState state) {
 		val EObject parent = state.getParent();
@@ -517,6 +532,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate that the operands of a binary operation are of compatible type
 	 */
+	 
 	def private void checkConjunctionOperands(Conjunction conjunction) {
 		val Type leftType = types.get(conjunction.getLeft());
 		val Type rightType = types.get(conjunction.getRight());
@@ -616,8 +632,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	/*
-	 * Check that nodes with a predetermined type have this type
+	 * Validate that nodes with a predetermined type are actually this type
 	 */	
+	 
 	def private void checkIsBoolean(EObject node) {
 		checkIsType(node, Type.BOOLEAN);
 	}
@@ -667,7 +684,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	/*
-	 * Tuples
+	 * Validate tuples
 	 */
 	
 	// Tuples must be nested within a function call before being nested within another tuple
