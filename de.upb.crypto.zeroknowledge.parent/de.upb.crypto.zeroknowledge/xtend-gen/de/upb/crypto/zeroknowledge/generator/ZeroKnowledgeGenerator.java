@@ -6,6 +6,7 @@ package de.upb.crypto.zeroknowledge.generator;
 import com.google.common.base.Objects;
 import de.upb.crypto.zeroknowledge.model.BranchState;
 import de.upb.crypto.zeroknowledge.model.ModelHelper;
+import de.upb.crypto.zeroknowledge.model.ModelPrinter;
 import de.upb.crypto.zeroknowledge.type.Type;
 import de.upb.crypto.zeroknowledge.type.TypeInference;
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -47,7 +49,11 @@ import org.eclipse.xtext.generator.IGeneratorContext;
  */
 @SuppressWarnings("all")
 public class ZeroKnowledgeGenerator extends AbstractGenerator {
-  private static final String OUTPUT_FILE = "proof.java";
+  private static final String LOCAL_OUTPUT_FILE = "proof.java";
+  
+  private static final String WEB_OUTPUT_FILE = "/DEFAULT_ARTIFACT";
+  
+  private static final boolean COMPILE_LOCALLY = false;
   
   private HashMap<EObject, Type> types;
   
@@ -97,6 +103,9 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
   
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
+    URI _uRI = resource.getURI();
+    String _plus = ("GENERATOR CALLED" + _uRI);
+    System.out.println(_plus);
     HashSet<String> _hashSet = new HashSet<String>();
     this.variables = _hashSet;
     HashSet<String> _hashSet_1 = new HashSet<String>();
@@ -119,6 +128,7 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     this.stringLiteralBuilder = _stringBuilder_6;
     EObject _next = resource.getContents().iterator().next();
     final Model model = ((Model) _next);
+    ModelPrinter.print(model);
     final boolean inline = false;
     boolean _isCanceled = context.getCancelIndicator().isCanceled();
     if (_isCanceled) {
@@ -178,7 +188,11 @@ public class ZeroKnowledgeGenerator extends AbstractGenerator {
     if (_isCanceled_1) {
       return;
     }
-    fsa.generateFile(ZeroKnowledgeGenerator.OUTPUT_FILE, this.codeBuilder.toString());
+    if (ZeroKnowledgeGenerator.COMPILE_LOCALLY) {
+      fsa.generateFile(ZeroKnowledgeGenerator.LOCAL_OUTPUT_FILE, this.codeBuilder.toString());
+    } else {
+      fsa.generateFile(ZeroKnowledgeGenerator.WEB_OUTPUT_FILE, this.codeBuilder.toString());
+    }
   }
   
   public void generateImports() {

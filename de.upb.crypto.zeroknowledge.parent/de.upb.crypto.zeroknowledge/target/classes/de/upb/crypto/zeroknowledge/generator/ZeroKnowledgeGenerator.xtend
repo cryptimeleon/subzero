@@ -42,6 +42,7 @@ import de.upb.crypto.zeroknowledge.zeroKnowledge.FunctionDefinition
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Parameter
 import de.upb.crypto.zeroknowledge.zeroKnowledge.Argument
 import de.upb.crypto.zeroknowledge.type.TypeInference
+import org.eclipse.xtext.generator.IFileSystemAccess
 
 /**
  * Generates code from your model files on save.
@@ -52,7 +53,9 @@ import de.upb.crypto.zeroknowledge.type.TypeInference
  */
 class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
-	static val OUTPUT_FILE = 'proof.java';
+	static val LOCAL_OUTPUT_FILE = 'proof.java';
+	static val WEB_OUTPUT_FILE = '/DEFAULT_ARTIFACT';
+	static val COMPILE_LOCALLY = false;
 	
 	HashMap<EObject, Type> types;
 	HashMap<EObject, Integer> sizes;
@@ -83,6 +86,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	String INDENT = "  ";
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		System.out.println("GENERATOR CALLED" + resource.getURI());
 	
 		variables = new HashSet<String>;
 		numberLiterals = new HashSet<String>;
@@ -98,6 +102,9 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
 		// Perform model transformations
 		val Model model = resource.getContents().iterator().next() as Model;
+		
+		ModelPrinter.print(model);
+		
 		val boolean inline = false;
 		
 		// If build is canceled, stop code generation
@@ -118,6 +125,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		generateFunctions(model, new BranchState());
 		val String code = generateCode(model, new BranchState());
 	
+		// Combine all sections of generated code
 		codeBuilder.append(importBuilder);
 		if (importBuilder.length() !== 0) codeBuilder.append(NEWLINE);
 		codeBuilder.append(functionBuilder);
@@ -137,7 +145,12 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
 		
-		fsa.generateFile(OUTPUT_FILE, codeBuilder.toString());
+		// Generate the final file
+		if (COMPILE_LOCALLY) {
+			fsa.generateFile(LOCAL_OUTPUT_FILE, codeBuilder.toString());
+		} else {
+			fsa.generateFile(WEB_OUTPUT_FILE, codeBuilder.toString());
+		}
 	}
 	
 	// Generates all required import statements

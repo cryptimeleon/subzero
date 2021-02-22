@@ -81,6 +81,7 @@ public class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
    */
   @Check
   public void checkModel(final Model model) {
+    System.out.println("Validator Called");
     TypeInference.inferTypes(model);
     this.types = TypeInference.getTypes();
     this.sizes = TypeInference.getSizes();

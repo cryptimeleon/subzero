@@ -50,7 +50,6 @@ INDEX VERSION 1.131+C:\Users\Jeremy\zero\.metadata\.plugins\org.eclipse.jdt.core
 3013573492.index
 2138360301.index
 2053633241.index
-2864379062.index
 3944130867.index
 3871036239.index
 409881247.index
@@ -68,7 +67,6 @@ INDEX VERSION 1.131+C:\Users\Jeremy\zero\.metadata\.plugins\org.eclipse.jdt.core
 3599385116.index
 2413649293.index
 34226906.index
-3773846197.index
 1931424353.index
 2392741280.index
 3639406491.index
@@ -145,6 +143,5 @@ INDEX VERSION 1.131+C:\Users\Jeremy\zero\.metadata\.plugins\org.eclipse.jdt.core
 3767944103.index
 3034182337.index
 2980366276.index
-2653092915.index
 2274947041.index
 1201549957.index

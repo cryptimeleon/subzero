@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="jetty"/>
+		<item key="selection" value="ML_COMMENT"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="ML_COMMENT"/>
+			<item value="Comment"/>
+			<item value="fsa"/>
 			<item value="jetty"/>
 			<item value="Argumen"/>
 			<item value="print"/>
@@ -20,9 +23,6 @@
 			<item value="inPowerR"/>
 			<item value="checkPower"/>
 			<item value="checkIsTu"/>
-			<item value="checkIsScalar"/>
-			<item value="checkIsScalar`"/>
-			<item value="Tuples"/>
 		</list>
 		<list key="replacehistory">
 			<item value="fillDefaults"/>

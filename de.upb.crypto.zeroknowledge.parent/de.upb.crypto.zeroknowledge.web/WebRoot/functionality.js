@@ -1,5 +1,5 @@
 // Checkmark icon
-var CHECK = "images/check.svg";
+var CHECK_ICON = "images/check.svg";
 
 // The length of indentation when pressing tab in the code editor
 var INDENT_SPACES = 2;
@@ -175,8 +175,7 @@ function downloadRawLatex() {
 
   var filename = prompt("Enter a name for the latex file (file will be saved with .tex extension)");
 
-  if (filename !== null) {
-
+  if (filename) {
     downloadFile(filename + ".tex", latex);
   }
 }
@@ -194,10 +193,18 @@ function noCodeErrors(annotations) {
 // Compile the contents of the code editor to Java code and download the generated Java project
 function compileCode() {
   if (noCodeErrors()) {
-    // HTTP request
-    // getEditor().xtextServices.generate().then(function(errors) {
-    //
-    // });
+    getEditor().xtextServices.generate().then((code) => {
+      if (code === "") {
+        consoleError("There is no code to download");
+        return;
+      }
+  
+      var filename = prompt("Enter a name for the code file (file will be saved with .zkak extension)");
+  
+      if (filename) {
+        downloadFile(filename + ".java", code);
+      }
+    });
   } else {
     consoleError("Code cannot be compiled until there are no syntax or validation errors.");
   }
@@ -262,7 +269,7 @@ document.getElementById("update-latex-preview").addEventListener("click", functi
 for (let checkbox of document.getElementsByClassName("option-checkbox")) {
   checkbox.addEventListener("mouseenter", function() {
 		if (this.classList.contains("checkbox-off") && !this.classList.contains("disabled")) {
-			this.getElementsByClassName("checkbox-icon")[0].src = CHECK;
+			this.getElementsByClassName("checkbox-icon")[0].src = CHECK_ICON;
 		}
 	});
 
@@ -274,7 +281,7 @@ for (let checkbox of document.getElementsByClassName("option-checkbox")) {
 
 	checkbox.addEventListener("focusin", function() {
 		if (this.classList.contains("checkbox-off")) {
-			this.getElementsByClassName("checkbox-icon")[0].src = CHECK;
+			this.getElementsByClassName("checkbox-icon")[0].src = CHECK_ICON;
 		}
 	});
 

@@ -314,6 +314,8 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cRightAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
 		private final RuleCall cRightComparisonParserRuleCall_1_2_0 = (RuleCall)cRightAssignment_1_2.eContents().get(0);
 		
+		////Protocol returns Expression:
+		////  Disjunction protocol=(PROTOCOL_NAME)?;
 		//Disjunction Expression:
 		//	Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
 		@Override public ParserRule getRule() { return rule; }
@@ -1214,6 +1216,8 @@ public class ZeroKnowledgeGrammarAccess extends AbstractGrammarElementFinder {
 		return getConjunctionAccess().getRule();
 	}
 	
+	////Protocol returns Expression:
+	////  Disjunction protocol=(PROTOCOL_NAME)?;
 	//Disjunction Expression:
 	//	Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
 	public DisjunctionElements getDisjunctionAccess() {

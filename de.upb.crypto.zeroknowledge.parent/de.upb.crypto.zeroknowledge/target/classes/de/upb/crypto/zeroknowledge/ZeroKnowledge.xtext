@@ -35,6 +35,9 @@ Expression:
 Conjunction returns Expression:
   Disjunction ({Conjunction.left=current} operation='&' right=Disjunction)*;
 
+//Protocol returns Expression:
+//  Disjunction protocol=(PROTOCOL_NAME)?;
+
 Disjunction returns Expression:
   Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
 
@@ -113,3 +116,6 @@ terminal IDENTIFIER:
 
 terminal STRING_LITERAL:
   '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+
+//terminal PROTOCOL_NAME:
+//	'['('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')+']';
