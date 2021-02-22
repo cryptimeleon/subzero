@@ -53,8 +53,13 @@ import org.eclipse.xtext.generator.IFileSystemAccess
  */
 class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
+	// The compiled code file when using the Eclipse editor
 	static val LOCAL_OUTPUT_FILE = 'proof.java';
+	
+	// The compiled code file when using the web editor
 	static val WEB_OUTPUT_FILE = '/DEFAULT_ARTIFACT';
+	
+	// Set to true for Eclipse editor, false for web editor
 	static val COMPILE_LOCALLY = false;
 	
 	HashMap<EObject, Type> types;
