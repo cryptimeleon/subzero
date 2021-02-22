@@ -17,9 +17,8 @@ public class ImportBuilder {
     this.importBuilder = _stringBuilder;
   }
   
-  public StringBuilder addImport() {
-    throw new Error("Unresolved compilation problems:"
-      + "\nInvalid number of arguments. The method append(Object) is not applicable without arguments");
+  public StringBuilder addImport(final String importStatement) {
+    return this.importBuilder.append(importStatement);
   }
   
   public StringBuilder getBuilder() {

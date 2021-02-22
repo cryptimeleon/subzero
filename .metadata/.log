@@ -3046,3 +3046,382 @@ org.eclipse.core.runtime.OperationCanceledException
 	at org.eclipse.xtext.xbase.ui.hover.XbaseDispatchingEObjectTextHover.getHoverInfo2(XbaseDispatchingEObjectTextHover.java:61)
 	at org.eclipse.xtext.ui.editor.hover.AbstractCompositeHover.getHoverInfo2(AbstractCompositeHover.java:94)
 	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:169)
+!SESSION 2021-02-21 21:53:11.589 -----------------------------------------------
+eclipse.buildId=4.11.0.I20190307-0500
+java.version=12.0.1
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.dsl.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.dsl.product
+
+!ENTRY org.eclipse.egit.core 1 0 2021-02-21 21:53:21.256
+!MESSAGE Using Apache MINA sshd as ssh client.
+
+!ENTRY org.eclipse.egit.ui 2 0 2021-02-21 21:53:52.286
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Jeremy'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+!SESSION 2021-02-22 10:43:54.309 -----------------------------------------------
+eclipse.buildId=4.11.0.I20190307-0500
+java.version=12.0.1
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.dsl.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.dsl.product
+
+!ENTRY org.eclipse.egit.core 1 0 2021-02-22 10:44:00.188
+!MESSAGE Using Apache MINA sshd as ssh client.
+
+!ENTRY org.eclipse.egit.ui 2 0 2021-02-22 10:44:37.306
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Jeremy'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.apache.log4j 4 0 2021-02-22 11:32:32.051
+!MESSAGE org.eclipse.xtext.xbase.resource.BatchLinkableResource  - resolution of uriFragment '|6' failed.
+
+!STACK 0
+java.lang.IllegalStateException: A different resource with the URI 'java:/Objects/de.upb.crypto.zeroknowledge.type.Type' was already registered.
+	at org.eclipse.xtext.resource.XtextResourceSet.registerURI(XtextResourceSet.java:137)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet.registerURI(SynchronizedXtextResourceSet.java:45)
+	at org.eclipse.xtext.resource.XtextResourceSet$ResourcesList.inverseAdd(XtextResourceSet.java:152)
+	at org.eclipse.xtext.resource.XtextResourceSet$ResourcesList.inverseAdd(XtextResourceSet.java:146)
+	at org.eclipse.emf.common.notify.impl.NotifyingListImpl.addUnique(NotifyingListImpl.java:286)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.addUnique(SynchronizedXtextResourceSet.java:355)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.addUnique(SynchronizedXtextResourceSet.java:84)
+	at org.eclipse.emf.common.util.AbstractEList.add(AbstractEList.java:304)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.add(SynchronizedXtextResourceSet.java:105)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.add(SynchronizedXtextResourceSet.java:84)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.createResource(JdtTypeProvider.java:295)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.createResourceAndFindType(JdtTypeProvider.java:288)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.findObjectTypeInJavaProject(JdtTypeProvider.java:272)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.doFindObjectType(JdtTypeProvider.java:215)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.findObjectType(JdtTypeProvider.java:195)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.doFindTypeByName(JdtTypeProvider.java:153)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.findTypeByName(JdtTypeProvider.java:162)
+	at org.eclipse.xtext.common.types.xtext.AbstractTypeScope.getSingleElement(AbstractTypeScope.java:59)
+	at org.eclipse.xtext.common.types.xtext.AbstractTypeScope.getSingleElement(AbstractTypeScope.java:54)
+	at org.eclipse.xtend.core.scoping.LocalResourceFilteringTypeScope.getSingleElement(LocalResourceFilteringTypeScope.java:42)
+	at org.eclipse.xtend.core.scoping.RecordingTypeScope.getSingleElement(RecordingTypeScope.java:51)
+	at org.eclipse.xtext.scoping.impl.AbstractScope.getSingleElement(AbstractScope.java:108)
+	at org.eclipse.xtext.linking.impl.DefaultLinkingService.getLinkedObjects(DefaultLinkingService.java:114)
+	at org.eclipse.xtext.linking.lazy.LazyLinkingResource.getEObject(LazyLinkingResource.java:265)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.getEObject(BatchLinkableResource.java:119)
+	at org.eclipse.emf.ecore.resource.impl.ResourceSetImpl.getEObject(ResourceSetImpl.java:223)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:209)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:269)
+	at org.eclipse.emf.ecore.impl.BasicEObjectImpl.eResolveProxy(BasicEObjectImpl.java:1477)
+	at org.eclipse.xtext.xtype.impl.XImportDeclarationImpl.getImportedType(XImportDeclarationImpl.java:253)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider.getImportScope(XtendImportedNamespaceScopeProvider.java:284)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider.access$2(XtendImportedNamespaceScopeProvider.java:262)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider$1.get(XtendImportedNamespaceScopeProvider.java:131)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider$1.get(XtendImportedNamespaceScopeProvider.java:1)
+	at org.eclipse.xtext.util.OnChangeEvictingCache.get(OnChangeEvictingCache.java:76)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider.getScope(XtendImportedNamespaceScopeProvider.java:119)
+	at org.eclipse.xtext.xbase.scoping.batch.TypeScopes.createTypeScope(TypeScopes.java:59)
+	at org.eclipse.xtext.xbase.scoping.batch.XbaseBatchScopeProvider.getScope(XbaseBatchScopeProvider.java:112)
+	at org.eclipse.xtext.xbase.annotations.typesystem.XbaseWithAnnotationsBatchScopeProvider.getScope(XbaseWithAnnotationsBatchScopeProvider.java:53)
+	at org.eclipse.xtext.linking.impl.DefaultLinkingService.getScope(DefaultLinkingService.java:58)
+	at org.eclipse.xtext.linking.impl.DefaultLinkingService.getLinkedObjects(DefaultLinkingService.java:107)
+	at org.eclipse.xtext.linking.lazy.LazyLinkingResource.getEObject(LazyLinkingResource.java:265)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.getEObject(BatchLinkableResource.java:119)
+	at org.eclipse.emf.ecore.resource.impl.ResourceSetImpl.getEObject(ResourceSetImpl.java:223)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:209)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:269)
+	at org.eclipse.emf.ecore.impl.BasicEObjectImpl.eResolveProxy(BasicEObjectImpl.java:1477)
+	at org.eclipse.xtext.common.types.impl.JvmTypeReferenceImplCustom.eResolveProxy(JvmTypeReferenceImplCustom.java:31)
+	at org.eclipse.xtext.common.types.impl.JvmParameterizedTypeReferenceImpl.getType(JvmParameterizedTypeReferenceImpl.java:111)
+	at org.eclipse.xtext.common.types.util.RawTypeReferenceComputer.doVisitParameterizedTypeReference(RawTypeReferenceComputer.java:116)
+	at org.eclipse.xtext.common.types.util.RawTypeReferenceComputer.doVisitParameterizedTypeReference(RawTypeReferenceComputer.java:45)
+	at org.eclipse.xtext.common.types.impl.JvmParameterizedTypeReferenceImplCustom.accept(JvmParameterizedTypeReferenceImplCustom.java:59)
+	at org.eclipse.xtext.common.types.util.AbstractTypeReferenceVisitorWithParameter.visit(AbstractTypeReferenceVisitorWithParameter.java:34)
+	at org.eclipse.xtext.common.types.util.RawTypeReferenceComputer.getRawTypeReference(RawTypeReferenceComputer.java:56)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom.getRawTypeIdentifier(JvmDeclaredTypeImplCustom.java:520)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom$4.get(JvmDeclaredTypeImplCustom.java:335)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom$4.get(JvmDeclaredTypeImplCustom.java:306)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom$5.exec(JvmDeclaredTypeImplCustom.java:373)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.execute(BatchLinkableResource.java:87)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom.doSynchronized(JvmDeclaredTypeImplCustom.java:370)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom.findAllFeaturesByName(JvmDeclaredTypeImplCustom.java:306)
+	at org.eclipse.xtend.core.jvmmodel.DispatchHelper.getAllDispatchMethods(DispatchHelper.java:298)
+	at org.eclipse.xtend.core.jvmmodel.DispatchHelper.getDeclaredOrEnhancedDispatchMethods(DispatchHelper.java:286)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer.appendSyntheticDispatchMethods(XtendJvmModelInferrer.java:484)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer.initialize(XtendJvmModelInferrer.java:408)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer$5.run(XtendJvmModelInferrer.java:278)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer$3.run(XtendJvmModelInferrer.java:218)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.ensureJvmMembersInitialized(BatchLinkableResource.java:231)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator.getOrInstall(JvmModelAssociator.java:112)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator.targetToSourceMap(JvmModelAssociator.java:210)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator.getPrimarySourceElement(JvmModelAssociator.java:360)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmLocationInFileProvider.convertToSource(JvmLocationInFileProvider.java:67)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmLocationInFileProvider.getFullTextRegion(JvmLocationInFileProvider.java:38)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategy.getOriginalNameRegion(DefaultRenameStrategy.java:79)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategy.initialize(DefaultRenameStrategy.java:54)
+	at org.eclipse.xtend.ide.refactoring.XtendRenameStrategy.initialize(XtendRenameStrategy.java:45)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategyProvider.get(DefaultRenameStrategyProvider.java:34)
+	at org.eclipse.xtend.ide.refactoring.XtendRenameStrategyProvider.get(XtendRenameStrategyProvider.java:27)
+	at org.eclipse.xtext.common.types.ui.refactoring.participant.JvmMemberRenameStrategy$Provider.get(JvmMemberRenameStrategy.java:132)
+	at org.eclipse.xtext.ui.refactoring.ui.DefaultLinkedPositionGroupCalculator.getLinkedPositionGroup(DefaultLinkedPositionGroupCalculator.java:125)
+	at org.eclipse.xtext.ui.refactoring.ui.RenameRefactoringController$1.run(RenameRefactoringController.java:146)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:122)
+
+!ENTRY org.apache.log4j 4 0 2021-02-22 11:32:36.740
+!MESSAGE org.eclipse.xtext.xbase.resource.BatchLinkableResource  - resolution of uriFragment '|6' failed.
+
+!STACK 0
+java.lang.IllegalStateException: A different resource with the URI 'java:/Objects/de.upb.crypto.zeroknowledge.type.Type' was already registered.
+	at org.eclipse.xtext.resource.XtextResourceSet.registerURI(XtextResourceSet.java:137)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet.registerURI(SynchronizedXtextResourceSet.java:45)
+	at org.eclipse.xtext.resource.XtextResourceSet$ResourcesList.inverseAdd(XtextResourceSet.java:152)
+	at org.eclipse.xtext.resource.XtextResourceSet$ResourcesList.inverseAdd(XtextResourceSet.java:146)
+	at org.eclipse.emf.common.notify.impl.NotifyingListImpl.addUnique(NotifyingListImpl.java:286)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.addUnique(SynchronizedXtextResourceSet.java:355)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.addUnique(SynchronizedXtextResourceSet.java:84)
+	at org.eclipse.emf.common.util.AbstractEList.add(AbstractEList.java:304)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.add(SynchronizedXtextResourceSet.java:105)
+	at org.eclipse.xtext.resource.SynchronizedXtextResourceSet$1.add(SynchronizedXtextResourceSet.java:84)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.createResource(JdtTypeProvider.java:295)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.createResourceAndFindType(JdtTypeProvider.java:288)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.findObjectTypeInJavaProject(JdtTypeProvider.java:272)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.doFindObjectType(JdtTypeProvider.java:215)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.findObjectType(JdtTypeProvider.java:195)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.doFindTypeByName(JdtTypeProvider.java:153)
+	at org.eclipse.xtext.common.types.access.jdt.JdtTypeProvider.findTypeByName(JdtTypeProvider.java:162)
+	at org.eclipse.xtext.common.types.xtext.AbstractTypeScope.getSingleElement(AbstractTypeScope.java:59)
+	at org.eclipse.xtext.common.types.xtext.AbstractTypeScope.getSingleElement(AbstractTypeScope.java:54)
+	at org.eclipse.xtend.core.scoping.LocalResourceFilteringTypeScope.getSingleElement(LocalResourceFilteringTypeScope.java:42)
+	at org.eclipse.xtend.core.scoping.RecordingTypeScope.getSingleElement(RecordingTypeScope.java:51)
+	at org.eclipse.xtext.scoping.impl.AbstractScope.getSingleElement(AbstractScope.java:108)
+	at org.eclipse.xtext.linking.impl.DefaultLinkingService.getLinkedObjects(DefaultLinkingService.java:114)
+	at org.eclipse.xtext.linking.lazy.LazyLinkingResource.getEObject(LazyLinkingResource.java:265)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.getEObject(BatchLinkableResource.java:119)
+	at org.eclipse.emf.ecore.resource.impl.ResourceSetImpl.getEObject(ResourceSetImpl.java:223)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:209)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:269)
+	at org.eclipse.emf.ecore.impl.BasicEObjectImpl.eResolveProxy(BasicEObjectImpl.java:1477)
+	at org.eclipse.xtext.xtype.impl.XImportDeclarationImpl.getImportedType(XImportDeclarationImpl.java:253)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider.getImportScope(XtendImportedNamespaceScopeProvider.java:284)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider.access$2(XtendImportedNamespaceScopeProvider.java:262)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider$1.get(XtendImportedNamespaceScopeProvider.java:131)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider$1.get(XtendImportedNamespaceScopeProvider.java:1)
+	at org.eclipse.xtext.util.OnChangeEvictingCache.get(OnChangeEvictingCache.java:76)
+	at org.eclipse.xtend.core.scoping.XtendImportedNamespaceScopeProvider.getScope(XtendImportedNamespaceScopeProvider.java:119)
+	at org.eclipse.xtext.xbase.scoping.batch.TypeScopes.createTypeScope(TypeScopes.java:59)
+	at org.eclipse.xtext.xbase.scoping.batch.XbaseBatchScopeProvider.getScope(XbaseBatchScopeProvider.java:112)
+	at org.eclipse.xtext.xbase.annotations.typesystem.XbaseWithAnnotationsBatchScopeProvider.getScope(XbaseWithAnnotationsBatchScopeProvider.java:53)
+	at org.eclipse.xtext.linking.impl.DefaultLinkingService.getScope(DefaultLinkingService.java:58)
+	at org.eclipse.xtext.linking.impl.DefaultLinkingService.getLinkedObjects(DefaultLinkingService.java:107)
+	at org.eclipse.xtext.linking.lazy.LazyLinkingResource.getEObject(LazyLinkingResource.java:265)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.getEObject(BatchLinkableResource.java:119)
+	at org.eclipse.emf.ecore.resource.impl.ResourceSetImpl.getEObject(ResourceSetImpl.java:223)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:209)
+	at org.eclipse.emf.ecore.util.EcoreUtil.resolve(EcoreUtil.java:269)
+	at org.eclipse.emf.ecore.impl.BasicEObjectImpl.eResolveProxy(BasicEObjectImpl.java:1477)
+	at org.eclipse.xtext.common.types.impl.JvmTypeReferenceImplCustom.eResolveProxy(JvmTypeReferenceImplCustom.java:31)
+	at org.eclipse.xtext.common.types.impl.JvmParameterizedTypeReferenceImpl.getType(JvmParameterizedTypeReferenceImpl.java:111)
+	at org.eclipse.xtext.common.types.util.RawTypeReferenceComputer.doVisitParameterizedTypeReference(RawTypeReferenceComputer.java:116)
+	at org.eclipse.xtext.common.types.util.RawTypeReferenceComputer.doVisitParameterizedTypeReference(RawTypeReferenceComputer.java:45)
+	at org.eclipse.xtext.common.types.impl.JvmParameterizedTypeReferenceImplCustom.accept(JvmParameterizedTypeReferenceImplCustom.java:59)
+	at org.eclipse.xtext.common.types.util.AbstractTypeReferenceVisitorWithParameter.visit(AbstractTypeReferenceVisitorWithParameter.java:34)
+	at org.eclipse.xtext.common.types.util.RawTypeReferenceComputer.getRawTypeReference(RawTypeReferenceComputer.java:56)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom.getRawTypeIdentifier(JvmDeclaredTypeImplCustom.java:520)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom$4.get(JvmDeclaredTypeImplCustom.java:335)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom$4.get(JvmDeclaredTypeImplCustom.java:306)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom$5.exec(JvmDeclaredTypeImplCustom.java:373)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.execute(BatchLinkableResource.java:87)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom.doSynchronized(JvmDeclaredTypeImplCustom.java:370)
+	at org.eclipse.xtext.common.types.impl.JvmDeclaredTypeImplCustom.findAllFeaturesByName(JvmDeclaredTypeImplCustom.java:306)
+	at org.eclipse.xtend.core.jvmmodel.DispatchHelper.getAllDispatchMethods(DispatchHelper.java:298)
+	at org.eclipse.xtend.core.jvmmodel.DispatchHelper.getDeclaredOrEnhancedDispatchMethods(DispatchHelper.java:286)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer.appendSyntheticDispatchMethods(XtendJvmModelInferrer.java:484)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer.initialize(XtendJvmModelInferrer.java:408)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer$5.run(XtendJvmModelInferrer.java:278)
+	at org.eclipse.xtend.core.jvmmodel.XtendJvmModelInferrer$3.run(XtendJvmModelInferrer.java:218)
+	at org.eclipse.xtext.xbase.resource.BatchLinkableResource.ensureJvmMembersInitialized(BatchLinkableResource.java:231)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator.getOrInstall(JvmModelAssociator.java:112)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator.targetToSourceMap(JvmModelAssociator.java:210)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator.getPrimarySourceElement(JvmModelAssociator.java:360)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmLocationInFileProvider.convertToSource(JvmLocationInFileProvider.java:67)
+	at org.eclipse.xtext.xbase.jvmmodel.JvmLocationInFileProvider.getFullTextRegion(JvmLocationInFileProvider.java:38)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategy.getOriginalNameRegion(DefaultRenameStrategy.java:79)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategy.initialize(DefaultRenameStrategy.java:54)
+	at org.eclipse.xtend.ide.refactoring.XtendRenameStrategy.initialize(XtendRenameStrategy.java:45)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameStrategyProvider.get(DefaultRenameStrategyProvider.java:34)
+	at org.eclipse.xtend.ide.refactoring.XtendRenameStrategyProvider.get(XtendRenameStrategyProvider.java:27)
+	at org.eclipse.xtext.common.types.ui.refactoring.participant.JvmMemberRenameStrategy$Provider.get(JvmMemberRenameStrategy.java:132)
+	at org.eclipse.xtext.ui.refactoring.impl.RenameElementProcessor.createRenameElementStrategy(RenameElementProcessor.java:164)
+	at org.eclipse.xtext.ui.refactoring.impl.RenameElementProcessor.initialize(RenameElementProcessor.java:122)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameRefactoringProvider.getRenameProcessor(DefaultRenameRefactoringProvider.java:40)
+	at org.eclipse.xtext.xbase.ui.jvmmodel.refactoring.jdt.CombinedJvmJdtRenameRefactoringProvider.getRenameProcessor(CombinedJvmJdtRenameRefactoringProvider.java:60)
+	at org.eclipse.xtext.ui.refactoring.impl.DefaultRenameRefactoringProvider.getRenameRefactoring(DefaultRenameRefactoringProvider.java:30)
+	at org.eclipse.xtext.common.types.ui.refactoring.JvmRenameRefactoringProvider.getRenameRefactoring(JvmRenameRefactoringProvider.java:48)
+	at org.eclipse.xtext.xbase.ui.jvmmodel.refactoring.jdt.CombinedJvmJdtRenameRefactoringProvider.getRenameRefactoring(CombinedJvmJdtRenameRefactoringProvider.java:44)
+	at org.eclipse.xtext.ui.refactoring.ui.DefaultRenameSupport.initialize(DefaultRenameSupport.java:68)
+	at org.eclipse.xtext.ui.refactoring.ui.DefaultRenameSupport$Factory.create(DefaultRenameSupport.java:36)
+	at org.eclipse.xtext.common.types.ui.refactoring.JdtRenameSupport$Factory.create(JdtRenameSupport.java:50)
+	at org.eclipse.xtext.ui.refactoring.ui.RenameRefactoringController.createRenameSupport(RenameRefactoringController.java:251)
+	at org.eclipse.xtext.ui.refactoring.ui.RenameRefactoringController.startDirectRefactoring(RenameRefactoringController.java:201)
+	at org.eclipse.xtext.ui.refactoring.ui.RenameRefactoringController.startRefactoring(RenameRefactoringController.java:116)
+	at org.eclipse.xtext.ui.refactoring.ui.RenameLinkedMode$EditorSynchronizer.left(RenameLinkedMode.java:167)
+	at org.eclipse.jface.text.link.LinkedModeModel.exit(LinkedModeModel.java:338)
+	at org.eclipse.jface.text.link.LinkedModeUI.lambda$2(LinkedModeUI.java:1174)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:40)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:185)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3919)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3550)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$5.run(PartRenderingEngine.java:1173)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:338)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1062)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:155)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:644)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:338)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:566)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:155)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:203)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:137)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:107)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:400)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:567)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:661)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:597)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1476)
+
+!ENTRY org.apache.log4j 4 0 2021-02-22 11:32:52.530
+!MESSAGE org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider  - Error on computation of hover information. No hover information available for org.eclipse.xtext.xbase.impl.XConstructorCallImplCustom@79fe98c5 (invalidFeatureIssueCode: null, validFeature: false, explicitConstructorCall: true, anonymousClassConstructorCall: false) at offset: 3568, length: 13
+
+!STACK 0
+org.eclipse.core.runtime.OperationCanceledException
+	at org.eclipse.jdt.internal.core.AbstractClassFile.getClassFileContent(AbstractClassFile.java:213)
+	at org.eclipse.jdt.internal.core.ModularClassFile.getJarBinaryModuleInfo(ModularClassFile.java:171)
+	at org.eclipse.jdt.internal.core.ModularClassFile.getBinaryModuleInfo(ModularClassFile.java:136)
+	at org.eclipse.jdt.internal.core.ModularClassFile.buildStructure(ModularClassFile.java:55)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:268)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:596)
+	at org.eclipse.jdt.internal.core.ModularClassFile.getModule(ModularClassFile.java:298)
+	at org.eclipse.jdt.internal.core.PackageFragmentRoot.getSourceModuleDescription(PackageFragmentRoot.java:914)
+	at org.eclipse.jdt.internal.core.PackageFragmentRoot.getModuleDescription(PackageFragmentRoot.java:890)
+	at org.eclipse.jdt.internal.core.JarPackageFragmentRoot.getModuleDescription(JarPackageFragmentRoot.java:321)
+	at org.eclipse.jdt.internal.core.NameLookup.getModuleDescription(NameLookup.java:898)
+	at org.eclipse.jdt.internal.core.NameLookup.findType(NameLookup.java:798)
+	at org.eclipse.jdt.internal.core.NameLookup.findType(NameLookup.java:745)
+	at org.eclipse.jdt.internal.core.NameLookup.findType(NameLookup.java:1025)
+	at org.eclipse.jdt.internal.core.JavaProject.findType(JavaProject.java:1643)
+	at org.eclipse.jdt.internal.core.JavaProject.findType(JavaProject.java:1729)
+	at org.eclipse.jdt.internal.core.JavaProject.findType(JavaProject.java:1629)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.caseJvmDeclaredType(JavaElementFinder.java:254)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.caseJvmDeclaredType(JavaElementFinder.java:1)
+	at org.eclipse.xtext.common.types.util.TypesSwitch.doSwitch(TypesSwitch.java:235)
+	at org.eclipse.emf.ecore.util.Switch.doSwitch(Switch.java:53)
+	at org.eclipse.emf.ecore.util.Switch.doSwitch(Switch.java:69)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.doSwitch(JavaElementFinder.java:266)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.getDeclaringTypeElement(JavaElementFinder.java:116)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.caseJvmConstructor(JavaElementFinder.java:231)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.caseJvmConstructor(JavaElementFinder.java:1)
+	at org.eclipse.xtext.common.types.util.TypesSwitch.doSwitch(TypesSwitch.java:339)
+	at org.eclipse.emf.ecore.util.Switch.doSwitch(Switch.java:53)
+	at org.eclipse.emf.ecore.util.Switch.doSwitch(Switch.java:69)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.doSwitch(JavaElementFinder.java:266)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder.internalFindElementFor(JavaElementFinder.java:63)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder.findElementFor(JavaElementFinder.java:45)
+	at org.eclipse.xtext.common.types.xtext.ui.JdtHoverDocumentationProvider.getDocumentation(JdtHoverDocumentationProvider.java:38)
+	at org.eclipse.xtext.xbase.ui.hover.XbaseHoverProvider.getDocumentation(XbaseHoverProvider.java:187)
+	at org.eclipse.xtext.xbase.ui.hover.XbaseHoverProvider.getHoverInfoAsHtml(XbaseHoverProvider.java:150)
+	at org.eclipse.xtext.xbase.ui.hover.XbaseHoverProvider.getHoverInfo(XbaseHoverProvider.java:106)
+	at org.eclipse.xtend.ide.hover.XtendHoverProvider.getHoverInfo(XtendHoverProvider.java:34)
+	at org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider$2.getInfo(DefaultEObjectHoverProvider.java:539)
+	at org.eclipse.xtext.ui.editor.hover.DispatchingEObjectTextHover.getHoverInfo(DispatchingEObjectTextHover.java:41)
+	at org.eclipse.xtext.ui.editor.hover.AbstractEObjectHover$2.exec(AbstractEObjectHover.java:96)
+	at org.eclipse.xtext.ui.editor.hover.AbstractEObjectHover$2.exec(AbstractEObjectHover.java:1)
+	at org.eclipse.xtext.resource.OutdatedStateManager.exec(OutdatedStateManager.java:91)
+	at org.eclipse.xtext.ui.editor.model.XtextDocument$XtextDocumentLocker.internalReadOnly(XtextDocument.java:527)
+	at org.eclipse.xtext.ui.editor.model.XtextDocument$XtextDocumentLocker.readOnly(XtextDocument.java:499)
+	at org.eclipse.xtext.ui.editor.model.XtextDocument.readOnly(XtextDocument.java:138)
+	at org.eclipse.xtext.ui.editor.hover.AbstractEObjectHover.getHoverInfo2(AbstractEObjectHover.java:87)
+	at org.eclipse.xtext.xbase.ui.hover.XbaseDispatchingEObjectTextHover.getHoverInfo2(XbaseDispatchingEObjectTextHover.java:61)
+	at org.eclipse.xtext.ui.editor.hover.AbstractCompositeHover.getHoverInfo2(AbstractCompositeHover.java:94)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:169)
+
+!ENTRY org.apache.log4j 4 0 2021-02-22 11:33:36.478
+!MESSAGE org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider  - Error on computation of hover information. No hover information available for generateCode(<XFeatureCallImplCustom>,<XFeatureCallImplCustom>) at offset: 3109, length: 12
+
+!STACK 0
+org.eclipse.core.runtime.OperationCanceledException
+	at org.eclipse.jdt.internal.core.AbstractClassFile.getClassFileContent(AbstractClassFile.java:213)
+	at org.eclipse.jdt.internal.core.ModularClassFile.getJarBinaryModuleInfo(ModularClassFile.java:171)
+	at org.eclipse.jdt.internal.core.ModularClassFile.getBinaryModuleInfo(ModularClassFile.java:136)
+	at org.eclipse.jdt.internal.core.ModularClassFile.buildStructure(ModularClassFile.java:55)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:268)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:596)
+	at org.eclipse.jdt.internal.core.ModularClassFile.getModule(ModularClassFile.java:298)
+	at org.eclipse.jdt.internal.core.PackageFragmentRoot.getSourceModuleDescription(PackageFragmentRoot.java:914)
+	at org.eclipse.jdt.internal.core.PackageFragmentRoot.getModuleDescription(PackageFragmentRoot.java:890)
+	at org.eclipse.jdt.internal.core.JarPackageFragmentRoot.getModuleDescription(JarPackageFragmentRoot.java:321)
+	at org.eclipse.jdt.internal.core.NameLookup.getModuleDescription(NameLookup.java:898)
+	at org.eclipse.jdt.internal.core.NameLookup.findType(NameLookup.java:798)
+	at org.eclipse.jdt.internal.core.NameLookup.findType(NameLookup.java:706)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.find(SearchableEnvironment.java:156)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.findType(SearchableEnvironment.java:469)
+	at org.eclipse.jdt.internal.compiler.env.IModuleAwareNameEnvironment.findType(IModuleAwareNameEnvironment.java:100)
+	at org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment.askForType(LookupEnvironment.java:291)
+	at org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment.getType(LookupEnvironment.java:1685)
+	at org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment.getResolvedType(LookupEnvironment.java:1607)
+	at org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment.getResolvedJavaBaseType(LookupEnvironment.java:1619)
+	at org.eclipse.jdt.internal.compiler.lookup.Scope.getJavaLangObject(Scope.java:2875)
+	at org.eclipse.jdt.internal.compiler.lookup.ClassScope.connectSuperclass(ClassScope.java:958)
+	at org.eclipse.jdt.internal.compiler.lookup.ClassScope.connectTypeHierarchy(ClassScope.java:1123)
+	at org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope.connectTypeHierarchy(CompilationUnitScope.java:361)
+	at org.eclipse.jdt.internal.compiler.lookup.LookupEnvironment.completeTypeBindings(LookupEnvironment.java:574)
+	at org.eclipse.jdt.internal.codeassist.SelectionEngine.selectType(SelectionEngine.java:1640)
+	at org.eclipse.jdt.internal.core.NamedMember.resolveType(NamedMember.java:328)
+	at org.eclipse.jdt.internal.core.NamedMember.resolveType(NamedMember.java:270)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.toQualifiedTypeName(JavaElementFinder.java:210)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.toQualifiedRawTypeName(JavaElementFinder.java:195)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.doParametersMatch(JavaElementFinder.java:165)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.caseJvmOperation(JavaElementFinder.java:143)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.caseJvmOperation(JavaElementFinder.java:1)
+	at org.eclipse.xtext.common.types.util.TypesSwitch.doSwitch(TypesSwitch.java:352)
+	at org.eclipse.emf.ecore.util.Switch.doSwitch(Switch.java:53)
+	at org.eclipse.emf.ecore.util.Switch.doSwitch(Switch.java:69)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder$Implementation.doSwitch(JavaElementFinder.java:266)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder.internalFindElementFor(JavaElementFinder.java:63)
+	at org.eclipse.xtext.common.types.util.jdt.JavaElementFinder.findElementFor(JavaElementFinder.java:45)
+	at org.eclipse.xtext.xbase.ui.hover.XbaseHoverProvider.getHoverInfo(XbaseHoverProvider.java:121)
+	at org.eclipse.xtend.ide.hover.XtendHoverProvider.getHoverInfo(XtendHoverProvider.java:34)
+	at org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider$2.getInfo(DefaultEObjectHoverProvider.java:539)
+	at org.eclipse.xtext.ui.editor.hover.DispatchingEObjectTextHover.getHoverInfo(DispatchingEObjectTextHover.java:41)
+	at org.eclipse.xtext.ui.editor.hover.AbstractEObjectHover$2.exec(AbstractEObjectHover.java:96)
+	at org.eclipse.xtext.ui.editor.hover.AbstractEObjectHover$2.exec(AbstractEObjectHover.java:1)
+	at org.eclipse.xtext.resource.OutdatedStateManager.exec(OutdatedStateManager.java:91)
+	at org.eclipse.xtext.ui.editor.model.XtextDocument$XtextDocumentLocker.internalReadOnly(XtextDocument.java:527)
+	at org.eclipse.xtext.ui.editor.model.XtextDocument$XtextDocumentLocker.readOnly(XtextDocument.java:499)
+	at org.eclipse.xtext.ui.editor.model.XtextDocument.readOnly(XtextDocument.java:138)
+	at org.eclipse.xtext.ui.editor.hover.AbstractEObjectHover.getHoverInfo2(AbstractEObjectHover.java:87)
+	at org.eclipse.xtext.xbase.ui.hover.XbaseDispatchingEObjectTextHover.getHoverInfo2(XbaseDispatchingEObjectTextHover.java:61)
+	at org.eclipse.xtext.ui.editor.hover.AbstractCompositeHover.getHoverInfo2(AbstractCompositeHover.java:94)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:169)
+!SESSION 2021-02-22 12:37:16.817 -----------------------------------------------
+eclipse.buildId=4.11.0.I20190307-0500
+java.version=12.0.1
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.dsl.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.dsl.product
+
+!ENTRY org.eclipse.egit.core 1 0 2021-02-22 12:37:25.637
+!MESSAGE Using Apache MINA sshd as ssh client.
+
+!ENTRY org.eclipse.egit.ui 2 0 2021-02-22 12:38:11.917
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Jeremy'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.

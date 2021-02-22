@@ -1,5 +1,5 @@
 // Timer for continuous LaTeX preview updating
-var TIMER_INTERVAL = 500;
+var TIMER_INTERVAL = 600;
 var timer;
 
 var SELECTION_UPDATE_DELAY = 550;
@@ -7,6 +7,9 @@ var TEXT_UPDATE_DELAY = 500;
 var DEFAULT_FONT_SIZE = 18;
 var MINIMUM_FONT_SIZE = 8;
 var MAXIMUM_FONT_SIZE = 40;
+
+var CODE_RESOURCE_ID = "code.zkak";
+var LATEX_RESOURCE_ID = "latex.zkak";
 
 // Checkmark icon
 var CHECK_ICON = "images/check.svg";
@@ -33,6 +36,9 @@ function getEditor() {
 function createEditor(xtext) {
   var editor = xtext.createEditor({
     baseUrl: baseUrl,
+    xtextLang: "zkak",
+		resourceId: CODE_RESOURCE_ID,
+    sendFullText: true,
     syntaxDefinition: "xtext-resources/generated/mode-zkak",
     theme: "ace/theme/monokai",
     selectionUpdateDelay: SELECTION_UPDATE_DELAY,
@@ -41,6 +47,7 @@ function createEditor(xtext) {
 
   editor.setFontSize(DEFAULT_FONT_SIZE);
   editor.on("change", function() {
+    console.log('CHANGE');
     if (isContinuousPreviewEnabled()) {
         clearTimeout(timer);
         timer = setTimeout(updateLatexPreview, TIMER_INTERVAL);

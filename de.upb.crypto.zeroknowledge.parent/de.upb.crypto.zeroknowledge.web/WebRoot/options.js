@@ -20,38 +20,6 @@ function isJavaInliningEnabled() {
   return document.getElementById("enable-inlined-java").classList.contains("checkbox-on");
 }
 
-
-// Updates the latex preview box based on the current contents of the code editor
-function updateLatexPreview() {
-  var code = getEditor().getValue();
-
-  if (code === "") {
-    document.getElementById("latex-code").value = "";
-    document.getElementById("latex-preview").innerHTML = "";
-  } else {
-    // HTTP request to the server to produce latex text, and store the result in formatted_latex
-    formatted_latex = code // Remove after the HTTP request is implemented
-
-    updateLatexPreviewBox(formatted_latex);
-  }
-}
-
-// Updates the latex preview box
-function updateLatexPreviewBox(latex) {
-  document.getElementById("latex-code").value = latex;
-  document.getElementById("latex-preview").innerHTML = latex;
-  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "latex-preview"]);
-}
-
-function disableLatexPreviewBox() {
-  document.getElementById("latex-preview").innerHTML = "Latex preview currently&nbsp<span class='error'>disabled</span>";
-}
-
-function enableLatexPreviewBox() {
-  updateLatexPreviewBox(ace.editor("xtext-editor").getValue());
-}
-
-
 /*
  * Button Listeners
 */

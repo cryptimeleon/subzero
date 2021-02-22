@@ -14,8 +14,8 @@ class ImportBuilder {
 		importBuilder = new StringBuilder();
 	}
 	
-	def addImport() {
-		importBuilder.append();
+	def addImport(String importStatement) {
+		importBuilder.append(importStatement);
 	}
 	
 	def StringBuilder getBuilder() {

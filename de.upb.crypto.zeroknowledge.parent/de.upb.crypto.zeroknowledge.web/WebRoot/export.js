@@ -60,24 +60,43 @@ function noCodeErrors(annotations) {
   });
 }
 
+function validateCode(callback) {
+  var request = $.ajax({
+      url: "http://" + location.host + "/xtext-service/validate?resource=code.zkak"
+  });
+      
+  request.done((result) => {
+    issues = result.issues;
+    isValid = issues.length === 0 || !issues.some((issue) => {
+      return issue.severity === "error";
+    });
+    callback(isValid, issues);
+  });
+}
+
 // Compile the contents of the code editor to Java code and download the generated Java project
 function compileCode() {
-  if (noCodeErrors()) {
-    getEditor().xtextServices.generate().then((code) => {
-      if (code === "") {
-        consoleError("There is no code to download");
-        return;
-      }
-  
-      var filename = prompt("Enter a name for the code file (file will be saved with .java extension)");
-  
-      if (filename) {
-        downloadFile(filename + ".java", code);
-      }
-    });
-  } else {
-    consoleError("Code cannot be compiled until there are no syntax or validation errors.");
-  }
+  validateCode((isValid, issues) => {
+    if (isValid) {
+      var editor = getEditor();
+      editor.xtextServices.generatorService._encodedResourceId = "code.zkak";
+      editor.xtextServices.generate().then((code) => {
+        console.log(code);
+        if (code === "") {
+          consoleError("There is no code to download");
+          return;
+        }
+    
+        var filename = prompt("Enter a name for the code file (file will be saved with .java extension)");
+    
+        if (filename) {
+          downloadFile(filename + ".java", code);
+        }
+      });
+    } else {
+      consoleError("Code cannot be compiled until there are no syntax or validation errors.");
+    }
+  });
 }
 
 
