@@ -435,3 +435,11 @@ The following steps will bring up an Eclipse editor for the 0K language, with va
 - Press `Ctrl+s`. The file will be saved, a new `src-gen` folder will be created, and the 0K code will be compiled to `proof.java` in that folder
 - Every time the `.zkak` file is saved it will be recompiled to Java code
 - If a popup error ever occurs, just ignore it and click OK
+
+Using the website language editor
+---------------------------------
+The following steps will bring up the website editor for the 0K language
+- Open the project in Eclipse
+- Under de.upb.crypto.zeroknowledge.web, right-click on ServerLauncher.xtend and choose Run As -> Java Application
+- The server will start up
+- Go to http://localhost:8080/
