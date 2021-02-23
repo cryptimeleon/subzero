@@ -374,10 +374,11 @@ The most important packages and files are listed below. All other packages/files
 - `ZeroKnowledgeFormatter.xtend` specifies formatting rules for DSL code. When the formatter is called, it cleans up the written code (such as the amount of whitespace). Currently only partially working and unused, and likely should remain unused.
 
 ### de.upb.crypto.generator
-- `ZeroKnowledgeGenerator.xtend` contains all code for code generation for compiling DSL code to Java code. Currently works in the Eclipse editor (with sample outputs), but not on the website.
+- `ZeroKnowledgeGenerator.xtend` delegates code generation to the Java code generation and LaTeX preview generation
+- `CodeGeneration.xtend` contains all code for code generation for compiling DSL code to Java code. Currently works in the Eclipse editor (with sample outputs) and on the website.
 
 ### de.upb.crypto.zeroknowledge.latex
-- `LatexPreview.xtend` generates LaTeX text from the DSL code. Essentially this is code generation for translating DSL code to LaTeX. Currently working on the backend, and the preview is working on the website, but the website is not yet able to get the LaTeX output from the backend.
+- `LatexPreview.xtend` generates LaTeX text from the DSL code. Essentially this is code generation for translating DSL code to LaTeX. Now working on the website.
 
 ### de.upb.crypto.zeroknowledge.model
 Contains code for working with the model produced by the parser
@@ -406,9 +407,13 @@ Contains code for working with the model produced by the parser
 ### de.upb.crypto.zeroknowledge.web
 Contains all code for the compiler website. All important files are in the WebRoot folder
 - `index.html` is the main page
-- `initial.js` loads all required libraries, and implements some editor features
-- `functionality.js` contains the major website functionality
 - `style.css` is the main stylesheet
+- `libraries.js` loads all required libraries, and implements some editor features
+- `editor.js` creates the code editor and adds functionality
+- `console.js` controls the information console box
+- `latex.js` adds LaTeX preview functionality
+- `options.js` controls the options box
+- `export.js` controls code generation from DSL code to Java code, and DSL code to LaTeX, as well as downloading files
 
 Using language editor in Eclipse
 --------------------------------
