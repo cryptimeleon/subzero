@@ -1,0 +1,16 @@
+.metadata/
+.settings/
+
+src-gen/
+xtend-gen/
+model/
+generated/
+target/
+
+
+
+
+*.xml-gen
+*.java._trace
+*.class
+*.xtendbin
