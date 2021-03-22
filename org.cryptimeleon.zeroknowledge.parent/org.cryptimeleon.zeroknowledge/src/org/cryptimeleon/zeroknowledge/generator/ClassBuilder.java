@@ -3,8 +3,6 @@ package org.cryptimeleon.zeroknowledge.generator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
-
 class ClassBuilder {
 	
 	private List<FieldBuilder> fields;

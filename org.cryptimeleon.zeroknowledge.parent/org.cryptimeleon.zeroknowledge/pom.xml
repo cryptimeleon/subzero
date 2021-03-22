@@ -152,4 +152,16 @@
 		</pluginManagement>
 	</build>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.cryptimeleon</groupId>
+			<artifactId>math</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cryptimeleon</groupId>
+			<artifactId>craco</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
 </project>
