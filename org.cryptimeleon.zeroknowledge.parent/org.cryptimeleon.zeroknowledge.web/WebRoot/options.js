@@ -35,7 +35,8 @@ document.getElementById("download-latex-code").addEventListener("click", functio
 
 document.getElementById("compile-code").addEventListener("click", function() {
   this.blur();
-  compileCode();
+  // compileCode();
+  compilePackage();
 });
 
 document.getElementById("update-latex-preview").addEventListener("click", function() {

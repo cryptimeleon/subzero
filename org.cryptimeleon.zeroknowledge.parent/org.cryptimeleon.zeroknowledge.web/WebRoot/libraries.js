@@ -21,3 +21,7 @@ require(["webjars/ace/1.3.3/src/ace"], function() {
     createEditor(xtext);
   });
 });
+require(["lib/jszip"], function(JSZip_) {
+  JSZip = JSZip_;
+});
+require(["lib/FileSaver"]);

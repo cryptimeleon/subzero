@@ -77,29 +77,29 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
 	
-		var String code;
+		var String contents;
 		
 		System.out.println(resourceId);
 		
 		if (resourceId == LATEX_RESOURCE) {
 			System.out.println("LATEX");
 			val LatexPreview latexPreview = new LatexPreview(model);
-			code = latexPreview.getRawLatex();
+			contents = latexPreview.getRawLatex();
 		} else if (resourceId == CODE_RESOURCE) {
-			val CodeGeneration codeGeneration = new CodeGeneration(model);
-			code = codeGeneration.getCode();
+			val CodeGenerator codeGeneration = new CodeGenerator(model);
+			contents = codeGeneration.getCode();
 		} else {
 			// Eclipse editor is being used
 			// Possibly remove this block later
-			val CodeGeneration codeGeneration = new CodeGeneration(model);
-			code = codeGeneration.getCode();
+			val CodeGenerator codeGeneration = new CodeGenerator(model);
+			contents = codeGeneration.getCode();
 		}
 		
 		// Generate the final file
 		if (COMPILE_LOCALLY) {
-			fsa.generateFile(LOCAL_OUTPUT_FILE, code);
+			fsa.generateFile(LOCAL_OUTPUT_FILE, contents);
 		} else {
-			fsa.generateFile(WEB_OUTPUT_FILE, code);
+			fsa.generateFile(WEB_OUTPUT_FILE, contents);
 		}
 	}
 	

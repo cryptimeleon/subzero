@@ -90,7 +90,8 @@ function compileCode() {
         var filename = prompt("Enter a name for the code file (file will be saved with .java extension)");
     
         if (filename) {
-          downloadFile(filename + ".java", code);
+          var blob = new Blob([code], {type: "text/plain;charset=utf-8"});
+          window.saveAs(blob, filename);
         }
       });
     } else {
@@ -98,5 +99,46 @@ function compileCode() {
     }
   });
 }
+
+// Compile the contents of the code editor to Java code and download the generated Java project
+function compilePackage() {
+  validateCode((isValid, issues) => {
+    if (isValid) {
+      var editor = getEditor();
+      editor.xtextServices.generatorService._encodedResourceId = "code.zkak";
+      editor.xtextServices.generate().then((projectJSON) => {
+        console.log(projectJSON);
+        let project = $.parseJSON(projectJSON);
+        let projectZip = new JSZip();
+        createProjectZip(projectZip, project);
+
+        var filename = prompt("Enter a name for the zipped project (project will be saved with .zip extension)");
+    
+        if (filename) {
+          projectZip.generateAsync({type:"blob"}).then(function(content) {
+            saveAs(content, filename + ".zip");
+          });
+        }
+      });
+    } else {
+      consoleError("Code cannot be compiled until there are no syntax or validation errors.");
+    }
+  });
+}
+
+function createProjectZip(zip, currentFolder) {
+  for (const [name, contents] of Object.entries(currentFolder)) {
+    if ($.type(contents) === 'string') {
+      if (name.endsWith(".jar")) {
+        zip.file(name, contents, {base64: true});
+      } else {
+        zip.file(name, contents);
+      }
+    } else {
+      createProjectZip(zip.folder(name), contents);
+    }
+  }
+}
+
 
 
