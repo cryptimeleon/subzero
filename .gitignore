@@ -3,6 +3,7 @@
 
 src-gen/
 xtend-gen/
+xtext-gen/
 generated/
 target/
 
