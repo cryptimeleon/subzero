@@ -115,7 +115,7 @@ function compilePackage() {
         var filename = prompt("Enter a name for the zipped project (project will be saved with .zip extension)");
     
         if (filename) {
-          projectZip.generateAsync({type:"blob"}).then(function(content) {
+          projectZip.generateAsync({type:"blob", platform:"UNIX"}).then(function(content) {
             saveAs(content, filename + ".zip");
           });
         }
@@ -131,6 +131,8 @@ function createProjectZip(zip, currentFolder) {
     if ($.type(contents) === 'string') {
       if (name.endsWith(".jar")) {
         zip.file(name, contents, {base64: true});
+      } else if (!name.includes(".")) {
+        zip.file(name, contents, {unixPermissions: "775"});
       } else {
         zip.file(name, contents);
       }
