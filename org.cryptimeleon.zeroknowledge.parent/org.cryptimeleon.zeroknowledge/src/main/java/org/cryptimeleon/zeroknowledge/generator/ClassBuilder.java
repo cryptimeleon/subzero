@@ -3,6 +3,9 @@ package org.cryptimeleon.zeroknowledge.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a single class (possibly an inner class) in generated code
+ */
 class ClassBuilder {
 	
 	private List<FieldBuilder> fields;

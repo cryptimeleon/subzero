@@ -80,12 +80,12 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 */
 	@Check
 	def void checkModel(Model model) {
-		System.out.println("Validator Called");
+		System.out.println("Validating the model");
 		
 		// Perform type inference and get the type and size of each node
-		TypeInference.inferTypes(model);
-		types = TypeInference.getTypes();
-		sizes = TypeInference.getSizes();
+		val TypeInference typeInference = new TypeInference(model);
+		types = typeInference.getTypes();
+		sizes = typeInference.getSizes();
 		
 		userFunctions = ModelHelper.getUserFunctionSignatures(model, types, sizes);
 

@@ -53,24 +53,12 @@ import org.cryptimeleon.zeroknowledge.latex.LatexPreview
  * Precondition: model must be free of validation errors before Java code generation can occur
  */
 class ZeroKnowledgeGenerator extends AbstractGenerator {
-	
-	// The compiled code file when using the Eclipse editor
-	static val LOCAL_OUTPUT_FILE = 'proof.java';
-	
 	// The compiled code file when using the web editor
-	static val WEB_OUTPUT_FILE = '/DEFAULT_ARTIFACT';
-	
-	// Set to true for Eclipse editor, false for web editor
-	static val COMPILE_LOCALLY = false;
-	
+	static val OUTPUT_FILE = '/DEFAULT_ARTIFACT';
 	static val CODE_RESOURCE = 'code.zkak';
-	
 	static val LATEX_RESOURCE = 'latex.zkak';
 	
-	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		System.out.println("GENERATOR CALLED" + resource.getURI());
-		
 		val String resourceId = resource.getURI().toString();
 		val Model model = resource.getContents().iterator().next() as Model;
 		
@@ -79,28 +67,22 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 	
 		var String contents;
 		
-		System.out.println(resourceId);
+		System.out.println("Generating resource: " + resourceId);
 		
 		if (resourceId == LATEX_RESOURCE) {
-			System.out.println("LATEX");
 			val LatexPreview latexPreview = new LatexPreview(model);
 			contents = latexPreview.getRawLatex();
+			
 		} else if (resourceId == CODE_RESOURCE) {
 			val CodeGenerator codeGeneration = new CodeGenerator(model);
 			contents = codeGeneration.getCode();
+			
 		} else {
-			// Eclipse editor is being used
-			// Possibly remove this block later
-			val CodeGenerator codeGeneration = new CodeGenerator(model);
-			contents = codeGeneration.getCode();
+			System.out.println("Error: invalid resource ID");
 		}
 		
 		// Generate the final file
-		if (COMPILE_LOCALLY) {
-			fsa.generateFile(LOCAL_OUTPUT_FILE, contents);
-		} else {
-			fsa.generateFile(WEB_OUTPUT_FILE, contents);
-		}
+		fsa.generateFile(OUTPUT_FILE, contents);
 	}
 	
 	

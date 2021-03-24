@@ -41,61 +41,61 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 class TypeInference {
 	
 	// Stores the inferred Type for every node in the syntax tree that requires a type
-	static HashMap<EObject, Type> types;
+	HashMap<EObject, Type> types;
 	
 	// Stores the inferred multiplicity for every node in the syntax tree that requires a multiplicity
 	// Multiplicity of 1 is a scalar, multiplicity greater than 1 is a tuple
-	static HashMap<EObject, Integer> sizes;
+	HashMap<EObject, Integer> sizes;
 	
 	// Stores whether a node has been visited (inference has been attempted)
 	// Used only during type inference
-	static HashMap<EObject, Boolean> visited;
+	HashMap<EObject, Boolean> visited;
 	
 	// A map from predefined function names to the function signature
-	static HashMap<String, FunctionSignature> predefinedFunctionsMap;
+	HashMap<String, FunctionSignature> predefinedFunctionsMap;
 	
 	// A map from function names to user function calls
-	static HashMap<String, ArrayList<FunctionCall>> predefinedFunctionCallsMap;
+	HashMap<String, ArrayList<FunctionCall>> predefinedFunctionCallsMap;
 	
 	// A map from function names to user function definition nodes
-	static HashMap<String, FunctionDefinition> userFunctionsMap;
+	HashMap<String, FunctionDefinition> userFunctionsMap;
 	
 	// A map from function names to user function calls
-	static HashMap<String, ArrayList<FunctionCall>> userFunctionCallsMap;
+	HashMap<String, ArrayList<FunctionCall>> userFunctionCallsMap;
 	
 	// A map from variable names to variable nodes
-	static HashMap<String, ArrayList<Variable>> variablesMap;
+	HashMap<String, ArrayList<Variable>> variablesMap;
 	
 	// A map from witness names to witness nodes
-	static HashMap<String, Witness> witnessesMap;
+	HashMap<String, Witness> witnessesMap;
 	
 	// A map from function names and parameter names to local variable nodes
-	static HashMap<String, HashMap<String, ArrayList<LocalVariable>>> localVariablesMap;
+	HashMap<String, HashMap<String, ArrayList<LocalVariable>>> localVariablesMap;
 	
 	// A map from user function names and local variable names to the corresponding Parameter node in the function definition
-	static HashMap<String, HashMap<String, Parameter>> parametersMap;	
+	HashMap<String, HashMap<String, Parameter>> parametersMap;	
 	
 	// A map from user function names and parameter names to corresponding arguments in function calls
-	static HashMap<String, HashMap<String, ArrayList<Argument>>> argumentsMap;
+	HashMap<String, HashMap<String, ArrayList<Argument>>> argumentsMap;
 	
-	def static HashMap<EObject, Type> getTypes() {
+	def HashMap<EObject, Type> getTypes() {
 		return types;
 	}
 	
-	def static HashMap<EObject, Integer> getSizes() {
+	def HashMap<EObject, Integer> getSizes() {
 		return sizes;
 	}
 	
-	def static Type getNodeType(EObject node) {
+	def Type getNodeType(EObject node) {
 		return types.get(node);
 	}
 	
-	def static int getNodeSize(EObject node) {
+	def int getNodeSize(EObject node) {
 		return sizes.get(node);
 	}
 	
 	// Labels nodes in the syntax tree in a topdown traversal
-	def private static Type topdownInference(EObject node) {
+	def private Type topdownInference(EObject node) {
 		var Type label;
 		
 		// If node is already labeled, ignore it and return its type
@@ -269,7 +269,7 @@ class TypeInference {
 	}
 	
 	// Labels a node and all its relevant descendants as EXPONENT
-	def private static void fillExponent(EObject node) {
+	def private void fillExponent(EObject node) {
 		
 		// If node is labeled already, stop
 		if (types.containsKey(node)) return;
@@ -345,7 +345,7 @@ class TypeInference {
 	}
 	
 	// Labels a node as EXPONENT, and attempts to propagate this label upwards in the syntax tree
-	def private static void backpropagateType(EObject node) {
+	def private void backpropagateType(EObject node) {
 		
 		// If node is labeled already, stop
 		if (types.containsKey(node)) return;
@@ -428,7 +428,7 @@ class TypeInference {
 	
 	// Precondition: function call references a predefined function
 	// Labels a predefined function call and all of its arguments
-	def private static void labelPredefinedFunctionCall(FunctionCall call) {
+	def private void labelPredefinedFunctionCall(FunctionCall call) {
 		val FunctionSignature signature = predefinedFunctionsMap.get(call.getName());
 		
 		visited.put(call, true);
@@ -459,7 +459,7 @@ class TypeInference {
 	}
 	
 	// All unlabeled nodes that require a type label are labeled with GROUP_ELEMENT as the default
-	def private static void fillGroupElement(Model model) {
+	def private void fillGroupElement(Model model) {
 		for (FunctionDefinition function : model.getFunctions()) {
 			setGroupElement(function);
 			
@@ -481,7 +481,7 @@ class TypeInference {
 		]);
 	}
 	// Helper function for fillGroupElement
-	def private static void setGroupElement(EObject node) {
+	def private void setGroupElement(EObject node) {
 		if (!types.containsKey(node)) {
 			visited.put(node, true);
 			types.put(node, Type.GROUP_ELEMENT);
@@ -489,7 +489,7 @@ class TypeInference {
 	}
 
 	
-	def private static void backpropagateSize(EObject node, int size) {
+	def private void backpropagateSize(EObject node, int size) {
 		
 		if (sizes.containsKey(node)) return;
 		
@@ -565,7 +565,7 @@ class TypeInference {
 		}
 	}
 	
-	def private static void fillSize(EObject node, int size) {
+	def private void fillSize(EObject node, int size) {
 		
 		if (sizes.containsKey(node)) return;
 		
@@ -637,7 +637,7 @@ class TypeInference {
 	}
 	
 	// Labels all remaining nodes with size 1 (scalar)
-	def private static void fillDefaults(Model model) {
+	def private void fillDefaults(Model model) {
 		ModelMap.preorder(model.getProof(), [EObject node |
 			sizes.putIfAbsent(node, 1);
 		]);
@@ -662,7 +662,7 @@ class TypeInference {
 	// Conjunctions, disjunctions, comparisons, string literals get size 0
 	// Model, parameter list, witness list, have no assigned size
 	// All remaining unlabeled nodes get size 1
-	def static void fillDefaultsHelper(EObject node) {
+	def private void fillDefaultsHelper(EObject node) {
 		if (
 			node instanceof Conjunction ||
 			node instanceof Disjunction ||
@@ -676,10 +676,10 @@ class TypeInference {
 	}
 
 	// Perform type inference on the syntax tree	
-	def static void inferTypes(Model model) {
-		TypeInference.types = new HashMap<EObject, Type>();
-		TypeInference.sizes = new HashMap<EObject, Integer>();
-		TypeInference.visited = new HashMap<EObject, Boolean>();
+	def private void inferTypes(Model model) {
+		this.types = new HashMap<EObject, Type>();
+		this.sizes = new HashMap<EObject, Integer>();
+		this.visited = new HashMap<EObject, Boolean>();
 		
 		// Model transformations to simplify the model
 		ModelHelper.removeBrackets(model);
@@ -689,15 +689,15 @@ class TypeInference {
 		ModelHelper.identifySpecialVariables(model);
 
 		// Create all HashMaps needed to traversal the syntax tree easily
-		TypeInference.predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-		TypeInference.predefinedFunctionCallsMap = ModelHelper.getAllPredefinedFunctionCalls(model, predefinedFunctionsMap);
-		TypeInference.userFunctionsMap = ModelHelper.getAllUserFunctions(model);
-		TypeInference.userFunctionCallsMap = ModelHelper.getAllUserFunctionCalls(model, userFunctionsMap);
-		TypeInference.variablesMap = ModelHelper.getAllVariables(model);
-		TypeInference.witnessesMap = ModelHelper.getAllWitnesses(model);
-		TypeInference.localVariablesMap = ModelHelper.getAllLocalVariables(model);
-		TypeInference.parametersMap = ModelHelper.getAllParameters(model);
-		TypeInference.argumentsMap = ModelHelper.getAllArguments(model, userFunctionsMap);
+		this.predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+		this.predefinedFunctionCallsMap = ModelHelper.getAllPredefinedFunctionCalls(model, predefinedFunctionsMap);
+		this.userFunctionsMap = ModelHelper.getAllUserFunctions(model);
+		this.userFunctionCallsMap = ModelHelper.getAllUserFunctionCalls(model, userFunctionsMap);
+		this.variablesMap = ModelHelper.getAllVariables(model);
+		this.witnessesMap = ModelHelper.getAllWitnesses(model);
+		this.localVariablesMap = ModelHelper.getAllLocalVariables(model);
+		this.parametersMap = ModelHelper.getAllParameters(model);
+		this.argumentsMap = ModelHelper.getAllArguments(model, userFunctionsMap);
 		
 		val ArrayList<Tuple> tupleNodes = ModelHelper.getAllTuples(model);
 		
@@ -749,6 +749,10 @@ class TypeInference {
 		fillDefaults(model);
 		
 		return;
+	}
+	
+	new(Model model) {
+		inferTypes(model);
 	}
 	
 }

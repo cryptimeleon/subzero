@@ -4,22 +4,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectBuilder {
 	
-	private ProjectFolder root;
+	private String generatedProject;
 
 	public ProjectBuilder(ProjectFolder root) {
-		this.root = root;
-	}
-	
-	public String generateProject() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("{");
 		generateProjectHelper(root, builder);
 		builder.append("}");
-		return builder.toString();
+		generatedProject = builder.toString();
+	}
+	
+	public String getProject() {
+		return generatedProject;
 	}
 	
 	private void generateProjectHelper(ProjectFolder currentFolder, StringBuilder builder) {
@@ -30,7 +31,7 @@ public class ProjectBuilder {
 		List<ProjectFile> files = currentFolder.getFiles();
 		int numFiles = files.size();
 		
-		List<ProjectFolder> subFolders = currentFolder.getSubFolders();
+		List<ProjectFolder> subFolders = currentFolder.getFolders();
 		int numSubFolders = subFolders.size();
 		
 		for (int i = 0; i < numFiles; i++) {

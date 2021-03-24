@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Represents a single class method in generated code
+ */
 public class MethodBuilder extends FunctionBuilder {
 	
 	public MethodBuilder(Class<?> returnType, String methodName) {

@@ -1,5 +1,8 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
+/**
+ * Represents a single class field in generated code
+ */
 public class FieldBuilder {
 	
 	private Modifier accessModifier;

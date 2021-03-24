@@ -1,5 +1,10 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
+/**
+ * Represents the possible modifier values for classes, methods, and fields
+ * 
+ *
+ */
 public enum Modifier {
 	PUBLIC,
 	PROTECTED,

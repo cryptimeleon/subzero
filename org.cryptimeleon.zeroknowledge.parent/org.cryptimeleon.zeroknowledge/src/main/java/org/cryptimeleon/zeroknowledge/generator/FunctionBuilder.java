@@ -4,6 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a single class function (method or constructor) in generated code
+ */
 public abstract class FunctionBuilder {
 	// TODO: refactor ConstructorBuilder and MethodBuilder to derive from this class
 	
@@ -15,8 +18,8 @@ public abstract class FunctionBuilder {
 	private boolean isFinal;
 	private String returnTypeName;
 	
-	private boolean isOverride;
 	private boolean isTest;
+	private boolean isOverride;
 	
 	protected String methodName;
 	
@@ -78,8 +81,8 @@ public abstract class FunctionBuilder {
 		this.isFinal = isFinal;
 		this.returnTypeName = isConstructor ? null : GenerationHelper.getClassName(returnType);
 		this.methodName = methodName;
-		this.isOverride = false;
 		this.isTest = false;
+		this.isOverride = false;
 	}
 	
 	public void addParameter(Class<?> parameterClass, String parameterName) {
@@ -102,11 +105,11 @@ public abstract class FunctionBuilder {
 	}
 	
 	public void setTest() {
-		this.isTest = true;
+		isTest = true;
 	}
 	
 	public void setOverride() {
-		this.isOverride = true;
+		isOverride = true;
 	}
 	
 	@Override
@@ -117,9 +120,13 @@ public abstract class FunctionBuilder {
 	public String toString(int indentLevel) {
 		CodeBuilder builder = new CodeBuilder(indentLevel);
 		
+		for (String annotation : annotations) {
+			builder.append('@' + annotation);
+			builder.newLine();
+		}
+		
 		if (isTest) {
 			builder.append("@Test");
-			builder.newLine();
 		}
 		
 		if (isOverride) {

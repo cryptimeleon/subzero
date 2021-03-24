@@ -60,10 +60,6 @@ class CodeGenerator {
 
 	HashSet<String> variables; // Contains the set of names of variables
 	HashSet<String> witnesses; // Contains the set of names of witnesses
-	HashSet<String> numberLiterals; // Contains the set of names of number literals
-	HashSet<String> stringLiterals; // Contains the set of values of string literals
-	
-	int stringLiteralCount; // Counter used to name new string literals
 	
 	String OPERATOR_MULTIPLICATION = "*";
 	String OPERATOR_DIVISION = "/";
@@ -77,7 +73,7 @@ class CodeGenerator {
 	String INDENT = "  ";
 	
 	
-	String VARIABLE_PREFIX = "input.";
+	String INPUT_VARIABLE = "input";
 	String WITNESS_SUFFIX = "Var";
 	
 	new(Model model) {
@@ -102,9 +98,9 @@ class CodeGenerator {
 		ModelHelper.normalizeNegatives(model);
 
 		// Perform type resolution on the model
-		TypeInference.inferTypes(model);	
-		types = TypeInference.getTypes();
-		sizes = TypeInference.getSizes();
+		val TypeInference typeInference = new TypeInference(model);	
+		types = typeInference.getTypes();
+		sizes = typeInference.getSizes();
 		
 		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
 		ModelHelper.identifySpecialVariables(model);
@@ -137,9 +133,8 @@ class CodeGenerator {
 		val String protocolCode = protocolSource.toString();
 		val String testCode = testSource.toString();
 		
-		val String project = buildProject(protocolName, packageName, protocolCode, testCode).generateProject();
+		val String project = buildProject(protocolName, packageName, protocolCode, testCode).getProject();
 		generatedCode = project;
-		
 	}
 	
 	def ClassBuilder buildProtocolClass(
@@ -199,14 +194,13 @@ class CodeGenerator {
 	}
 	
 	def MethodBuilder buildProvideSubprotocolSpecMethod(String commonInputClassName, List<String> witnessNames, String proof) {
-		val MethodBuilder provideSubprotocolSpecMethod = new MethodBuilder(PROTECTED, SubprotocolSpec, "provideSubprotocolSpec");
-		provideSubprotocolSpecMethod.setOverride();
-		provideSubprotocolSpecMethod.addParameter(CommonInput, "commonInput");
-		provideSubprotocolSpecMethod.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
+		val MethodBuilder method = new MethodBuilder(PROTECTED, SubprotocolSpec, "provideSubprotocolSpec");
+		method.setOverride();
+		method.addParameter(CommonInput, "commonInput");
+		method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
 		
-		
-		val String provideSubprotocolSpecMethodBody = '''
-			«commonInputClassName» input = («commonInputClassName») commonInput;
+		val String methodBody = '''
+			«commonInputClassName» «INPUT_VARIABLE» = («commonInputClassName») commonInput;
 			
 			//Add variables (witnesses)
 			«FOR String witnessName : witnessNames»
@@ -218,19 +212,19 @@ class CodeGenerator {
 			
 			return subprotocolSpecBuilder.build();
 		''';
-		provideSubprotocolSpecMethod.addBody(provideSubprotocolSpecMethodBody);
+		method.addBody(methodBody);
 	
-		return provideSubprotocolSpecMethod;
+		return method;
 	}
 	
 	def MethodBuilder buildProvideProverSpecWithNoSendFirstMethod(String secretInputClassName, List<String> witnessNames) {
-		val MethodBuilder provideProverSpecWithNoSendFirstMethod = new MethodBuilder(PROTECTED, ProverSpec, "provideProverSpecWithNoSendFirst");
-		provideProverSpecWithNoSendFirstMethod.setOverride();
-		provideProverSpecWithNoSendFirstMethod.addParameter(CommonInput, "commonInput");
-		provideProverSpecWithNoSendFirstMethod.addParameter(SecretInput, "secretInput");
-		provideProverSpecWithNoSendFirstMethod.addParameter(ProverSpecBuilder, "proverSpecBuilder");
+		val MethodBuilder method = new MethodBuilder(PROTECTED, ProverSpec, "provideProverSpecWithNoSendFirst");
+		method.setOverride();
+		method.addParameter(CommonInput, "commonInput");
+		method.addParameter(SecretInput, "secretInput");
+		method.addParameter(ProverSpecBuilder, "proverSpecBuilder");
 		
-		val String provideProverSpecWithNoSendFirstMethodBody = '''
+		val String methodBody = '''
 			«secretInputClassName» witness = («secretInputClassName») secretInput;
 
 			«FOR String witnessName : witnessNames»
@@ -239,9 +233,9 @@ class CodeGenerator {
 			
 			return proverSpecBuilder.build();
 		''';
-		provideProverSpecWithNoSendFirstMethod.addBody(provideProverSpecWithNoSendFirstMethodBody);
+		method.addBody(methodBody);
 
-		return provideProverSpecWithNoSendFirstMethod;
+		return method;
 	}
 	
 	def ClassBuilder buildCommonInputClass(String commonInputClassName, List<String> variableNames) {
@@ -587,7 +581,7 @@ class CodeGenerator {
 			variables.add(name);
 		}
 		
-		return VARIABLE_PREFIX + name;
+		return INPUT_VARIABLE + '.' + name;
 	}
 	
 	def dispatch String generateCode(LocalVariable variable, BranchState state) {

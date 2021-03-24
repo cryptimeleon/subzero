@@ -6,6 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 
+/**
+ * Represents a file in the generated project.
+ * The file contents can be provided directly (in text), or 
+ * the file can be loaded (from text or binary)
+ */
 public class ProjectFile {
 	private String name;
 	private String contents;

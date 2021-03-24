@@ -3,6 +3,10 @@ package org.cryptimeleon.zeroknowledge.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a folder in the generated project
+ * 
+ */
 public class ProjectFolder {
 	
 	private String name;
@@ -28,7 +32,7 @@ public class ProjectFolder {
 		return name;
 	}
 
-	public List<ProjectFolder> getSubFolders() {
+	public List<ProjectFolder> getFolders() {
 		return subFolders;
 	}
 

@@ -17,6 +17,8 @@ import org.cryptimeleon.zeroknowledge.type.TypeInference
 class ModelPrinter {
 		
 	def static void print(Model model) {
+		val TypeInference typeInference = new TypeInference(model);
+		
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
 			for (var int i = 0; i < state.getDepth(); i++) {
 				System.out.print("---|");
@@ -40,14 +42,14 @@ class ModelPrinter {
 				default: System.out.print("")
 			}
 			
-			if (TypeInference.getTypes() !== null && TypeInference.getTypes().containsKey(node)) {
-				System.out.print(" - " + TypeInference.getTypes().get(node).toString());
+			if (typeInference.getTypes() !== null && typeInference.getTypes().containsKey(node)) {
+				System.out.print(" - " + typeInference.getTypes().get(node).toString());
 			} else {
 				System.out.print("");
 			}
 			
-			if (TypeInference.getSizes() !== null && TypeInference.getSizes().containsKey(node)) {
-				System.out.print(" (" + TypeInference.getSizes().get(node).toString() + ")");
+			if (typeInference.getSizes() !== null && typeInference.getSizes().containsKey(node)) {
+				System.out.print(" (" + typeInference.getSizes().get(node).toString() + ")");
 			} else {
 				System.out.print("");
 			}

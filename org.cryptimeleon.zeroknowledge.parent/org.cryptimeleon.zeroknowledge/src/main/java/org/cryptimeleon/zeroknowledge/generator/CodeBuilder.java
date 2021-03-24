@@ -1,5 +1,11 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
+
+/**
+ * A helper class to build strings of generated code.
+ * A wrapper of the StringBuilder class that provides additional convenient methods, and handles indentations
+ *
+ */
 public class CodeBuilder {
 
 	public static final char INDENT_CHAR = '\t';
