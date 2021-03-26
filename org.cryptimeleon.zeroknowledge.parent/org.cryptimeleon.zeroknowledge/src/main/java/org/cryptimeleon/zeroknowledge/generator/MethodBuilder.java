@@ -1,10 +1,5 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 /**
  * Represents a single class method in generated code
  */

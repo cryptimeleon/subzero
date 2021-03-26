@@ -1,13 +1,9 @@
 package org.cryptimeleon.zeroknowledge.predefined;
 
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.math.BigInteger;
 
-import org.cryptimeleon.zeroknowledge.model.ExponentExpr;
-import org.cryptimeleon.zeroknowledge.model.GroupElementExpression;
-import org.cryptimeleon.zeroknowledge.model.ReturnsTuple;
-import org.cryptimeleon.zeroknowledge.model.TupleParameters;
+import org.cryptimeleon.math.expressions.group.GroupElementExpression;
+import org.cryptimeleon.math.structures.groups.GroupElement;
 
 /**
  * A class to hold all predefined functions.
@@ -23,8 +19,8 @@ public class PredefinedFunctions {
 	
 	@ReturnsTuple(2)
 	@TupleParameters({1,2,3})
-	public static GroupElementExpression a(GroupElementExpression a1, GroupElementExpression a2, GroupElementExpression a3) {
-		return new GroupElementExpression();
+	public static GroupElement a(GroupElement a1, GroupElement a2, GroupElement a3) {
+		return a1.pow(BigInteger.valueOf(1));
 	}
 	
 	public static String b() {
@@ -32,8 +28,8 @@ public class PredefinedFunctions {
 	}
 	
 	@ReturnsTuple(100)
-	public static GroupElementExpression c(GroupElementExpression testing) {
-		return new GroupElementExpression();
+	public static GroupElement c(GroupElement testing) {
+		return testing.pow(BigInteger.valueOf(1));
 	}
 	
 }

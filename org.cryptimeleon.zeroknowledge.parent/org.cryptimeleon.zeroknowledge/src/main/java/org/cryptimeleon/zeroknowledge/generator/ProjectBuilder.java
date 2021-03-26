@@ -1,12 +1,12 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a generated project.
+ * Generates a JSON object string representing the folder structure of the generated project
+ * and containing each generated file's contents
+ */
 public class ProjectBuilder {
 	
 	private String generatedProject;

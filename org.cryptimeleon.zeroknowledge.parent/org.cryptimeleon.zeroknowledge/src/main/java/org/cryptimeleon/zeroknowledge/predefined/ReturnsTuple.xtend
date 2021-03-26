@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.model
+package org.cryptimeleon.zeroknowledge.predefined
 
 import java.lang.annotation.Target
 import java.lang.annotation.Retention

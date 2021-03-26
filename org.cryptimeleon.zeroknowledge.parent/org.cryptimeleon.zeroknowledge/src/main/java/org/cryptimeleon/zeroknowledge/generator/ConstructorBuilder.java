@@ -1,7 +1,5 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a single class constructor in generated code

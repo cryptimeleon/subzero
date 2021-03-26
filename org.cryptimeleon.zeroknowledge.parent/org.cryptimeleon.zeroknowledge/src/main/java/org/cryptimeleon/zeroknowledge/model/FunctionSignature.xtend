@@ -2,10 +2,12 @@ package org.cryptimeleon.zeroknowledge.model
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.cryptimeleon.zeroknowledge.type.Type;
 import java.lang.reflect.Method
 import java.lang.annotation.Annotation
 import java.util.Collections
+import org.cryptimeleon.zeroknowledge.model.Type
+import org.cryptimeleon.zeroknowledge.predefined.TupleParameters
+import org.cryptimeleon.zeroknowledge.predefined.ReturnsTuple
 
 /**
  * Contains information about a function's name, return type, and parameters

@@ -1,34 +1,29 @@
 package org.cryptimeleon.zeroknowledge.latex
 
-import java.lang.StringBuilder;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.common.util.EList;
-
-import org.cryptimeleon.zeroknowledge.model.ModelHelper;
-
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
+import org.cryptimeleon.zeroknowledge.model.AugmentedModel
+import org.cryptimeleon.zeroknowledge.model.ModelHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
-
-
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Converts a syntax tree to valid LaTeX output
@@ -88,24 +83,10 @@ class LatexPreview {
 	// function definition) before being converted to LaTeX
 	var boolean inlineFunctions;
 
-	new(Model model) {
-		constructLatexPreview(model, false);
-	}
-
-	new(Model model, boolean inline) {
-		constructLatexPreview(model, inline);
-	}
-
-	def private void constructLatexPreview(Model model, boolean inline) {
+	new(AugmentedModel augmentedModel) {
 		builder = new StringBuilder();
-		
-		this.inlineFunctions = inline;
-		if (inline) {
-			ModelHelper.inlineFunctions(model);
-		}
-		
 		builder.append(DELIMITER);
-		generateLatex(model);
+		generateLatex(augmentedModel.getModel());
 		builder.append(DELIMITER);
 		
 		latexCode = builder.toString();

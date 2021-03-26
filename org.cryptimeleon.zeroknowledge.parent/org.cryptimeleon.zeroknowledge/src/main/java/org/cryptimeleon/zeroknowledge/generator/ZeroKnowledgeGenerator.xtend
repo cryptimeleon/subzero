@@ -3,47 +3,13 @@
  */
 package org.cryptimeleon.zeroknowledge.generator
 
+import org.cryptimeleon.zeroknowledge.latex.LatexPreview
+import org.cryptimeleon.zeroknowledge.model.AugmentedModel
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-
-import java.util.HashMap
-import java.util.HashSet
-
-import org.eclipse.emf.ecore.EObject
-
-import org.cryptimeleon.math.expressions.*;
-
-import org.cryptimeleon.zeroknowledge.model.ModelPrinter
-import org.cryptimeleon.zeroknowledge.model.BranchState
-import org.cryptimeleon.zeroknowledge.model.ModelHelper
-
-import org.cryptimeleon.zeroknowledge.type.Type
-
-import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
-
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.LocalVariable
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
-import org.cryptimeleon.zeroknowledge.type.TypeInference
-import org.eclipse.xtext.generator.IFileSystemAccess
-import org.cryptimeleon.zeroknowledge.latex.LatexPreview
 
 /**
  * Generates code from your model files on save.
@@ -65,12 +31,19 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
 	
+		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		var String contents;
+		
+		var inlineFunctions = false;
+		
+		if (inlineFunctions) {
+			augmentedModel.inlineFunctions();
+		}
 		
 		System.out.println("Generating resource: " + resourceId);
 		
 		if (resourceId == LATEX_RESOURCE) {
-			val LatexPreview latexPreview = new LatexPreview(model);
+			val LatexPreview latexPreview = new LatexPreview(augmentedModel);
 			contents = latexPreview.getRawLatex();
 			
 		} else if (resourceId == CODE_RESOURCE) {

@@ -3,54 +3,45 @@
  */
 package org.cryptimeleon.zeroknowledge.validation
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.xtext.validation.Check;
-
-// Temporary imports, remove later
-import org.cryptimeleon.zeroknowledge.latex.LatexPreview;
-import org.cryptimeleon.zeroknowledge.model.ModelPrinter;
-
-import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper;
-
-import org.cryptimeleon.zeroknowledge.model.ModelMap
-import org.cryptimeleon.zeroknowledge.model.ModelHelper;
-import org.cryptimeleon.zeroknowledge.model.FunctionSignature;
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.Iterator
+import java.util.List
+import java.util.Map
+import org.cryptimeleon.zeroknowledge.model.AugmentedModel
 import org.cryptimeleon.zeroknowledge.model.BranchState
-
-import org.cryptimeleon.zeroknowledge.type.Type
-
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.LocalVariable
+import org.cryptimeleon.zeroknowledge.model.FunctionSignature
+import org.cryptimeleon.zeroknowledge.model.ModelHelper
+import org.cryptimeleon.zeroknowledge.model.ModelMap
+import org.cryptimeleon.zeroknowledge.model.Type
+import org.cryptimeleon.zeroknowledge.model.TypeInference
+import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
-import org.cryptimeleon.zeroknowledge.type.TypeInference
-import org.cryptimeleon.zeroknowledge.model.ModelMapController
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.LocalVariable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.xtext.validation.Check
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -63,10 +54,10 @@ import org.cryptimeleon.zeroknowledge.model.ModelMapController
  */
 class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
-	var HashMap<EObject, Type> types;
-	var HashMap<EObject, Integer> sizes;
-	var HashMap<String, FunctionSignature> userFunctions;
-	val HashMap<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+	var Map<EObject, Type> types;
+	var Map<EObject, Integer> sizes;
+	var Map<String, FunctionSignature> userFunctions;
+	val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 	
 	/*
 	 * Validation proceeds in a topdown, preorder traversal of the syntax tree,
@@ -82,12 +73,12 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def void checkModel(Model model) {
 		System.out.println("Validating the model");
 		
-		// Perform type inference and get the type and size of each node
-		val TypeInference typeInference = new TypeInference(model);
-		types = typeInference.getTypes();
-		sizes = typeInference.getSizes();
+		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
-		userFunctions = ModelHelper.getUserFunctionSignatures(model, types, sizes);
+		// Get the type and size of each node, and user defined function signatures
+		types = augmentedModel.getTypes();
+		sizes = augmentedModel.getSizes();
+		userFunctions = augmentedModel.getUserFunctionSignatures();
 
 		// Iterate over the tree in a preorder traversal and perform validation on each node
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |

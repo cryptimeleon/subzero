@@ -1,6 +1,5 @@
 package org.cryptimeleon.zeroknowledge.generator;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import java.util.List;
  * Represents a single class function (method or constructor) in generated code
  */
 public abstract class FunctionBuilder {
-	// TODO: refactor ConstructorBuilder and MethodBuilder to derive from this class
 	
 	private List<String> statements;
 	
@@ -127,6 +125,7 @@ public abstract class FunctionBuilder {
 		
 		if (isTest) {
 			builder.append("@Test");
+			builder.newLine();
 		}
 		
 		if (isOverride) {

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a folder in the generated project
- * 
+ * Represents a folder in the generated project, which can contain files and subfolders
  */
 public class ProjectFolder {
 	

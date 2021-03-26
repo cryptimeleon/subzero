@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.model;
+package org.cryptimeleon.zeroknowledge.predefined;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

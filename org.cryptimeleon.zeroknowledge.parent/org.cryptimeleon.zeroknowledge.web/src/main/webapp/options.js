@@ -128,3 +128,12 @@ document.getElementById("zoom-out-button").addEventListener("click", function() 
 document.getElementById("zoom-in-button").addEventListener("click", function() {
   zoomPreviewIn();
 });
+
+
+/*
+  * Initial settings
+*/
+setTimeout(function() {
+  document.getElementById("enable-latex-preview").click();
+  document.getElementById("enable-continuous-preview").click();
+}, 250);

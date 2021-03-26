@@ -1,13 +1,12 @@
 package org.cryptimeleon.zeroknowledge.generator
 
 import java.math.BigInteger
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.ArrayList
 import java.util.Collections
-import java.util.HashMap
 import java.util.HashSet
 import java.util.List
+import java.util.Map
+import java.util.Set
 import org.cryptimeleon.craco.protocols.CommonInput
 import org.cryptimeleon.craco.protocols.SecretInput
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol
@@ -18,23 +17,21 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegate
 import org.cryptimeleon.math.structures.groups.Group
 import org.cryptimeleon.math.structures.groups.GroupElement
 import org.cryptimeleon.math.structures.rings.zn.Zp
+import org.cryptimeleon.zeroknowledge.model.AugmentedModel
 import org.cryptimeleon.zeroknowledge.model.BranchState
 import org.cryptimeleon.zeroknowledge.model.ModelHelper
-import org.cryptimeleon.zeroknowledge.model.ModelPrinter
-import org.cryptimeleon.zeroknowledge.type.Type
-import org.cryptimeleon.zeroknowledge.type.TypeInference
+import org.cryptimeleon.zeroknowledge.model.Type
+import org.cryptimeleon.zeroknowledge.model.TypeInference
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.LocalVariable
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
@@ -55,11 +52,11 @@ class CodeGenerator {
 	String protocolName;
 	int subprotocolCount;
 	
-	HashMap<EObject, Type> types;
-	HashMap<EObject, Integer> sizes;
+	Map<EObject, Type> types;
+	Map<EObject, Integer> sizes;
 
-	HashSet<String> variables; // Contains the set of names of variables
-	HashSet<String> witnesses; // Contains the set of names of witnesses
+	Set<String> variables; // Contains the set of names of variables
+	Set<String> witnesses; // Contains the set of names of witnesses
 	
 	String OPERATOR_MULTIPLICATION = "*";
 	String OPERATOR_DIVISION = "/";
@@ -85,25 +82,28 @@ class CodeGenerator {
 	}
 	
 	def void performGeneration(Model model, boolean inlineFunctions) {
+		val AugmentedModel augmentedModel = new AugmentedModel(model);
+		
 		variables = new HashSet<String>;
 		witnesses = new HashSet<String>;
 		
+		
+		
 		// Perform model transformations
-		ModelPrinter.print(model);
+		System.out.println(augmentedModel);
 		
 		// If option is set, inline all functions
-		if (inlineFunctions) ModelHelper.inlineFunctions(model);
+		if (inlineFunctions) augmentedModel.inlineFunctions();
 		
 		// Replace all subtraction operations with sum operations of negative nodes
-		ModelHelper.normalizeNegatives(model);
+		augmentedModel.normalizeNegatives();
 
 		// Perform type resolution on the model
-		val TypeInference typeInference = new TypeInference(model);	
-		types = typeInference.getTypes();
-		sizes = typeInference.getSizes();
+		types = augmentedModel.getTypes();
+		sizes = augmentedModel.getSizes();
 		
 		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
-		ModelHelper.identifySpecialVariables(model);
+		augmentedModel.identifySpecialVariables();
 
 //		generateImports();
 //		generateFunctions(model, new BranchState());
@@ -565,7 +565,7 @@ class CodeGenerator {
 	}
 	
 	def dispatch String generateCode(FunctionCall call, BranchState state) {
-		val String name = ModelHelper.convertToJavaName(call.getName());
+		val String name = GenerationHelper.convertToJavaName(call.getName());
 		
 		return '''«name»(«FOR argument : call.getArguments() SEPARATOR ','»«generateCode(argument, state)»«ENDFOR»)'''
 	}
@@ -575,7 +575,7 @@ class CodeGenerator {
 	}
 	
 	def dispatch String generateCode(Variable variable, BranchState state) {
-		val String name = ModelHelper.convertToJavaName(variable.getName());
+		val String name = GenerationHelper.convertToJavaName(variable.getName());
 		
 		if (!variables.contains(name)) {
 			variables.add(name);
@@ -585,12 +585,12 @@ class CodeGenerator {
 	}
 	
 	def dispatch String generateCode(LocalVariable variable, BranchState state) {
-		val String name = ModelHelper.convertToJavaName(variable.getName());
+		val String name = GenerationHelper.convertToJavaName(variable.getName());
 		return name;
 	}
 	
 	def dispatch String generateCode(WitnessVariable witness, BranchState state) {
-		val String name = ModelHelper.convertToJavaName(witness.getName());
+		val String name = GenerationHelper.convertToJavaName(witness.getName());
 		return name + WITNESS_SUFFIX;
 	}
 	

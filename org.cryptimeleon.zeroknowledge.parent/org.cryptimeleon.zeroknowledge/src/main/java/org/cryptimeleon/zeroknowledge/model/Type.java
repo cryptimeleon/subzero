@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.type;
+package org.cryptimeleon.zeroknowledge.model;
 
 /**
  * An enum to represent the 0K type of a variable or return value

@@ -1,6 +1,6 @@
 package org.cryptimeleon.zeroknowledge.model
 
-class ModelMapController {
+package class ModelMapController {
 	
 	boolean breakCalled;
 	boolean continueCalled;
