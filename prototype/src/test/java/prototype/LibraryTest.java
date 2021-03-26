@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 public class LibraryTest {
     @Test public void protocolTest() {
+        //Set up public paramters
         Group group = new LazyGroup(new Secp256k1());
         Zp zp = (Zp) group.getZn();
 
