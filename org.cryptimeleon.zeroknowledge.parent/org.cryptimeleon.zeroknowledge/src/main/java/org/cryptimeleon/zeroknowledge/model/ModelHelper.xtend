@@ -4,12 +4,14 @@ import java.util.HashMap
 import java.util.Iterator
 import java.util.Map
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessVariable
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
@@ -79,8 +81,26 @@ class ModelHelper {
 		return (argument.eContainer() as FunctionCall).getArguments().indexOf(argument);
 	}
 
+	def static boolean containsWitnessVariable(EObject node) {
+		return ModelMap.postorderAny(node, [EObject currentNode |
+            currentNode instanceof WitnessVariable;
+        ]);
+	}
 	
+	def static boolean isEqualityComparison(EObject node) {
+		if (node instanceof Comparison) {
+			val String operator = (node as Comparison).getOperation();
+			return operator == "=" || operator == "!=";
+		}
+		
+		return false;
+	}
 
-	
+	def static boolean isInequalityComparison(EObject node) {
+		if (node instanceof Comparison) {
+			val String operator = (node as Comparison).getOperation();
+			return operator == "<" || operator == "<=" || operator == ">" || operator == ">=";
+		}	
+	}
 
 }

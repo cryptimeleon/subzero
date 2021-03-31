@@ -34,36 +34,53 @@ public abstract class FunctionBuilder {
 	}
 	
 	protected FunctionBuilder(Class<?> returnType, String methodName) {
-		this(Modifier.PACKAGE, false, false, false, returnType, methodName);
+		this(returnType.getSimpleName(), methodName);
 	}
 	
 	protected FunctionBuilder(Modifier accessModifier, Class<?> returnType, String methodName) {
-		this(accessModifier, false, false, false, returnType, methodName);
+		this(accessModifier, returnType.getSimpleName(), methodName);
 	}
 	
 	protected FunctionBuilder(Modifier accessModifier, Modifier extraModifier, Class<?> returnType, String methodName) {
+		this(accessModifier, extraModifier, returnType.getSimpleName(), methodName);
+	}
+	
+	protected FunctionBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, Class<?> returnType, String methodName) {
+		this(accessModifier, extraModifier1, extraModifier2, returnType.getSimpleName(), methodName);
+	}
+	
+	protected FunctionBuilder(String returnTypeName, String methodName) {
+		this(Modifier.PACKAGE, false, false, false, returnTypeName, methodName);
+	}
+	
+	protected FunctionBuilder(Modifier accessModifier, String returnTypeName, String methodName) {
+		this(accessModifier, false, false, false, returnTypeName, methodName);
+	}
+	
+	protected FunctionBuilder(Modifier accessModifier, Modifier extraModifier, String returnTypeName, String methodName) {
 		this(
 			accessModifier,
 			extraModifier == Modifier.STATIC,
 			extraModifier == Modifier.FINAL,
 			false,
-			returnType,
+			returnTypeName,
 			methodName
 		);
 	}
 	
-	protected FunctionBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, Class<?> returnType, String methodName) {
+	protected FunctionBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, String returnTypeName, String methodName) {
 		this(
 			accessModifier,
 			extraModifier1 == Modifier.STATIC || extraModifier2 == Modifier.STATIC,
 			extraModifier1 == Modifier.FINAL || extraModifier2 == Modifier.FINAL,
 			false,
-			returnType,
+			returnTypeName,
 			methodName
 		);
 	}
 	
-	private FunctionBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, boolean isConstructor, Class<?> returnType, String methodName) {
+	
+	private FunctionBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, boolean isConstructor, String returnTypeName, String methodName) {
 		if (!accessModifier.isAccessModifier()) {
 			throw new IllegalArgumentException("Invalid acccess modifier");
 		}
@@ -77,15 +94,23 @@ public abstract class FunctionBuilder {
 		this.accessModifier = accessModifier;
 		this.isStatic = isStatic;
 		this.isFinal = isFinal;
-		this.returnTypeName = isConstructor ? null : GenerationHelper.getClassName(returnType);
+		this.returnTypeName = returnTypeName;
 		this.methodName = methodName;
 		this.isTest = false;
 		this.isOverride = false;
 	}
 	
-	public void addParameter(Class<?> parameterClass, String parameterName) {
-		parameterTypeNames.add(GenerationHelper.getClassName(parameterClass));
+	public void addParameter(String parameterClassName, String parameterName) {
+		parameterTypeNames.add(parameterClassName);
 		parameterNames.add(parameterName);
+	}
+	
+	public void addParameter(Class<?> parameterClass, String parameterName) {
+		addParameter(parameterClass.getSimpleName(), parameterName);
+	}
+	
+	public void addParameter(FieldBuilder field) {
+		addParameter(field.getTypeName(), field.getName());
 	}
 	
 	public void addStatement(String statement) {
@@ -133,8 +158,9 @@ public abstract class FunctionBuilder {
 			builder.newLine();
 		}
 		
-		builder.append(accessModifier.toString());
-		builder.space();
+		String modifier = accessModifier.toString();
+		builder.append(modifier);
+		if (!modifier.isEmpty()) builder.space();
 		
 		if (isStatic) builder.append("static ");
 		if (isFinal) builder.append("final ");

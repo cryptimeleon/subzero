@@ -29,6 +29,4 @@ public class GenerationHelper {
 		return builder.toString();
 	}
 	
-	
-	
 }

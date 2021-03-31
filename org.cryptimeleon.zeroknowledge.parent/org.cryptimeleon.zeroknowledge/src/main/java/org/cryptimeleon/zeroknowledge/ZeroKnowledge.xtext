@@ -35,6 +35,9 @@ Expression:
 Conjunction returns Expression:
   Disjunction ({Conjunction.left=current} operation='&' right=Disjunction)*;
 
+//ConjunctionList returns Expression:
+//	protocols+=Disjunction names+=PROTOCOL_NAME (('&'|';') protocols+=Disjunction names+=PROTOCOL_NAME)*;
+
 //Protocol returns Expression:
 //  Disjunction protocol=(PROTOCOL_NAME)?;
 
@@ -42,13 +45,13 @@ Disjunction returns Expression:
   Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
 
 Comparison returns Expression:
-  Sum (({Comparison.left=current} operation='!=' | {Comparison.left=current} operation='=' | {Comparison.left=current} operation='>=' | {Comparison.left=current} operation='<=' | {Comparison.left=current} operation='>' | {Comparison.left=current} operation='<') right=Sum)?;
-
+  Sum ({Comparison.left=current} operation=COMPARISON_OPERATOR right=Sum (operation2=COMPARISON_OPERATOR extra=Sum)? (protocolName=PROTOCOL_NAME)? )?;
+  
 Sum returns Expression:
-  Product (({Sum.left=current} operation='+' | {Sum.left=current} operation='-') right=Product)*;
+  Product ({Sum.left=current} operation=('+' | '-') right=Product)*;
 
 Product returns Expression:
-  Power (({Product.left=current} operation='*' | {Product.left=current} operation='/') right=Power)*;
+  Power ({Product.left=current} operation=('*' | '/') right=Power)*;
  
 Power returns Expression:
 	Construct ({Power.left = current} operation='^' right=Power)?;
@@ -116,6 +119,9 @@ terminal IDENTIFIER:
 
 terminal STRING_LITERAL:
   '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+  
+terminal COMPARISON_OPERATOR:
+  '!=' | '=' | '<' | '<=' | '>' | '>=';
 
-//terminal PROTOCOL_NAME:
-//	'['('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')+']';
+terminal PROTOCOL_NAME:
+	('['('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')+']');

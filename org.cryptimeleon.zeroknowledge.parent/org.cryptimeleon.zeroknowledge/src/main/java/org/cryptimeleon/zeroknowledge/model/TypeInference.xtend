@@ -1,13 +1,11 @@
 package org.cryptimeleon.zeroknowledge.model
 
-import java.util.ArrayList
 import java.util.HashMap
+import java.util.HashSet
 import java.util.Iterator
 import java.util.List
 import java.util.Map
-import org.cryptimeleon.zeroknowledge.model.FunctionSignature
-import org.cryptimeleon.zeroknowledge.model.ModelHelper
-import org.cryptimeleon.zeroknowledge.model.ModelMap
+import java.util.Set
 import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
@@ -61,7 +59,7 @@ package class TypeInference {
 	
 	// Stores whether a node has been visited (inference has been attempted)
 	// Used only during type inference
-	Map<EObject, Boolean> visited;
+	Set<EObject> visited;
 	
 	// A map from predefined function names to the function signature
 	Map<String, FunctionSignature> predefinedFunctionsMap;
@@ -100,6 +98,8 @@ package class TypeInference {
 	
 	// Labels nodes in the syntax tree in a topdown traversal
 	def private Type topdownInference(EObject node) {
+		if (node === null) return Type.UNKNOWN;
+		
 		var Type label;
 		
 		// If node is already labeled, ignore it and return its type
@@ -108,7 +108,7 @@ package class TypeInference {
 		}
 		
 		// Node has now been visited
-		visited.put(node, true)
+		visited.contains(node)
 		
 		// Try to label the node
 		switch node {
@@ -197,11 +197,20 @@ package class TypeInference {
 				val Type leftChildLabel = topdownInference(node.getLeft());
 				val Type rightChildLabel = topdownInference(node.getRight());
 
-				if (leftChildLabel === Type.EXPONENT && rightChildLabel === Type.UNKNOWN) {
-					fillExponent(node.getRight());
-				} else if (leftChildLabel === Type.UNKNOWN && rightChildLabel === Type.EXPONENT) {
-					fillExponent(node.getLeft());
+				if (node.getOperation2() === null) {
+					if (leftChildLabel === Type.EXPONENT || rightChildLabel === Type.EXPONENT) {
+						fillExponent(node.getLeft());
+						fillExponent(node.getRight());
+					}
+				} else {
+					val Type extraChildLabel = topdownInference(node.getExtra());
+					if (leftChildLabel === Type.EXPONENT || rightChildLabel == Type.EXPONENT || extraChildLabel === Type.EXPONENT) {
+						fillExponent(node.getLeft());
+						fillExponent(node.getRight());
+						fillExponent(node.getExtra());
+					}
 				}
+				
 			}
 			FunctionCall: {
 				val String functionName = node.getName();
@@ -268,7 +277,7 @@ package class TypeInference {
 			}
 		}
 		
-		// If still unlabeled, try to label the parent node
+		// Return the node's label, so that the parent node can be labeled if it is still unlabeled
 		return label ?: Type.UNKNOWN;
 	}
 	
@@ -279,7 +288,7 @@ package class TypeInference {
 		if (types.containsKey(node)) return;
 		
 		// Node has now been visited
-		visited.put(node, true);
+		visited.contains(node);
 		
 		// Label node as exponent
 		types.put(node, Type.EXPONENT);
@@ -356,7 +365,7 @@ package class TypeInference {
 		if (types.containsKey(node)) return;
 
 		// Node has now been visited
-		visited.put(node, true);
+		visited.contains(node);
 
 		// Label the node		
 		types.put(node, Type.EXPONENT);
@@ -368,7 +377,7 @@ package class TypeInference {
 		
 		// If parent has not been visited, stop
 		// Topdown inference will handle the propagation instead
-		if (!visited.containsKey(parent)) return;
+		if (!visited.contains(parent)) return;
 		
 		switch parent {
 			Comparison: {
@@ -436,7 +445,7 @@ package class TypeInference {
 	def private void labelPredefinedFunctionCall(FunctionCall call) {
 		val FunctionSignature signature = predefinedFunctionsMap.get(call.getName());
 		
-		visited.put(call, true);
+		visited.contains(call);
 		types.put(call, signature.getReturnType());
 		
 		val Iterator<Type> parameterTypeIterator = signature.getParameterTypes().iterator();
@@ -448,7 +457,7 @@ package class TypeInference {
 			
 			switch parameterType {
 				case Type.STRING: {
-					visited.put(argument, true);
+					visited.contains(argument);
 					types.put(argument, Type.STRING);
 				}
 				case Type.EXPONENT: {
@@ -485,10 +494,11 @@ package class TypeInference {
 			setGroupElement(node);
 		]);
 	}
+	
 	// Helper function for fillGroupElement
 	def private void setGroupElement(EObject node) {
 		if (!types.containsKey(node)) {
-			visited.put(node, true);
+			visited.contains(node);
 			types.put(node, Type.GROUP_ELEMENT);
 		}
 	}
@@ -514,7 +524,7 @@ package class TypeInference {
 	
 	new(AugmentedModel augmentedModel) {
 		this.types = new HashMap<EObject, Type>();
-		this.visited = new HashMap<EObject, Boolean>();
+		this.visited = new HashSet<EObject>();
 		
 		// Model transformations to simplify the model
 		augmentedModel.removeBrackets();

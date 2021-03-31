@@ -8,34 +8,50 @@ public class FieldBuilder {
 	private Modifier accessModifier;
 	private boolean isStatic;
 	private boolean isFinal;
-	private Class<?> type;
 	private String typeName;
 	private String name;
 	
 	public FieldBuilder(Class<?> type, String name) {
-		this(Modifier.PACKAGE, false, false, type, name);
+		this(type.getSimpleName(), name);
 	}
 	
 	public FieldBuilder(Modifier accessModifier, Class<?> type, String name) {
-		this(accessModifier, false, false, type, name);
+		this(accessModifier, type.getSimpleName(), name);
 	}
 	
 	public FieldBuilder(Modifier accessModifier, Modifier extraModifier, Class<?> type, String name) {
-		this(accessModifier, extraModifier == Modifier.STATIC, extraModifier == Modifier.FINAL, type, name);
+		this(accessModifier, extraModifier, type.getSimpleName(), name);
 	}
 	
 	
 	public FieldBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, Class<?> type, String name) {
+		this(accessModifier, extraModifier1, extraModifier2, type.getSimpleName(), name);
+	}
+	
+	public FieldBuilder(String typeName, String name) {
+		this(Modifier.PACKAGE, false, false, typeName, name);
+	}
+	
+	public FieldBuilder(Modifier accessModifier, String typeName, String name) {
+		this(accessModifier, false, false, typeName, name);
+	}
+	
+	public FieldBuilder(Modifier accessModifier, Modifier extraModifier, String typeName, String name) {
+		this(accessModifier, extraModifier == Modifier.STATIC, extraModifier == Modifier.FINAL, typeName, name);
+	}
+	
+	
+	public FieldBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, String typeName, String name) {
 		this(
 			accessModifier,
 			extraModifier1 == Modifier.STATIC || extraModifier2 == Modifier.STATIC,
 			extraModifier1 == Modifier.FINAL || extraModifier2 == Modifier.FINAL,
-			type,
+			typeName,
 			name
 		);
 	}
 	
-	private FieldBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, Class<?> type, String name) {
+	private FieldBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, String typeName, String name) {
 		if (!accessModifier.isAccessModifier()) {
 			throw new IllegalArgumentException("Invalid access modifier");
 		}
@@ -43,8 +59,7 @@ public class FieldBuilder {
 		this.accessModifier = accessModifier;
 		this.isStatic = isStatic;
 		this.isFinal = isFinal;
-		this.type = type;
-		this.typeName = GenerationHelper.getClassName(type);
+		this.typeName = typeName;
 		this.name = name;
 	}
 	
@@ -52,8 +67,8 @@ public class FieldBuilder {
 		return name;
 	}
 	
-	public Class<?> getType() {
-		return type;
+	public String getTypeName() {
+		return typeName;
 	}
 	
 	@Override
@@ -65,12 +80,13 @@ public class FieldBuilder {
 	
 	public String toString(int indentLevel) {
 		CodeBuilder builder = new CodeBuilder(indentLevel);
-		builder.append(accessModifier.toString());
-		builder.append(" ");
+		String modifier = accessModifier.toString();
+		builder.append(modifier);
+		if (!modifier.isEmpty()) builder.space();
 		if (isStatic) builder.append("static ");
 		if (isFinal) builder.append("final ");
 		builder.append(typeName);
-		builder.append(" ");
+		builder.space();
 		builder.append(name);
 		builder.append(";");
 		builder.newLine();

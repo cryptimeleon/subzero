@@ -71,7 +71,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 */
 	@Check
 	def void checkModel(Model model) {
-		System.out.println("Validating the model");
+		val boolean flag = false;
+		
+		if (flag) return;
 		
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
@@ -79,6 +81,8 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		types = augmentedModel.getTypes();
 		sizes = augmentedModel.getSizes();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
+		
+		System.out.println("Validating the model");
 
 		// Iterate over the tree in a preorder traversal and perform validation on each node
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
@@ -129,6 +133,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Comparison comparison, BranchState state) {
+		checkComparisonOperations(comparison);
 		checkValidComparisonPosition(comparison, state);
 		checkIsBoolean(comparison);
 		checkComparisonOperands(comparison);
@@ -473,6 +478,25 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}
 	}
 	
+	// Double comparisons cannot use equals or not equals, and inequality operators must be the same direction
+	def private void checkComparisonOperations(Comparison comparison) {
+		val String operation1 = comparison.getOperation();
+		val String operation2 = comparison.getOperation2();
+		
+		// Check if the comparison is a double comparison
+		if (operation2 !== null) {
+			
+			if (operation1 == "=" || operation1 == "!=" || operation2 == "=" || operation2 == "!=") {
+				error("Cannot use = or != in a double comparison", comparison, getStructuralFeature(comparison));
+				return
+			}
+			
+			if (operation1.charAt(0) != operation2.charAt(0)) {
+				error("Comparison operators in a double comparison must be in the same direction", comparison, getStructuralFeature(comparison));
+			}
+		}
+	}
+	
 	// Helper function for checkValidConjunctionPosition, checkValidDisjunctionPosition, and checkValidComparisonPosition
 	def private boolean isValidBooleanPosition(EObject node, BranchState state) {
 		val EObject parent = state.getParent();
@@ -545,18 +569,57 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def private void checkComparisonOperands(Comparison comparison) {
-		val Type leftType = types.get(comparison.getLeft());
-		val Type rightType = types.get(comparison.getRight());
-		val int leftSize = sizes.get(comparison.getLeft());
-		val int rightSize = sizes.get(comparison.getRight());
+		val EObject left = comparison.getLeft();
+		val EObject right = comparison.getRight();
+		val Type leftType = types.get(left);
+		val Type rightType = types.get(right);
+		val int leftSize = sizes.get(left);
+		val int rightSize = sizes.get(right);
 		
-		if (leftType !== rightType) {
-			error('''The operands of a comparison node must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', comparison, getStructuralFeature(comparison));
+		val boolean leftHasWitness = ModelHelper.containsWitnessVariable(left);
+		val boolean rightHasWitness = ModelHelper.containsWitnessVariable(right);
+		
+		if (comparison.getOperation2() === null) {
+			if (leftType !== rightType) {
+				error('''The operands of a comparison node must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', comparison, getStructuralFeature(comparison));
+			}
+			
+			if (leftSize !== rightSize) {
+				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getStructuralFeature(comparison));
+			}
+			
+			if (!leftHasWitness && !rightHasWitness) {
+				error("One side of a comparison must be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+			}
+			
+			if (leftHasWitness && rightHasWitness) {
+				error("Only one side of a comparison can be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+			}
+				
+		} else {
+			val EObject extra = comparison.getExtra();
+			val Type extraType = types.get(extra);
+			val int extraSize = sizes.get(extra);
+			
+			val boolean extraHasWitness = ModelHelper.containsWitnessVariable(extra);
+			
+			if (leftType !== rightType || rightType !== extraType) {
+				error('''The operands of a comparison node must be the same type. The left operand is of type «leftType», the middle operand is of type «rightType», and the right operand is of type«extraType»''', comparison, getStructuralFeature(comparison));
+			}
+			
+			if (leftSize !== rightSize || rightSize !== extraSize) {
+				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize», the middle operand is of size «rightSize», and the right operand is of size«extraSize»''', comparison, getStructuralFeature(comparison));
+			}
+			
+			if (!rightHasWitness) {
+				error("The middle of a double comparison must be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+			}
+			
+			if (leftHasWitness || extraHasWitness) {
+				error("Only the middle of a double comparison can be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+			}
 		}
 		
-		if (leftSize !== rightSize) {
-			error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getStructuralFeature(comparison));
-		}
 	}
 	
 	def private void checkSumOperands(Sum sum) {

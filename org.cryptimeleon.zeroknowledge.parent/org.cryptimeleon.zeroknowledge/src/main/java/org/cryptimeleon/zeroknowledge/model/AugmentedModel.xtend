@@ -7,8 +7,10 @@ import java.util.Iterator
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
@@ -17,6 +19,7 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
@@ -24,7 +27,6 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessVariable
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
 import org.eclipse.emf.ecore.EObject
-import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -40,6 +42,11 @@ class AugmentedModel {
 	boolean bracketsRemoved;
 	boolean specialVariablesIdentified;
 	
+	boolean containsRangeProof;
+	boolean containsPairing;
+	boolean checkedForRangeProof;
+	boolean checkedForPairing;
+	
 	// Generated values
 	// Must be accessed through their getters, even within class methods (to ensure that they are generated)
 	Map<EObject, Type> types;
@@ -54,7 +61,8 @@ class AugmentedModel {
 	List<Tuple> tuples;
 	Map<String, Map<String, List<Argument>>> arguments;
 	Map<String, List<FunctionCall>> predefinedFunctionCalls;
-	Map<String, FunctionSignature> userFunctionSignatures
+	Map<String, FunctionSignature> userFunctionSignatures;
+	Set<String> constrainedWitnessNames;
 	
 	new(Model model) {
 		this.model = model;
@@ -62,6 +70,11 @@ class AugmentedModel {
 		this.negativesNormalized = false;
 		this.bracketsRemoved = false;
 		this.specialVariablesIdentified = false;
+		
+		this.containsRangeProof = false;
+		this.containsPairing = false;
+		this.checkedForRangeProof = false;
+		this.checkedForPairing = false;
 		
 		this.types = null;
 		this.sizes = null;
@@ -76,6 +89,7 @@ class AugmentedModel {
 		this.arguments = null;
 		this.predefinedFunctionCalls = null;
 		this.userFunctionSignatures = null;
+		this.constrainedWitnessNames = null;
 	}
 	
 	def Model getModel() {
@@ -99,6 +113,34 @@ class AugmentedModel {
 		sizes = sizeInference.getSizes();
 
 		return sizes;		
+	}
+	
+	def boolean hasRangeProof() {
+		if (checkedForRangeProof) return containsRangeProof;
+		
+		checkedForRangeProof = true;
+		
+		containsRangeProof = ModelMap.preorderAny(model, [EObject node |
+			return node instanceof Comparison && ModelHelper.isInequalityComparison(node as Comparison);
+		]);
+		
+		return containsRangeProof;
+	}
+	
+	def boolean hasPairing() {
+		if (checkedForPairing) return containsPairing;
+		
+		checkedForPairing = true;
+		
+		containsPairing = ModelMap.preorderAny(model, [EObject node |
+			if (node instanceof FunctionCall) {
+				return (node as FunctionCall).getName() == "e";
+			}
+			
+			return false;
+		]);
+		
+		return containsPairing;
 	}
 	
 	
@@ -259,7 +301,7 @@ class AugmentedModel {
 
 	// Precondition: requires that all local variables have been identified, and that the
 	// corresponding Variable objects have been replaced with LocalVariable objects
-	// Returns a map from variable names to a list of variable nodes
+	// Returns a map from variable names to a list of variable nodes, including witness variables
 	def Map<String, List<Variable>> getAllVariables() {
 		if (variables !== null) return variables;
 		
@@ -482,6 +524,26 @@ class AugmentedModel {
 		}
 
 		return userFunctionSignatures;
+	}
+	
+	// Returns a set containing the names of all witnesses that are constrained by a range or linear exponent constraint
+	def Set<String> getConstrainedWitnessNames() {
+		if (constrainedWitnessNames !== null) return constrainedWitnessNames;
+		
+		constrainedWitnessNames = new HashSet<String>();
+		
+		ModelMap.preorderWithControl(model, [EObject node, ModelMapController controller |
+			if (node instanceof Power) {
+				controller.continueTraversal();
+				return;
+			}
+			
+			if (node instanceof WitnessVariable) {
+				constrainedWitnessNames.add(node.getName());
+			}
+		]);
+		
+		return constrainedWitnessNames;
 	}
 	
 	

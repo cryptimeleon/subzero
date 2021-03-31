@@ -17,6 +17,6 @@ public enum Modifier {
 	
 	@Override
 	public String toString() {
-		return this.name().toLowerCase();
+		return (this == PACKAGE) ? "" : this.name().toLowerCase();
 	}
 }

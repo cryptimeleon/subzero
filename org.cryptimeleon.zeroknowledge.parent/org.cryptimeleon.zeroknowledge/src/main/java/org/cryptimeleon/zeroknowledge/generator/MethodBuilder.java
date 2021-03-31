@@ -21,4 +21,20 @@ public class MethodBuilder extends FunctionBuilder {
 		super(accessModifier, extraModifier1, extraModifier2, returnType, methodName);
 	}
 	
+	public MethodBuilder(String returnTypeName, String methodName) {
+		super(returnTypeName, methodName);
+	}
+	
+	public MethodBuilder(Modifier accessModifier, String returnTypeName, String methodName) {
+		super(accessModifier, returnTypeName, methodName);
+	}
+	
+	public MethodBuilder(Modifier accessModifier, Modifier extraModifier, String returnTypeName, String methodName) {
+		super(accessModifier, extraModifier, returnTypeName, methodName);
+	}
+	
+	public MethodBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, String returnTypeName, String methodName) {
+		super(accessModifier, extraModifier1, extraModifier2, returnTypeName, methodName);
+	}
+	
 }

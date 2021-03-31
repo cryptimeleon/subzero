@@ -114,8 +114,9 @@ class ClassBuilder {
 	public String toString(int indentLevel) {
 		CodeBuilder builder = new CodeBuilder(indentLevel);
 		
-		builder.append(accessModifier.toString());
-		builder.append(" ");
+		String modifier = accessModifier.toString();
+		builder.append(modifier);
+		if (!modifier.isEmpty()) builder.space();
 		
 		if (isStatic) builder.append("static ");
 		if (isFinal) builder.append("final ");
@@ -123,7 +124,7 @@ class ClassBuilder {
 		builder.append("class ");
 		
 		builder.append(name);
-		builder.append(" ");
+		builder.space();
 
 		if (baseClassName != null) {
 			builder.append("extends ");
@@ -160,9 +161,8 @@ class ClassBuilder {
 			ConstructorBuilder basicConstructor = new ConstructorBuilder(basicConstructorModifier);
 			
 			for (FieldBuilder fieldBuilder : fields) {
-				Class<?> fieldType = fieldBuilder.getType();
 				String fieldName = fieldBuilder.getName();
-				basicConstructor.addParameter(fieldType, fieldName);
+				basicConstructor.addParameter(fieldBuilder);
 				basicConstructor.addStatement("this." + fieldName + " = " + fieldName + ';');
 			}
 			

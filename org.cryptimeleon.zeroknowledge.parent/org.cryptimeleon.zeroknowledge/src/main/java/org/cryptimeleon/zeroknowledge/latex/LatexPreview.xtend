@@ -39,6 +39,18 @@ class LatexPreview {
 	var StringBuilder builder;
 
 	// Token constants
+	static val String NEWLINE = "\\\\";
+	static val String SPACE = " ";
+	static val String COMMA = ",";
+	static val String COLON = ":";
+	static val String SEMICOLON = ";";
+	static val String QUOTE = "'";
+	static val String LEFTPAREN = "(";
+	static val String RIGHTPAREN = ")";
+	static val String LEFTBRACE = "{";
+	static val String RIGHTBRACE = "}";
+	static val String DELIMITER = "$$";
+	
 	static val String CONJUNCTION = "\\land";
 	static val String DISJUNCTION = "\\lor";
 	static val String EQUAL = "=";
@@ -53,17 +65,7 @@ class LatexPreview {
 	static val String DIVISION = "\\frac";
 	static val String EXPONENTIATION = "^";
 	static val String NEGATION = "-";
-	static val String NEWLINE = "\\\\";
-	static val String SPACE = " ";
-	static val String COMMA = ",";
-	static val String COLON = ":";
-	static val String SEMICOLON = ";";
-	static val String QUOTE = "'";
-	static val String LEFTPAREN = "(";
-	static val String RIGHTPAREN = ")";
-	static val String LEFTBRACE = "{";
-	static val String RIGHTBRACE = "}";
-	static val String DELIMITER = "$$";
+	
 	static val String OPERATOR_ADDITION = "+";
 	static val String OPERATOR_SUBTRACTION = "-";
 	static val String OPERATOR_MULTIPLICATION = "*";
@@ -162,6 +164,7 @@ class LatexPreview {
 		generateLatex(function.getParameterList());
 		builder.append(COLON);
 		builder.append(NEWLINE);
+		builder.append(NEWLINE);
 		generateLatex(function.getBody());
 	}
 	
@@ -194,18 +197,27 @@ class LatexPreview {
 	}
 
 	def dispatch private void generateLatex(Comparison comparison) {
+		val generateComparisonOperator = [String operation |
+			switch operation {
+				case OPERATOR_EQUAL: generateOperator(EQUAL)
+				case OPERATOR_INEQUAL: generateOperator(INEQUAL)
+				case OPERATOR_LESS: generateOperator(LESS)
+				case OPERATOR_GREATER: generateOperator(GREATER)
+				case OPERATOR_LESSEQUAL: generateOperator(LESSEQUAL)
+				case OPERATOR_GREATEREQUAL: generateOperator(GREATEREQUAL)
+			}
+		];
+		
 		generateLatex(comparison.getLeft());
-		
-		switch comparison.getOperation() {
-			case OPERATOR_EQUAL: generateOperator(EQUAL)
-			case OPERATOR_INEQUAL: generateOperator(INEQUAL)
-			case OPERATOR_LESS: generateOperator(LESS)
-			case OPERATOR_GREATER: generateOperator(GREATER)
-			case OPERATOR_LESSEQUAL: generateOperator(LESSEQUAL)
-			case OPERATOR_GREATEREQUAL: generateOperator(GREATEREQUAL)
-		}
-		
+		generateComparisonOperator.apply(comparison.getOperation());
 		generateLatex(comparison.getRight());
+		
+		// Handle double sided inequalities
+		val String operator2 = comparison.getOperation2();
+		if (operator2 !== null) {
+			generateComparisonOperator.apply(operator2);
+			generateLatex(comparison.getExtra());
+		}
 	}
 
 	def dispatch private void generateLatex(Sum sum) {
