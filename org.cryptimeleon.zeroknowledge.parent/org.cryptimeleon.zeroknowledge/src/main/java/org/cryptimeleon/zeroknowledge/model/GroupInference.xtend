@@ -2,6 +2,7 @@ package org.cryptimeleon.zeroknowledge.model
 
 import java.util.HashMap
 import java.util.Map
+import java.util.Map.Entry
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
@@ -16,10 +17,12 @@ class GroupInference {
 	
 	val Map<EObject, Type> types;
 	val Map<EObject, GroupType> groups;
+	val Map<String, GroupType> groupsByName;
 	
 	new(AugmentedModel augmentedModel) {
 		types = augmentedModel.getTypes();
 		groups = new HashMap<EObject, GroupType>();
+		groupsByName = new HashMap<String, GroupType>();
 		inferGroups(augmentedModel);
 	}
 
@@ -29,6 +32,10 @@ class GroupInference {
 	
 	def GroupType getNodeGroup(EObject node) {
 		return groups.get(node);
+	}
+	
+	def Map<String, GroupType> getGroupsByName() {
+		return groupsByName;
 	}
 
 
@@ -104,6 +111,20 @@ class GroupInference {
 		]);
 		
 		fillG1(model);
+		
+		for (Entry<EObject, GroupType> entry : groups.entrySet()) {
+			val Variable node = entry.getKey() as Variable;
+			val GroupType groupType = entry.getValue();
+			val String variableName = node.getName();
+			
+			if (groupsByName.containsKey(variableName) && groupsByName.get(variableName) !== groupType) {
+				groupsByName.put(variableName, GroupType.UNKNOWN);
+			} else {
+				groupsByName.put(variableName, groupType);
+			}
+			
+		}
+		
 	}
 	
 }

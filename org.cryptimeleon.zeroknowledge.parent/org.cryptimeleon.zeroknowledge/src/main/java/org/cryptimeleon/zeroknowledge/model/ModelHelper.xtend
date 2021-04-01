@@ -93,10 +93,10 @@ class ModelHelper {
 	}
 
 	def static boolean containsWitnessVariable(EObject node) {
-		return ModelMap.preorderWithControl(node, [EObject newNode, ModelMap.Controller controller |
-			if (node instanceof FunctionCall) {
+		return ModelMap.preorderWithControl(node, [EObject childNode, ModelMap.Controller controller |
+			if (childNode instanceof FunctionCall) {
 				controller.continueTraversal();
-			} else if (node instanceof WitnessVariable) {
+			} else if (childNode instanceof WitnessVariable) {
 				controller.returnTrue();
 				controller.breakMap();
 			}

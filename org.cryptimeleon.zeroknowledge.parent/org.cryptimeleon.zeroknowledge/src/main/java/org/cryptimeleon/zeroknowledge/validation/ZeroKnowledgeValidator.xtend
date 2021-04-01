@@ -59,7 +59,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
 	var Map<EObject, Type> types;
 	var Map<EObject, Integer> sizes;
-	var Map<EObject, GroupType> groups;
+	var Map<String, GroupType> groupsByName;
 	var Map<String, FunctionSignature> userFunctions;
 	val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 	
@@ -84,7 +84,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		// Get the type and size of each node, and user defined function signatures
 		types = augmentedModel.getTypes();
 		sizes = augmentedModel.getSizes();
-		groups = augmentedModel.getGroups();
+		groupsByName = augmentedModel.getGroupsByName();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
 		
 		System.out.println("Validating the model");
@@ -772,8 +772,8 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 * 
 	 */
 	 def private void checkValidGroup(Variable variable) {
-	 	if (groups.get(variable) === GroupType.UNKNOWN) {
-	 		error("The variable is used in conflicting group element contexts", variable, getStructuralFeature(variable));
+	 	if (groupsByName.get(variable.getName()) === GroupType.UNKNOWN) {
+	 		error("Variable is used in conflicting group element contexts", variable, getStructuralFeature(variable));
 	 	}
 	 }
 	 

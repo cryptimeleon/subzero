@@ -50,9 +50,9 @@ class AugmentedModel {
 	
 	// Generated values
 	// Must be accessed through their getters, even within class methods (to ensure that they are generated)
-	Map<EObject, Type> types;
-	Map<EObject, Integer> sizes;
-	Map<EObject, GroupType> groups;
+	TypeInference typeInference;
+	SizeInference sizeInference;
+	GroupInference groupInference;
 	Set<String> witnessNames;
 	Map<String, FunctionDefinition> userFunctions;
 	Map<String, List<FunctionCall>> userFunctionCalls;
@@ -78,9 +78,9 @@ class AugmentedModel {
 		this.checkedForRangeProof = false;
 		this.checkedForPairing = false;
 		
-		this.types = null;
-		this.sizes = null;
-		this.groups = null;
+		this.typeInference = null;
+		this.sizeInference = null;
+		this.groupInference = null;
 		this.witnessNames = null;
 		this.userFunctions = null;
 		this.userFunctionCalls = null;
@@ -104,31 +104,36 @@ class AugmentedModel {
 	}
 	
 	def Map<EObject, Type> getTypes() {
-		if (types !== null) return types;
+		if (typeInference !== null) return typeInference.getTypes();
 		
-		val TypeInference typeInference = new TypeInference(this);
-		types = typeInference.getTypes();
+		typeInference = new TypeInference(this);
 		
-		return types;
+		return typeInference.getTypes();
 	}
 
 	
 	def Map<EObject, Integer> getSizes() {
-		if (sizes !== null) return sizes;
+		if (sizeInference !== null) return sizeInference.getSizes();
 
-		val SizeInference sizeInference = new SizeInference(this);
-		sizes = sizeInference.getSizes();
+		sizeInference = new SizeInference(this);
 
-		return sizes;		
+		return sizeInference.getSizes();		
 	}
 	
 	def Map<EObject, GroupType> getGroups() {
-		if (groups !== null) return groups;
+		if (groupInference !== null) return groupInference.getGroups();
 		
-		val GroupInference groupInference = new GroupInference(this);
-		groups = groupInference.getGroups();
+		groupInference = new GroupInference(this);
 		
-		return groups;
+		return groupInference.getGroups();
+	}
+	
+	def Map<String, GroupType> getGroupsByName() {
+		if (groupInference !== null) return groupInference.getGroupsByName();
+		
+		groupInference = new GroupInference(this);
+		
+		return groupInference.getGroupsByName();
 	}
 	
 	def boolean hasRangeProof() {

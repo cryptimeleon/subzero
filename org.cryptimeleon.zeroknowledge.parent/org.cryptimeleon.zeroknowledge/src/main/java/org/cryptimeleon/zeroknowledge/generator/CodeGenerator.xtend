@@ -111,10 +111,6 @@ class CodeGenerator {
 		sizes = augmentedModel.getSizes();
 		groups = augmentedModel.getGroups();
 		
-		groups.entrySet().forEach(entry |
-		    System.out.println(entry.getKey() + " " + entry.getValue())
-		);
-		
 		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
 		augmentedModel.identifySpecialVariables();
 
