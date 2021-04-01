@@ -43,6 +43,9 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
 
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage.Literals
+import org.cryptimeleon.zeroknowledge.model.GroupType
+
 /**
  * This class contains custom validation rules for validating the syntax tree
  * 
@@ -56,6 +59,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
 	var Map<EObject, Type> types;
 	var Map<EObject, Integer> sizes;
+	var Map<EObject, GroupType> groups;
 	var Map<String, FunctionSignature> userFunctions;
 	val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 	
@@ -80,6 +84,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		// Get the type and size of each node, and user defined function signatures
 		types = augmentedModel.getTypes();
 		sizes = augmentedModel.getSizes();
+		groups = augmentedModel.getGroups();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
 		
 		System.out.println("Validating the model");
@@ -192,6 +197,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	def dispatch void checkNode(Variable variable, BranchState state) {
 		checkVariableNameFormat(variable);
 		checkProofAlgebraicPosition(variable, state);
+		checkValidGroup(variable);
 	}
 	
 	def dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
@@ -588,34 +594,36 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getStructuralFeature(comparison));
 			}
 			
-			if (!leftHasWitness && !rightHasWitness) {
-				error("One side of a comparison must be dependent on a witness variable", comparison, getStructuralFeature(comparison));
-			}
-			
-			if (leftHasWitness && rightHasWitness) {
-				error("Only one side of a comparison can be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+			if (ModelHelper.isInequalityComparison(comparison)) {
+				if (!leftHasWitness && !rightHasWitness) {
+					error("One side of a comparison must be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+				}
+				
+				if (leftHasWitness && rightHasWitness) {
+					error("Only one side of a comparison can be dependent on a witness variable", comparison, getStructuralFeature(comparison));
+				}
 			}
 				
 		} else {
-			val EObject extra = comparison.getExtra();
-			val Type extraType = types.get(extra);
-			val int extraSize = sizes.get(extra);
+			val EObject center = comparison.getCenter();
+			val Type centerType = types.get(center);
+			val int centerSize = sizes.get(center);
 			
-			val boolean extraHasWitness = ModelHelper.containsWitnessVariable(extra);
+			val boolean centerHasWitness = ModelHelper.containsWitnessVariable(center);
 			
-			if (leftType !== rightType || rightType !== extraType) {
-				error('''The operands of a comparison node must be the same type. The left operand is of type «leftType», the middle operand is of type «rightType», and the right operand is of type«extraType»''', comparison, getStructuralFeature(comparison));
+			if (leftType !== centerType || centerType !== rightType) {
+				error('''The operands of a comparison node must be the same type. The left operand is of type «leftType», the middle operand is of type «centerType», and the right operand is of type«rightType»''', comparison, getStructuralFeature(comparison));
 			}
 			
-			if (leftSize !== rightSize || rightSize !== extraSize) {
-				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize», the middle operand is of size «rightSize», and the right operand is of size«extraSize»''', comparison, getStructuralFeature(comparison));
+			if (leftSize !== centerSize || centerSize !== rightSize) {
+				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize», the middle operand is of size «centerSize», and the right operand is of size«rightSize»''', comparison, getStructuralFeature(comparison));
 			}
 			
-			if (!rightHasWitness) {
+			if (!centerHasWitness) {
 				error("The middle of a double comparison must be dependent on a witness variable", comparison, getStructuralFeature(comparison));
 			}
 			
-			if (leftHasWitness || extraHasWitness) {
+			if (leftHasWitness || rightHasWitness) {
 				error("Only the middle of a double comparison can be dependent on a witness variable", comparison, getStructuralFeature(comparison));
 			}
 		}
@@ -760,6 +768,17 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	/*
+	 * Validate group types
+	 * 
+	 */
+	 def private void checkValidGroup(Variable variable) {
+	 	if (groups.get(variable) === GroupType.UNKNOWN) {
+	 		error("The variable is used in conflicting group element contexts", variable, getStructuralFeature(variable));
+	 	}
+	 }
+	 
+	
+	/*
 	 * Additional helper functions
 	 */	
 	
@@ -795,6 +814,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		}	
 	}
 	
+	// TODO: get rid of this function and use Literals.??? directly in validation methods instead
 	// Returns the corresponding package literal for an EObject
 	def private EStructuralFeature getStructuralFeature(EObject object) {
 		switch object {

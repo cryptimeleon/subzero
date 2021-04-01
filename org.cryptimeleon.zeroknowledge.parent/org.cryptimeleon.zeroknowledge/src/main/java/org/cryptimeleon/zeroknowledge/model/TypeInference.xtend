@@ -96,7 +96,119 @@ package class TypeInference {
 		return types.get(node);
 	}
 	
+	
+	
+	def private Type topdownInferenceRefactor(EObject node) {
+		if (node === null) return Type.UNKNOWN;
+		
+		var Type label;
+		
+		// If node is already labeled, immediately return its type
+		if (types.containsKey(node)) {
+			return types.get(node);
+		}
+		
+		// Node has now been visited
+		visited.add(node);
+		
+		// Try to label the node
+		switch node {
+			Model: {
+				label = topdownInference(node.getProof());
+			}
+			
+			Conjunction: {
+				label = Type.BOOLEAN;
+				types.put(node, label);
+				
+				topdownInference(node.getLeft());
+				topdownInference(node.getRight());
+			}
+			
+			Disjunction: {
+				label = Type.BOOLEAN;
+				types.put(node, label);
+				
+				topdownInference(node.getLeft());
+				topdownInference(node.getRight());
+			}
+			
+			Comparison: {
+				label = Type.BOOLEAN;
+				types.put(node, label);
+				
+				val String operation = node.getOperation();
+				if (operation == "=" || operation == "!=") {
+					
+				} else {
+					fillExponent(node.getLeft());
+					fillExponent(node.getCenter());
+					fillExponent(node.getRight());
+				}
+			}
+			
+			Sum: {
+				label = Type.EXPONENT;
+				types.put(node, label);
+				fillExponent(node.getLeft());
+				fillExponent(node.getRight());
+			}
+			
+			Product: {
+				val Type leftChildLabel = topdownInference(node.getLeft());
+				val Type rightChildLabel = topdownInference(node.getRight());
+				
+				if (leftChildLabel === Type.EXPONENT || rightChildLabel === Type.EXPONENT) {
+					label = Type.EXPONENT;
+					types.put(node, label);
+					fillExponent(node.getLeft());
+					fillExponent(node.getRight());
+				}
+			}
+			
+			Power: {
+				val Type leftChildLabel = topdownInference(node.getLeft());
+				label = leftChildLabel;
+				if (leftChildLabel !== Type.UNKNOWN) types.put(node, label);
+				
+				fillExponent(node.getRight());
+			}
+			
+			Negative: {
+				label = Type.EXPONENT;
+				types.put(node, label);
+				fillExponent(node.getTerm());
+			}
+			
+			Brackets: {
+				val Type childLabel = topdownInference(node.getContent());
+				label = childLabel;
+				if (childLabel !== Type.UNKNOWN) types.put(node, label);
+			}
+			
+			
+			NumberLiteral: {
+				label = Type.EXPONENT;
+				types.put(node, label);
+			}
+			
+			StringLiteral: {
+				label = Type.STRING;
+				types.put(node, label);
+			}
+		}
+		
+		
+		
+		
+		// Return the node's label, so that the parent node can be labeled if it is still unlabeled
+		return label ?: Type.UNKNOWN;
+	}
+	
+	
+	
 	// Labels nodes in the syntax tree in a topdown traversal
+	// Returns the label of the node
 	def private Type topdownInference(EObject node) {
 		if (node === null) return Type.UNKNOWN;
 		
@@ -108,7 +220,7 @@ package class TypeInference {
 		}
 		
 		// Node has now been visited
-		visited.contains(node)
+		visited.add(node);
 		
 		// Try to label the node
 		switch node {
@@ -203,11 +315,11 @@ package class TypeInference {
 						fillExponent(node.getRight());
 					}
 				} else {
-					val Type extraChildLabel = topdownInference(node.getExtra());
-					if (leftChildLabel === Type.EXPONENT || rightChildLabel == Type.EXPONENT || extraChildLabel === Type.EXPONENT) {
+					val Type centerChildLabel = topdownInference(node.getCenter());
+					if (leftChildLabel === Type.EXPONENT || centerChildLabel === Type.EXPONENT || rightChildLabel == Type.EXPONENT ) {
 						fillExponent(node.getLeft());
+						fillExponent(node.getCenter());
 						fillExponent(node.getRight());
-						fillExponent(node.getExtra());
 					}
 				}
 				
@@ -283,12 +395,13 @@ package class TypeInference {
 	
 	// Labels a node and all its relevant descendants as EXPONENT
 	def private void fillExponent(EObject node) {
+		if (node === null) return;
 		
 		// If node is labeled already, stop
 		if (types.containsKey(node)) return;
 		
 		// Node has now been visited
-		visited.contains(node);
+		visited.add(node);
 		
 		// Label node as exponent
 		types.put(node, Type.EXPONENT);
@@ -360,12 +473,13 @@ package class TypeInference {
 	
 	// Labels a node as EXPONENT, and attempts to propagate this label upwards in the syntax tree
 	def private void backpropagateType(EObject node) {
+		if (node === null) return;
 		
 		// If node is labeled already, stop
 		if (types.containsKey(node)) return;
 
 		// Node has now been visited
-		visited.contains(node);
+		visited.add(node);
 
 		// Label the node		
 		types.put(node, Type.EXPONENT);
@@ -445,7 +559,7 @@ package class TypeInference {
 	def private void labelPredefinedFunctionCall(FunctionCall call) {
 		val FunctionSignature signature = predefinedFunctionsMap.get(call.getName());
 		
-		visited.contains(call);
+		visited.add(call);
 		types.put(call, signature.getReturnType());
 		
 		val Iterator<Type> parameterTypeIterator = signature.getParameterTypes().iterator();
@@ -457,7 +571,7 @@ package class TypeInference {
 			
 			switch parameterType {
 				case Type.STRING: {
-					visited.contains(argument);
+					visited.add(argument);
 					types.put(argument, Type.STRING);
 				}
 				case Type.EXPONENT: {
@@ -498,7 +612,7 @@ package class TypeInference {
 	// Helper function for fillGroupElement
 	def private void setGroupElement(EObject node) {
 		if (!types.containsKey(node)) {
-			visited.contains(node);
+			visited.add(node);
 			types.put(node, Type.GROUP_ELEMENT);
 		}
 	}

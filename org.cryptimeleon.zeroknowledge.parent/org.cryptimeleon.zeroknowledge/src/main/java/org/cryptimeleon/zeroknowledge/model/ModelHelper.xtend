@@ -22,6 +22,17 @@ import org.eclipse.emf.ecore.util.EcoreUtil
  */
 class ModelHelper {
 
+	static String OPERATOR_ADDITION = "+";
+	static String OPERATOR_SUBTRACTION = "-";
+	static String OPERATOR_MULTIPLICATION = "*";
+	static String OPERATOR_DIVISION = "/";
+	static String OPERATOR_EQUAL = "=";
+	static String OPERATOR_INEQUAL = "!=";
+	static String OPERATOR_LESS = "<";
+	static String OPERATOR_GREATER = ">";
+	static String OPERATOR_LESSEQUAL = "<=";
+	static String OPERATOR_GREATEREQUAL = ">=";
+
 	// Helper function to get the root Model object
 	def static Model getRoot(EObject node) {
 		return EcoreUtil.getRootContainer(node) as Model;
@@ -29,14 +40,14 @@ class ModelHelper {
 
 	// Sets a child node's parent's reference to the child node to reference a new child node
 	// Precondition: node cannot be the root Model node
-	def static void replaceParentReferenceToSelf(EObject child_node, EObject new_child_node) {
-		val EObject parent = child_node.eContainer();
-		val EStructuralFeature feature = child_node.eContainingFeature();
+	def static void replaceParentReferenceToSelf(EObject childNode, EObject newChildNode) {
+		val EObject parent = childNode.eContainer();
+		val EStructuralFeature feature = childNode.eContainingFeature();
 		if (parent.eGet(feature) instanceof EList) {
 			val EList<EObject> list = parent.eGet(feature) as EList<EObject>;
-			list.set(list.indexOf(child_node), new_child_node);
+			list.set(list.indexOf(childNode), newChildNode);
 		} else {
-			parent.eSet(feature, new_child_node);
+			parent.eSet(feature, newChildNode);
 		}
 	}
 
@@ -82,15 +93,20 @@ class ModelHelper {
 	}
 
 	def static boolean containsWitnessVariable(EObject node) {
-		return ModelMap.postorderAny(node, [EObject currentNode |
-            currentNode instanceof WitnessVariable;
-        ]);
+		return ModelMap.preorderWithControl(node, [EObject newNode, ModelMap.Controller controller |
+			if (node instanceof FunctionCall) {
+				controller.continueTraversal();
+			} else if (node instanceof WitnessVariable) {
+				controller.returnTrue();
+				controller.breakMap();
+			}
+		]);
 	}
 	
 	def static boolean isEqualityComparison(EObject node) {
 		if (node instanceof Comparison) {
 			val String operator = (node as Comparison).getOperation();
-			return operator == "=" || operator == "!=";
+			return operator == OPERATOR_EQUAL || operator == OPERATOR_INEQUAL;
 		}
 		
 		return false;
@@ -99,8 +115,25 @@ class ModelHelper {
 	def static boolean isInequalityComparison(EObject node) {
 		if (node instanceof Comparison) {
 			val String operator = (node as Comparison).getOperation();
-			return operator == "<" || operator == "<=" || operator == ">" || operator == ">=";
+			return operator == OPERATOR_LESS || operator == OPERATOR_LESSEQUAL || operator == OPERATOR_GREATER || operator == OPERATOR_GREATEREQUAL;
 		}	
+	}
+	
+	def static boolean isStrictComparison(String operator) {
+		return operator == OPERATOR_LESS || operator == OPERATOR_GREATER;
+	}
+	
+	def static boolean isLessComparison(String operator) {
+		return operator == OPERATOR_LESS || operator == OPERATOR_LESSEQUAL;
+	}
+	
+	def static String swapComparisonDirection(String operator) {
+		switch operator {
+			case OPERATOR_LESS: return OPERATOR_GREATER
+			case OPERATOR_LESSEQUAL: return OPERATOR_GREATEREQUAL
+			case OPERATOR_GREATER: return OPERATOR_LESS
+			case OPERATOR_GREATEREQUAL: return OPERATOR_LESSEQUAL
+		}
 	}
 
 }

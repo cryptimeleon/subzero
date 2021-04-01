@@ -45,7 +45,7 @@ Disjunction returns Expression:
   Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
 
 Comparison returns Expression:
-  Sum ({Comparison.left=current} operation=COMPARISON_OPERATOR right=Sum (operation2=COMPARISON_OPERATOR extra=Sum)? (protocolName=PROTOCOL_NAME)? )?;
+  Sum ({Comparison.left=current} operation=COMPARISON_OPERATOR center=Sum (operation2=COMPARISON_OPERATOR right=Sum)? (subprotocolName=SUBPROTOCOL_NAME)? )?;
   
 Sum returns Expression:
   Product ({Sum.left=current} operation=('+' | '-') right=Product)*;
@@ -95,6 +95,14 @@ LocalVariable returns Variable:
  */
 WitnessVariable returns Variable:
   {WitnessVariable} name=IDENTIFIER;
+  
+/*
+ * This object will not be created during parsing, but Variable objects
+ * corresponding to pp-vars will be converted to PPVariable objects
+ * after parsing
+ */
+PPVariable returns Variable:
+  {PPVariable} name=IDENTIFIER;
 
 NumberLiteral returns NumberLiteral:
   value=INT;
@@ -118,10 +126,10 @@ terminal IDENTIFIER:
 	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')*;
 
 terminal STRING_LITERAL:
-  '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+ '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
   
 terminal COMPARISON_OPERATOR:
   '!=' | '=' | '<' | '<=' | '>' | '>=';
 
-terminal PROTOCOL_NAME:
-	('['('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')+']');
+terminal SUBPROTOCOL_NAME:
+  ('['('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')+']');

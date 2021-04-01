@@ -20,6 +20,7 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
@@ -51,6 +52,7 @@ class AugmentedModel {
 	// Must be accessed through their getters, even within class methods (to ensure that they are generated)
 	Map<EObject, Type> types;
 	Map<EObject, Integer> sizes;
+	Map<EObject, GroupType> groups;
 	Set<String> witnessNames;
 	Map<String, FunctionDefinition> userFunctions;
 	Map<String, List<FunctionCall>> userFunctionCalls;
@@ -78,6 +80,7 @@ class AugmentedModel {
 		
 		this.types = null;
 		this.sizes = null;
+		this.groups = null;
 		this.witnessNames = null;
 		this.userFunctions = null;
 		this.userFunctionCalls = null;
@@ -90,6 +93,10 @@ class AugmentedModel {
 		this.predefinedFunctionCalls = null;
 		this.userFunctionSignatures = null;
 		this.constrainedWitnessNames = null;
+		
+		trimStringsTransformation();
+		comparisonTransformation();
+		normalizeNegativesTransformation();
 	}
 	
 	def Model getModel() {
@@ -113,6 +120,15 @@ class AugmentedModel {
 		sizes = sizeInference.getSizes();
 
 		return sizes;		
+	}
+	
+	def Map<EObject, GroupType> getGroups() {
+		if (groups !== null) return groups;
+		
+		val GroupInference groupInference = new GroupInference(this);
+		groups = groupInference.getGroups();
+		
+		return groups;
 	}
 	
 	def boolean hasRangeProof() {
@@ -161,7 +177,6 @@ class AugmentedModel {
 		functionsInlined = true;
 	}
 	
-	
 	// Replace all occurrences of Sum nodes that have the subtraction operation with a Sum 
 	// node with the addition operation, where the right operand is now a Negative node
 	def void normalizeNegatives() {
@@ -183,15 +198,59 @@ class AugmentedModel {
 		negativesNormalized = true;
 	}
 	
+	def private void trimStringsTransformation() {
+		ModelMap.postorder(model, [EObject node |
+			if (node instanceof StringLiteral) {
+				val String value = node.getValue();
+				if (value.charAt(0) == '"') {
+					node.setValue(value.substring(1, value.length()-1));
+				}
+			} else if (node instanceof Comparison) {
+				val String subprotocolName = node.getSubprotocolName();
+				System.out.println(subprotocolName);
+				if (subprotocolName !== null && subprotocolName.charAt(0) == '[') {
+					node.setSubprotocolName(subprotocolName.substring(1, subprotocolName.length()-1));
+				}
+			}
+		]);
+	}
+	
+	def private void comparisonTransformation() {
+		ModelMap.postorder(model, [EObject node | 
+			if (node instanceof Comparison) {
+				if (node.getOperation2() === null && node.getRight() === null) {
+					node.setRight(node.getCenter());
+					node.setCenter(null);
+				}
+			}
+		]);
+	}
+	
+	def void normalizeNegativesTransformation() {
+		if (negativesNormalized) return;
+		
+		ModelMap.postorder(model, [EObject node |
+			if (node instanceof Negative) {
+				val EObject term = node.getTerm();
+				
+				if (term instanceof NumberLiteral) {
+					term.setValue(-term.getValue());
+					ModelHelper.replaceParentReferenceToSelf(node, term);
+				}
+			}
+		]);
+		
+		negativesNormalized = true;
+	}
+	
 	// Simplifies the model by removing all bracket nodes
 	def void removeBrackets() {
 		if (bracketsRemoved) return;
 		
 		ModelMap.postorder(model, [ EObject node |
 			if (node instanceof Brackets) {
-				val Brackets brackets = node as Brackets;
-				val EObject contents = brackets.getContent();
-				ModelHelper.replaceParentReferenceToSelf(brackets, contents);
+				val EObject contents = node.getContent();
+				ModelHelper.replaceParentReferenceToSelf(node, contents);
 			}
 		]);
 		
@@ -454,7 +513,7 @@ class AugmentedModel {
 		return tuples;
 	}
 	def private static void getAllTuplesHelper1(List<Tuple> tuples, EObject node) {
-		ModelMap.preorderWithControl(node, [EObject child, ModelMapController controller |
+		ModelMap.preorderWithControl(node, [EObject child, ModelMap.Controller controller |
 			if (child instanceof Tuple) {
 				tuples.add(child);
 				getAllTuplesHelper2(tuples, child);				
@@ -463,7 +522,7 @@ class AugmentedModel {
 		]);
 	}
 	def private static void getAllTuplesHelper2(List<Tuple> tuples, EObject node) {
-		ModelMap.preorderWithControl(node, [EObject child, ModelMapController controller |
+		ModelMap.preorderWithControl(node, [EObject child, ModelMap.Controller controller |
 			if (child instanceof FunctionCall) {
 				getAllTuplesHelper1(tuples, child);
 				controller.continueTraversal();
@@ -532,7 +591,7 @@ class AugmentedModel {
 		
 		constrainedWitnessNames = new HashSet<String>();
 		
-		ModelMap.preorderWithControl(model, [EObject node, ModelMapController controller |
+		ModelMap.preorderWithControl(model, [EObject node, ModelMap.Controller controller |
 			if (node instanceof Power) {
 				controller.continueTraversal();
 				return;
@@ -555,13 +614,8 @@ class AugmentedModel {
 				builder.append("---|");
 			}
 			
-			var String className = node.getClass().toString();
-			val int periodIndex = className.lastIndexOf('.');
-			if (periodIndex > 0) {
-				className = className.substring(periodIndex + 1);
-			}
-			
-			builder.append(className.substring(0, className.length() - 4));
+			var String className = node.getClass().getSimpleName();
+			builder.append(className);
 			
 			switch node {
 				Witness: builder.append(" - " + node.getName().toString())

@@ -21,9 +21,9 @@ class FunctionSignature {
 	ArrayList<Type> parameterTypes;
 	ArrayList<Integer> parameterSizes;
 	
-	new(String name, String returnType, int returnSize, String[] parameterTypes, int[] parameterSizes) {
+	new(String name, String returnTypeName, int returnSize, String[] parameterTypes, int[] parameterSizes) {
 		this.name = name;
-		this.returnType = Type.toType(returnType);
+		this.returnType = Type.toType(returnTypeName);
 		this.returnSize = returnSize;
 		this.parameterCount = parameterTypes.length;
 		this.parameterTypes = new ArrayList();
@@ -52,7 +52,7 @@ class FunctionSignature {
 	
 	new(Method method) {
 		this.name = method.getName();
-		this.returnType = Type.toType(trimTypeName(method.getReturnType().getName()));
+		this.returnType = Type.toType(method.getReturnType().getSimpleName());
 		val ReturnsTuple returnAnnotation = method.getAnnotation(ReturnsTuple);
 		val TupleParameters parametersAnnotation = method.getAnnotation(TupleParameters);
 		if (returnAnnotation !== null) {
@@ -70,7 +70,7 @@ class FunctionSignature {
 		this.parameterTypes = new ArrayList<Type>;
 
 		for (Class<?> classObject : method.getParameterTypes()) {
-			this.parameterTypes.add(Type.toType(trimTypeName(classObject.getName())));			
+			this.parameterTypes.add(Type.toType(classObject.getSimpleName()));			
 		}
 	}
 	
@@ -102,14 +102,4 @@ class FunctionSignature {
 		return parameterSizes;
 	}
 		
-	// Converts internal class name to simpler form (without package prefix)
-	// Possibly remove and simply use fully qualified name?
-	def private static String trimTypeName(String type) {
-	  val int periodIndex = type.lastIndexOf('.');
-	  if (periodIndex > 0) {
-	    return type.substring(periodIndex + 1);
-	  }
-	  return type;
-	}
-	
 }

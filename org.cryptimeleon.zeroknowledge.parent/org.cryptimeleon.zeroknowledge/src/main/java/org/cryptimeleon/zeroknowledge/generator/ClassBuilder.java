@@ -67,9 +67,9 @@ class ClassBuilder {
 		
 		for (Class<?> clazz : classes) {
 			if (clazz.isInterface()) {
-				interfaceNames.add(GenerationHelper.getClassName(clazz));
+				interfaceNames.add(clazz.getSimpleName());
 			} else if (baseClassName == null) {
-				baseClassName = GenerationHelper.getClassName(clazz);
+				baseClassName = clazz.getSimpleName();
 			} else {
 				throw new IllegalArgumentException("Cannot have multiple base classes");
 			}

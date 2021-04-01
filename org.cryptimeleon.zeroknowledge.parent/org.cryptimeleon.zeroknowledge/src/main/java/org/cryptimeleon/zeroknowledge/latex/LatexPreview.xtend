@@ -210,14 +210,15 @@ class LatexPreview {
 		
 		generateLatex(comparison.getLeft());
 		generateComparisonOperator.apply(comparison.getOperation());
-		generateLatex(comparison.getRight());
 		
 		// Handle double sided inequalities
 		val String operator2 = comparison.getOperation2();
 		if (operator2 !== null) {
+			generateLatex(comparison.getCenter());
 			generateComparisonOperator.apply(operator2);
-			generateLatex(comparison.getExtra());
 		}
+		
+		generateLatex(comparison.getRight());
 	}
 
 	def dispatch private void generateLatex(Sum sum) {

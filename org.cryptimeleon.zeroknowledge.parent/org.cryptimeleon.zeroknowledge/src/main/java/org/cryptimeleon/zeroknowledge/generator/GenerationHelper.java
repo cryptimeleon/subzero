@@ -7,11 +7,6 @@ import java.util.List;
  */
 public class GenerationHelper {
 
-	public static String getClassName(Class<?> clazz) {
-		return clazz.getSimpleName();
-//		return clazz.getCanonicalName().substring(clazz.getPackageName().length()+1);
-	}
-	
 	// Converts variable names and witness names to Java variable names
 	public static String convertToJavaName(String name) {
 		return name.replace("'", "_prime");

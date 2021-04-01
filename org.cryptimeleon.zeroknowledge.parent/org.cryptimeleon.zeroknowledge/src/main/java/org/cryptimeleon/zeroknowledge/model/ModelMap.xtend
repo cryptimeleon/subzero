@@ -89,15 +89,16 @@ class ModelMap {
 		}
 	}
 
-	def static void preorderWithControl(EObject node, (EObject, ModelMapController) => void function) {
-		val ModelMapController controller = new ModelMapController();
+	def static boolean preorderWithControl(EObject node, (EObject, ModelMap.Controller) => void function) {
+		val ModelMap.Controller controller = new ModelMap.Controller();
 		preorderWithControlHelper(node, controller, function);
+		return controller.getReturnValue();
 	}
 	
-	def private static void preorderWithControlHelper(EObject node, ModelMapController controller, (EObject, ModelMapController) => void function) {
+	def private static void preorderWithControlHelper(EObject node, ModelMap.Controller controller, (EObject, ModelMap.Controller) => void function) {
 		
 		// End all traversal if break was called in a function
-		if (controller.triggerBreak()) {
+		if (controller.breakIsTriggered()) {
 			return;
 		}
 		
@@ -105,7 +106,8 @@ class ModelMap {
 		function.apply(node, controller);
 		
 		// End branch traversal if continue was called in function
-		if (controller.triggerContinue()) {
+		if (controller.continueIsTriggered()) {
+			controller.resetContinue();
 			return;
 		}
 		
@@ -114,4 +116,53 @@ class ModelMap {
 			preorderWithControlHelper(child, controller, function);
 		}	
 	}
+	
+	static class Controller {
+		
+		boolean breakCalled;
+		boolean continueCalled;
+		boolean returnValue;
+		
+		new() {
+			this.breakCalled = false;
+			this.continueCalled = false;
+			this.returnValue = false;
+		}
+		
+		def private boolean breakIsTriggered() {
+			return this.breakCalled;
+		}
+		
+		def private boolean continueIsTriggered() {
+			return this.continueCalled;
+		}
+		
+		def private resetContinue() {
+			this.continueCalled = false;
+		}
+		
+		// Stops traversal of the tree
+		def void breakMap() {
+			this.breakCalled = true;
+		}
+		
+		// Stops traversal of the current branch, but continues traversal elsewhere
+		def void continueTraversal() {
+			this.continueCalled = true;
+		}
+		
+		def void returnTrue() {
+			this.returnValue = true;
+		}
+		
+		def void returnFalse() {
+			this.returnValue = false;
+		}
+		
+		def boolean getReturnValue() {
+			return this.returnValue;
+		}
+	}
+	
+	
 }

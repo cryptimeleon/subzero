@@ -32,4 +32,8 @@ public class PredefinedFunctions {
 		return testing.pow(BigInteger.valueOf(1));
 	}
 	
+	public static GroupElementExpression e(GroupElementExpression arg1, GroupElementExpression arg2) {
+		return arg1;
+	}
+	
 }

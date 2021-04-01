@@ -52,6 +52,8 @@ import java.util.Map.Entry
 import java.util.Comparator
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
+import org.cryptimeleon.zeroknowledge.model.GroupType
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap
 
 class CodeGenerator {
 	
@@ -68,6 +70,7 @@ class CodeGenerator {
 	
 	Map<EObject, Type> types;
 	Map<EObject, Integer> sizes;
+	Map<EObject, GroupType> groups;
 	
 	String OPERATOR_ADDITION = "+";
 	String OPERATOR_SUBTRACTION = "-";
@@ -106,6 +109,11 @@ class CodeGenerator {
 		// Perform type resolution on the model
 		types = augmentedModel.getTypes();
 		sizes = augmentedModel.getSizes();
+		groups = augmentedModel.getGroups();
+		
+		groups.entrySet().forEach(entry |
+		    System.out.println(entry.getKey() + " " + entry.getValue())
+		);
 		
 		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
 		augmentedModel.identifySpecialVariables();
@@ -129,21 +137,31 @@ class CodeGenerator {
 		val List<String> witnessNames = getWitnessNames(model.getWitnessList());
 		Collections.sort(witnessNames);
 		
-		val List<Pair<String, Type>> variableTypes = new ArrayList<Pair<String, Type>>();
-		for (Entry<String, List<Variable>> entry : augmentedModel.getAllVariables().entrySet()) {
-			val String variableName = entry.getKey();
-			val Variable variable = entry.getValue().get(0);
-			if (!(variable instanceof WitnessVariable)) {
-				variableTypes.add(new Pair(variableName, types.get(variable)));
+		
+		val List<String> variableNames = new ArrayList<String>();
+		val Map<String, Type> variableTypes = new HashMap<String, Type>();
+		val Map<String, GroupType> variableGroups = new HashMap<String, GroupType>();
+		
+		for (Entry<EObject, GroupType> entry: groups.entrySet()) {
+			val Variable variable = entry.getKey() as Variable;
+			val String variableName = variable.getName();
+			
+			if (!(variable instanceof WitnessVariable) && !variableTypes.containsKey(variableName)) {
+				variableNames.add(variableName);
+				variableTypes.put(variableName, types.get(variable));
+				variableGroups.put(variableName, groups.get(variable));
 			}
 		}
 		
-		Collections.sort(variableTypes, new Comparator<Pair<String, Type>>() {
-			override compare(Pair<String, Type> arg0, Pair<String, Type> arg1) {
-				if (arg0.getValue() == arg1.getValue()) {
-					return arg0.getKey().compareTo(arg1.getKey());
+		Collections.sort(variableNames, new Comparator<String>() {
+			override compare(String arg1, String arg2) {
+				val Type argType1 = variableTypes.get(arg1);
+				val Type argType2 = variableTypes.get(arg2);
+				
+				if (argType1 === argType2) {
+					return arg1.compareTo(arg2);
 				}
-				return arg0.getValue().compareTo(arg1.getValue());
+				return argType1.compareTo(argType2);
 			}
 		});
 		
@@ -159,7 +177,14 @@ class CodeGenerator {
 		
 		
 		val ClassBuilder protocolClass = buildProtocolClass(
-			protocolName, commonInputClassName, secretInputClassName, publicParametersClassName, witnessNames, variableTypes, proof
+			protocolName,
+			commonInputClassName,
+			secretInputClassName,
+			publicParametersClassName,
+			witnessNames,
+			variableNames,
+			variableTypes,
+			proof
 		);
 		
 		val SourceBuilder protocolSource = new SourceBuilder(packageName, protocolClass);
@@ -167,7 +192,15 @@ class CodeGenerator {
 		val String protocolCode = protocolSource.toString();
 		
 		val ClassBuilder testClass = buildTestClass(
-			protocolName, commonInputClassName, secretInputClassName, publicParametersClassName, witnessNames, variableTypes, constrainedWitnessNames
+			protocolName,
+			commonInputClassName,
+			secretInputClassName,
+			publicParametersClassName,
+			witnessNames,
+			variableNames,
+			variableTypes,
+			variableGroups,
+			constrainedWitnessNames
 		);
 		val SourceBuilder testSource = new SourceBuilder(packageName, testClass);
 		testSource.setImports(buildTestImports());
@@ -198,7 +231,8 @@ class CodeGenerator {
 		String secretInputClassName,
 		String publicParametersClassName,
 		List<String> witnessNames,
-		List<Pair<String, Type>> variableTypes,
+		List<String> variableNames,
+		Map<String, Type> variableTypes,
 		String proof
 	) {
 		val ClassBuilder protocolClass = new ClassBuilder(PUBLIC, protocolName, DelegateProtocol);
@@ -207,6 +241,7 @@ class CodeGenerator {
 		val FieldBuilder ppField = new FieldBuilder(PROTECTED, publicParametersClassName, "pp");
 		val FieldBuilder groupField = new FieldBuilder(PROTECTED, groupClass, groupName);
 		val FieldBuilder zpField = new FieldBuilder(PROTECTED, Zp, "zp");
+		val FieldBuilder eField = new FieldBuilder(PROTECTED, BilinearMap, "e");
 		
 		// Build constructor
 		val ConstructorBuilder constructor = new ConstructorBuilder(PUBLIC);
@@ -219,6 +254,9 @@ class CodeGenerator {
 			«ENDIF»
 			this.«groupName» = «groupName»;
 			this.zp = (Zp) this.«groupName».getZn();
+			«IF hasPairing»
+			this.e = «groupName».getBilinearMap();
+			«ENDIF»
 		''';
 		constructor.addBody(constructorBody);
 		
@@ -232,7 +270,7 @@ class CodeGenerator {
 		val MethodBuilder getChallengeSpaceSizeMethod = buildGetChallengeSpaceSizeMethod();
 		
 		// Build common input class
-		val ClassBuilder commonInputClass = buildCommonInputClass(commonInputClassName, variableTypes);
+		val ClassBuilder commonInputClass = buildCommonInputClass(commonInputClassName, variableNames, variableTypes);
 		
 		// Build secret input class
 		val ClassBuilder secretInputClass = buildSecretInputClass(secretInputClassName, witnessNames);
@@ -241,6 +279,7 @@ class CodeGenerator {
 		if (hasRangeProof) protocolClass.addField(ppField);
 		protocolClass.addField(groupField);
 		protocolClass.addField(zpField);
+		if (hasPairing) protocolClass.addField(eField);
 		protocolClass.addConstructor(constructor);
 		
 		protocolClass.addMethod(provideSubprotocolSpecMethod);
@@ -307,12 +346,12 @@ class CodeGenerator {
 		return method;
 	}
 	
-	def ClassBuilder buildCommonInputClass(String commonInputClassName, List<Pair<String, Type>> variableTypes) {
+	def ClassBuilder buildCommonInputClass(String commonInputClassName, List<String> variableNames, Map<String, Type> variableTypes) {
 		val ClassBuilder commonInputClass = new ClassBuilder(PUBLIC, STATIC, commonInputClassName, CommonInput);
 		commonInputClass.addBasicConstructor(PUBLIC);
-				
-		for (Pair<String, Type> entry : variableTypes) {
-			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, entry.getValue().getTypeClass(), entry.getKey());	
+		
+		for (String variableName : variableNames) {
+			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypes.get(variableName).getTypeClass(), variableName);
 			commonInputClass.addField(variableField);
 		}
 
@@ -348,6 +387,7 @@ class CodeGenerator {
 			import org.cryptimeleon.math.structures.groups.Group;
 			import org.cryptimeleon.math.structures.groups.GroupElement;
 			import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
+			import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap;
 			import org.cryptimeleon.math.structures.rings.zn.Zp;
 			import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
 			import java.math.BigInteger;
@@ -369,18 +409,15 @@ class CodeGenerator {
 		String secretInputClassName,
 		String publicParametersClassName,
 		List<String> witnessNames,
-		List<Pair<String, Type>> variableTypes,
+		List<String> variableNames,
+		Map<String, Type> variableTypes,
+		Map<String, GroupType> variableGroups,
 		Set<String> constrainedWitnessNames
 	) {
 		val ClassBuilder testClass = new ClassBuilder(PUBLIC, "LibraryTest");
 
 		val MethodBuilder testMethod = new MethodBuilder(PUBLIC, void, "protocolTest");		
 		testMethod.setTest();
-		
-		val List<String> variableNames = new ArrayList<String>();
-		for (Pair<String, Type> entry : variableTypes) {
-			variableNames.add(entry.getKey());
-		}
 
 		val String commonInputParameters = GenerationHelper.createCommaList(variableNames);
 		val String secretInputParameters = GenerationHelper.createCommaList(witnessNames);
@@ -395,11 +432,31 @@ class CodeGenerator {
 			defaultGroup = groupName;
 		}
 		
+		val StringBuilder constantsBuilder = new StringBuilder();
+		for (String variableName : variableNames) {
+			val String variableTypeClassName = variableTypes.get(variableName).getTypeClass().getSimpleName();
+			
+			if (hasPairing && variableGroups.containsKey(variableName)) {
+				val String variableGroup = variableGroups.get(variableName).toString();
+				constantsBuilder.append('''«variableTypeClassName» «variableName» = «variableGroup».getNeutralElement();''');
+			} else {
+				constantsBuilder.append('''«variableTypeClassName» «variableName» = «defaultGroup».getNeutralElement();''');
+			}
+			constantsBuilder.append('\n');
+		}
+		val String constants = constantsBuilder.toString();
+		
 		val String body = '''
 			«groupClassName» «groupName» = «groupInstance»;
-			«IF hasRangeProof || hasPairing»
+			«IF hasRangeProof»
 			«publicParametersClassName» pp = «publicParametersClassName».generateNewParameters(bilinearGroup);
+			«ENDIF»
+			«IF hasRangeProof || hasPairing»
 			Group groupG1 = bilinearGroup.getG1();
+			«ENDIF»
+			«IF hasPairing»
+			Group groupG2 = bilinearGroup.getG2();
+			Group groupGT = bilinearGroup.getGT();
 			«ENDIF»
 			Zp zp = (Zp) «defaultGroup».getZn();
 			
@@ -413,9 +470,7 @@ class CodeGenerator {
 			«ENDFOR»
 			
 			//Set constants
-			«FOR Pair<String, Type> entry : variableTypes»
-			«entry.getValue().getTypeClass().getSimpleName()» «entry.getKey()» = «defaultGroup».getNeutralElement();
-			«ENDFOR»
+			«constants»
 			
 			//Instantiate protocol and input
 			«protocolClassName» protocol = new «protocolClassName»(«groupName»«IF hasRangeProof», pp«ENDIF»);
@@ -694,45 +749,17 @@ class CodeGenerator {
 		return '''«left».or(«right»)''';
 	}
 	
-	def private String shiftUp(String expression) {
-		return expression + ".add(zp.valueOf(1))";
-	}
-	
-	def private String shiftDown(String expression) {
-		return expression + ".sub(zp.valueOf(1))";
-	}
-	
-	def private boolean isStrictComparison(String operator) {
-		return operator == OPERATOR_LESS || operator == OPERATOR_GREATER;
-	}
-	
-	def private boolean isLessComparison(String operator) {
-		return operator == OPERATOR_LESS || operator == OPERATOR_LESSEQUAL;
-	}
-	
-	def private String swapComparisonDirection(String operator) {
-		switch operator {
-			case OPERATOR_LESS: return OPERATOR_GREATER
-			case OPERATOR_LESSEQUAL: return OPERATOR_GREATEREQUAL
-			case OPERATOR_GREATER: return OPERATOR_LESS
-			case OPERATOR_GREATEREQUAL: return OPERATOR_LESSEQUAL
-		}
-	}
-	
 	def dispatch String generateCode(Comparison comparison, BranchState state) {
 		var EObject leftNode = comparison.getLeft();
 		var EObject rightNode = comparison.getRight();
-		var EObject extraNode = comparison.getExtra();
 			
 		var String operator = comparison.getOperation();
 		
 		subprotocolCount++;
-		var String protocolName = comparison.getProtocolName();
+		var String subprotocolName = comparison.getSubprotocolName();
 		
-		if (protocolName === null) {
-			protocolName = "statement" + subprotocolCount;
-		} else {
-			protocolName = protocolName.substring(1, protocolName.length()-1);
+		if (subprotocolName === null) {
+			subprotocolName = "statement" + subprotocolCount;
 		}
 		
 		// Handle = and != cases
@@ -752,7 +779,7 @@ class CodeGenerator {
 			}
 			
 			return '''
-				subprotocolSpecBuilder.addSubprotocol("«protocolName»",
+				subprotocolSpecBuilder.addSubprotocol("«subprotocolName»",
 					new «fragmentClass»(«negated»«left».isEqualTo(«right»)«extraParameter»)
 				);
 			''';
@@ -762,6 +789,7 @@ class CodeGenerator {
 		var EObject upperBound;
 		var EObject member;
 		
+		var EObject centerNode = comparison.getCenter();
 		var String operator2 = comparison.getOperation2();
 		
 		if (operator2 === null) {
@@ -770,11 +798,11 @@ class CodeGenerator {
 			var boolean leftHasWitness = ModelHelper.containsWitnessVariable(leftNode);
 			
 			// Normalize the direction of the inequality
-			if (!isLessComparison(operator)) {
+			if (!ModelHelper.isLessComparison(operator)) {
 				var EObject tempNode = leftNode;
 				leftNode = rightNode;
 				rightNode = tempNode;
-				operator = swapComparisonDirection(operator);
+				operator = ModelHelper.swapComparisonDirection(operator);
 				leftHasWitness = !leftHasWitness;
 			}
 			
@@ -803,24 +831,24 @@ class CodeGenerator {
 			// Double comparison
 			
 			// Normalize the direction of the inequality
-			if (!isLessComparison(operator)) {
+			if (!ModelHelper.isLessComparison(operator)) {
 				var EObject tempNode = leftNode;
-				leftNode = extraNode;
-				extraNode = tempNode;
+				leftNode = rightNode;
+				rightNode = tempNode;
 				
 				val String temp = operator;
-				operator = swapComparisonDirection(operator2);
-				operator2 = swapComparisonDirection(temp);
+				operator = ModelHelper.swapComparisonDirection(operator2);
+				operator2 = ModelHelper.swapComparisonDirection(temp);
 			}
 			
 			lowerBound = leftNode;
-			member = rightNode;
-			upperBound = extraNode;
+			member = centerNode;
+			upperBound = rightNode;
 		}
 		
 		
 		// Shift the lower bound up by 1 if the first inequality is strict
-		if (isStrictComparison(operator)) {
+		if (ModelHelper.isStrictComparison(operator)) {
 			if (lowerBound instanceof NumberLiteral) {
 				val NumberLiteral literal = lowerBound;
 				literal.setValue(literal.getValue() + 1);
@@ -836,7 +864,7 @@ class CodeGenerator {
 		}
 		
 		// Shift the upper bound down by 1 if the second inequality is strict
-		if (isStrictComparison(operator2)) {
+		if (ModelHelper.isStrictComparison(operator2)) {
 			if (upperBound instanceof NumberLiteral) {
 				val NumberLiteral literal = upperBound;
 				literal.setValue(literal.getValue() - 1);
@@ -856,7 +884,7 @@ class CodeGenerator {
 		val String upperBoundCode = generateCode(upperBound, state);
 		
 		return '''
-			subprotocolSpecBuilder.addSubprotocol("«protocolName»",
+			subprotocolSpecBuilder.addSubprotocol("«subprotocolName»",
 				new TwoSidedRangeProof(«memberCode», «lowerBoundCode», «upperBoundCode», pp.rangeProofpp)
 			);
 		''';
@@ -921,9 +949,13 @@ class CodeGenerator {
 	}
 	
 	def dispatch String generateCode(FunctionCall call, BranchState state) {
-		val String name = GenerationHelper.convertToJavaName(call.getName());
+		var String name = GenerationHelper.convertToJavaName(call.getName());
 		
-		return '''«name»(«FOR argument : call.getArguments() SEPARATOR ','»«generateCode(argument, state)»«ENDFOR»)'''
+		if (name == "e") {
+			name = "this.e.applyExpr";
+		}
+		
+		return '''«name»(«FOR argument : call.getArguments() SEPARATOR ', '»«generateCode(argument, state)»«ENDFOR»)'''
 	}
 	
 	def dispatch String generateCode(Argument argument, BranchState state) {
