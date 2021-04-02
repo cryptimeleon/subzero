@@ -12,7 +12,7 @@ generate zeroKnowledge "http://www.cryptimeleon.org/zeroknowledge/ZeroKnowledge"
  */
 
 Model returns Model:
-  functions+=(FunctionDefinition)* witnessList=WitnessList ';'? proof=Expression ';'?;
+  (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* witnessList=WitnessList ';'? proof=Expression ';'?;
 
 FunctionDefinition returns FunctionDefinition:
   name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
@@ -45,7 +45,7 @@ Disjunction returns Expression:
   Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
 
 Comparison returns Expression:
-  Sum ({Comparison.left=current} operation=COMPARISON_OPERATOR center=Sum (operation2=COMPARISON_OPERATOR right=Sum)? (subprotocolName=SUBPROTOCOL_NAME)? )?;
+  Sum ({Comparison.left=current} operation=COMPARISON_OPERATOR center=Sum (operation2=COMPARISON_OPERATOR right=Sum)? (subprotocolName=PROTOCOL_NAME)? )?;
   
 Sum returns Expression:
   Product ({Sum.left=current} operation=('+' | '-') right=Product)*;
@@ -131,5 +131,5 @@ terminal STRING_LITERAL:
 terminal COMPARISON_OPERATOR:
   '!=' | '=' | '<' | '<=' | '>' | '>=';
 
-terminal SUBPROTOCOL_NAME:
-  ('['('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'\'')+']');
+terminal PROTOCOL_NAME:
+  ('[' ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|' ')*']');

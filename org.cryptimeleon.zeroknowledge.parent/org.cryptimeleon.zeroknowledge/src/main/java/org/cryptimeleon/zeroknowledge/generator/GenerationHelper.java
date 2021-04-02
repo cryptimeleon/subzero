@@ -12,6 +12,26 @@ public class GenerationHelper {
 		return name.replace("'", "_prime");
 	}
 	
+	public static String convertToClassName(String name) {
+		StringBuilder builder = new StringBuilder();
+		boolean lastCharWasWhitespace = true;
+		
+		for (int i = 0; i < name.length(); i++) {
+			char c = name.charAt(i);
+			
+			if (lastCharWasWhitespace) {
+				builder.append(Character.toUpperCase(c));
+				lastCharWasWhitespace = false;
+			} else if (c == ' ' ) {
+				lastCharWasWhitespace = true;
+			} else {
+				builder.append(c);
+			}
+		}
+		
+		return builder.toString();
+	}
+	
 	public static String createCommaList(List<String> argumentNames) {
 		StringBuilder builder = new StringBuilder();
 		int size = argumentNames.size();

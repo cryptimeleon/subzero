@@ -8,6 +8,8 @@ import java.util.HashSet
 import java.util.List
 import java.util.Map
 import java.util.Set
+import java.util.Map.Entry
+import java.util.Comparator
 import org.cryptimeleon.craco.protocols.CommonInput
 import org.cryptimeleon.craco.protocols.SecretInput
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol
@@ -21,11 +23,14 @@ import org.cryptimeleon.math.serialization.StandaloneRepresentable
 import org.cryptimeleon.math.structures.groups.Group
 import org.cryptimeleon.math.structures.groups.GroupElement
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap
 import org.cryptimeleon.math.structures.rings.zn.Zp
+import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement
 import org.cryptimeleon.zeroknowledge.model.AugmentedModel
 import org.cryptimeleon.zeroknowledge.model.BranchState
 import org.cryptimeleon.zeroknowledge.model.ModelHelper
 import org.cryptimeleon.zeroknowledge.model.Type
+import org.cryptimeleon.zeroknowledge.model.GroupType
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
@@ -45,15 +50,11 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessVariable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
 import org.eclipse.emf.ecore.EObject
 
 import static org.cryptimeleon.zeroknowledge.generator.Modifier.*
-import java.util.Map.Entry
-import java.util.Comparator
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
-import org.cryptimeleon.zeroknowledge.model.GroupType
-import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap
 
 class CodeGenerator {
 	
@@ -138,15 +139,16 @@ class CodeGenerator {
 		val Map<String, Type> variableTypes = new HashMap<String, Type>();
 		val Map<String, GroupType> variableGroups = new HashMap<String, GroupType>();
 		
-		for (Entry<EObject, GroupType> entry: groups.entrySet()) {
-			val Variable variable = entry.getKey() as Variable;
-			val String variableName = variable.getName();
+		for (Entry<String, List<Variable>> entry : augmentedModel.getAllVariables().entrySet()) {
+			val Variable variable = entry.getValue().get(0);
+			val String variableName = entry.getKey();
 			
 			if (!(variable instanceof WitnessVariable) && !variableTypes.containsKey(variableName)) {
 				variableNames.add(variableName);
 				variableTypes.put(variableName, types.get(variable));
-				variableGroups.put(variableName, groups.get(variable));
+				if (groups.containsKey(variable)) variableGroups.put(variableName, groups.get(variable));
 			}
+			
 		}
 		
 		Collections.sort(variableNames, new Comparator<String>() {
@@ -163,7 +165,9 @@ class CodeGenerator {
 		
 		val Set<String> constrainedWitnessNames = augmentedModel.getConstrainedWitnessNames();
 		
-		protocolName = "MySigmaProtocol";
+		val String rawProtocolName = model.getProtocolName();
+		protocolName = GenerationHelper.convertToClassName(rawProtocolName.substring(1, rawProtocolName.length()-1));
+		if (protocolName.isEmpty()) protocolName = "MySigmaProtocol";
 		val String packageName = "prototype";
 		val String commonInputClassName = protocolName + CommonInput.getSimpleName();
 		val String secretInputClassName = protocolName + SecretInput.getSimpleName();
@@ -358,7 +362,7 @@ class CodeGenerator {
 		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName, SecretInput);
 		
 		for (String witnessName : witnessNames) {
-			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, Zp.ZpElement, witnessName);
+			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, ZpElement, witnessName);
 			secretInputClass.addField(field);
 		}
 		
@@ -430,13 +434,24 @@ class CodeGenerator {
 		
 		val StringBuilder constantsBuilder = new StringBuilder();
 		for (String variableName : variableNames) {
+			val Type variableType = variableTypes.get(variableName)
 			val String variableTypeClassName = variableTypes.get(variableName).getTypeClass().getSimpleName();
 			
-			if (hasPairing && variableGroups.containsKey(variableName)) {
-				val String variableGroup = variableGroups.get(variableName).toString();
-				constantsBuilder.append('''«variableTypeClassName» «variableName» = «variableGroup».getNeutralElement();''');
+			if (variableType === Type.EXPONENT) {
+				// Exponent common input
+				
+				constantsBuilder.append('''«variableTypeClassName» «variableName» = zp.getZeroElement();''');
 			} else {
-				constantsBuilder.append('''«variableTypeClassName» «variableName» = «defaultGroup».getNeutralElement();''');
+				// Group element common input
+				
+				var String variableGroup;
+				if (hasPairing && variableGroups.containsKey(variableName)) {
+					variableGroup = variableGroups.get(variableName).toString();
+				} else {
+					variableGroup = defaultGroup;
+				}
+				
+				constantsBuilder.append('''«variableTypeClassName» «variableName» = «variableGroup».getNeutralElement();''');
 			}
 			constantsBuilder.append('\n');
 		}
@@ -459,9 +474,9 @@ class CodeGenerator {
 			//Set witness
 			«FOR String witnessName : witnessNames»
 			«IF constrainedWitnessNames.contains(witnessName)»
-			Zp.ZpElement «witnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness
+			ZpElement «witnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness
 			«ELSE»
-			Zp.ZpElement «witnessName» = zp.getUniformlyRandomElement();
+			ZpElement «witnessName» = zp.getUniformlyRandomElement();
 			«ENDIF»
 			«ENDFOR»
 			
@@ -504,6 +519,7 @@ class CodeGenerator {
 			import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup;
 			import org.cryptimeleon.math.structures.groups.lazy.LazyGroup;
 			import org.cryptimeleon.math.structures.rings.zn.Zp;
+			import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
 			import org.junit.Test;
 			import static org.junit.Assert.assertTrue;
 		''';
@@ -756,6 +772,8 @@ class CodeGenerator {
 		
 		if (subprotocolName === null) {
 			subprotocolName = "statement" + subprotocolCount;
+		} else {
+			subprotocolName = subprotocolName.substring(1, subprotocolName.length()-1);
 		}
 		
 		// Handle = and != cases
