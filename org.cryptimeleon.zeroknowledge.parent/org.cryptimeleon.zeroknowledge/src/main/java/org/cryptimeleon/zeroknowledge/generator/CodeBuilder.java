@@ -94,6 +94,10 @@ public class CodeBuilder {
 		builder.append(" ");
 	}
 	
+	public void semicolon() {
+		builder.append(";");
+	}
+	
 	public void newLine() {
 		builder.append('\n');
 		isStartOfLine = true;

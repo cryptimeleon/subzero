@@ -1,26 +1,28 @@
 package org.cryptimeleon.zeroknowledge.model
 
-import org.eclipse.emf.ecore.EObject;
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameterList
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessList
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Contains information about the current branch of the abstract syntax tree
@@ -145,6 +147,14 @@ class BranchState {
 		updateGeneral(parameter);
 	}
 	
+	def dispatch void updateState(PublicParameterList publicParameterList) {
+		updateGeneral(publicParameterList);
+	}
+	
+	def dispatch void updateState(PublicParameter publicParameter) {
+		updateGeneral(publicParameter);
+	}
+	
 	def dispatch void updateState(WitnessList witnessList) {
 		updateGeneral(witnessList);
 	}
@@ -222,6 +232,10 @@ class BranchState {
 	
 	def dispatch void updateState(Brackets brackets) {
 		updateGeneral(brackets);
+	}
+	
+	def dispatch void updateState(EObject node) {
+		System.out.println("Error: unhandled node type in update branch state");
 	}
 	
 	def String getPackageLiteral() {

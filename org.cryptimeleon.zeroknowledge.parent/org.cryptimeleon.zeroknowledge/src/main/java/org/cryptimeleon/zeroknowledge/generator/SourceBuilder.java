@@ -81,8 +81,6 @@ public class SourceBuilder {
 		}
 		
 		for (String className : classNames) {
-			System.out.println(className);
-			
 			for (String packageName : packages) {
 				try {
 					String fullyQualifiedName = Class.forName(packageName + "." + className).getName();

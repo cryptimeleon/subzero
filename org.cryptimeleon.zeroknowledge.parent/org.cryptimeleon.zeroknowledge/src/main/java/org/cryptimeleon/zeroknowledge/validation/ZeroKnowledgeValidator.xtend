@@ -8,13 +8,14 @@ import java.util.HashSet
 import java.util.Iterator
 import java.util.List
 import java.util.Map
+import java.util.Set
 import org.cryptimeleon.zeroknowledge.model.AugmentedModel
 import org.cryptimeleon.zeroknowledge.model.BranchState
 import org.cryptimeleon.zeroknowledge.model.FunctionSignature
+import org.cryptimeleon.zeroknowledge.model.GroupType
 import org.cryptimeleon.zeroknowledge.model.ModelHelper
 import org.cryptimeleon.zeroknowledge.model.ModelMap
 import org.cryptimeleon.zeroknowledge.model.Type
-import org.cryptimeleon.zeroknowledge.model.TypeInference
 import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
@@ -32,6 +33,8 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameterList
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
@@ -42,9 +45,6 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
-
-import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage.Literals
-import org.cryptimeleon.zeroknowledge.model.GroupType
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -61,7 +61,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	var Map<EObject, Integer> sizes;
 	var Map<String, GroupType> groupsByName;
 	var Map<String, FunctionSignature> userFunctions;
-	val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+	var Map<String, FunctionSignature> predefinedFunctions;
+	var Set<String> witnessNames;
+	var Set<String> publicParameterNames;
 	
 	/*
 	 * Validation proceeds in a topdown, preorder traversal of the syntax tree,
@@ -86,6 +88,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		sizes = augmentedModel.getSizes();
 		groupsByName = augmentedModel.getGroupsByName();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
+		predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+		witnessNames = augmentedModel.getWitnessNames();
+		publicParameterNames = augmentedModel.getPublicParameterNames();
 		
 		System.out.println("Validating the model");
 
@@ -112,6 +117,14 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	
 	def dispatch void checkNode(Parameter parameter, BranchState state) {
 		checkParameterNameFormat(parameter);
+	}
+	
+	def dispatch void checkNode(PublicParameterList publicParameterList, BranchState state) {
+		checkPublicParameterNamesAreUnique(publicParameterList);
+	}
+	
+	def dispatch void checkNode(PublicParameter publicParameter, BranchState state) {
+		checkPublicParameterNameFormat(publicParameter);
 	}
 	
 	def dispatch void checkNode(WitnessList witnessList, BranchState state) {
@@ -210,6 +223,10 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		checkProofAlgebraicPosition(brackets, state);
 	}
 	
+	def dispatch void checkNode(EObject node, BranchState state) {
+		System.out.println("Error: unhandled node type in validator");
+	}
+	
 	/*
 	 * Validate the format of identifier names
 	 */
@@ -223,6 +240,15 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		if (function.getName().contains("'")) {
 			error("Function names cannot contain single quotes", function,
 				getStructuralFeature(function));
+		}
+	}
+	
+	// Public parameter names must start with a letter, and only contain letters, numbers, at most 1 underscore
+	// (to denote subscript) and any number of single quotes at the end
+	def private void checkPublicParameterNameFormat(PublicParameter publicParameter) {
+		var List<String> errors = nameFormatErrors(publicParameter.getName(), "Witness");
+		for (val Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
+			error(iterator.next(), publicParameter, getStructuralFeature(publicParameter));
 		}
 	}
 
@@ -307,6 +333,21 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 			error("Function name is already used by a predefined function", function, getStructuralFeature(function));
 		}
 	}
+	
+	// Witness names must be unique
+	def private void checkPublicParameterNamesAreUnique(PublicParameterList publicParameterList) {
+		val HashSet<String> publicParameters = new HashSet<String>();
+		for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
+			val String name = publicParameter.getName();
+			if (publicParameters.contains(name)) {
+				error("Public parameter names must be unique", publicParameter, getStructuralFeature(publicParameter));
+			} else if (witnessNames.contains(name)) {
+				error("Public parameter name conflicts with a witness name", publicParameter, getStructuralFeature(publicParameter));
+			} else {
+				publicParameters.add(name);				
+			}
+		}
+	}
 
 	// Witness names must be unique
 	def private void checkWitnessNamesAreUnique(WitnessList witnessList) {
@@ -315,6 +356,8 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 			val String name = witness.getName();
 			if (witnesses.contains(name)) {
 				error("Witness names must be unique", witness, getStructuralFeature(witness));
+			} else if (publicParameterNames.contains(name)) {
+				error("Witness name conflicts with a public parameter name", witness, getStructuralFeature(witness));
 			} else {
 				witnesses.add(name);				
 			}

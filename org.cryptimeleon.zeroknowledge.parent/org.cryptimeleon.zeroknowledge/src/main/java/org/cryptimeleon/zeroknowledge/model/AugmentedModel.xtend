@@ -20,6 +20,7 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Negative
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
@@ -65,6 +66,7 @@ class AugmentedModel {
 	Map<String, List<FunctionCall>> predefinedFunctionCalls;
 	Map<String, FunctionSignature> userFunctionSignatures;
 	Set<String> constrainedWitnessNames;
+	Set<String> publicParameterNames;
 	
 	new(Model model) {
 		this.model = model;
@@ -93,6 +95,7 @@ class AugmentedModel {
 		this.predefinedFunctionCalls = null;
 		this.userFunctionSignatures = null;
 		this.constrainedWitnessNames = null;
+		this.publicParameterNames = null;
 		
 		trimStringsTransformation();
 		comparisonTransformation();
@@ -271,7 +274,7 @@ class AugmentedModel {
 		val Map<String, Witness> witnesses = getAllWitnesses();
 
 		for (FunctionDefinition function : model.getFunctions()) {
-			val List<String> parameters = new ArrayList<String>;
+			val Set<String> parameters = new HashSet<String>;
 			for (Parameter parameter : function.getParameterList().getParameters()) {
 				parameters.add(parameter.getName());
 			}
@@ -279,10 +282,10 @@ class AugmentedModel {
 			ModelMap.preorder(function.getBody(), [ EObject node |
 				if (node instanceof Variable) {
 					if (parameters.contains(node.getName())) {
-						val LocalVariable local = ZeroKnowledgeFactory.eINSTANCE.createLocalVariable();
-						local.setName(node.getName());
-						local.setFunction(function.getName());
-						ModelHelper.replaceParentReferenceToSelf(node, local);
+						val LocalVariable localVariable = ZeroKnowledgeFactory.eINSTANCE.createLocalVariable();
+						localVariable.setName(node.getName());
+						localVariable.setFunction(function.getName());
+						ModelHelper.replaceParentReferenceToSelf(node, localVariable);
 					} else {
 						identifySpecialVariablesHelper(node, witnesses);
 					}
@@ -303,9 +306,9 @@ class AugmentedModel {
 	
 	def private void identifySpecialVariablesHelper(Variable variable, Map<String, Witness> witnesses) {
 		if (witnesses.containsKey(variable.getName())) {
-			val WitnessVariable witness = ZeroKnowledgeFactory.eINSTANCE.createWitnessVariable();
-			witness.setName(variable.getName());
-			ModelHelper.replaceParentReferenceToSelf(variable, witness);
+			val WitnessVariable witnessVariable = ZeroKnowledgeFactory.eINSTANCE.createWitnessVariable();
+			witnessVariable.setName(variable.getName());
+			ModelHelper.replaceParentReferenceToSelf(variable, witnessVariable);
 		}
 	}
 	
@@ -610,6 +613,17 @@ class AugmentedModel {
 		return constrainedWitnessNames;
 	}
 	
+	// Returns a set containing the names of all public parameters
+	def Set<String> getPublicParameterNames() {
+		if (publicParameterNames !== null) return publicParameterNames;
+		
+		publicParameterNames = new HashSet<String>();
+		for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
+			publicParameterNames.add(publicParameter.getName());
+		}
+		
+		return publicParameterNames;
+	}
 	
 	override String toString() {
 		val StringBuilder builder = new StringBuilder();

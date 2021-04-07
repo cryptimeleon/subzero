@@ -1,7 +1,6 @@
 package org.cryptimeleon.zeroknowledge.latex
 
 import org.cryptimeleon.zeroknowledge.model.AugmentedModel
-import org.cryptimeleon.zeroknowledge.model.ModelHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
@@ -16,6 +15,8 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.ParameterList
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Product
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameterList
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
@@ -32,11 +33,6 @@ import org.eclipse.emf.ecore.EObject
  * must be free of validation errors
  */
 class LatexPreview {
-
-	// Contains the final generated LaTeX output
-	var String latexCode;
-	
-	var StringBuilder builder;
 
 	// Token constants
 	static val String NEWLINE = "\\\\";
@@ -78,14 +74,20 @@ class LatexPreview {
 	static val String OPERATOR_LESSEQUAL = "<=";
 	static val String OPERATOR_GREATEREQUAL = ">=";
 
+	// Contains the final generated LaTeX output
+	var String latexCode;
+	
+	var StringBuilder builder;
+
 	// Counts the number of open curly braces, used for formatting exponents
-	var int openBraces = 0;
+	var int openBraces;
 	
 	// If true, all function calls will be inlined (replaced with the full
 	// function definition) before being converted to LaTeX
 	var boolean inlineFunctions;
 
 	new(AugmentedModel augmentedModel) {
+		openBraces = 0;
 		builder = new StringBuilder();
 		builder.append(DELIMITER);
 		generateLatex(augmentedModel.getModel());
@@ -110,7 +112,6 @@ class LatexPreview {
 		return name;
 	}
 
-
 	def private void generateBraces(EObject node) {
 		builder.append(LEFTBRACE);
 		generateLatex(node);
@@ -124,8 +125,6 @@ class LatexPreview {
 	}
 
 	def private void generateList(EList<? extends EObject> items) {
-		builder.append(LEFTPAREN);
-
 		var boolean isFirstItem = true;
 		for (EObject item : items) {
 			if (isFirstItem) {
@@ -135,8 +134,6 @@ class LatexPreview {
 			}
 			generateLatex(item);
 		}
-
-		builder.append(RIGHTPAREN);
 	}
 
 	// This function should never be called
@@ -153,9 +150,16 @@ class LatexPreview {
 			}
 		}
 
+		if (model.getPublicParameterList() !== null) {
+			generateLatex(model.getPublicParameterList());
+			builder.append(SEMICOLON);
+			builder.append(NEWLINE);
+		}
+		
 		generateLatex(model.getWitnessList());
 		builder.append(SEMICOLON);
 		builder.append(NEWLINE);
+		
 		generateLatex(model.getProof());
 	}
 
@@ -169,15 +173,29 @@ class LatexPreview {
 	}
 	
 	def dispatch private void generateLatex(ParameterList parameterList) {
+		builder.append(LEFTPAREN);
 		generateList(parameterList.getParameters());
+		builder.append(RIGHTPAREN);
 	}
 
 	def dispatch private void generateLatex(Parameter parameter) {
 		builder.append(parameter.getName());
 	}
 	
+	def dispatch private void generateLatex(PublicParameterList publicParameterList) {
+		builder.append("\\{");
+		generateList(publicParameterList.getPublicParameters());
+		builder.append("\\}");
+	}
+	
+	def dispatch private void generateLatex(PublicParameter publicParameter) {
+		builder.append(publicParameter.getName());
+	}
+	
 	def dispatch private void generateLatex(WitnessList witnessList) {
+		builder.append(LEFTPAREN);
 		generateList(witnessList.getWitnesses());
+		builder.append(RIGHTPAREN);
 	}
 
 	def dispatch private void generateLatex(Witness witness) {
@@ -270,7 +288,9 @@ class LatexPreview {
 	}
 
 	def dispatch private void generateLatex(Tuple tuple) {
-		generateList(tuple.getElements());		
+		builder.append(LEFTPAREN);
+		generateList(tuple.getElements());
+		builder.append(RIGHTPAREN);		
 	}
 
 	def dispatch private void generateLatex(Negative negative) {
@@ -281,7 +301,9 @@ class LatexPreview {
 
 	def dispatch private void generateLatex(FunctionCall call) {
 		builder.append(call.getName());
+		builder.append(LEFTPAREN);
 		generateList(call.getArguments());
+		builder.append(RIGHTPAREN);
 	}
 	
 	def dispatch private void generateLatex(Argument argument) {

@@ -12,7 +12,7 @@ generate zeroKnowledge "http://www.cryptimeleon.org/zeroknowledge/ZeroKnowledge"
  */
 
 Model returns Model:
-  (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* witnessList=WitnessList ';'? proof=Expression ';'?;
+  (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* (publicParameterList=PublicParameterList ';'?)? witnessList=WitnessList ';'?  proof=Expression ';'?;
 
 FunctionDefinition returns FunctionDefinition:
   name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
@@ -28,18 +28,18 @@ WitnessList returns WitnessList:
 
 Witness returns Witness:
   name=IDENTIFIER;
+  
+PublicParameterList returns PublicParameterList:
+  '{' (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*)? symbol='}';
+  
+PublicParameter returns PublicParameter:
+  name=IDENTIFIER;
 
 Expression:
   Conjunction;
 
 Conjunction returns Expression:
   Disjunction ({Conjunction.left=current} operation='&' right=Disjunction)*;
-
-//ConjunctionList returns Expression:
-//	protocols+=Disjunction names+=PROTOCOL_NAME (('&'|';') protocols+=Disjunction names+=PROTOCOL_NAME)*;
-
-//Protocol returns Expression:
-//  Disjunction protocol=(PROTOCOL_NAME)?;
 
 Disjunction returns Expression:
   Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
@@ -80,36 +80,33 @@ Argument returns Expression:
 Variable returns Variable:
   name=IDENTIFIER;
 
-/*
- * This object will not be created during parsing, but Variable objects
- * corresponding to arguments in function definitions will be converted
- * to LocalVariable objects after parsing
- */
-LocalVariable returns Variable:
-  {LocalVariable} name=IDENTIFIER function=IDENTIFIER;
-
-/*
- * This object will not be created during parsing, but Variable objects
- * corresponding to witnesses will be converted to WitnessVariable
- * objects after parsing
- */
-WitnessVariable returns Variable:
-  {WitnessVariable} name=IDENTIFIER;
-  
-/*
- * This object will not be created during parsing, but Variable objects
- * corresponding to pp-vars will be converted to PPVariable objects
- * after parsing
- */
-PPVariable returns Variable:
-  {PPVariable} name=IDENTIFIER;
-
 NumberLiteral returns NumberLiteral:
   value=INT;
 
 Brackets returns Expression:
 	{Brackets} content=Expression;
 	
+/*
+ * Postprocessing nodes
+ * These objects will never be created during parsing, but will
+ * replace some nodes in postprocessing to add information to the
+ * parse tree
+ */
+GlobalVariable returns Variable:
+  {GlobalVariable} name=IDENTIFIER;
+
+LocalVariable returns Variable:
+  {LocalVariable} name=IDENTIFIER function=IDENTIFIER;
+
+WitnessVariable returns Variable:
+  {WitnessVariable} name=IDENTIFIER;
+  
+PPVariable returns Variable:
+  {PPVariable} name=IDENTIFIER;
+  
+/*
+ * Terminals
+ */
 terminal INT returns ecore::EInt:
   ('0'..'9')+;
 
