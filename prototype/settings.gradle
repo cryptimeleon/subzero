@@ -8,3 +8,6 @@
  */
 
 rootProject.name = 'prototype'
+
+includeBuild "../../math"
+includeBuild "../../craco"
