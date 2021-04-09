@@ -2,6 +2,7 @@ package prototype;
 
 import org.cryptimeleon.craco.protocols.CommonInput;
 import org.cryptimeleon.craco.protocols.SecretInput;
+import org.cryptimeleon.craco.protocols.arguments.sigma.ZnChallengeSpace;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec;
@@ -59,8 +60,8 @@ public class MySigmaProtocol extends DelegateProtocol {
     }
 
     @Override
-    public BigInteger getChallengeSpaceSize() {
-        return zp.size();
+    public ZnChallengeSpace getChallengeSpace(CommonInput commonInput) {
+        return new ZnChallengeSpace(zp);
     }
 
     public static class MySigmaProtocolCommonInput implements CommonInput {
