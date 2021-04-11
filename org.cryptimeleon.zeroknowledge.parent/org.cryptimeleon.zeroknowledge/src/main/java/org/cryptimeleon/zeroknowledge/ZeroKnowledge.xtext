@@ -12,7 +12,7 @@ generate zeroKnowledge "http://www.cryptimeleon.org/zeroknowledge/ZeroKnowledge"
  */
 
 Model returns Model:
-  (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* (publicParameterList=PublicParameterList ';'?)? witnessList=WitnessList ';'?  proof=Expression ';'?;
+  (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* (publicParameterList=PublicParameterList ';'?)? (witnessList=WitnessList ';'?) ('statement' ':')? proof=Expression ';'?;
 
 FunctionDefinition returns FunctionDefinition:
   name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
@@ -24,13 +24,13 @@ Parameter returns Parameter:
   name=IDENTIFIER;
   
 WitnessList returns WitnessList:
-  '(' (witnesses+=Witness (',' witnesses+=Witness)*)? symbol=')';
+  'witness' symbol=':' (witnesses+=Witness (',' witnesses+=Witness)*);
 
 Witness returns Witness:
   name=IDENTIFIER;
   
 PublicParameterList returns PublicParameterList:
-  '{' (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*)? symbol='}';
+  'pp' symbol=':' (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*);
   
 PublicParameter returns PublicParameter:
   name=IDENTIFIER;
