@@ -14,8 +14,6 @@ import org.cryptimeleon.math.structures.groups.Group;
 import org.cryptimeleon.math.structures.groups.GroupElement;
 import org.cryptimeleon.math.structures.rings.zn.Zp;
 
-import java.math.BigInteger;
-
 /**
  * Protocol for
  * (x,r); g^x * h^r = C
