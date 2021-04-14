@@ -23,62 +23,52 @@ import org.cryptimeleon.math.structures.rings.zn.Zp;
 
 /**
  * Protocol for
- * (x,r); g^x * h^r = C
- * & (h^r = C2 | h^x = C2)
+ * (x,r); (h^r = C2 | h^x = C2)
  *
- * Jeremy: every subtree that does not contain an "OR" becomes a DelegateProtocol (basically generated as before) (okay, obviously only "maximal" subtrees with the "no OR" property). Then this ProofOfPartialKnowledge class glues the DelegateProtocols together
+ * Jeremy: Because there is no OR with an AND parent, we can get rid of the commitment stuff
  */
 public class MySimpleOrProof extends ProofOfPartialKnowledge { //Jeremy: extend this class as soon as there's an "OR" anywhere.
-    protected MyOrProofPublicParameters pp; //Jeremy: needed here because of the OR. If a bilinear map or range proof is used, use MyProtocolPublicParameters instead with the appropriate stuff commented in
+    //protected MyOrProofPublicParameters pp; //Jeremy: not needed anymore because the commitment is not necessary here anymore.
     protected Group group; //Jeremy: OR proofs also work if this is a BilinearGroup. In that case, replace all occurrences of group below with group.getG1()
     protected Zp zp;
 
-    public MySimpleOrProof(Group group, MyOrProofPublicParameters pp) {
-        this.pp = pp;
+    public MySimpleOrProof(Group group) {
         this.group = group;
         this.zp = (Zp) this.group.getZn();
     }
 
     @Override
     protected ProtocolTree provideProtocolTree(CommonInput commonInput, SendFirstValue sendFirstValue) {
-        SubprotocolCommonInput subprotocolCommonInput = new SubprotocolCommonInput((MyOrProofCommonInput) commonInput, ((SendFirstValue.AlgebraicSendFirstValue) sendFirstValue).getGroupElement(0));
-        return and(
-                leaf("Subprotocol1", new Subprotocol1(), subprotocolCommonInput),
+        return
                 or(
-                        leaf("Subprotocol2", new Subprotocol2(), subprotocolCommonInput),
-                        leaf("Subprotocol3", new Subprotocol3(), subprotocolCommonInput)
+                        leaf("Subprotocol2", new Subprotocol2(), commonInput),
+                        leaf("Subprotocol3", new Subprotocol3(), commonInput)
                 )
-        );
+        ;
     }
 
     @Override
     protected ProverSpec provideProverSpec(CommonInput commonInput, SecretInput secretInput, ProverSpecBuilder builder) {
         MyOrProofSecretInput overallSecretInput = (MyOrProofSecretInput) secretInput;
 
-        //Commit to all Zn variables
-        Zn.ZnElement crossOrCommitmentRandomness = zp.getUniformlyRandomElement();
-        GroupElement crossOrCommitment = pp.crossOrCommitmentBases.innerProduct(RingElementVector.of(overallSecretInput.x, overallSecretInput.r, crossOrCommitmentRandomness)); //Jeremy: list all Zn witnesses here.
-
         //Send this commitment
-        builder.setSendFirstValue(new SendFirstValue.AlgebraicSendFirstValue(crossOrCommitment));
+        builder.setSendFirstValue(SendFirstValue.EMPTY);
 
-        //Set up witnesses for subprotocols (which is the secret input for the whole protocol plus the commitment randomness)
-        SecretInput subprotocolSecret = new SubprotocolSecretInput(overallSecretInput, crossOrCommitmentRandomness);
-        builder.putSecretInput("Subprotocol1", subprotocolSecret);
-        builder.putSecretInput("Subprotocol2", subprotocolSecret);
-        builder.putSecretInput("Subprotocol3", subprotocolSecret);
+        //Set up witnesses for subprotocols
+        builder.putSecretInput("Subprotocol2", secretInput);
+        builder.putSecretInput("Subprotocol3", secretInput);
 
         return builder.build();
     }
 
     @Override
     protected SendFirstValue restoreSendFirstValue(CommonInput commonInput, Representation repr) {
-        return new SendFirstValue.AlgebraicSendFirstValue(repr, group);
+        return SendFirstValue.EMPTY;
     }
 
     @Override
     protected SendFirstValue simulateSendFirstValue(CommonInput commonInput) {
-        return new SendFirstValue.AlgebraicSendFirstValue(group.getUniformlyRandomElement());
+        return SendFirstValue.EMPTY;
     }
 
     @Override
@@ -91,57 +81,10 @@ public class MySimpleOrProof extends ProofOfPartialKnowledge { //Jeremy: extend 
         return new ZnChallengeSpace(zp);
     }
 
-    public class Subprotocol1 extends DelegateProtocol { //Jeremy: this is like a normal protocol for (x,r); g^x * h^r = C except that pp, group, etc. are stored outside of it now and CommonInput and SecretInput are not inner classes of _this_ anymore.
-        @Override
-        protected SubprotocolSpec provideSubprotocolSpec(CommonInput commonInput, SubprotocolSpecBuilder subprotocolSpecBuilder) {
-            MyOrProofCommonInput input = ((SubprotocolCommonInput) commonInput).commonInput; //Jeremy note that we retrieve the MyOrProofCommonInput here
-
-            //Add variables (witnesses)
-            SchnorrZnVariable x = subprotocolSpecBuilder.addZnVariable("x", zp);
-            SchnorrZnVariable r = subprotocolSpecBuilder.addZnVariable("r", zp);
-
-            //Add statements
-            subprotocolSpecBuilder.addSubprotocol("statement1",
-                    new LinearStatementFragment(input.g.pow(x).op(input.h.pow(r)).isEqualTo(input.C))
-            );
-            subprotocolSpecBuilder.addSubprotocol("statement2",
-                    new LinearStatementFragment(input.h.pow(r).isEqualTo(input.C2))
-            );
-
-            //Add proof that the same values are used in this subprotocol as in the others //Jeremy: this is new in the OR case. It's the same for all subprotocols
-            SchnorrZnVariable crossOrCommitmentRandomness = subprotocolSpecBuilder.addZnVariable("crossOrCommitmentRandomness", zp);
-            subprotocolSpecBuilder.addSubprotocol("orProofConsistency",
-                    new LinearStatementFragment(
-                            pp.crossOrCommitmentBases.expr().innerProduct(ExponentExpressionVector.of(x, r, crossOrCommitmentRandomness)) //Jeremy: same order as in MyOrProof::provideProverSpec
-                            .isEqualTo(((SubprotocolCommonInput) commonInput).crossOrCommitment)
-                    )
-            );
-
-            return subprotocolSpecBuilder.build();
-        }
-
-        @Override
-        protected SendThenDelegateFragment.ProverSpec provideProverSpecWithNoSendFirst(CommonInput commonInput, SecretInput secretInput, SendThenDelegateFragment.ProverSpecBuilder proverSpecBuilder) {
-            MyOrProofSecretInput witness = ((SubprotocolSecretInput) secretInput).secretInput; //Jeremy: same note as first line in provideSubprotocolSpec
-
-            proverSpecBuilder.putWitnessValue("x", witness.x);
-            proverSpecBuilder.putWitnessValue("r", witness.r);
-
-            proverSpecBuilder.putWitnessValue("crossOrCommitmentRandomness", ((SubprotocolSecretInput) secretInput).crossOrCommitmentRandomness);
-
-            return proverSpecBuilder.build();
-        }
-
-        @Override
-        public ZnChallengeSpace getChallengeSpace(CommonInput commonInput) {
-            return new ZnChallengeSpace(zp);
-        }
-    }
-
     public class Subprotocol2 extends DelegateProtocol { //Jeremy: this is like a normal protocol for (x,r); h^r = C2
         @Override
         protected SubprotocolSpec provideSubprotocolSpec(CommonInput commonInput, SubprotocolSpecBuilder subprotocolSpecBuilder) {
-            MyOrProofCommonInput input = ((SubprotocolCommonInput) commonInput).commonInput; //Jeremy note that we retrieve the MyOrProofCommonInput here
+            MyOrProofCommonInput input = (MyOrProofCommonInput) commonInput;
 
             //Add variables (witnesses)
             SchnorrZnVariable x = subprotocolSpecBuilder.addZnVariable("x", zp);
@@ -152,26 +95,15 @@ public class MySimpleOrProof extends ProofOfPartialKnowledge { //Jeremy: extend 
                     new LinearStatementFragment(input.h.pow(r).isEqualTo(input.C2))
             );
 
-            //Add proof that the same values are used in this subprotocol as in the others //Jeremy: this is new in the OR case. It's the same for all subprotocols
-            SchnorrZnVariable crossOrCommitmentRandomness = subprotocolSpecBuilder.addZnVariable("crossOrCommitmentRandomness", zp);
-            subprotocolSpecBuilder.addSubprotocol("orProofConsistency",
-                    new LinearStatementFragment(
-                            pp.crossOrCommitmentBases.expr().innerProduct(ExponentExpressionVector.of(x, r, crossOrCommitmentRandomness)) //Jeremy: same order as in MyOrProof::provideProverSpec
-                                    .isEqualTo(((SubprotocolCommonInput) commonInput).crossOrCommitment)
-                    )
-            );
-
             return subprotocolSpecBuilder.build();
         }
 
         @Override
         protected SendThenDelegateFragment.ProverSpec provideProverSpecWithNoSendFirst(CommonInput commonInput, SecretInput secretInput, SendThenDelegateFragment.ProverSpecBuilder proverSpecBuilder) {
-            MyOrProofSecretInput witness = ((SubprotocolSecretInput) secretInput).secretInput; //Jeremy: same note as first line in provideSubprotocolSpec
+            MyOrProofSecretInput witness = (MyOrProofSecretInput) secretInput;
 
             proverSpecBuilder.putWitnessValue("x", witness.x);
             proverSpecBuilder.putWitnessValue("r", witness.r);
-
-            proverSpecBuilder.putWitnessValue("crossOrCommitmentRandomness", ((SubprotocolSecretInput) secretInput).crossOrCommitmentRandomness);
 
             return proverSpecBuilder.build();
         }
@@ -186,7 +118,7 @@ public class MySimpleOrProof extends ProofOfPartialKnowledge { //Jeremy: extend 
     public class Subprotocol3 extends DelegateProtocol { //Jeremy: this is like a normal protocol for (x,r); h^x = C2
         @Override
         protected SubprotocolSpec provideSubprotocolSpec(CommonInput commonInput, SubprotocolSpecBuilder subprotocolSpecBuilder) {
-            MyOrProofCommonInput input = ((SubprotocolCommonInput) commonInput).commonInput; //Jeremy note that we retrieve the MyOrProofCommonInput here
+            MyOrProofCommonInput input = (MyOrProofCommonInput) commonInput; //Jeremy note that we retrieve the MyOrProofCommonInput here
 
             //Add variables (witnesses)
             SchnorrZnVariable x = subprotocolSpecBuilder.addZnVariable("x", zp);
@@ -197,27 +129,16 @@ public class MySimpleOrProof extends ProofOfPartialKnowledge { //Jeremy: extend 
                     new LinearStatementFragment(input.h.pow(x).isEqualTo(input.C2))
             );
 
-            //Add proof that the same values are used in this subprotocol as in the others //Jeremy: this is new in the OR case. It's the same for all subprotocols
-            SchnorrZnVariable crossOrCommitmentRandomness = subprotocolSpecBuilder.addZnVariable("crossOrCommitmentRandomness", zp);
-            subprotocolSpecBuilder.addSubprotocol("orProofConsistency",
-                    new LinearStatementFragment(
-                            pp.crossOrCommitmentBases.expr().innerProduct(ExponentExpressionVector.of(x, r, crossOrCommitmentRandomness)) //Jeremy: same order as in MyOrProof::provideProverSpec
-                                    .isEqualTo(((SubprotocolCommonInput) commonInput).crossOrCommitment)
-                    )
-            );
-
             return subprotocolSpecBuilder.build();
         }
 
         @Override
         protected SendThenDelegateFragment.ProverSpec provideProverSpecWithNoSendFirst(CommonInput commonInput, SecretInput secretInput, SendThenDelegateFragment.ProverSpecBuilder proverSpecBuilder) {
-            MyOrProofSecretInput witness = ((SubprotocolSecretInput) secretInput).secretInput; //Jeremy: same note as first line in provideSubprotocolSpec
+            MyOrProofSecretInput witness = (MyOrProofSecretInput) secretInput;
 
             proverSpecBuilder.putWitnessValue("x", witness.x);
             proverSpecBuilder.putWitnessValue("r", witness.r);
-
-            proverSpecBuilder.putWitnessValue("crossOrCommitmentRandomness", ((SubprotocolSecretInput) secretInput).crossOrCommitmentRandomness);
-
+            
             return proverSpecBuilder.build();
         }
 
@@ -249,33 +170,6 @@ public class MySimpleOrProof extends ProofOfPartialKnowledge { //Jeremy: extend 
         public MyOrProofSecretInput(Zp.ZpElement x, Zp.ZpElement r) {
             this.x = x;
             this.r = r;
-        }
-    }
-
-    private static class SubprotocolCommonInput implements CommonInput {
-        public final MyOrProofCommonInput commonInput;
-        /**
-         * Pedersen commitment to all the witnesses to ensure that the same witnesses are used for in all of the OR branches in the overall proof.
-         */
-        public final GroupElement crossOrCommitment;
-
-        public SubprotocolCommonInput(MyOrProofCommonInput commonInput, GroupElement crossOrCommitment) {
-            this.commonInput = commonInput;
-            this.crossOrCommitment = crossOrCommitment;
-        }
-    }
-
-
-    private static class SubprotocolSecretInput implements SecretInput {
-        public final MyOrProofSecretInput secretInput;
-        /**
-         * Randomness used for crossOrCommitment
-         */
-        public final Zn.ZnElement crossOrCommitmentRandomness;
-
-        public SubprotocolSecretInput(MyOrProofSecretInput secretInput, Zn.ZnElement crossOrCommitmentRandomness) {
-            this.secretInput = secretInput;
-            this.crossOrCommitmentRandomness = crossOrCommitmentRandomness;
         }
     }
 }
