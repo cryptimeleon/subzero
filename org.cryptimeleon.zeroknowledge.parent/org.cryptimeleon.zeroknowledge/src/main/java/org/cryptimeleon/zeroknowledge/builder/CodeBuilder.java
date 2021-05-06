@@ -1,5 +1,4 @@
-package org.cryptimeleon.zeroknowledge.generator;
-
+package org.cryptimeleon.zeroknowledge.builder;
 
 /**
  * A helper class to build strings of generated code.
@@ -20,6 +19,10 @@ public class CodeBuilder {
 		this(0);
 	}
 	
+	public CodeBuilder(CodeBuilder codeBuilder) {
+		this(codeBuilder.indentLevel);
+	}
+	
 	public CodeBuilder(int indentLevel) {
 		this.builder = new StringBuilder();
 		this.isStartOfLine = true;
@@ -30,9 +33,15 @@ public class CodeBuilder {
 		}
 	}
 	
-	private void addIndent() {
-		for (int i = 0; i < indentLevel; i++) {
-			builder.append(indent);
+	private void handleIndent() {
+		int length = builder.length();
+		boolean isStartOfLine = length == 0 || builder.charAt(length-1) == '\n';
+		
+		if (isStartOfLine) {
+			for (int i = 0; i < indentLevel; i++) {
+				builder.append(indent);
+			}
+			isStartOfLine = false;
 		}
 	}
 	
@@ -55,19 +64,19 @@ public class CodeBuilder {
 	}
 	
 	public void append(char ch) {
-		if (isStartOfLine) {
-			addIndent();
-			isStartOfLine = false;
-		}
+		handleIndent();
 		builder.append(ch);
 	}
 	
 	public void append(String str) {
-		if (isStartOfLine) {
-			addIndent();
-			isStartOfLine = false;
-		}
+		handleIndent();
 		builder.append(str);
+	}
+	
+	
+	// Appended code builder must handle correct indentation
+	public void append(CodeBuilder codeBuilder) {
+		builder.append(codeBuilder.builder);
 	}
 	
 	public void append(FieldBuilder fieldBuilder) {
@@ -86,27 +95,46 @@ public class CodeBuilder {
 		builder.append(classBuilder.toString(indentLevel));
 	}
 	
+	public void append(Object obj) {
+		handleIndent();
+		builder.append(obj);
+	}
+	
 	public int getIndent() {
 		return indentLevel;
 	}
 	
 	public void space() {
-		builder.append(" ");
+		append(" ");
 	}
 	
 	public void semicolon() {
-		builder.append(";");
+		append(";");
 	}
 	
 	public void newLine() {
-		builder.append('\n');
+		append('\n');
 		isStartOfLine = true;
+	}
+	
+	public void openParen() {
+		append('(');
+	}
+	
+	public void closeParen() {
+		append(')');
+	}
+	
+	public void openBrace() {
+		append('{');
+	}
+	
+	public void closeBrace() {
+		append('}');
 	}
 	
 	@Override
 	public String toString() {
 		return builder.toString();
 	}
-
-	
 }

@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.generator;
+package org.cryptimeleon.zeroknowledge.builder;
 
 /**
  * Represents the possible modifier values for classes, methods, and fields

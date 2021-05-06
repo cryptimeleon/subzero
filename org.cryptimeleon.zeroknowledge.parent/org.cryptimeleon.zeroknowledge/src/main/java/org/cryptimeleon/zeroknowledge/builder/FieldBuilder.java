@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.generator;
+package org.cryptimeleon.zeroknowledge.builder;
 
 /**
  * Represents a single class field in generated code

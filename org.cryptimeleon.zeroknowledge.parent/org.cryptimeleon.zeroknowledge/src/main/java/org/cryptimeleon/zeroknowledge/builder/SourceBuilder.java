@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.generator;
+package org.cryptimeleon.zeroknowledge.builder;
 
 import java.util.ArrayList;
 import java.util.HashSet;

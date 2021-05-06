@@ -1,17 +1,19 @@
-package org.cryptimeleon.zeroknowledge.generator;
+package org.cryptimeleon.zeroknowledge.builder;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Represents a single class (possibly an inner class) in generated code
  */
-class ClassBuilder {
+public class ClassBuilder {
 	
-	private List<FieldBuilder> fields;
-	private List<ConstructorBuilder> constructors;
-	private List<MethodBuilder> methods;
-	private List<ClassBuilder> innerClasses;
+	private Deque<FieldBuilder> fields;
+	private Deque<ConstructorBuilder> constructors;
+	private Deque<MethodBuilder> methods;
+	private Deque<ClassBuilder> innerClasses;
 	
 	private String name;
 	
@@ -50,10 +52,10 @@ class ClassBuilder {
 	}
 	
 	private ClassBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, String name, Class<?> ... classes) {
-		fields = new ArrayList<FieldBuilder>();
-		constructors = new ArrayList<ConstructorBuilder>();
-		methods = new ArrayList<MethodBuilder>();
-		innerClasses = new ArrayList<ClassBuilder>();
+		fields = new LinkedList<FieldBuilder>();
+		constructors = new LinkedList<ConstructorBuilder>();
+		methods = new LinkedList<MethodBuilder>();
+		innerClasses = new LinkedList<ClassBuilder>();
 		
 		this.accessModifier = accessModifier;
 		this.isStatic = isStatic;
@@ -104,6 +106,23 @@ class ClassBuilder {
 	
 	public void addInnerClass(ClassBuilder classBuilder) {
 		innerClasses.add(classBuilder);
+	}
+	
+	public void prependField(FieldBuilder fieldBuilder) {
+		fields.addFirst(fieldBuilder);
+	}
+	
+	public void prependConstructor(ConstructorBuilder constructorBuilder) {
+		constructorBuilder.setClassName(name);
+		constructors.addFirst(constructorBuilder);
+	}
+	
+	public void prependMethod(MethodBuilder methodBuilder) {
+		methods.addFirst(methodBuilder);
+	}
+	
+	public void prependInnerClass(ClassBuilder classBuilder) {
+		innerClasses.addFirst(classBuilder);
 	}
 	
 	@Override
@@ -171,9 +190,11 @@ class ClassBuilder {
 			if (constructors.size() > 0) builder.newLine();
 		}
 		
-		for (int i = 0; i < constructors.size(); i++) {
-			builder.append(constructors.get(i));
+		int i = 0;
+		for (ConstructorBuilder constructor : constructors) {
+			builder.append(constructor);
 			if (i != constructors.size()-1) builder.newLine();
+			i++;
 		}
 		addNewline = addNewline || constructors.size() > 0;
 
@@ -182,9 +203,11 @@ class ClassBuilder {
 			addNewline = false;
 			builder.newLine();
 		}
-		for (int i = 0; i < methods.size(); i++) {
-			builder.append(methods.get(i));
+		i = 0;
+		for (MethodBuilder method : methods) {
+			builder.append(method);
 			if (i != methods.size()-1) builder.newLine();
+			i++;
 		}
 		addNewline = addNewline || methods.size() > 0;
 		
@@ -193,9 +216,11 @@ class ClassBuilder {
 			addNewline = false;
 			builder.newLine();
 		}
-		for (int i = 0; i < innerClasses.size(); i++) {
-			builder.append(innerClasses.get(i));
+		i = 0;
+		for (ClassBuilder innerClass : innerClasses) {
+			builder.append(innerClass);
 			if (i != innerClasses.size()-1) builder.newLine();
+			i++;
 		}
 		
 		builder.outdent();

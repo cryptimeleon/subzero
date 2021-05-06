@@ -1,4 +1,4 @@
-package org.cryptimeleon.zeroknowledge.generator;
+package org.cryptimeleon.zeroknowledge.builder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

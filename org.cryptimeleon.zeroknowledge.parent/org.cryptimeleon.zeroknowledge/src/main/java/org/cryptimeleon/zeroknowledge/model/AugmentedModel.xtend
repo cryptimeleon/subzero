@@ -11,6 +11,8 @@ import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Argument
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Brackets
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Comparison
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Conjunction
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Expression
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionCall
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
@@ -21,6 +23,7 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.NumberLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Power
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PublicParameterList
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.StringLiteral
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Sum
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Tuple
@@ -29,6 +32,12 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Witness
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessVariable
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgeFactory
 import org.eclipse.emf.ecore.EObject
+import java.util.Collections
+import org.cryptimeleon.zeroknowledge.generator.GenerationHelper
+import java.util.Map.Entry
+import java.util.Comparator
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup
+import org.cryptimeleon.math.structures.groups.Group
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -46,27 +55,48 @@ class AugmentedModel {
 	
 	boolean containsRangeProof;
 	boolean containsPairing;
+	boolean containsOrProof;
+	boolean containsOrDescendantOfAnd;
 	boolean checkedForRangeProof;
 	boolean checkedForPairing;
+	boolean checkedForOrProof;
+	boolean checkedForOrDescendantOfAnd;
 	
 	// Generated values
 	// Must be accessed through their getters, even within class methods (to ensure that they are generated)
+	String protocolName;
+	
 	TypeInference typeInference;
 	SizeInference sizeInference;
 	GroupInference groupInference;
+	
+	Map<String, Witness> witnesses;
 	Set<String> witnessNames;
+	List<String> sortedWitnessNames;
+	Map<String, Type> witnessTypes;
+	Set<String> constrainedWitnessNames;
+	
+	Set<String> publicParameterNames;
+	List<String> sortedPublicParameterNames;
+	
+	Map<String, List<Variable>> variables;
+	Set<String> variableNames;
+	List<String> sortedVariableNames;
+	Map<String, Type> variableTypes;
+	Map<String, GroupType> variableGroups;
+	
 	Map<String, FunctionDefinition> userFunctions;
 	Map<String, List<FunctionCall>> userFunctionCalls;
-	Map<String, List<Variable>> variables;
-	Map<String, Witness> witnesses;
+	
+	
 	Map<String, Map<String, List<LocalVariable>>> localVariables;
 	Map<String, Map<String, Parameter>> localParameters;
 	List<Tuple> tuples;
 	Map<String, Map<String, List<Argument>>> arguments;
 	Map<String, List<FunctionCall>> predefinedFunctionCalls;
 	Map<String, FunctionSignature> userFunctionSignatures;
-	Set<String> constrainedWitnessNames;
-	Set<String> publicParameterNames;
+	
+	
 	
 	new(Model model) {
 		this.model = model;
@@ -77,17 +107,31 @@ class AugmentedModel {
 		
 		this.containsRangeProof = false;
 		this.containsPairing = false;
+		this.containsOrProof = false;
+		this.containsOrDescendantOfAnd = false;
 		this.checkedForRangeProof = false;
 		this.checkedForPairing = false;
+		this.checkedForOrProof = false;
+		this.checkedForOrDescendantOfAnd = false;
 		
 		this.typeInference = null;
 		this.sizeInference = null;
 		this.groupInference = null;
+		
+		this.witnesses = null;
 		this.witnessNames = null;
+		this.sortedWitnessNames = null;
+		this.witnessTypes = null;
+		
+		this.variables = null;
+		this.variableNames = null;
+		this.sortedVariableNames = null;
+		this.variableTypes = null;
+		this.variableGroups = null;
+		
 		this.userFunctions = null;
 		this.userFunctionCalls = null;
-		this.variables = null;
-		this.witnesses = null;
+		
 		this.localVariables = null;
 		this.localParameters = null;
 		this.tuples = null;
@@ -104,6 +148,22 @@ class AugmentedModel {
 	
 	def Model getModel() {
 		return model;
+	}
+	
+	def String getProtocolName() {
+		if (protocolName !== null) return protocolName;
+		
+		val String rawProtocolName = model.getProtocolName();
+		if (rawProtocolName === null) {
+			protocolName = GenerationHelper.DEFAULT_PROTOCOL_NAME;	
+		} else {
+			protocolName = GenerationHelper.convertToClassName(rawProtocolName.substring(1, rawProtocolName.length()-1));
+		}
+		return protocolName;
+	}
+	
+	def String getPackageName() {
+		return GenerationHelper.DEFAULT_PACKAGE_NAME;
 	}
 	
 	def Map<EObject, Type> getTypes() {
@@ -139,6 +199,18 @@ class AugmentedModel {
 		return groupInference.getGroupsByName();
 	}
 	
+	def boolean requiresPublicParametersClass() {
+		return hasRangeProof() || hasOrDescendantOfAnd();
+	}
+	
+	def Class<?> getGroupClass() {
+		if (hasRangeProof() || hasPairing()) {
+			return BilinearGroup;
+		} else {
+			return Group;
+		}
+	}
+	
 	def boolean hasRangeProof() {
 		if (checkedForRangeProof) return containsRangeProof;
 		
@@ -167,6 +239,46 @@ class AugmentedModel {
 		return containsPairing;
 	}
 	
+	def boolean hasOrProof() {
+		System.out.println("========================="  + containsOrProof);
+		if (checkedForOrProof) return containsOrProof;
+		
+		checkedForOrProof = true;
+		
+		containsOrProof = ModelMap.preorderAny(model, [EObject node |
+			if (node instanceof Disjunction) {
+				System.out.println("---------------------------FOUND");
+				return true;
+			}
+			
+			return false;
+		]);
+	}
+	
+	def boolean hasOrDescendantOfAnd() {
+		if (checkedForOrDescendantOfAnd) return containsOrDescendantOfAnd;
+		
+		checkedForOrDescendantOfAnd = true;
+		
+		containsOrDescendantOfAnd = ModelMap.preorderWithControl(model, [EObject node, ModelMap.Controller controller |
+			if (node instanceof Conjunction) {
+				
+				val boolean hasDisjunction = ModelMap.preorderAny(node, [EObject newNode |
+					if (newNode instanceof Disjunction) {
+						return true;
+					}
+					
+					return false;
+				]);
+				
+				if (hasDisjunction) {
+					controller.returnTrue();
+				}
+				
+				controller.continueTraversal();
+			}
+		]);
+	}
 	
 	// Takes the user functions of the syntax tree and inlines them for each corresponding function call
 	// Precondition: model has passed all validation rules
@@ -618,13 +730,115 @@ class AugmentedModel {
 		if (publicParameterNames !== null) return publicParameterNames;
 		
 		publicParameterNames = new HashSet<String>();
-		for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
-			publicParameterNames.add(publicParameter.getName());
+		
+		val PublicParameterList publicParameterList = model.getPublicParameterList();
+		
+		if (publicParameterList !== null) {
+			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
+				publicParameterNames.add(publicParameter.getName());
+			}
 		}
 		
 		return publicParameterNames;
 	}
 	
+	def List<String> getSortedPublicParameterNames() {
+		if (sortedPublicParameterNames !== null) return sortedPublicParameterNames;
+		sortedPublicParameterNames = new ArrayList<String>(getPublicParameterNames());
+		Collections.sort(sortedPublicParameterNames);
+		return sortedPublicParameterNames;
+	}
+	
+	def List<String> getSortedWitnessNames() {
+		if (sortedWitnessNames !== null) return sortedWitnessNames;
+		
+		// TODO: change
+//		val Set<String> witnessNames = getWitnessNames();
+//		sortedWitnessNames = new ArrayList<String>(witnessNames);
+//		Collections.sort(sortedWitnessNames);
+		
+		sortedWitnessNames = new ArrayList<String>();
+		for (Witness witness : model.getWitnessList().getWitnesses()) {
+			sortedWitnessNames.add(witness.getName());
+		}
+		
+		return sortedWitnessNames;
+	}
+	
+	def Map<String, Type> getWitnessTypes() {
+		if (witnessTypes !== null) return witnessTypes;
+		
+		witnessTypes = new HashMap<String, Type>();
+		
+		for (Entry<String, Witness> entry : getAllWitnesses().entrySet()) {
+			witnessTypes.put(entry.getKey(), types.get(entry.getValue()));
+		}
+		
+		return witnessTypes;
+	} 
+	
+	def Set<String> getVariableNames() {
+		if (variableNames !== null) return variableNames;
+		getVariablesHelper();
+		return variableNames;
+	}
+	
+	def List<String> getSortedVariableNames() {
+		if (sortedVariableNames !== null) return sortedVariableNames;
+		getVariablesHelper();
+		return sortedVariableNames;
+	}
+	
+	def Map<String, Type> getVariableTypes() {
+		if (variableTypes !== null) return variableTypes;
+		getVariablesHelper();
+		return variableTypes;
+	}
+	
+	def Map<String, GroupType> getVariableGroups() {
+		if (variableGroups !== null) return variableGroups;
+		getVariablesHelper();
+		return variableGroups;
+	}
+	
+	private def getVariablesHelper() {
+		variableNames = new HashSet<String>();
+		sortedVariableNames = new ArrayList<String>();
+		variableTypes = new HashMap<String, Type>();
+		variableGroups = new HashMap<String, GroupType>();
+		
+		for (Entry<String, List<Variable>> entry : getAllVariables().entrySet()) {
+			val Variable variable = entry.getValue().get(0);
+			val String variableName = entry.getKey();
+			
+			if (!(variable instanceof WitnessVariable) && !variableNames.contains(variableName)) {
+				variableNames.add(variableName);
+				sortedVariableNames.add(variableName);
+				variableTypes.put(variableName, types.get(variable));
+				if (groups.containsKey(variable)) variableGroups.put(variableName, groups.get(variable));
+			}
+		}
+		
+		// Sort first by variable type, and then by variable name
+		Collections.sort(sortedVariableNames, new Comparator<String>() {
+			override compare(String arg1, String arg2) {
+				val Type argType1 = variableTypes.get(arg1);
+				val Type argType2 = variableTypes.get(arg2);
+				
+				if (argType1 === argType2) {
+					return arg1.compareTo(arg2);
+				}
+				return argType1.compareTo(argType2);
+			}
+		});
+	}
+	
+	
+	
+	
+	/*
+	 * String representation
+	 */
 	override String toString() {
 		val StringBuilder builder = new StringBuilder();
 		

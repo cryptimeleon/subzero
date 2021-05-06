@@ -43,10 +43,12 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		System.out.println("Generating resource: " + resourceId);
 		
 		if (resourceId == LATEX_RESOURCE) {
+			// Generate LaTeX preview code
 			val LatexPreview latexPreview = new LatexPreview(augmentedModel);
 			contents = latexPreview.getRawLatex();
 			
 		} else if (resourceId == CODE_RESOURCE) {
+			// Generate Java project
 			val CodeGenerator codeGeneration = new CodeGenerator(model);
 			contents = codeGeneration.getCode();
 			
