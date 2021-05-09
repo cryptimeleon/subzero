@@ -23,12 +23,14 @@ class TestClassGenerator extends ClassGenerator {
 	AugmentedModel augmentedModel;
 	boolean hasRangeProof;
 	boolean hasPairing;
+	boolean hasOrProof;
 	Class<?> groupClass;
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 		this.hasRangeProof = augmentedModel.hasRangeProof();
 		this.hasPairing = augmentedModel.hasPairing();
+		this.hasOrProof = augmentedModel.hasOrProof();
 		this.groupClass = augmentedModel.getGroupClass();
 	}
 	
@@ -125,8 +127,8 @@ class TestClassGenerator extends ClassGenerator {
 		
 		val String methodBody = '''
 			«groupClassName» «groupVariableName» = «groupInstance»;
-			«IF hasRangeProof»
-			«publicParametersClassName» pp = «publicParametersClassName».generateNewParameters(bilinearGroup);
+			«IF hasRangeProof || hasOrProof»
+			«publicParametersClassName» pp = «publicParametersClassName».generateNewParameters(«groupVariableName»);
 			«ENDIF»
 			«IF hasRangeProof || hasPairing»
 			Group groupG1 = bilinearGroup.getG1();
@@ -151,7 +153,7 @@ class TestClassGenerator extends ClassGenerator {
 			«constants»
 			
 			// Instantiate protocol and input
-			«protocolClassName» protocol = new «protocolClassName»(«groupVariableName»«IF hasRangeProof», pp«ENDIF»«publicParameterArguments»);
+			«protocolClassName» protocol = new «protocolClassName»(«groupVariableName»«IF hasRangeProof || hasOrProof», pp«ENDIF»«publicParameterArguments»);
 			
 			CommonInput commonInput = new «protocolClassName».«commonInputClassName»(«commonInputArguments»);
 			SecretInput secretInput = new «protocolClassName».«secretInputClassName»(«secretInputArguments»);

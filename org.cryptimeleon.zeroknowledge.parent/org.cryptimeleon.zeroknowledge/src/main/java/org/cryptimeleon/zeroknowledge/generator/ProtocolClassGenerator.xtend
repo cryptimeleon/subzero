@@ -287,7 +287,10 @@ class ProtocolClassGenerator extends ClassGenerator {
 		method.addParameter(CommonInput, "commonInput");
 		method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
 		
-		val List<String> exponentWitnessNames = witnessNames.stream().filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT]).collect(Collectors.toList());
+		val List<String> exponentWitnessNames = witnessNames.stream()
+			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
+			.map([witnessName | witnessName + GenerationHelper.WITNESS_SUFFIX])
+			.collect(Collectors.toList());
 		
 		val String methodBody = '''
 			«IF hasOrDescendantOfAnd»
@@ -327,11 +330,22 @@ class ProtocolClassGenerator extends ClassGenerator {
 	}
 	
 	def MethodBuilder buildProvideProverSpecWithNoSendFirstMethod(String secretInputClassName, List<String> witnessNames) {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, ProverSpec, "provideProverSpecWithNoSendFirst");
+		var MethodBuilder method;
+		if (hasOrProof) {
+			method = new MethodBuilder(PROTECTED, "SendThenDelegateFragment.ProverSpec", "provideProverSpecWithNoSendFirst");
+		} else {
+			method = new MethodBuilder(PROTECTED, ProverSpec, "provideProverSpecWithNoSendFirst");
+		}
+		
 		method.setOverride();
 		method.addParameter(CommonInput, "commonInput");
 		method.addParameter(SecretInput, "secretInput");
-		method.addParameter(ProverSpecBuilder, "proverSpecBuilder");
+		if (hasOrProof) {
+			method.addParameter("SendThenDelegateFragment.ProverSpecBuilder", "proverSpecBuilder");
+		} else {
+			method.addParameter(ProverSpecBuilder, "proverSpecBuilder");
+		}
+		
 		
 		val String methodBody = '''
 			«IF hasOrDescendantOfAnd»
@@ -440,16 +454,13 @@ class ProtocolClassGenerator extends ClassGenerator {
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpecBuilder;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
 			import org.cryptimeleon.math.serialization.Representation;
-			import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector;
 			import org.cryptimeleon.math.structures.groups.Group;
 			import org.cryptimeleon.math.structures.groups.GroupElement;
-			import org.cryptimeleon.math.structures.rings.cartesian.RingElementVector;
-			import org.cryptimeleon.math.structures.rings.zn.Zn;
+			import org.cryptimeleon.math.structures.rings.zn.Zn.ZnElement;
 			import org.cryptimeleon.math.structures.rings.zn.Zp;
+			import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
 			«IF hasRangeProof»
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
 			«ENDIF»
@@ -463,9 +474,13 @@ class ProtocolClassGenerator extends ClassGenerator {
 			import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue;
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder;
 			import org.cryptimeleon.math.expressions.bool.BooleanExpression;
+			«ELSE»
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec;
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpecBuilder;
 			«ENDIF»
 			«IF hasOrDescendantOfAnd»
 			import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector;
@@ -531,7 +546,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			method.addStatement('''SubprotocolCommonInput subprotocolCommonInput = new SubprotocolCommonInput((«commonInputClassName») commonInput, ((SendFirstValue.AlgebraicSendFirstValue) sendFirstValue).getGroupElement(0));''');
 		}
 		
-		method.addBody('''return «protocolTree»''');
+		method.addBody('''return «protocolTree»;''');
 		System.out.println(protocolTree);
 		return method;
 	}

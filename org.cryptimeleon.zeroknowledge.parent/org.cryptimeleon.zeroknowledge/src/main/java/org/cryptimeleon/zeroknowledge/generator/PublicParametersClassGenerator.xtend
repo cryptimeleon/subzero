@@ -53,7 +53,7 @@ class PublicParametersClassGenerator {
 		var Class<?> groupClass;
 		var String groupName;
 		var String groupUsed;
-		if (hasRangeProof) {
+		if (hasRangeProof || hasPairing) {
 			groupClass = BilinearGroup;
 			groupName = "bilinearGroup";
 			groupUsed = "bilinearGroup.getG1()"
@@ -164,6 +164,8 @@ class PublicParametersClassGenerator {
 			«IF hasRangeProof || hasPairing»
 			import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
 			import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup;
+			«ELSE»
+			import org.cryptimeleon.math.structures.groups.Group;
 			«ENDIF»
 			«IF hasOrDescendantOfAnd»
 			import org.cryptimeleon.math.structures.groups.cartesian.GroupElementVector;
