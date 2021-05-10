@@ -23,14 +23,14 @@ class TestClassGenerator extends ClassGenerator {
 	AugmentedModel augmentedModel;
 	boolean hasRangeProof;
 	boolean hasPairing;
-	boolean hasOrProof;
+	boolean hasOrDescendantOfAnd;
 	Class<?> groupClass;
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 		this.hasRangeProof = augmentedModel.hasRangeProof();
 		this.hasPairing = augmentedModel.hasPairing();
-		this.hasOrProof = augmentedModel.hasOrProof();
+		this.hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
 		this.groupClass = augmentedModel.getGroupClass();
 	}
 	
@@ -52,6 +52,7 @@ class TestClassGenerator extends ClassGenerator {
 		val String publicParametersClassName = GenerationHelper.createPublicParametersClassName(protocolClassName);
 		
 		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
+		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 		val Set<String> constrainedWitnessNames = augmentedModel.getConstrainedWitnessNames();
 		
 		val Set<String> publicParameterNames = augmentedModel.getPublicParameterNames();
@@ -79,9 +80,24 @@ class TestClassGenerator extends ClassGenerator {
 			defaultGroup = groupVariableName;
 		}
 		
+		val StringBuilder witnessesBuilder = new StringBuilder();
 		val StringBuilder publicParameterArgumentsBuilder = new StringBuilder();
 		val StringBuilder publicParametersBuilder = new StringBuilder();
 		val StringBuilder constantsBuilder = new StringBuilder();
+		
+		// Build initialization statements for all witnesses
+		for (String witnessName : witnessNames) {
+			if (witnessTypes.get(witnessName) == Type.EXPONENT) {
+				if (constrainedWitnessNames.contains(witnessName)) {
+					witnessesBuilder.append('''ZpElement «witnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness''')
+				} else {
+					witnessesBuilder.append('''ZpElement «witnessName» = zp.getUniformlyRandomElement();''');
+				}
+			} else {
+				witnessesBuilder.append('''GroupElement «witnessName» = «defaultGroup».getUniformlyRandomElement();''');
+			}
+			witnessesBuilder.append('\n');
+		}
 		
 		// Build initialization statements for all public parameters and constants
 		for (String variableName : variableNames) {
@@ -112,6 +128,8 @@ class TestClassGenerator extends ClassGenerator {
 			}
 			builder.append('\n');
 		}
+		
+		val String witnesses = witnessesBuilder.toString();
 		val String publicParameters = publicParametersBuilder.toString();
 		val String constants = constantsBuilder.toString();
 		
@@ -127,7 +145,7 @@ class TestClassGenerator extends ClassGenerator {
 		
 		val String methodBody = '''
 			«groupClassName» «groupVariableName» = «groupInstance»;
-			«IF hasRangeProof || hasOrProof»
+			«IF hasRangeProof || hasOrDescendantOfAnd»
 			«publicParametersClassName» pp = «publicParametersClassName».generateNewParameters(«groupVariableName»);
 			«ENDIF»
 			«IF hasRangeProof || hasPairing»
@@ -141,19 +159,13 @@ class TestClassGenerator extends ClassGenerator {
 			«publicParameters»
 			
 			// Set witness
-			«FOR String witnessName : witnessNames»
-			«IF constrainedWitnessNames.contains(witnessName)»
-			ZpElement «witnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness
-			«ELSE»
-			ZpElement «witnessName» = zp.getUniformlyRandomElement();
-			«ENDIF»
-			«ENDFOR»
+			«witnesses»
 			
 			// Set constants
 			«constants»
 			
 			// Instantiate protocol and input
-			«protocolClassName» protocol = new «protocolClassName»(«groupVariableName»«IF hasRangeProof || hasOrProof», pp«ENDIF»«publicParameterArguments»);
+			«protocolClassName» protocol = new «protocolClassName»(«groupVariableName»«IF hasRangeProof || hasOrDescendantOfAnd», pp«ENDIF»«publicParameterArguments»);
 			
 			CommonInput commonInput = new «protocolClassName».«commonInputClassName»(«commonInputArguments»);
 			SecretInput secretInput = new «protocolClassName».«secretInputClassName»(«secretInputArguments»);

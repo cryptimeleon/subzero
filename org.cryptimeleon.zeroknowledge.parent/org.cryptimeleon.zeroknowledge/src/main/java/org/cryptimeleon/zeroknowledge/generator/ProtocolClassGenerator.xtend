@@ -37,6 +37,8 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Disjunction
 import org.eclipse.emf.ecore.EObject
 
 import static org.cryptimeleon.zeroknowledge.builder.Modifier.*
+import org.cryptimeleon.math.structures.groups.Group
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -97,7 +99,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			protocolClass = new ClassBuilder(PUBLIC, protocolClassName, ProofOfPartialKnowledge);
 		} else {
 			protocolClass = buildSubprotocolClass(
-				protocolClassName, commonInputClassName, secretInputClassName, groupName, witnessNames, witnessTypes, proofGenerator, rootNode
+				protocolClassName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, proofGenerator, rootNode
 			);
 		}
 		
@@ -151,7 +153,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		protocolClass.addInnerClass(commonInputClass);
 		
 		// Build secret input class
-		val ClassBuilder secretInputClass = buildSecretInputClass(secretInputClassName, witnessNames);
+		val ClassBuilder secretInputClass = buildSecretInputClass(secretInputClassName, witnessNames, witnessTypes);
 		protocolClass.addInnerClass(secretInputClass);
 		
 		
@@ -173,7 +175,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 				var EObject subtreeRootNode = subtreeRootNodes.get(i);
 				
 				val ClassBuilder subprotocolClass = buildSubprotocolClass(
-					subprotocolName, commonInputClassName, secretInputClassName, groupName, witnessNames, witnessTypes, proofGenerator, subtreeRootNode
+					subprotocolName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, proofGenerator, subtreeRootNode
 				);
 				
 				subprotocolClasses.addFirst(subprotocolClass);
@@ -208,7 +210,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		String subprotocolClassName,
 		String commonInputClassName,
 		String secretInputClassName,
-		String groupName,
+		Class<?> groupClass,
 		List<String> witnessNames,
 		Map<String, Type> witnessTypes,
 		ProofGenerator proofGenerator,
@@ -220,7 +222,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		val String proof = proofGenerator.generate(protocolRoot);
 		
 		// Build subprotocol spec method
-		val MethodBuilder provideSubprotocolSpecMethod = buildProvideSubprotocolSpecMethod(commonInputClassName, groupName, witnessNames, witnessTypes, proof);
+		val MethodBuilder provideSubprotocolSpecMethod = buildProvideSubprotocolSpecMethod(commonInputClassName, groupClass, witnessNames, witnessTypes, proof);
 
 		// Build prover spec method
 		val MethodBuilder provideProverSpecWithNoSendFirstMethod = buildProvideProverSpecWithNoSendFirstMethod(secretInputClassName, witnessNames);
@@ -281,11 +283,13 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return method;
 	}
 	
-	def MethodBuilder buildProvideSubprotocolSpecMethod(String commonInputClassName, String groupName, List<String> witnessNames, Map<String, Type> witnessTypes, String proof) {
+	def MethodBuilder buildProvideSubprotocolSpecMethod(String commonInputClassName, Class<?> groupClass, List<String> witnessNames, Map<String, Type> witnessTypes, String proof) {
 		val MethodBuilder method = new MethodBuilder(PROTECTED, SubprotocolSpec, "provideSubprotocolSpec");
 		method.setOverride();
 		method.addParameter(CommonInput, "commonInput");
 		method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
+
+		val String groupUsed = (groupClass == Group) ? "group" : "bilinearGroup.getG1()";
 		
 		val List<String> exponentWitnessNames = witnessNames.stream()
 			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
@@ -304,7 +308,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			«IF witnessTypes.get(witnessName) == Type.EXPONENT»
 			SchnorrZnVariable «witnessName + GenerationHelper.WITNESS_SUFFIX» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
 			«ELSE»
-			SchnorrGroupElemVariable «witnessName + GenerationHelper.WITNESS_SUFFIX» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", "«groupName»");
+			SchnorrGroupElemVariable «witnessName + GenerationHelper.WITNESS_SUFFIX» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
 			«ENDIF»
 			«ENDFOR»
 			
@@ -405,11 +409,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return commonInputClass;
 	}
 	
-	def ClassBuilder buildSecretInputClass(String secretInputClassName, List<String> witnessNames) {
+	def ClassBuilder buildSecretInputClass(String secretInputClassName, List<String> witnessNames, Map<String, Type> witnessTypes) {
 		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName, SecretInput);
 		
 		for (String witnessName : witnessNames) {
-			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, ZpElement, witnessName);
+			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, witnessTypes.get(witnessName).getTypeClass(), witnessName);
 			secretInputClass.addField(field);
 		}
 		
@@ -454,7 +458,10 @@ class ProtocolClassGenerator extends ClassGenerator {
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec;
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable;
 			import org.cryptimeleon.math.serialization.Representation;
 			import org.cryptimeleon.math.structures.groups.Group;
 			import org.cryptimeleon.math.structures.groups.GroupElement;
@@ -475,8 +482,6 @@ class ProtocolClassGenerator extends ClassGenerator {
 			import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue;
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder;
 			import org.cryptimeleon.math.expressions.bool.BooleanExpression;
 			«ELSE»
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec;
