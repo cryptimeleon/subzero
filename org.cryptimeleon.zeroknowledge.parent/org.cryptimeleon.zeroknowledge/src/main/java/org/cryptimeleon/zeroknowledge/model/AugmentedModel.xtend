@@ -38,6 +38,9 @@ import java.util.Map.Entry
 import java.util.Comparator
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup
 import org.cryptimeleon.math.structures.groups.Group
+import org.eclipse.xtext.resource.XtextResource
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.PPVariable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.ConstantVariable
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -95,8 +98,9 @@ class AugmentedModel {
 	Map<String, Map<String, List<Argument>>> arguments;
 	Map<String, List<FunctionCall>> predefinedFunctionCalls;
 	Map<String, FunctionSignature> userFunctionSignatures;
-	
-	
+	Set<String> userFunctionWithConstant;
+	Map<String, List<String>> userFunctionWitnesses;
+	Set<String> inlineFunctionNames;
 	
 	new(Model model) {
 		this.model = model;
@@ -140,6 +144,9 @@ class AugmentedModel {
 		this.userFunctionSignatures = null;
 		this.constrainedWitnessNames = null;
 		this.publicParameterNames = null;
+		this.userFunctionWithConstant = null;
+		this.userFunctionWitnesses = null;
+		this.inlineFunctionNames = null;
 		
 		trimStringsTransformation();
 		comparisonTransformation();
@@ -164,6 +171,11 @@ class AugmentedModel {
 	
 	def String getPackageName() {
 		return GenerationHelper.DEFAULT_PACKAGE_NAME;
+	}
+	
+	// Returns the raw DSL code that produced the model
+	def String getCode() {
+		return (model.eResource() as XtextResource).getParseResult().getRootNode().getText();
 	}
 	
 	def Map<EObject, Type> getTypes() {
@@ -240,7 +252,6 @@ class AugmentedModel {
 	}
 	
 	def boolean hasOrProof() {
-		System.out.println("========================="  + containsOrProof);
 		if (checkedForOrProof) return containsOrProof;
 		
 		checkedForOrProof = true;
@@ -383,7 +394,8 @@ class AugmentedModel {
 	def void identifySpecialVariables() {
 		if (specialVariablesIdentified) return;
 		
-		val Map<String, Witness> witnesses = getAllWitnesses();
+		val Set<String> witnessNames = getWitnessNames();
+		val Set<String> ppNames = getPublicParameterNames();
 
 		for (FunctionDefinition function : model.getFunctions()) {
 			val Set<String> parameters = new HashSet<String>;
@@ -399,7 +411,7 @@ class AugmentedModel {
 						localVariable.setFunction(function.getName());
 						ModelHelper.replaceParentReferenceToSelf(node, localVariable);
 					} else {
-						identifySpecialVariablesHelper(node, witnesses);
+						identifySpecialVariablesHelper(node, witnessNames, ppNames);
 					}
 
 				}
@@ -409,18 +421,28 @@ class AugmentedModel {
 
 		ModelMap.preorder(model.getProof(), [ EObject node |
 			if (node instanceof Variable) {
-				identifySpecialVariablesHelper(node, witnesses);
+				identifySpecialVariablesHelper(node, witnessNames, ppNames);
 			}
 		]);
 		
 		specialVariablesIdentified = true;	
 	}
 	
-	def private void identifySpecialVariablesHelper(Variable variable, Map<String, Witness> witnesses) {
-		if (witnesses.containsKey(variable.getName())) {
+	def private void identifySpecialVariablesHelper(Variable variable, Set<String> witnessNames, Set<String> ppNames) {
+		val String name = variable.getName();
+		
+		if (witnessNames.contains(name)) {
 			val WitnessVariable witnessVariable = ZeroKnowledgeFactory.eINSTANCE.createWitnessVariable();
-			witnessVariable.setName(variable.getName());
+			witnessVariable.setName(name);
 			ModelHelper.replaceParentReferenceToSelf(variable, witnessVariable);
+		} else if (ppNames.contains(name)) {
+			val PPVariable ppVariable = ZeroKnowledgeFactory.eINSTANCE.createPPVariable();
+			ppVariable.setName(name);
+			ModelHelper.replaceParentReferenceToSelf(variable, ppVariable);
+		} else {
+			val ConstantVariable constantVariable = ZeroKnowledgeFactory.eINSTANCE.createConstantVariable();
+			constantVariable.setName(name);
+			ModelHelper.replaceParentReferenceToSelf(variable, constantVariable);
 		}
 	}
 	
@@ -833,6 +855,51 @@ class AugmentedModel {
 		});
 	}
 	
+	
+	def boolean userFunctionHasConstant(String functionName) {
+		if (userFunctionWithConstant !== null) return userFunctionWithConstant.contains(functionName);
+		
+		userFunctionWithConstant = new HashSet<String>();
+		for (FunctionDefinition function : model.getFunctions()) {
+			val hasConstant = ModelMap.preorderAny(function.getBody(), [EObject node |
+				return node instanceof ConstantVariable;
+			]);
+			
+			if (hasConstant) userFunctionWithConstant.add(function.getName());
+		}
+		
+		return userFunctionWithConstant.contains(functionName);
+	}
+	
+	def List<String> getUserFunctionWitnesses(String functionName) {
+		if (userFunctionWitnesses !== null) return userFunctionWitnesses.get(functionName);
+		
+		userFunctionWitnesses = new HashMap<String, List<String>>();
+		for (FunctionDefinition function : model.getFunctions()) {
+			val witnessNames = new ArrayList<String>();
+			
+			ModelMap.preorder(function.getBody(), [EObject node |
+				if (node instanceof WitnessVariable) {
+					witnessNames.add(node.getName());
+				}
+			]);
+			
+			userFunctionWitnesses.put(function.getName(), witnessNames);
+		}
+		
+		return userFunctionWitnesses.get(functionName);
+	}
+	
+	def boolean isInlineFunction(String functionName) {
+		if (inlineFunctionNames !== null) return inlineFunctionNames.contains(functionName);
+		
+		inlineFunctionNames = new HashSet<String>();
+		for (FunctionDefinition function : model.getFunctions()) {
+			if (function.isInline()) inlineFunctionNames.add(function.getName());
+		}
+		
+		return inlineFunctionNames.contains(functionName);
+	}
 	
 	
 	

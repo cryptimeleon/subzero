@@ -39,6 +39,11 @@ import org.eclipse.emf.ecore.EObject
 import static org.cryptimeleon.zeroknowledge.builder.Modifier.*
 import org.cryptimeleon.math.structures.groups.Group
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.FunctionDefinition
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.Variable
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessVariable
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -81,6 +86,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 		
 		val EObject rootNode = augmentedModel.getModel().getProof();
 		val boolean requiresPublicParameterClass = augmentedModel.requiresPublicParametersClass()
+		
+		val Map<EObject, Type> nodeTypes = augmentedModel.getTypes();
 		
 		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
@@ -147,6 +154,12 @@ class ProtocolClassGenerator extends ClassGenerator {
 		''';
 		constructor.addBody(constructorBody);
 		protocolClass.addConstructor(constructor);
+		
+		// Build user defined functions
+		val List<MethodBuilder> userFunctions = buildUserFunctions(nodeTypes, witnessTypes, commonInputClassName, proofGenerator);
+		for (MethodBuilder method : userFunctions) {
+			protocolClass.addMethod(method);
+		}
 		
 		// Build common input class
 		val ClassBuilder commonInputClass = buildCommonInputClass(commonInputClassName, publicParameterNames, variableNames, variableTypes);
@@ -468,6 +481,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			import org.cryptimeleon.math.structures.rings.zn.Zn.ZnElement;
 			import org.cryptimeleon.math.structures.rings.zn.Zp;
 			import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
+			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment;
 			«IF hasRangeProof»
 			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
 			«ENDIF»
@@ -490,6 +504,10 @@ class ProtocolClassGenerator extends ClassGenerator {
 			«IF hasOrDescendantOfAnd»
 			import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector;
 			import org.cryptimeleon.math.structures.rings.cartesian.RingElementVector;
+			«ENDIF»
+			«IF !augmentedModel.getModel().getFunctions().isEmpty()»
+			import org.cryptimeleon.math.expressions.exponent.ExponentExpr;
+			import org.cryptimeleon.math.expressions.group.GroupElementExpression;
 			«ENDIF»
 		''';
 		
@@ -633,6 +651,77 @@ class ProtocolClassGenerator extends ClassGenerator {
 		builder.append('''leaf("«subprotocolClassName»", new «subprotocolClassName»(), «commonInput»)''');
 		
 		return subprotocolClassName;
+	}
+	
+	// Generates the Java equivalent of all user defined functions
+	def List<MethodBuilder> buildUserFunctions(Map<EObject, Type> nodeTypes, Map<String, Type> witnessTypes, String commonInputClassName, ProofGenerator proofGenerator) {
+		val List<MethodBuilder> methods = new ArrayList<MethodBuilder>();
+		
+		for (FunctionDefinition function : augmentedModel.getModel().getFunctions()) {
+			if (!function.isInline()) {
+				val String name = function.getName();
+				val EObject body = function.getBody();
+				val Type returnType = nodeTypes.get(function);
+				val Class<?> returnTypeClass = returnType.getTypeExprClass();
+				
+				var MethodBuilder method;
+				if (returnType == Type.GROUP_ELEMENT || returnType == Type.EXPONENT) {
+					method = new MethodBuilder(PRIVATE, returnTypeClass, name);
+	
+					var String statement = proofGenerator.generate(body);
+					
+					if (returnType == Type.GROUP_ELEMENT && body instanceof Variable && !(body instanceof WitnessVariable)) {
+						// GroupElement does not implement GroupElementExpression, so .expr() is necessary
+						// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
+						statement += ".expr()";
+					} else if (returnType == Type.EXPONENT && body instanceof Variable && !(body instanceof WitnessVariable)) {
+						// ZpElement does not implement ExponentExpr, so .asExponentExpression() is necessary
+						// SchnorrZnVariable does implement ExponentExpr, so .asExponentExpression() is not needed
+						statement += ".asExponentExpr()";
+					}
+					
+					method.addBody('''return «statement»;''');
+				} else if (returnType == Type.BOOLEAN) {
+					var String statement = proofGenerator.generate(body, true);
+					
+					if (body instanceof Conjunction) {
+						method = new MethodBuilder(PRIVATE, void, name);
+						method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
+						method.addParameter(String, GenerationHelper.SUBPROTOCOL_VARIABLE);
+						
+						method.addBody(statement);
+					} else if (body instanceof Comparison) {
+						method = new MethodBuilder(PRIVATE, SchnorrFragment, name);
+						statement = statement.substring(statement.indexOf("new"), statement.indexOf("\n);"));
+						method.addBody('''return «statement»;''');
+					}
+				}
+				
+				// If the function has a constant variable anywhere, add the CommonInput variable as a parameter
+				if (augmentedModel.userFunctionHasConstant(name)) {
+					method.addParameter(commonInputClassName, GenerationHelper.INPUT_VARIABLE);
+				}
+				
+				// If the function has witness variables anywhere, add each witness variable as a parameter
+				val List<String> functionWitnesses = augmentedModel.getUserFunctionWitnesses(name);
+				if (functionWitnesses !== null) {
+					for (String witnessName : functionWitnesses) {
+						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getWitnessTypeClass();
+						method.addParameter(parameterTypeClass, witnessName + GenerationHelper.WITNESS_SUFFIX);
+					}
+				}
+				
+				// Add all user defined parameters for the function
+				for (Parameter parameter : function.getParameterList().getParameters()) {
+					val Class<?> parameterTypeClass = nodeTypes.get(parameter).getTypeExprClass();
+					method.addParameter(parameterTypeClass, parameter.getName());
+				}
+				
+				methods.add(method);
+			}
+		}
+		
+		return methods;
 	}
 
 }

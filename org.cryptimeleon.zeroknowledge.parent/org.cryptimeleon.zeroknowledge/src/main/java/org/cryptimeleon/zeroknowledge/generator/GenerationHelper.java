@@ -15,7 +15,13 @@ public class GenerationHelper {
 	public final static String DEFAULT_PROTOCOL_NAME = "MySigmaProtocol";
 	public final static String DEFAULT_PACKAGE_NAME = "prototype";
 	public final static String INPUT_VARIABLE = "input";
-	public final static String WITNESS_SUFFIX = "Var";
+//	public final static String WITNESS_SUFFIX = "Var";
+	public final static String WITNESS_SUFFIX = "";
+	public final static String SUBPROTOCOL_VARIABLE = "name";
+	
+	public static String createLocalName(String variableName) {
+		return "#" + variableName + "#";
+	}
 	
 	public static String createCommonInputClassName(String protocolName) {
 		return protocolName + CommonInput.class.getSimpleName();

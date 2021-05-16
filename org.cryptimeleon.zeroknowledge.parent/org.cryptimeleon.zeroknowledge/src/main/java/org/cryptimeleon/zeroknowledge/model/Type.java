@@ -1,5 +1,10 @@
 package org.cryptimeleon.zeroknowledge.model;
 
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
+import org.cryptimeleon.math.expressions.bool.BooleanExpression;
+import org.cryptimeleon.math.expressions.exponent.ExponentExpr;
+import org.cryptimeleon.math.expressions.group.GroupElementExpression;
 import org.cryptimeleon.math.structures.groups.GroupElement;
 import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
 
@@ -40,6 +45,22 @@ public enum Type {
 			case EXPONENT: return ZpElement.class;
 			case STRING: return String.class;
 			default: return void.class;
+		}
+	}
+	
+	public Class<?> getTypeExprClass() {
+		switch (this) {
+			case GROUP_ELEMENT: return GroupElementExpression.class;
+			case EXPONENT: return ExponentExpr.class;
+			default: return null;
+		}
+	}
+	
+	public Class<?> getWitnessTypeClass() {
+		switch (this) {
+			case GROUP_ELEMENT: return SchnorrGroupElemVariable.class;
+			case EXPONENT: return SchnorrZnVariable.class;
+			default: return null;
 		}
 	}
 }

@@ -12,7 +12,7 @@ public enum Modifier {
 	FINAL;
 	
 	public boolean isAccessModifier() {
-		return this == PUBLIC || this == PROTECTED || this == PROTECTED || this == PACKAGE;
+		return this == PUBLIC || this == PROTECTED || this == PRIVATE || this == PACKAGE;
 	}
 	
 	@Override

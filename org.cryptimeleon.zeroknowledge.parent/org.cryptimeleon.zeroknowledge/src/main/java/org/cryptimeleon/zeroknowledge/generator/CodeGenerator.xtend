@@ -11,28 +11,16 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.Model
  * Generates the Java code for a protocol
  */
 class CodeGenerator {
+	AugmentedModel augmentedModel;
 	
-	var String generatedCode;
-	
-	new(Model model) {
-		performGeneration(model, false);
+	new(AugmentedModel augmentedModel) {
+		this.augmentedModel = augmentedModel;
 	}
-	
-	new(Model model, boolean inlineFunctions) {
-		performGeneration(model, inlineFunctions);
-	}
-	
-	def String getCode() {
-		return generatedCode;
-	}
-	
-	def void performGeneration(Model model, boolean inlineFunctions) {
-		val AugmentedModel augmentedModel = new AugmentedModel(model);
+
+	def ProjectBuilder generate() {
 		
 		System.out.println(augmentedModel);
 		
-		// If option is set, inline all functions
-		if (inlineFunctions) augmentedModel.inlineFunctions();
 		
 		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
 		augmentedModel.identifySpecialVariables();
@@ -56,8 +44,21 @@ class CodeGenerator {
 			publicParametersCode = publicParametersSource.toString();
 		}
 		
-		val String project = buildProject(protocolName, packageName, protocolCode, testCode, publicParametersClassName, publicParametersCode).getProject();
-		generatedCode = project;
+		// Fetch the raw DSL code
+		val String rawCode = augmentedModel.getCode();
+		
+		val ProjectBuilder project = buildProject(
+			protocolName,
+			packageName,
+			protocolCode,
+			testCode,
+			publicParametersClassName,
+			publicParametersCode,
+			rawCode
+		);
+		
+		
+		return project;
 	}
 	
 	/*
@@ -73,10 +74,12 @@ class CodeGenerator {
 		String protocolClassCode,
 		String testClassCode,
 		String publicParametersClassName,
-		String publicParametersClassCode
+		String publicParametersClassCode,
+		String rawCode
 	) {
 		val ProjectFolder root = new ProjectFolder(packageName);
 		
+		val ProjectFile code = new ProjectFile(protocolName + '.zkak', rawCode);
 		val ProjectFile gradleBuilder = new ProjectFile("build.gradle", "project", false);
 		val ProjectFile gradleSettings = new ProjectFile("settings.gradle", "project", false);
 		val ProjectFile gradleBat = new ProjectFile("gradlew.bat", "project", false);
@@ -84,6 +87,7 @@ class CodeGenerator {
 		val ProjectFile dotProject = new ProjectFile(".project", "project", false);
 		val ProjectFile dotClasspath = new ProjectFile(".classpath", "project", false);
 		
+		root.addFile(code);
 		root.addFile(gradleBuilder);
 		root.addFile(gradleSettings);
 		root.addFile(gradleBat);
@@ -137,29 +141,4 @@ class CodeGenerator {
 		
 		return new ProjectBuilder(root);
 	}
-
-	// Generates the Java equivalent of all user defined functions
-//	def void generateFunctions(Model model, BranchState state) {
-//		for (FunctionDefinition function : model.getFunctions()) {
-//			
-//			if (types.containsKey(function)) {
-//				
-//				// TODO: if the function type is EXPONENT, and the function size is greater than 1,
-//				// then the returnType should instead be ExponentExprTuple
-//				val String returnType = Type.toString(types.get(function));
-//				
-//				// TODO: for each parameter, if the function type is EXPONENT, and the parameter size is greater than 1,
-//				// then the type should instead be ExponentExprTuple
-//				functionBuilder.append(
-//					'''
-//					private static «returnType» «function.getName()»(«FOR Parameter parameter : function.getParameterList().getParameters() SEPARATOR ', '»«Type.toString(types.get(parameter))» «parameter.getName()»«ENDFOR») {
-//					  return «generateCode(function.getBody(), state)»;
-//					}
-//					'''
-//				);
-//			}
-//			// Maybe throw a console warning above if the type cannot be determined for the variable
-//			// Or possibly move this warning to validation
-//		}
-//	}
 }

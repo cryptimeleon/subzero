@@ -10,6 +10,8 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.eclipse.xtext.resource.XtextResource
+import org.cryptimeleon.zeroknowledge.builder.ProjectBuilder
 
 /**
  * Generates code from your model files on save.
@@ -31,14 +33,10 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
 	
+		// Create the augmented model to provide additional functionality
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
+		
 		var String contents;
-		
-		var inlineFunctions = false;
-		
-		if (inlineFunctions) {
-			augmentedModel.inlineFunctions();
-		}
 		
 		System.out.println("Generating resource: " + resourceId);
 		
@@ -49,8 +47,9 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			
 		} else if (resourceId == CODE_RESOURCE) {
 			// Generate Java project
-			val CodeGenerator codeGeneration = new CodeGenerator(model);
-			contents = codeGeneration.getCode();
+			val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
+			val ProjectBuilder project = codeGeneration.generate();
+			contents = project.getProject();
 			
 		} else {
 			System.out.println("Error: invalid resource ID");

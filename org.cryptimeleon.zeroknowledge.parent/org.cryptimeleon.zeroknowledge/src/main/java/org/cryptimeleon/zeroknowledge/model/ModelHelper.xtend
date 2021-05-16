@@ -71,7 +71,7 @@ class ModelHelper {
 
 		ModelMap.preorder(definition.getBody(), [ EObject bodyNode |
 			if (bodyNode instanceof Variable) {
-				val Expression expression = EcoreUtil.copy(mapping.get((bodyNode as Variable).getName()));
+				val Expression expression = EcoreUtil.copy(mapping.get(bodyNode.getName()));
 				if (expression !== null) {
 					replaceParentReferenceToSelf(bodyNode, expression);
 				}
@@ -105,7 +105,7 @@ class ModelHelper {
 	
 	def static boolean isEqualityComparison(EObject node) {
 		if (node instanceof Comparison) {
-			val String operator = (node as Comparison).getOperation();
+			val String operator = node.getOperation();
 			return operator == OPERATOR_EQUAL || operator == OPERATOR_INEQUAL;
 		}
 		
@@ -114,7 +114,7 @@ class ModelHelper {
 
 	def static boolean isInequalityComparison(EObject node) {
 		if (node instanceof Comparison) {
-			val String operator = (node as Comparison).getOperation();
+			val String operator = node.getOperation();
 			return operator == OPERATOR_LESS || operator == OPERATOR_LESSEQUAL || operator == OPERATOR_GREATER || operator == OPERATOR_GREATEREQUAL;
 		}	
 	}

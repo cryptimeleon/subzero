@@ -109,6 +109,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		checkFunctionNameIsNotPredefined(function);
 		checkFunctionIsCalled(function);
 		checkFunctionParametersAreUsed(function);
+		checkFunctionHasNoDisjunction(function);
 	}
 
 	def dispatch void checkNode(ParameterList parameterList, BranchState state) {
@@ -421,6 +422,17 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 			warning(
 				"Function is never used in the proof expression, and will not be included in the generated Java code", function,
 				getStructuralFeature(function));
+		}
+	}
+	
+	// User defined functions cannot currently contain a disjunction
+	def private void checkFunctionHasNoDisjunction(FunctionDefinition function) {
+		val boolean hasDisjunction = ModelMap.postorderAny(function.getBody(), [EObject node |
+			return node instanceof Disjunction;
+		]);
+		
+		if (hasDisjunction) {
+			error("Disjunctions are currently not supported in user functions", function, getStructuralFeature(function));
 		}
 	}
 

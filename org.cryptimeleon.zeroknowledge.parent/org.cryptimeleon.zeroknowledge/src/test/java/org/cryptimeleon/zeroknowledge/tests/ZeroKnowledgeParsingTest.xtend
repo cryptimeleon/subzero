@@ -28,4 +28,16 @@ class ZeroKnowledgeParsingTest {
 //		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 		Assertions.assertTrue(true)
 	}
+	
+	
+	@Test
+	def void basicProtocol() {
+		val result = parseHelper.parse('''
+			witness: x,r;
+			g^x * h^r = C & h^r = C2
+		''');
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty)
+	}
 }

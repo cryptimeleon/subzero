@@ -15,7 +15,7 @@ Model returns Model:
   (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* (publicParameterList=PublicParameterList ';'?)? (witnessList=WitnessList ';'?) ('statement' ':')? proof=Expression ';'?;
 
 FunctionDefinition returns FunctionDefinition:
-  name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
+  inline?='inline'? name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
 
 ParameterList returns ParameterList:
   '(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')';
@@ -92,8 +92,8 @@ Brackets returns Expression:
  * replace some nodes in postprocessing to add information to the
  * parse tree
  */
-GlobalVariable returns Variable:
-  {GlobalVariable} name=IDENTIFIER;
+ConstantVariable returns Variable:
+  {ConstantVariable} name=IDENTIFIER;
 
 LocalVariable returns Variable:
   {LocalVariable} name=IDENTIFIER function=IDENTIFIER;
