@@ -18,9 +18,7 @@ class CodeGenerator {
 	}
 
 	def ProjectBuilder generate() {
-		
 		System.out.println(augmentedModel);
-		
 		
 		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
 		augmentedModel.identifySpecialVariables();
@@ -47,36 +45,6 @@ class CodeGenerator {
 		// Fetch the raw DSL code
 		val String rawCode = augmentedModel.getCode();
 		
-		val ProjectBuilder project = buildProject(
-			protocolName,
-			packageName,
-			protocolCode,
-			testCode,
-			publicParametersClassName,
-			publicParametersCode,
-			rawCode
-		);
-		
-		
-		return project;
-	}
-	
-	/*
-	 * 
-	 * 
-	 * PROJECT GENERATION
-	 * 
-	 * 
-	 */
-	def ProjectBuilder buildProject(
-		String protocolName,
-		String packageName,
-		String protocolClassCode,
-		String testClassCode,
-		String publicParametersClassName,
-		String publicParametersClassCode,
-		String rawCode
-	) {
 		val ProjectFolder root = new ProjectFolder(packageName);
 		
 		val ProjectFile code = new ProjectFile(protocolName + '.zkak', rawCode);
@@ -112,12 +80,12 @@ class CodeGenerator {
 		val ProjectFolder mainJava = new ProjectFolder("java");
 		val ProjectFolder mainPrototype = new ProjectFolder("prototype");
 		
-		val ProjectFile mainProtocol = new ProjectFile(protocolName + '.java', protocolClassCode);
+		val ProjectFile mainProtocol = new ProjectFile(protocolName + '.java', protocolCode);
 		
 		mainPrototype.addFile(mainProtocol);
 		
-		if (publicParametersClassCode !== null) {
-			val ProjectFile publicParameters = new ProjectFile(publicParametersClassName + '.java', publicParametersClassCode);
+		if (publicParametersCode !== null) {
+			val ProjectFile publicParameters = new ProjectFile(publicParametersClassName + '.java', publicParametersCode);
 			mainPrototype.addFile(publicParameters);
 		}
 		
@@ -128,7 +96,7 @@ class CodeGenerator {
 		val ProjectFolder testJava = new ProjectFolder("java");
 		val ProjectFolder testPrototype = new ProjectFolder("prototype");
 		
-		val ProjectFile testLibrary = new ProjectFile("LibraryTest.java", testClassCode);
+		val ProjectFile testLibrary = new ProjectFile("LibraryTest.java", testCode);
 		testPrototype.addFile(testLibrary);
 
 		testJava.addFolder(testPrototype);

@@ -10,7 +10,7 @@ import org.cryptimeleon.zeroknowledge.model.Type;
 public abstract class PredefinedFunction {
 	public abstract String getName();
 	public abstract Type getReturnType();
-	public abstract List<PredefinedFunctionParameter> getParameters();
+	public abstract List<FunctionParameter> getParameters();
 	public abstract String generateFunction();
 	
 	public int getReturnSize() {

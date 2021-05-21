@@ -35,6 +35,8 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.ConstantVariable
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.PPVariable
 import org.cryptimeleon.zeroknowledge.zeroKnowledge.Parameter
 import org.eclipse.emf.common.util.EList
+import org.cryptimeleon.zeroknowledge.predefined.PredefinedFunctionsHelper
+import java.util.HashSet
 
 /**
  * Generates proof expressions
@@ -54,73 +56,83 @@ class ProofGenerator {
 	static String STATEMENT = "statement";
 	
 	AugmentedModel augmentedModel;
-	Map<EObject, Type> types;
-	Map<EObject, Integer> sizes;
-	Map<EObject, GroupType> groups;
-	Map<String, FunctionDefinition> functions;
-	Set<String> publicParameterNames;
 	
+	Map<EObject, Type> types;
+	Map<String, FunctionDefinition> functions;
+	
+	// Used to create unique subprotocol names
 	int subprotocolCount;
 	int functionSubprotocolCount;
 
-	boolean generatingFunction;
+	// If a function body is currently being generated
+	boolean inFunctionBody;
+	
+	 // If a call to an inline function is currently being generated
 	boolean inInlineFunction;
-	Map<String, String> inlineFunctionsCode;
+	
+	// Contains the expressions for all inline functions that are called at least once
+	// The expression has placeholders for the local variables, which are then replaced
+	// with the passed arguments when generating a function call
+	Map<String, String> inlineFunctionsCode; 
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 		subprotocolCount = 0;
 		functionSubprotocolCount = 0;
 		types = augmentedModel.getTypes();
-		sizes = augmentedModel.getSizes();
-		groups = augmentedModel.getGroups();
 		functions = augmentedModel.getAllUserFunctions();
-		publicParameterNames = augmentedModel.getPublicParameterNames();
-		generatingFunction = false;
+		inFunctionBody = false;
 		inlineFunctionsCode = new HashMap<String, String>();
 	}
 	
+	// If no node is provided, generate from the root
 	def String generate() {
 		return generateCode(augmentedModel.getModel());
 	}
 	
-	def String generate(EObject node) {
-		return generateCode(node);
-	}
-	
-	def String generate(EObject node, boolean isFunction) {
-		generatingFunction = isFunction;
-		val String generatedCode = generateCode(node);
-		generatingFunction = false;
+	// Generates the body expression of a user defined function
+	def dispatch String generate(FunctionDefinition function) {
 		functionSubprotocolCount = 0;
+		inFunctionBody = true;
+		val String generatedCode = generateCode(function);
+		inFunctionBody = false;
 		return generatedCode;
 	}
 	
+	def dispatch String generate(EObject node) {
+		return generateCode(node);
+	}
+	
 	// Generates the Java code for the main expression
-	def dispatch String generateCode(Model model) {
+	def private dispatch String generateCode(Model model) {
 		return generateCode(model.getProof());
 	}
 	
-	def dispatch String generateCode(Conjunction conjunction) {
+	// Generates the Java code for a user defined function body expression
+	def private dispatch String generateCode(FunctionDefinition function) {
+		return generateCode(function.getBody());
+	}
+	
+	def private dispatch String generateCode(Conjunction conjunction) {
 		val String left = generateCode(conjunction.getLeft());
 		val String right = generateCode(conjunction.getRight());
 		
 		return left + right;
 	}
 	
-	def dispatch String generateCode(Disjunction disjunction) {
+	def private dispatch String generateCode(Disjunction disjunction) {
 		throw new UnsupportedOperationException("Disjunctions should not be generated in the proof expression");
 	}
 	
-	def dispatch String generateCode(Comparison comparison) {
+	def private dispatch String generateCode(Comparison comparison) {
 		var EObject leftNode = comparison.getLeft();
 		var EObject rightNode = comparison.getRight();
 			
 		var String operator = comparison.getOperation();
 		
-		
+		// Create the unique subprotocol name that will be passed to .addSubprotocol
 		var String subprotocolParameter;
-		if (generatingFunction) {
+		if (inFunctionBody) {
 			functionSubprotocolCount++;
 			subprotocolParameter = '''«GenerationHelper.SUBPROTOCOL_VARIABLE» + "_«functionSubprotocolCount»"''';
 		} else {
@@ -160,6 +172,8 @@ class ProofGenerator {
 				);
 			''';
 		}
+		
+		// Handle single and double inequalities
 		
 		var EObject lowerBound;
 		var EObject upperBound;
@@ -266,21 +280,33 @@ class ProofGenerator {
 		''';
 	}
 	
-	def dispatch String generateCode(Sum sum) {
+	def private dispatch String generateCode(Sum sum) {
 		val String left = generateCode(sum.getLeft());
 		val String right = generateCode(sum.getRight());
+		val String operation = sum.getOperation();
 		
-		if (sum.getOperation() == OPERATOR_ADDITION) {
+		if (operation == OPERATOR_ADDITION) {
 			return '''«left».add(«right»)''';
-		} else {
+		} else if (operation == OPERATOR_SUBTRACTION) {
 			return '''«left».sub(«right»)''';
+		} else {
+			throw new UnsupportedOperationException("Invalid sum operation");
 		}
 	}
 	
-	def dispatch String generateCode(Product product) {
+	def private dispatch String generateCode(Product product) {
 		val String left = generateCode(product.getLeft());
 		val String right = generateCode(product.getRight());
-		val String inverse = (product.getOperation == OPERATOR_MULTIPLICATION) ? "" : ".inv()";
+		val String operation = product.getOperation();
+		
+		var String inverse;
+		if (operation == OPERATOR_MULTIPLICATION) {
+			inverse = "";
+		} else if (operation == OPERATOR_DIVISION) {
+			inverse = ".inv()";
+		} else {
+			throw new UnsupportedOperationException("Invalid product operation");
+		}
 		
 		if (types.get(product) === Type.EXPONENT) {
 			return '''«left».mul(«right»«inverse»)''';
@@ -289,34 +315,46 @@ class ProofGenerator {
 		}
 	}
 	
-	def dispatch String generateCode(Power power) {
+	def private dispatch String generateCode(Power power) {
 		val String left = generateCode(power.getLeft());
 		val String right = generateCode(power.getRight());
 		
 		return '''«left».pow(«right»)''';		
 	}
 	
-	def dispatch String generateCode(StringLiteral string) {
+	def private dispatch String generateCode(StringLiteral string) {
 		val String value = string.getValue(); // Value includes double quotes
 		return value;
 	}
 	
-	def dispatch String generateCode(Tuple node) {
+	def private dispatch String generateCode(Tuple node) {
 		return '''«FOR element : node.getElements() SEPARATOR ', '»«generateCode(element)»«ENDFOR»'''
 	}
 
-	def dispatch String generateCode(Negative node) {
+	def private dispatch String generateCode(Negative node) {
 		val String term = generateCode(node.getTerm());
 		return '''«term».neg()''';		
 	}
 	
-	def dispatch String generateCode(FunctionCall call) {
+	def private dispatch String generateCode(FunctionCall call) {
 		var String name = call.getName();
 		
 		val boolean isInlineFunction = augmentedModel.isInlineFunction(name);
 		
-		if (isInlineFunction) {
-			// Handle calls to inline user functions
+		if (name == "e") {
+			// Handle the special pairing function case
+			
+			val List<String> arguments = new ArrayList<String>();
+			
+			for (argument : call.getArguments()) {
+				var String argumentCode = generateCode(argument);
+				arguments.add(argumentCode);
+			}
+			
+			return '''this.e.applyExpr(«GenerationHelper.createCommaList(arguments)»)''';
+						
+		} else if (isInlineFunction) {
+			// Handle calls to inline user defined functions
 			
 			var String functionCode = inlineFunctionsCode.get(name);
 			val FunctionDefinition function = functions.get(name);
@@ -339,39 +377,35 @@ class ProofGenerator {
 			}
 			
 			return inlineCode;
-			
+		
 		} else {
-			// Handle calls to regular user functions and predefined functions
+			// Handle calls to regular user defined functions
 			
 			val Type functionType = types.get(call);
-			val EObject body = functions.get(call.getName()).getBody();
 
 			// Default when functionType == Type.GROUP_ELEMENT || functionType == Type.EXPONENT
-			var callStatement = [String functionName, List<String> argumentNames |
-				return '''«functionName»(«GenerationHelper.createCommaList(argumentNames)»)''';
+			var callStatement = [String functionName, List<String> args |
+				return '''«functionName»(«GenerationHelper.createCommaList(args)»)''';
 			];
-			
-			if (name == "e") {
-				name = "this.e.applyExpr";
-			}
 			
 			val List<String> arguments = new ArrayList<String>();
 			
 			if (functionType == Type.BOOLEAN) {
+				val EObject body = functions.get(call.getName()).getBody();
 				
 				if (body instanceof Conjunction) {
 					arguments.add("subprotocolSpecBuilder");
 					subprotocolCount++;
 					var String subprotocolName = STATEMENT + subprotocolCount;
 					arguments.add('''"«subprotocolName»"''');
-					callStatement = [String functionName, List<String> argumentNames |
-						return '''«functionName»(«GenerationHelper.createCommaList(argumentNames)»);''' + '\n';
+					callStatement = [String functionName, List<String> args |
+						return '''«functionName»(«GenerationHelper.createCommaList(args)»);''' + '\n';
 					];
 				} else if (body instanceof Comparison) {
 					subprotocolCount++;
 					val String subprotocolName = STATEMENT + subprotocolCount;
-					callStatement = [String functionName, List<String> argumentNames |
-						return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationHelper.createCommaList(argumentNames)»));''' + '\n';
+					callStatement = [String functionName, List<String> args |
+						return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationHelper.createCommaList(args)»));''' + '\n';
 					];
 				}
 			}
@@ -382,7 +416,7 @@ class ProofGenerator {
 			}
 			
 			// If the function has witness variables anywhere, add each witness variable as an argument
-			val List<String> functionWitnesses = augmentedModel.getUserFunctionWitnesses(name);
+			val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnesses(name);
 			if (functionWitnesses !== null) {
 				for (String witnessName : functionWitnesses) {
 					arguments.add(witnessName);
@@ -392,9 +426,21 @@ class ProofGenerator {
 			// Add all user provided arguments to the function call
 			for (argument : call.getArguments()) {
 				var String argumentCode = generateCode(argument);
-				if ((argument as Argument).getExpression() instanceof Variable && types.get(argument) == Type.GROUP_ELEMENT) {
-					argumentCode += ".expr()";
+				var EObject argumentExpr = (argument as Argument).getExpression();
+				
+				if (argumentExpr instanceof Variable && !(argumentExpr instanceof WitnessVariable)) {
+					var Type argumentType = types.get(argumentExpr);
+					if (argumentType == Type.GROUP_ELEMENT) {
+						// GroupElement does not implement GroupElementExpression, so .expr() is necessary
+						// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
+						argumentCode += ".expr()";
+					} else if (argumentType == Type.EXPONENT) {
+						// ZpElement does not implement ExponentExpr, so .asExponentExpression() is necessary
+						// SchnorrZnVariable does implement ExponentExpr, so .asExponentExpression() is not needed
+						argumentCode += ".asExponentExpression()";
+					}
 				}
+
 				arguments.add(argumentCode);
 			}
 			
@@ -403,35 +449,35 @@ class ProofGenerator {
 		}
 	}
 	
-	def dispatch String generateCode(Argument argument) {
+	def private dispatch String generateCode(Argument argument) {
 		generateCode(argument.getExpression());
 	}
 	
-	def dispatch String generateCode(PPVariable variable) {
+	def private dispatch String generateCode(PPVariable variable) {
 		val String name = GenerationHelper.convertToJavaName(variable.getName());
-		return name;
+		return GenerationHelper.createPPName(name);
 	}
 	
-	def dispatch String generateCode(ConstantVariable variable) {
+	def private dispatch String generateCode(ConstantVariable variable) {
 		val String name = GenerationHelper.convertToJavaName(variable.getName());
-		return GenerationHelper.INPUT_VARIABLE + '.' + name;
+		return GenerationHelper.createConstantName(name);
 	}
 	
-	def dispatch String generateCode(LocalVariable variable) {
+	def private dispatch String generateCode(LocalVariable variable) {
 		val String name = GenerationHelper.convertToJavaName(variable.getName());
 		return inInlineFunction ? GenerationHelper.createLocalName(name) : name;
 	}
 	
-	def dispatch String generateCode(WitnessVariable witness) {
+	def private dispatch String generateCode(WitnessVariable witness) {
 		val String name = GenerationHelper.convertToJavaName(witness.getName());
-		return name + GenerationHelper.WITNESS_SUFFIX;
+		return GenerationHelper.createWitnessName(name);
 	}
 	
-	def dispatch String generateCode(NumberLiteral number) {
+	def private dispatch String generateCode(NumberLiteral number) {
 		return '''zp.valueOf(«number.getValue()»)''';
 	}
 	
-	def dispatch String generateCode(Brackets brackets) {
+	def private dispatch String generateCode(Brackets brackets) {
 		return generateCode(brackets.getContent());
 	}
 	

@@ -62,7 +62,7 @@ function noCodeErrors(annotations) {
 
 function validateCode(callback) {
   var request = $.ajax({
-      url: "http://" + location.host + "/xtext-service/validate?resource=code.zkak"
+      url: "http://" + location.host + "/xtext-service/validate?resource=" + CODE_RESOURCE_ID
   });
       
   request.done((result) => {
@@ -79,9 +79,8 @@ function compileCode() {
   validateCode((isValid, issues) => {
     if (isValid) {
       var editor = getEditor();
-      editor.xtextServices.generatorService._encodedResourceId = "code.zkak";
+      editor.xtextServices.generatorService._encodedResourceId = CODE_RESOURCE_ID;
       editor.xtextServices.generate().then((code) => {
-        console.log(code);
         if (code === "") {
           consoleError("There is no code to download");
           return;
@@ -107,7 +106,6 @@ function compilePackage() {
       var editor = getEditor();
       editor.xtextServices.generatorService._encodedResourceId = "code.zkak";
       editor.xtextServices.generate().then((projectJSON) => {
-        console.log(projectJSON);
         let project = $.parseJSON(projectJSON);
         let projectZip = new JSZip();
         createProjectZip(projectZip, project);

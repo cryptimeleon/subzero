@@ -8,6 +8,7 @@ import java.util.Collections
 import org.cryptimeleon.zeroknowledge.model.Type
 import org.cryptimeleon.zeroknowledge.predefined.TupleParameters
 import org.cryptimeleon.zeroknowledge.predefined.ReturnsTuple
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
 
 /**
  * Contains information about a function's name, return type, and parameters
@@ -52,14 +53,24 @@ class FunctionSignature {
 	
 	new(Method method) {
 		this.name = method.getName();
-		this.returnType = Type.toType(method.getReturnType().getSimpleName());
+		
+		val Class<?> returnType = method.getReturnType();
+		if (returnType == void || returnType == SchnorrFragment) {
+			this.returnType = Type.BOOLEAN;
+		} else {
+			this.returnType = Type.toType(method.getReturnType().getSimpleName());
+		}
+		
+		
 		val ReturnsTuple returnAnnotation = method.getAnnotation(ReturnsTuple);
-		val TupleParameters parametersAnnotation = method.getAnnotation(TupleParameters);
 		if (returnAnnotation !== null) {
 			this.returnSize = returnAnnotation.value();
 		} else {
 			this.returnSize = 1;
 		}
+		
+		val TupleParameters parametersAnnotation = method.getAnnotation(TupleParameters);
+		
 		if (parametersAnnotation !== null) {
 			this.parameterSizes = new ArrayList(parametersAnnotation.value());
 		} else {

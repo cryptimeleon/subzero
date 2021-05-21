@@ -23,29 +23,30 @@ import org.cryptimeleon.zeroknowledge.builder.ProjectBuilder
 class ZeroKnowledgeGenerator extends AbstractGenerator {
 	// The compiled code file when using the web editor
 	static val OUTPUT_FILE = '/DEFAULT_ARTIFACT';
+	
 	static val CODE_RESOURCE = 'code.zkak';
 	static val LATEX_RESOURCE = 'latex.zkak';
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val String resourceId = resource.getURI().toString();
-		val Model model = resource.getContents().iterator().next() as Model;
+		System.out.println("Generating resource: " + resourceId);
 		
 		// If build is canceled, stop code generation
 		if (context.getCancelIndicator.isCanceled()) return;
+		
+		// Get the parsed syntax tree
+		val Model model = resource.getContents().iterator().next() as Model;
 	
 		// Create the augmented model to provide additional functionality
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
 		var String contents;
-		
-		System.out.println("Generating resource: " + resourceId);
-		
-		if (resourceId == LATEX_RESOURCE) {
+		if (resourceId.endsWith(LATEX_RESOURCE)) {
 			// Generate LaTeX preview code
 			val LatexPreview latexPreview = new LatexPreview(augmentedModel);
 			contents = latexPreview.getRawLatex();
 			
-		} else if (resourceId == CODE_RESOURCE) {
+		} else if (resourceId.endsWith(CODE_RESOURCE)) {
 			// Generate Java project
 			val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
 			val ProjectBuilder project = codeGeneration.generate();
@@ -53,6 +54,7 @@ class ZeroKnowledgeGenerator extends AbstractGenerator {
 			
 		} else {
 			System.out.println("Error: invalid resource ID");
+			return;
 		}
 		
 		// Generate the final file

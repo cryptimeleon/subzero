@@ -18,10 +18,10 @@ public class TestFunction extends PredefinedFunction {
 	}
 
 	@Override
-	public List<PredefinedFunctionParameter> getParameters() {
-		List<PredefinedFunctionParameter> parameters = new ArrayList<PredefinedFunctionParameter>();
-		parameters.add(new PredefinedFunctionParameter("a", Type.EXPONENT));
-		parameters.add(new PredefinedFunctionParameter("b", Type.EXPONENT));
+	public List<FunctionParameter> getParameters() {
+		List<FunctionParameter> parameters = new ArrayList<FunctionParameter>();
+		parameters.add(new FunctionParameter("a", Type.EXPONENT));
+		parameters.add(new FunctionParameter("b", Type.EXPONENT));
 		return parameters;
 	}
 

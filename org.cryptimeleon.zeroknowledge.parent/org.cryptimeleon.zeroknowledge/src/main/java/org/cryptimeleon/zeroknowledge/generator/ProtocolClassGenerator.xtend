@@ -670,19 +670,21 @@ class ProtocolClassGenerator extends ClassGenerator {
 	
 					var String statement = proofGenerator.generate(body);
 					
-					if (returnType == Type.GROUP_ELEMENT && body instanceof Variable && !(body instanceof WitnessVariable)) {
-						// GroupElement does not implement GroupElementExpression, so .expr() is necessary
-						// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
-						statement += ".expr()";
-					} else if (returnType == Type.EXPONENT && body instanceof Variable && !(body instanceof WitnessVariable)) {
-						// ZpElement does not implement ExponentExpr, so .asExponentExpression() is necessary
-						// SchnorrZnVariable does implement ExponentExpr, so .asExponentExpression() is not needed
-						statement += ".asExponentExpr()";
+					if (body instanceof Variable && !(body instanceof WitnessVariable)) {
+						if (returnType == Type.GROUP_ELEMENT) {
+							// GroupElement does not implement GroupElementExpression, so .expr() is necessary
+							// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
+							statement += ".expr()";
+						} else if (returnType == Type.EXPONENT) {
+							// ZpElement does not implement ExponentExpr, so .asExponentExpression() is necessary
+							// SchnorrZnVariable does implement ExponentExpr, so .asExponentExpression() is not needed
+							statement += ".asExponentExpression()";
+						}
 					}
 					
 					method.addBody('''return «statement»;''');
 				} else if (returnType == Type.BOOLEAN) {
-					var String statement = proofGenerator.generate(body, true);
+					var String statement = proofGenerator.generate(function);
 					
 					if (body instanceof Conjunction) {
 						method = new MethodBuilder(PRIVATE, void, name);
@@ -703,7 +705,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 				}
 				
 				// If the function has witness variables anywhere, add each witness variable as a parameter
-				val List<String> functionWitnesses = augmentedModel.getUserFunctionWitnesses(name);
+				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnesses(name);
 				if (functionWitnesses !== null) {
 					for (String witnessName : functionWitnesses) {
 						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getWitnessTypeClass();

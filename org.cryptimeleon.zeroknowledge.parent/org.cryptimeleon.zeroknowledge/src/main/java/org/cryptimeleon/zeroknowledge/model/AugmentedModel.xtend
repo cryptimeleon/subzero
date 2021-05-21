@@ -99,7 +99,7 @@ class AugmentedModel {
 	Map<String, List<FunctionCall>> predefinedFunctionCalls;
 	Map<String, FunctionSignature> userFunctionSignatures;
 	Set<String> userFunctionWithConstant;
-	Map<String, List<String>> userFunctionWitnesses;
+	Map<String, Set<String>> userFunctionWitnesses;
 	Set<String> inlineFunctionNames;
 	
 	new(Model model) {
@@ -871,12 +871,12 @@ class AugmentedModel {
 		return userFunctionWithConstant.contains(functionName);
 	}
 	
-	def List<String> getUserFunctionWitnesses(String functionName) {
+	def Set<String> getUserFunctionWitnesses(String functionName) {
 		if (userFunctionWitnesses !== null) return userFunctionWitnesses.get(functionName);
 		
-		userFunctionWitnesses = new HashMap<String, List<String>>();
+		userFunctionWitnesses = new HashMap<String, Set<String>>();
 		for (FunctionDefinition function : model.getFunctions()) {
-			val witnessNames = new ArrayList<String>();
+			val witnessNames = new HashSet<String>();
 			
 			ModelMap.preorder(function.getBody(), [EObject node |
 				if (node instanceof WitnessVariable) {

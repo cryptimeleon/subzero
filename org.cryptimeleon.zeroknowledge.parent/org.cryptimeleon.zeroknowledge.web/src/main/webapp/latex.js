@@ -3,7 +3,7 @@ function updateLatexPreview() {
   validateCode((isValid, issues) => {
     if (isValid) {
       var editor = getEditor();
-      editor.xtextServices.generatorService._encodedResourceId = "latex.zkak";
+      editor.xtextServices.generatorService._encodedResourceId = LATEX_RESOURCE_ID;
       editor.xtextServices.generate().then((code) => {
         if (code === "") {
           document.getElementById("latex-code").value = "";

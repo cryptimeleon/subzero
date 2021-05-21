@@ -19,6 +19,18 @@ public class GenerationHelper {
 	public final static String WITNESS_SUFFIX = "";
 	public final static String SUBPROTOCOL_VARIABLE = "name";
 	
+	public static String createWitnessName(String witnessName) {
+		return witnessName + WITNESS_SUFFIX;
+	}
+	
+	public static String createConstantName(String constantName) {
+		return INPUT_VARIABLE + '.' + constantName;
+	}
+	
+	public static String createPPName(String ppName) {
+		return ppName;
+	}
+	
 	public static String createLocalName(String variableName) {
 		return "#" + variableName + "#";
 	}
@@ -80,7 +92,7 @@ public class GenerationHelper {
 		return builder.toString();
 	}
 	
-	//
+	// Takes a string of import statements and organizes them by lexicographical order
 	public static String organizeImports(String imports) {
 		String[] importList = imports.split("\n");
 		Arrays.sort(importList);

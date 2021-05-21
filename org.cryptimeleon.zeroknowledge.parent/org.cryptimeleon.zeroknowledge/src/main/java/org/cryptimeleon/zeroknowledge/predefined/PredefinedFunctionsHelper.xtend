@@ -22,12 +22,25 @@ class PredefinedFunctionsHelper {
     functions = new HashMap<String, FunctionSignature>();
 	val Class<PredefinedFunctions> predefinedClass = PredefinedFunctions;
 
-    for (Method method : predefinedClass.getDeclaredMethods) {
+    for (Method method : predefinedClass.getDeclaredMethods()) {
       val String name = method.getName();
       val FunctionSignature signature = new FunctionSignature(method);    
       functions.put(name, signature);
     }
   	
     return functions;
+  }
+  
+  def static boolean isPredefinedFunction(String functionName) {
+  	return getAllPredefinedFunctions().containsKey(functionName);
+  }
+  
+  def static String generateFunction(String functionName) {
+  	try {
+  		val String generatedCode = PredefinedFunctions.getDeclaredField(functionName).get("") as String;
+  		return generatedCode;
+  	} catch (Exception e) {
+  		throw new IllegalArgumentException();
+  	}
   }
 }

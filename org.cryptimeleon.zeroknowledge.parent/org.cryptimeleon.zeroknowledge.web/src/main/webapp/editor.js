@@ -8,8 +8,11 @@ var DEFAULT_FONT_SIZE = 18;
 var MINIMUM_FONT_SIZE = 8;
 var MAXIMUM_FONT_SIZE = 40;
 
-var CODE_RESOURCE_ID = "code.zkak";
-var LATEX_RESOURCE_ID = "latex.zkak";
+var SESSION_ID = Math.random().toString(36).substring(2, 12);
+var CODE_RESOURCE_ID = SESSION_ID + ".code.zkak";
+var LATEX_RESOURCE_ID = SESSION_ID + ".latex.zkak";
+
+
 
 // Checkmark icon
 var CHECK_ICON = "images/check.svg";
@@ -38,8 +41,9 @@ function createEditor(xtext) {
     baseUrl: baseUrl,
     xtextLang: "zkak",
 		resourceId: CODE_RESOURCE_ID,
+    loadFromServer: false,
     sendFullText: true,
-    syntaxDefinition: "xtext-resources/generated/mode-zkak",
+    syntaxDefinition: "mode-zkak",
     theme: "ace/theme/monokai",
     selectionUpdateDelay: SELECTION_UPDATE_DELAY,
     textUpdateDelay: TEXT_UPDATE_DELAY
@@ -47,7 +51,6 @@ function createEditor(xtext) {
 
   editor.setFontSize(DEFAULT_FONT_SIZE);
   editor.on("change", function() {
-    console.log('CHANGE');
     if (isContinuousPreviewEnabled()) {
         clearTimeout(timer);
         timer = setTimeout(updateLatexPreview, TIMER_INTERVAL);

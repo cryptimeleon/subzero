@@ -101,7 +101,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Model model, BranchState state) {
+		System.out.println("LOOOOOOOOOOOOOOOOG");
 		checkFunctionNamesAreUnique(model);
+		checkHasProof(model);
 	}
 	
 	def dispatch void checkNode(FunctionDefinition function, BranchState state) {
@@ -433,6 +435,16 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 		
 		if (hasDisjunction) {
 			error("Disjunctions are currently not supported in user functions", function, getStructuralFeature(function));
+		}
+	}
+	
+	/*
+	 * Validate the proof expression
+	 */
+	def private void checkHasProof(Model model) {
+		System.out.println("LOG: " + model.getProof());
+		if (model.getProof() === null) {
+			error("Must have a proof statement", model, getStructuralFeature(model));
 		}
 	}
 
@@ -873,6 +885,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// Returns the corresponding package literal for an EObject
 	def private EStructuralFeature getStructuralFeature(EObject object) {
 		switch object {
+			Model:				return ZeroKnowledgePackage.Literals.MODEL__PROOF
 			FunctionDefinition:	return ZeroKnowledgePackage.Literals.FUNCTION_DEFINITION__NAME
 			ParameterList:		return ZeroKnowledgePackage.Literals.PARAMETER_LIST__PARAMETERS
 			Parameter:			return ZeroKnowledgePackage.Literals.PARAMETER__NAME

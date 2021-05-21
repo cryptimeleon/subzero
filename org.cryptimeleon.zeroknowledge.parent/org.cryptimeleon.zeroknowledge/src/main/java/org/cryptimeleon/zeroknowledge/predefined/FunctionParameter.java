@@ -2,16 +2,16 @@ package org.cryptimeleon.zeroknowledge.predefined;
 
 import org.cryptimeleon.zeroknowledge.model.Type;
 
-public class PredefinedFunctionParameter {
+public class FunctionParameter {
 	private String name;
 	private Type type;
 	private int size;
 	
-	public PredefinedFunctionParameter(String name, Type type) {
+	public FunctionParameter(String name, Type type) {
 		this(name, type, 1);
 	}
 	
-	public PredefinedFunctionParameter(String name, Type type, int size) {
+	public FunctionParameter(String name, Type type, int size) {
 		this.name = name;
 		this.type = type;
 		this.size = size;
