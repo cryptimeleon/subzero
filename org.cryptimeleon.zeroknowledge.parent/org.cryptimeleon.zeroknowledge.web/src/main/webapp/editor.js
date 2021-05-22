@@ -62,6 +62,14 @@ function createEditor(xtext) {
     useSoftTabs: true
   });
 
+  editor.commands.addCommand({
+    name: 'save',
+    bindKey: {win: "Ctrl-S", "mac": "Cmd-S"},
+    exec: function() {
+      downloadCode();
+    }
+  })
+
   // Stores whether the last char typed in the editor was a '}'
   // Used for auto-indentation
   var lastCharWasLeftCurlyBrace = false;
