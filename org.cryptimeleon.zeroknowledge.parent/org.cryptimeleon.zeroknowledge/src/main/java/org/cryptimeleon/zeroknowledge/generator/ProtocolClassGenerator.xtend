@@ -570,7 +570,6 @@ class ProtocolClassGenerator extends ClassGenerator {
 		}
 		
 		method.addBody('''return «protocolTree»;''');
-		System.out.println(protocolTree);
 		return method;
 	}
 	

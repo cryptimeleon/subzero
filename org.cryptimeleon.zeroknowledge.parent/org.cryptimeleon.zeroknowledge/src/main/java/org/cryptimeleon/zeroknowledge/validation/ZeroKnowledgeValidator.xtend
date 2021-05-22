@@ -45,6 +45,9 @@ import org.cryptimeleon.zeroknowledge.zeroKnowledge.ZeroKnowledgePackage
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.validation.Check
+import org.cryptimeleon.zeroknowledge.zeroKnowledge.WitnessVariable
+import java.util.HashMap
+import java.util.Map.Entry
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -77,13 +80,8 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 */
 	@Check
 	def void checkModel(Model model) {
-		val boolean flag = false;
-		
-		if (flag) return;
-		
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
-		// Get the type and size of each node, and user defined function signatures
 		types = augmentedModel.getTypes();
 		sizes = augmentedModel.getSizes();
 		groupsByName = augmentedModel.getGroupsByName();
@@ -101,8 +99,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Model model, BranchState state) {
-		System.out.println("LOOOOOOOOOOOOOOOOG");
 		checkFunctionNamesAreUnique(model);
+		checkSubprotocolNamesAreUnique(model);
+		checkOrWithAndAncestorGroupElementWitnesses(model);
 		checkHasProof(model);
 	}
 	
@@ -175,6 +174,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(Power power, BranchState state) {
+		checkWitnessIsNotInExponentOfWitness(power);
 		checkProofAlgebraicPosition(power, state);
 		checkValidAlgebraicPosition(power, state);
 		checkIsExponent(power.getRight());
@@ -319,7 +319,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 
 	// User defined function names must be unique
 	def private void checkFunctionNamesAreUnique(Model model) {
-		val HashSet<String> functions = new HashSet<String>();
+		val Set<String> functions = new HashSet<String>();
 		for (FunctionDefinition function : model.getFunctions()) {
 			val String name = function.getName();
 			if (functions.contains(name)) {
@@ -328,6 +328,21 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 				functions.add(name);
 			}
 		}
+	}
+	
+	// Subprotocol names must be unique
+	def private void checkSubprotocolNamesAreUnique(Model model) {
+		val Set<String> subprotocolNames = new HashSet<String>();
+		ModelMap.preorder(model.getProof(), [EObject node |
+			if (node instanceof Comparison) {
+				val String subprotocolName = node.getSubprotocolName();
+				if (subprotocolNames.contains(subprotocolName)) {
+					error("Subprotocol names must be unique", node, getStructuralFeature(node));
+				} else if (subprotocolName !== null && !subprotocolName.isEmpty()) {
+					subprotocolNames.add(subprotocolName);
+				}
+			}
+		]);
 	}
 
 	// User defined functions cannot have the same name as a predefined function
@@ -442,7 +457,6 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	 * Validate the proof expression
 	 */
 	def private void checkHasProof(Model model) {
-		System.out.println("LOG: " + model.getProof());
 		if (model.getProof() === null) {
 			error("Must have a proof statement", model, getStructuralFeature(model));
 		}
@@ -516,7 +530,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	/*
 	 * Validate grammar structure
 	 */
-	 
+	
 	// String literals must be directly nested within a tuple, a comparison, or a function call
 	def private void checkValidStringLiteralPosition(StringLiteral stringLiteral, BranchState state) {
 		val EObject parent = state.getParent();
@@ -616,6 +630,19 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 			if (currentType !== correctType) {
 				error('''Predefined function call should have type «correctType», not type «currentType»''', call, getStructuralFeature(call));
 			}
+		}
+	}
+	
+	def private void checkWitnessIsNotInExponentOfWitness(Power power) {
+		val EObject left = power.getLeft();
+		val EObject right = power.getRight();
+		
+		if (left instanceof WitnessVariable) {
+			ModelMap.preorder(right, [EObject node |
+				if (node instanceof WitnessVariable) {
+					error("A witness cannot be in the exponent of another witness", node, getStructuralFeature(node));
+				}
+			]);
 		}
 	}
 	
@@ -758,6 +785,78 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 			
 			if (tupleType !== elementType) {
 				error('''Tuple elements must be the same type as the tuple. The tuple has type «tupleType», but the element has type «elementType»''', element, getStructuralFeature(element));
+			}
+		}
+	}
+	
+	// A group element witness cannot be in both subtrees of a disjunction
+	// that has a conjunction ancestor
+	def private void checkOrWithAndAncestorGroupElementWitnesses(Model model) {
+		ModelMap.preorderWithStateAndControl(model.getProof(), new BranchState(), [EObject node, BranchState state, ModelMap.Controller controller |
+			if (node instanceof Disjunction && state.hasConjunctionAncestor()) {
+				controller.continueTraversal();
+				
+				val Map<String, List<WitnessVariable>> witnessNodes = new HashMap<String, List<WitnessVariable>>();
+				checkOrTreeHelper(node, witnessNodes);
+			}
+		]);
+	}
+	
+	def private void checkOrTreeHelper(EObject node, Map<String, List<WitnessVariable>> witnessNodes) {
+		if (node instanceof WitnessVariable) {
+			if (types.get(node) == Type.GROUP_ELEMENT) {
+				val String name = node.getName();
+				if (witnessNodes.containsKey(name)) {
+					witnessNodes.get(name).add(node);
+				} else {
+					val List<WitnessVariable> variables = new ArrayList<WitnessVariable>();
+					variables.add(node);
+					witnessNodes.put(name, variables);
+				}
+			}
+			
+		} else if (node instanceof Disjunction) {
+			var Map<String, List<WitnessVariable>> leftWitnessNodes = new HashMap<String, List<WitnessVariable>>();
+			var Map<String, List<WitnessVariable>> rightWitnessNodes = new HashMap<String, List<WitnessVariable>>();
+			checkOrTreeHelper(node.getLeft(), leftWitnessNodes);
+			checkOrTreeHelper(node.getRight(), rightWitnessNodes);
+			
+			val Set<String> sharedNames = new HashSet<String>(leftWitnessNodes.keySet());
+			sharedNames.retainAll(rightWitnessNodes.keySet());
+			
+			for (String name : sharedNames) {
+				createOrErrors(leftWitnessNodes.get(name));
+				createOrErrors(rightWitnessNodes.get(name));
+			}
+			
+			mergeMapsOfLists(witnessNodes, leftWitnessNodes);
+			mergeMapsOfLists(witnessNodes, rightWitnessNodes);
+		} else {
+			for (EObject child : node.eContents()) {
+				checkOrTreeHelper(child, witnessNodes);
+			}
+		}
+	}
+	
+	def private void createOrErrors(List<WitnessVariable> witnessVariables) {
+		for (WitnessVariable variable : witnessVariables) {
+			error(
+				"A group element witness cannot be in both subtrees of a disjunction with a conjunction ancestor",
+				variable,
+				getStructuralFeature(variable)
+			);
+		}
+	}
+	
+	def private <K, T> void mergeMapsOfLists(Map<K, List<T>> finalMap, Map<K, List<T>> mergedMap) {
+		for (Entry<K, List<T>> entry : mergedMap.entrySet()) {
+			val K name = entry.getKey();
+			val List<T> list = entry.getValue();
+			
+			if (finalMap.containsKey(name)) {
+				finalMap.get(name).addAll(list);
+			} else {
+				finalMap.put(name, list);
 			}
 		}
 	}

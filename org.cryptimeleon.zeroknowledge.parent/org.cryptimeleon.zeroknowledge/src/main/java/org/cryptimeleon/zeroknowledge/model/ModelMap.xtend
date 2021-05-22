@@ -1,6 +1,7 @@
 package org.cryptimeleon.zeroknowledge.model
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.common.util.EList
 
 /**
  * A helper class for applying general functions to each node of the model
@@ -33,6 +34,27 @@ class ModelMap {
 		
 		// Apply function
 		function.apply(node);
+	}
+	
+	// Recurses through the abstract syntax tree and applies the function to each node
+	// Applies the function to the node's left subtree, then to the node, then to the right subtree
+	// For nodes with >2 children, it applies the function to the leftmost subtree, then to the
+	// node, then to all remaining subtrees from left to right
+	def static void inorder(EObject node, (EObject) => void function) {
+		val EList<EObject> contents = node.eContents();
+		val int size = contents.size();
+		
+		if (size == 0) {
+			function.apply(node);
+		} else {
+			for (var int i = 0; i < size; i++) {
+				val EObject child = contents.get(i);
+				inorder(child, function);
+				if (i == 0) function.apply(node);
+			}
+		}
+		
+		
 	}
 	
 	
@@ -114,6 +136,35 @@ class ModelMap {
 		// Recurse through child nodes
 		for (EObject child : node.eContents()) {
 			preorderWithControlHelper(child, controller, function);
+		}	
+	}
+	
+	def static boolean preorderWithStateAndControl(EObject node, BranchState state, (EObject, BranchState, ModelMap.Controller) => void function) {
+		val ModelMap.Controller controller = new ModelMap.Controller();
+		preorderWithStateAndControlHelper(node, state, controller, function);
+		return controller.getReturnValue();
+	}
+	
+	def private static void preorderWithStateAndControlHelper(EObject node, BranchState state, ModelMap.Controller controller, (EObject, BranchState, ModelMap.Controller) => void function) {
+		// End all traversal if break was called in a function
+		if (controller.breakIsTriggered()) {
+			return;
+		}
+		
+		// Apply function
+		function.apply(node, state, controller);
+		
+		state.updateState(node);
+		
+		// End branch traversal if continue was called in function
+		if (controller.continueIsTriggered()) {
+			controller.resetContinue();
+			return;
+		}
+		
+		// Recurse through child nodes
+		for (EObject child : node.eContents()) {
+			preorderWithStateAndControlHelper(child, state, controller, function);
 		}	
 	}
 	

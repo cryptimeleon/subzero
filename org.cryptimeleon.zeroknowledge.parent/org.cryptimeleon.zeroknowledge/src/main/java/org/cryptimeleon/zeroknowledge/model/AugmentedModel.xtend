@@ -258,7 +258,6 @@ class AugmentedModel {
 		
 		containsOrProof = ModelMap.preorderAny(model, [EObject node |
 			if (node instanceof Disjunction) {
-				System.out.println("---------------------------FOUND");
 				return true;
 			}
 			
@@ -338,7 +337,6 @@ class AugmentedModel {
 				}
 			} else if (node instanceof Comparison) {
 				val String subprotocolName = node.getSubprotocolName();
-				System.out.println(subprotocolName);
 				if (subprotocolName !== null && subprotocolName.charAt(0) == '[') {
 					node.setSubprotocolName(subprotocolName.substring(1, subprotocolName.length()-1));
 				}
