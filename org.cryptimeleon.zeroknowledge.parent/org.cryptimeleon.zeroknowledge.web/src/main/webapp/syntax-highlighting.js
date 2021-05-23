@@ -4,15 +4,28 @@
 define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], function(oop, mText, mTextHighlightRules) {
 	var HighlightRules = function() {
 		
+		// Reused regex definitions
 		var identifier = "([a-zA-Z][a-zA-Z0-9_\\']*)";
 		var operator = "&|\\||=|!=|<|<=|>|>=|\\^|\\*|\\+|\\-";
 		var number = "[0-9]+";
+		var leftParen = "(\\()";
+		var rightParen = "(\\))";
+		var space = "([ ]+)";
 
+		// Reused token definitions
 		var protocolNameStart = {token: ["string"], regex: "\\[", next: "protocolName"};
-		var functionName = {token: ["keyword", "support.function", "lparen"], regex: "(inline)?" + identifier + "(\\()", next: "parameterList"};
+		var subprotocolNameStart = {token: ["string"], regex: "\\[", push: "subprotocolName"};
+		var inline = {token: "keyword", regex: "(inline)", next: "inlineFunctionName"};
+		var functionName = {token: ["support.function", "lparen"], regex: identifier + leftParen, next: "parameterList"};
 		var witnessList = {token: ["keyword", "colon"], regex: "(witness)(:?)", next: "witnessDeclarationList"};
 		var ppList = {token: ["keyword", "colon"], regex: "(pp)(:?)", next: "ppDeclarationList"};
+		var stringStart = {token: "string", regex: "\\\"", push: "stringLiteral"};
+		var functionCallStart = {token: ["support.function", "lparen"], regex: identifier + leftParen, push: "argumentList"};
+		var variable = {token: "variable", regex: identifier};
+		var constant = {token: "constant.numeric", regex: number};
+		var operation = {token: "operator", regex: operator};
 
+		// Reused state definitions
 		var createDeclarationListState = function(nextState) {
 			return [
 				{token: ["variable", "comma"], regex: identifier + "(,)"},
@@ -23,6 +36,7 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 		var highlightingRules = {
 			"start": [
 				protocolNameStart,
+				inline,
 				functionName,
 				ppList,
 				witnessList,
@@ -46,37 +60,53 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 				witnessList,
 			],
 
+			"inlineFunctionName": [
+				functionName,
+			],
+
 			"parameterList": [
 				{token: ["variable", "comma"], regex: identifier + "(,)"},
-				{token: "rparen", regex: "(\\))", next: "functionBody"},
-				{token: ["variable", "rparen"], regex: identifier + "(\\))", next: "functionBody"},
+				{token: "rparen", regex: rightParen, next: "functionBody"},
+				{token: ["variable", "rparen"], regex: identifier + rightParen, next: "functionBody"},
 			],
 
 			"functionBody": [
-				{token: "string", regex: "\\\"", push: "stringLiteral"},
-				{token: ["support.function", "lparen"], regex: identifier + "(\\()", push: "argumentList"},
-				{token: "variable", regex: identifier},
-				{token: "operator", regex: operator},
-				{token: "constant.numeric", regex: number},
+				stringStart,
+				functionCallStart,
+				variable,
+				operation,
+				constant,
+				subprotocolNameStart,
 				{token: "rbrace", regex: "\\}", next: "start"},
 			],
 
 			"argumentList": [
-				{token: "string", regex: "\\\"", push: "stringLiteral"},
-				{token: ["support.function", "lparen"], regex: identifier + "(\\()", push: "argumentList"},
-				{token: "variable", regex: identifier},
-				{token: "operator", regex: operator},
-				{token: "constant.numeric", regex: number},
+				stringStart,
+				functionCallStart,
+				variable,
+				operation,
+				constant,
 				{token: "comma", regex: ","},
-				{token: "rparen", regex: "\\)", next: "pop"},
+				{token: "rparen", regex: rightParen, next: "pop"},
 			],
 
 			"mainBody": [
-				{token: "string", regex: "\\\"", push: "stringLiteral"},
-				{token: ["support.function", "lparen"], regex: identifier + "(\\()", push: "argumentList"},
-				{token: "variable", regex: identifier},
-				{token: "operator", regex: operator},
-				{token: "constant.numeric", regex: number},
+				stringStart,
+				functionCallStart,
+				variable,
+				operation,
+				constant,
+				subprotocolNameStart,
+			],
+
+			"subprotocolName": [
+				{token: ["string"], "regex": "[a-zA-Z][a-zA-Z0-9_\\' ]*\\]", next: "pop"},
+				{defaultToken: "string"},
+			],
+
+			"stringLiteral": [
+				{token: "string", regex: "[^\\\"]*\\\"", next: "pop"},
+				{defaultToken: "string"}
 			],
 
 			"blockComment": [
@@ -87,11 +117,6 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 			"singleComment": [
 				{token: "comment", regex: "[^\\n\\r]+?$", next: "pop"},
 				{defaultToken: "comment"},
-			],
-
-			"stringLiteral": [
-				{token: "string", regex: "[^\\\"]*\\\"", next: "pop"},
-				{defaultToken: "string"}
 			],
 		};
 
