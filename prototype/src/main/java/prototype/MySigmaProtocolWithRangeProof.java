@@ -35,7 +35,7 @@ public class MySigmaProtocolWithRangeProof extends DelegateProtocol {
         this.bilinearGroup = bilinearGroup;
         this.zp = (Zp) bilinearGroup.getZn();
     }
-
+    
     @Override
     protected SubprotocolSpec provideSubprotocolSpec(CommonInput commonInput, SubprotocolSpecBuilder subprotocolSpecBuilder) {
         MySigmaProtocolCommonInput input = (MySigmaProtocolCommonInput) commonInput;
@@ -44,7 +44,7 @@ public class MySigmaProtocolWithRangeProof extends DelegateProtocol {
         SchnorrZnVariable x = subprotocolSpecBuilder.addZnVariable("x", zp);
         SchnorrZnVariable x2 = subprotocolSpecBuilder.addZnVariable("x2", zp);
         SchnorrZnVariable r = subprotocolSpecBuilder.addZnVariable("r", zp);
-
+        
         //Add statements
         subprotocolSpecBuilder.addSubprotocol("statement1",
                 new LinearStatementFragment(input.g.pow(x).op(input.h.pow(r)).isEqualTo(input.C))

@@ -7,8 +7,8 @@ xtext-gen/
 generated/
 target/
 
-
-
+build.sh
+protocols.txt
 
 *.xml-gen
 *.java._trace
