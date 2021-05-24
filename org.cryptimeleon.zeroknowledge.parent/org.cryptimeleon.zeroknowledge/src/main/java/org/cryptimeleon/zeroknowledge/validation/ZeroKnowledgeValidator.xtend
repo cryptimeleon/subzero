@@ -227,7 +227,7 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	}
 	
 	def dispatch void checkNode(EObject node, BranchState state) {
-		System.out.println("Error: unhandled node type in validator");
+		System.err.println("Error: unhandled node type in validator");
 	}
 	
 	/*
@@ -249,9 +249,9 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// Public parameter names must start with a letter, and only contain letters, numbers, at most 1 underscore
 	// (to denote subscript) and any number of single quotes at the end
 	def private void checkPublicParameterNameFormat(PublicParameter publicParameter) {
-		var List<String> errors = nameFormatErrors(publicParameter.getName(), "Witness");
-		for (val Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-			error(iterator.next(), publicParameter, getStructuralFeature(publicParameter));
+		var List<String> errors = nameFormatErrors(publicParameter.getName(), "Public parameter");
+		for (String errorMessage : errors) {
+			error(errorMessage, publicParameter, getStructuralFeature(publicParameter));
 		}
 	}
 
@@ -259,8 +259,8 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// (to denote subscript) and any number of single quotes at the end
 	def private void checkWitnessNameFormat(Witness witness) {
 		var List<String> errors = nameFormatErrors(witness.getName(), "Witness");
-		for (val Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-			error(iterator.next(), witness, getStructuralFeature(witness));
+		for (String errorMessage : errors) {
+			error(errorMessage, witness, getStructuralFeature(witness));
 		}
 	}
 
@@ -268,49 +268,52 @@ class ZeroKnowledgeValidator extends AbstractZeroKnowledgeValidator {
 	// (to denote subscript) and any number of single quotes at the end
 	def private void checkVariableNameFormat(Variable variable) {
 		var List<String> errors = nameFormatErrors(variable.getName(), "Variable");
-		for (val Iterator<String> iterator = errors.iterator(); iterator.hasNext();) {
-			error(iterator.next(), variable, getStructuralFeature(variable));
+		for (String errorMessage : errors) {
+			error(errorMessage, variable, getStructuralFeature(variable));
 		}
 	}
 
 	// Parameter names must start with a letter, and only contain letters, numbers, at most 1 underscore
 	// (to denote subscript) and any number of single quotes at the end
 	def private void checkParameterNameFormat(Parameter parameter) {
-		var List<String> name_errors = nameFormatErrors(parameter.getName(), "Parameter");
-		for (String name_error : name_errors) {
-			error(name_error, parameter, getStructuralFeature(parameter));
+		var List<String> errors = nameFormatErrors(parameter.getName(), "Parameter");
+		for (String errorMessage : errors) {
+			error(errorMessage, parameter, getStructuralFeature(parameter));
 		}
 	}
 
 	// Helper function for checkWitnessNameFormat, checkVariableNameFormat, checkParameterNameFormat
 	def private List<String> nameFormatErrors(String identifier, String type) {
-		var List<String> name_errors = new ArrayList<String>();
+		var List<String> nameErrors = new ArrayList<String>();
 
+		val char underscore = '_';
 		var int underscores = 0;
 		for (var int i = 0; i < identifier.length(); i++) {
-			if (identifier.charAt(i) == '_') {
+			if (identifier.charAt(i) == underscore) {
 				underscores++;
 				if (underscores > 1) {
-					name_errors.add(type + " name can contain at most 1 underscore");
+					nameErrors.add(type + " name can contain at most 1 underscore");
 					i = identifier.length();
 				}
 			}
 		}
 
-		var boolean quote = false;
+		val char quote = '\'';
+		var boolean hasQuote = false;
 		for (var int i = 0; i < identifier.length(); i++) {
-			if (quote && identifier.charAt(i) != '\'') {
-				name_errors.add(type + " name can only contain single quotes at the end of the name");
-			} else if (identifier.charAt(i) == '\'') {
-				quote = true;
+			if (hasQuote && identifier.charAt(i) != quote) {
+				nameErrors.add(type + " name can only contain single quotes at the end of the name");
+				i = identifier.length();
+			} else if (identifier.charAt(i) == quote) {
+				hasQuote = true;
 			}
 		}
 
-		if (identifier.charAt(identifier.length() - 1) == '_') {
-			name_errors.add(type + " name cannot end with an underscore");
+		if (identifier.charAt(identifier.length() - 1) == underscore) {
+			nameErrors.add(type + " name cannot end with an underscore");
 		}
 
-		return name_errors;
+		return nameErrors;
 	}
 
 	/*

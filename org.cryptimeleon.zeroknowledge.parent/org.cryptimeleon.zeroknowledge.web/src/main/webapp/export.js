@@ -24,10 +24,10 @@ function downloadCode() {
     return;
   }
 
-  var filename = prompt("Enter a name for the code file (file will be saved with .zkak extension)");
+  var filename = prompt(`Enter a name for the code file (file will be saved with .${DSL_EXTENSION} extension)`);
 
   if (filename !== null) {
-    downloadFile(filename + ".zkak", code);
+    downloadFile(filename + "." + DSL_EXTENSION, code);
   }
 
 }
@@ -62,7 +62,7 @@ function noCodeErrors(annotations) {
 
 function validateCode(callback) {
   var request = $.ajax({
-      url: "http://" + location.host + "/xtext-service/validate?resource=" + CODE_RESOURCE_ID
+      url: `http://${location.host}/xtext-service/validate?resource=${CODE_RESOURCE_ID}`
   });
       
   request.done((result) => {
@@ -104,7 +104,7 @@ function compilePackage() {
   validateCode((isValid, issues) => {
     if (isValid) {
       var editor = getEditor();
-      editor.xtextServices.generatorService._encodedResourceId = "code.zkak";
+      editor.xtextServices.generatorService._encodedResourceId = CODE_RESOURCE_ID;
       editor.xtextServices.generate().then((projectJSON) => {
         let project = $.parseJSON(projectJSON);
         let projectZip = new JSZip();

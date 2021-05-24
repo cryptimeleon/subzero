@@ -9,8 +9,8 @@ var MINIMUM_FONT_SIZE = 8;
 var MAXIMUM_FONT_SIZE = 40;
 
 var SESSION_ID = Math.random().toString(36).substring(2, 12);
-var CODE_RESOURCE_ID = SESSION_ID + ".code.zkak";
-var LATEX_RESOURCE_ID = SESSION_ID + ".latex.zkak";
+var CODE_RESOURCE_ID = `${SESSION_ID}.code.${DSL_EXTENSION}`;
+var LATEX_RESOURCE_ID = `${SESSION_ID}.latex.${DSL_EXTENSION}`;
 
 
 
@@ -39,7 +39,7 @@ function getEditor() {
 function createEditor(xtext) {
   var editor = xtext.createEditor({
     baseUrl: baseUrl,
-    xtextLang: "zkak",
+    xtextLang: DSL_EXTENSION,
 		resourceId: CODE_RESOURCE_ID,
     loadFromServer: false,
     sendFullText: true,

@@ -15,12 +15,10 @@ public class GenerationHelper {
 	public final static String DEFAULT_PROTOCOL_NAME = "MySigmaProtocol";
 	public final static String DEFAULT_PACKAGE_NAME = "prototype";
 	public final static String INPUT_VARIABLE = "input";
-//	public final static String WITNESS_SUFFIX = "Var";
-	public final static String WITNESS_SUFFIX = "";
 	public final static String SUBPROTOCOL_VARIABLE = "name";
 	
 	public static String createWitnessName(String witnessName) {
-		return witnessName + WITNESS_SUFFIX;
+		return witnessName;
 	}
 	
 	public static String createConstantName(String constantName) {

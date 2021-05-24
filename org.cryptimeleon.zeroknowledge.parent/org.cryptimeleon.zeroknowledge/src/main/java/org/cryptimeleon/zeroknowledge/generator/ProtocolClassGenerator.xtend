@@ -306,7 +306,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		
 		val List<String> exponentWitnessNames = witnessNames.stream()
 			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
-			.map([witnessName | witnessName + GenerationHelper.WITNESS_SUFFIX])
+			.map([witnessName | GenerationHelper.createWitnessName(witnessName)])
 			.collect(Collectors.toList());
 		
 		val String methodBody = '''
@@ -319,9 +319,9 @@ class ProtocolClassGenerator extends ClassGenerator {
 			//Add variables (witnesses)
 			«FOR String witnessName : witnessNames»
 			«IF witnessTypes.get(witnessName) == Type.EXPONENT»
-			SchnorrZnVariable «witnessName + GenerationHelper.WITNESS_SUFFIX» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
+			SchnorrZnVariable «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
 			«ELSE»
-			SchnorrGroupElemVariable «witnessName + GenerationHelper.WITNESS_SUFFIX» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
+			SchnorrGroupElemVariable «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
 			«ENDIF»
 			«ENDFOR»
 			
@@ -708,7 +708,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 				if (functionWitnesses !== null) {
 					for (String witnessName : functionWitnesses) {
 						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getWitnessTypeClass();
-						method.addParameter(parameterTypeClass, witnessName + GenerationHelper.WITNESS_SUFFIX);
+						method.addParameter(parameterTypeClass, GenerationHelper.createWitnessName(witnessName));
 					}
 				}
 				
