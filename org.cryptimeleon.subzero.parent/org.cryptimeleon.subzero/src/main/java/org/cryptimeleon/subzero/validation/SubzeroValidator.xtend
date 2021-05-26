@@ -64,6 +64,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	var Map<EObject, Integer> sizes;
 	var Map<String, GroupType> groupsByName;
 	var Map<String, FunctionSignature> userFunctions;
+	var Map<String, List<FunctionCall>> userFunctionCalls;
 	var Map<String, FunctionSignature> predefinedFunctions;
 	var Set<String> witnessNames;
 	var Set<String> publicParameterNames;
@@ -86,6 +87,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		sizes = augmentedModel.getSizes();
 		groupsByName = augmentedModel.getGroupsByName();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
+		userFunctionCalls = augmentedModel.getAllUserFunctionCalls();
 		predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 		witnessNames = augmentedModel.getWitnessNames();
 		publicParameterNames = augmentedModel.getPublicParameterNames();
@@ -139,14 +141,14 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	def dispatch void checkNode(Conjunction conjunction, BranchState state) {
-		checkValidConjunctionPosition(conjunction, state);
+		checkConjunctionPositionIsValid(conjunction, state);
 		checkIsBoolean(conjunction);
 		checkConjunctionOperands(conjunction);
 		checkIsScalar(conjunction);
 	}
 	
 	def dispatch void checkNode(Disjunction disjunction, BranchState state) {
-		checkValidDisjunctionPosition(disjunction, state);
+		checkDisjunctionPositionIsValid(disjunction, state);
 		checkIsBoolean(disjunction);
 		checkDisjunctionOperands(disjunction);
 		checkIsScalar(disjunction);
@@ -182,7 +184,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	def dispatch void checkNode(StringLiteral stringLiteral, BranchState state) {
-		checkValidStringLiteralPosition(stringLiteral, state);
+		checkStringLiteralPositionIsValid(stringLiteral, state);
 		checkIsString(stringLiteral);
 		checkIsScalar(stringLiteral);
 	}
@@ -190,7 +192,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def dispatch void checkNode(Tuple tuple, BranchState state) {
 		checkProofAlgebraicPosition(tuple, state);
 		checkTupleElementsAreSameType(tuple);
-		checkValidTuplePosition(tuple, state);
+		checkTuplePositionIsValid(tuple, state);
 		checkTupleSize(tuple);
 		checkIsTuple(tuple);
 	}
@@ -201,9 +203,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	def dispatch void checkNode(FunctionCall call, BranchState state) {
-		checkValidFunctionCall(call);
+		checkFunctionCallIsValid(call);
 		checkFunctionHasNoUserFunctionCalls(call, state);
-		checkValidFunctionCallPosition(call, state);
+		checkFunctionCallPositionIsValid(call, state);
 		checkPredefinedFunctionCallType(call);
 	}
 	
@@ -213,7 +215,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def dispatch void checkNode(Variable variable, BranchState state) {
 		checkVariableNameFormat(variable);
 		checkProofAlgebraicPosition(variable, state);
-		checkValidGroup(variable);
+		checkGroupType(variable);
 	}
 	
 	def dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
@@ -282,7 +284,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 	}
 
-	// Helper function for checkWitnessNameFormat, checkVariableNameFormat, checkParameterNameFormat
+	// Helper function for checking the name format of identifiers
 	def private List<String> nameFormatErrors(String identifier, String type) {
 		var List<String> nameErrors = new ArrayList<String>();
 
@@ -355,7 +357,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 	}
 	
-	// Witness names must be unique
+	// Public parameter names must be unique
 	def private void checkPublicParameterNamesAreUnique(PublicParameterList publicParameterList) {
 		val HashSet<String> publicParameters = new HashSet<String>();
 		for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
@@ -428,17 +430,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 
 	// User defined functions should be called at least once in the proof expression
 	def private void checkFunctionIsCalled(FunctionDefinition function) {
-		val String function_name = function.getName();
-		val Model root = ModelHelper.getRoot(function);
-
-		if (!ModelMap.postorderAny(root.getProof(), [ EObject node |
-			if (node instanceof FunctionCall) {
-				if (node.getName() == function_name) {
-					return true;
-				}
-			}
-			return false;
-		])) {
+		val String functionName = function.getName();
+		
+		if (!userFunctionCalls.containsKey(functionName)) {
 			warning(
 				"Function is never used in the proof expression, and will not be included in the generated Java code", function,
 				getStructuralFeature(function));
@@ -483,19 +477,18 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 
 	// Function calls must reference either a user defined function or a predefined function
 	// The number of arguments in a function call must match the number of parameters in the function definition
-	
-	def private void checkValidFunctionCall(FunctionCall call) {
+	def private void checkFunctionCallIsValid(FunctionCall call) {
 		val String name = call.getName();
 
 		if (userFunctions.containsKey(name)) {
 			val FunctionSignature signature = userFunctions.get(name);
-			checkValidFunctionCallHelper(call, signature);
+			functionCallIsValidHelper(call, signature);
 			return;
 		}
 
 		if (predefinedFunctions.containsKey(name)) {
 			val FunctionSignature signature = predefinedFunctions.get(name);
-			checkValidFunctionCallHelper(call, signature);
+			functionCallIsValidHelper(call, signature);
 			return;
 		}
 		
@@ -503,7 +496,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			getStructuralFeature(call));
 	}
 	
-	def private void checkValidFunctionCallHelper(FunctionCall call, FunctionSignature signature) {
+	def private void functionCallIsValidHelper(FunctionCall call, FunctionSignature signature) {
 		if (signature.getParameterCount() !== call.getArguments().size()) {
 			error(
 				'''The number of arguments in the function call («call.getArguments().size()») must match the number of parameters in the function definition («signature.getParameterCount()»)''', call,
@@ -535,7 +528,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 */
 	
 	// String literals must be directly nested within a tuple, a comparison, or a function call
-	def private void checkValidStringLiteralPosition(StringLiteral stringLiteral, BranchState state) {
+	def private void checkStringLiteralPositionIsValid(StringLiteral stringLiteral, BranchState state) {
 		val EObject parent = state.getParent();
 		
 		if (!(parent instanceof FunctionCall)) {
@@ -545,7 +538,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 
 	// Conjunctions cannot be nested within algebraic expressions or comparison expressions
-	def private void checkValidConjunctionPosition(Conjunction conjunction, BranchState state) {
+	def private void checkConjunctionPositionIsValid(Conjunction conjunction, BranchState state) {
 		if (!isValidBooleanPosition(conjunction, state)) {
 			error("Conjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", conjunction,
 				getStructuralFeature(conjunction));
@@ -553,7 +546,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 
 	// Disjunctions cannot be nested within algebraic expressions or comparison expressions
-	def private void checkValidDisjunctionPosition(Disjunction disjunction, BranchState state) {
+	def private void checkDisjunctionPositionIsValid(Disjunction disjunction, BranchState state) {
 		if (!isValidBooleanPosition(disjunction, state)) {
 			error("Disjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", disjunction,
 				getStructuralFeature(disjunction));
@@ -615,7 +608,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	// Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls
-	def private void checkValidFunctionCallPosition(FunctionCall call, BranchState state) {
+	def private void checkFunctionCallPositionIsValid(FunctionCall call, BranchState state) {
 		if (types.get(call) === Type.BOOLEAN) {
 			if (!isValidBooleanPosition(call, state)) {
 				error("Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls", call, getStructuralFeature(call));
@@ -734,7 +727,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		val int rightSize = sizes.get(sum.getRight());
 		
 		if (leftType !== Type.EXPONENT || rightType !== Type.EXPONENT) {
-			error('''Sum operands must both have type EXPONENT. The left operand is of type «leftType» but the right operand is of type «rightType»''', sum, getStructuralFeature(sum));
+			error('''Sum operands must both have type exponent. The left operand is of type «leftType» but the right operand is of type «rightType»''', sum, getStructuralFeature(sum));
 		}
 		
 		if (leftSize !== rightSize) {
@@ -753,7 +746,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 		
 		if (leftType === Type.GROUP_ELEMENT && rightType === Type.GROUP_ELEMENT && leftSize !== rightSize) {
-			error('''The operands of a GROUP_ELEMENT product node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', product, getStructuralFeature(product));
+			error('''The operands of a group element product node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', product, getStructuralFeature(product));
 		}		
 	}
 	
@@ -764,11 +757,11 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		val int rightTuple = sizes.get(power.getRight());
 
 		if (!(leftType === Type.EXPONENT || leftType === Type.GROUP_ELEMENT)) {
-			error('''The left operand of a power node must be of type EXPONENT or GROUP_ELEMENT, not type «leftType»''', power, getStructuralFeature(power));
+			error('''The left operand of a power node must be of type exponent or group element, not type «leftType»''', power, getStructuralFeature(power));
 		}
 		
 		if (rightType !== Type.EXPONENT) {
-			error('''The right operand of a power node must be of type EXPONENT, not type «rightType»''', power, getStructuralFeature(power));
+			error('''The right operand of a power node must be of type exponent, not type «rightType»''', power, getStructuralFeature(power));
 		}
 		
 		if (type !== leftType) {
@@ -800,12 +793,12 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 				controller.continueTraversal();
 				
 				val Map<String, List<WitnessVariable>> witnessNodes = new HashMap<String, List<WitnessVariable>>();
-				checkOrTreeHelper(node, witnessNodes);
+				orTreeHelper(node, witnessNodes);
 			}
 		]);
 	}
 	
-	def private void checkOrTreeHelper(EObject node, Map<String, List<WitnessVariable>> witnessNodes) {
+	def private void orTreeHelper(EObject node, Map<String, List<WitnessVariable>> witnessNodes) {
 		if (node instanceof WitnessVariable) {
 			if (types.get(node) == Type.GROUP_ELEMENT) {
 				val String name = node.getName();
@@ -821,8 +814,8 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		} else if (node instanceof Disjunction) {
 			var Map<String, List<WitnessVariable>> leftWitnessNodes = new HashMap<String, List<WitnessVariable>>();
 			var Map<String, List<WitnessVariable>> rightWitnessNodes = new HashMap<String, List<WitnessVariable>>();
-			checkOrTreeHelper(node.getLeft(), leftWitnessNodes);
-			checkOrTreeHelper(node.getRight(), rightWitnessNodes);
+			orTreeHelper(node.getLeft(), leftWitnessNodes);
+			orTreeHelper(node.getRight(), rightWitnessNodes);
 			
 			val Set<String> sharedNames = new HashSet<String>(leftWitnessNodes.keySet());
 			sharedNames.retainAll(rightWitnessNodes.keySet());
@@ -836,7 +829,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			mergeMapsOfLists(witnessNodes, rightWitnessNodes);
 		} else {
 			for (EObject child : node.eContents()) {
-				checkOrTreeHelper(child, witnessNodes);
+				orTreeHelper(child, witnessNodes);
 			}
 		}
 	}
@@ -882,9 +875,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def private void checkIsExponentOrGroupElement(EObject node) {
 		if (!types.containsKey(node)) {
-			error('''«capitalize(getName(node))» must be of type EXPONENT or GROUP_ELEMENT''', node, getStructuralFeature(node));
+			error('''«capitalize(getName(node))» must be of type exponent or group element''', node, getStructuralFeature(node));
 		} else {
-			error('''«capitalize(getName(node))» must be of type EXPONENT or GROUP_ELEMENT, not type «types.get(node).toString()»''', node, getStructuralFeature(node));
+			error('''«capitalize(getName(node))» must be of type exponent or group element, not type «types.get(node)»''', node, getStructuralFeature(node));
 		}
 	}
 	
@@ -894,9 +887,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def private void checkIsType(EObject node, Type type) {
 		if (!types.containsKey(node)) {
-			error('''«capitalize(getName(node))» must be of type «type.toString()»''', node, getStructuralFeature(node));
+			error('''«capitalize(getName(node))» must be of type «type»''', node, getStructuralFeature(node));
 		} else if (types.get(node) !== type) {
-			error('''«capitalize(getName(node))» must be of type «type.toString()», not type «types.get(node).toString()»''', node, getStructuralFeature(node));
+			error('''«capitalize(getName(node))» must be of type «type», not type «types.get(node)»''', node, getStructuralFeature(node));
 		}
 	}
 	
@@ -921,7 +914,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 */
 	
 	// Tuples must be nested within a function call before being nested within another tuple
-	def private void checkValidTuplePosition(Tuple tuple, BranchState state) {
+	def private void checkTuplePositionIsValid(Tuple tuple, BranchState state) {
 		if (state.hasTupleBeforeFunctionCall()) {
 			error('''Tuples must be nested within a function call before being nested within another tuple''', tuple, getStructuralFeature(tuple));
 		}
@@ -940,7 +933,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 * Validate group types
 	 * 
 	 */
-	 def private void checkValidGroup(Variable variable) {
+	 def private void checkGroupType(Variable variable) {
 	 	if (groupsByName.get(variable.getName()) === GroupType.UNKNOWN) {
 	 		error("Variable is used in conflicting group element contexts", variable, getStructuralFeature(variable));
 	 	}
@@ -953,7 +946,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	// Capitalizes the first letter of the string
 	def private String capitalize(String string) {
-		if (string === "") return "";
+		if (string.isEmpty()) return "";
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
 	

@@ -44,6 +44,7 @@ import org.cryptimeleon.subzero.subzero.Parameter
 import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
+import org.cryptimeleon.subzero.subzero.FunctionCall
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -95,6 +96,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		val Map<String, Type> variableTypes = augmentedModel.getVariableTypes();
 		val List<String> sortedPublicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Set<String> publicParameterNames = augmentedModel.getPublicParameterNames();
+		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getAllUserFunctionCalls();
 		
 		val Class<?> groupClass = augmentedModel.getGroupClass();
 		val groupName = GenerationHelper.convertClassToVariableName(groupClass);
@@ -156,7 +158,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		protocolClass.addConstructor(constructor);
 		
 		// Build user defined functions
-		val List<MethodBuilder> userFunctions = buildUserFunctions(nodeTypes, witnessTypes, commonInputClassName, proofGenerator);
+		val List<MethodBuilder> userFunctions = buildUserFunctions(nodeTypes, witnessTypes, userFunctionCalls, commonInputClassName, proofGenerator);
 		for (MethodBuilder method : userFunctions) {
 			protocolClass.addMethod(method);
 		}
@@ -653,12 +655,19 @@ class ProtocolClassGenerator extends ClassGenerator {
 	}
 	
 	// Generates the Java equivalent of all user defined functions
-	def List<MethodBuilder> buildUserFunctions(Map<EObject, Type> nodeTypes, Map<String, Type> witnessTypes, String commonInputClassName, ProofGenerator proofGenerator) {
+	def List<MethodBuilder> buildUserFunctions(
+		Map<EObject, Type> nodeTypes,
+		Map<String, Type> witnessTypes,
+		Map<String, List<FunctionCall>> userFunctionCalls,
+		String commonInputClassName,
+		ProofGenerator proofGenerator
+	) {
 		val List<MethodBuilder> methods = new ArrayList<MethodBuilder>();
 		
 		for (FunctionDefinition function : augmentedModel.getModel().getFunctions()) {
-			if (!function.isInline()) {
-				val String name = function.getName();
+			val String name = function.getName();
+			
+			if (userFunctionCalls.containsKey(name) && !function.isInline()) {
 				val EObject body = function.getBody();
 				val Type returnType = nodeTypes.get(function);
 				val Class<?> returnTypeClass = returnType.getTypeExprClass();

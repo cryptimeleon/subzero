@@ -92,7 +92,7 @@ class GroupInference {
 					containsECall = ModelMap.preorderWithControl(node, [EObject newNode, ModelMap.Controller newController |
 						if (newNode instanceof FunctionCall) {
 							
-							if (newNode.getName() == "e") {
+							if (newNode.getName() == "e" && newNode.getArguments().size() == 2) {
 								newController.returnTrue();
 								fillG2(newNode.getArguments().get(1));
 							}

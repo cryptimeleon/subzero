@@ -28,13 +28,14 @@ public enum Type {
 		}
 	}
 	
+	@Override
 	public String toString() {
 		switch(this) {
 			case BOOLEAN: return "boolean";
-			case GROUP_ELEMENT: return "GroupElementExpression";
-			case EXPONENT: return "ExponentExpr";
-			case STRING: return "String";
-			default: return "void";
+			case GROUP_ELEMENT: return "group element";
+			case EXPONENT: return "exponent";
+			case STRING: return "string";
+			default: return "";
 		}
 	}
 	
