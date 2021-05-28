@@ -532,7 +532,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		val EObject parent = state.getParent();
 		
 		if (!(parent instanceof FunctionCall)) {
-			error("String literals can only be used as arguments in function calls", stringLiteral, getStructuralFeature(stringLiteral));
+			error("String literals can only be used as arguments in calls to predefined functions", stringLiteral, getStructuralFeature(stringLiteral));
 		}
 		
 	}
@@ -566,15 +566,17 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		val String operation1 = comparison.getOperation();
 		val String operation2 = comparison.getOperation2();
 		
+		// Check if the comparison is not equals (not yet supported)
+		if (operation1 == "!=") {
+			error("The != operator is currently not supported", comparison, getStructuralFeature(comparison));
+		}
+		
 		// Check if the comparison is a double comparison
 		if (operation2 !== null) {
 			
 			if (operation1 == "=" || operation1 == "!=" || operation2 == "=" || operation2 == "!=") {
 				error("Cannot use = or != in a double comparison", comparison, getStructuralFeature(comparison));
-				return
-			}
-			
-			if (operation1.charAt(0) != operation2.charAt(0)) {
+			} else if (operation1.charAt(0) != operation2.charAt(0)) {
 				error("Comparison operators in a double comparison must be in the same direction", comparison, getStructuralFeature(comparison));
 			}
 		}
