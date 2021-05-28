@@ -1,81 +1,47 @@
-0K - Zero Knowledge Compiler
+Subzero - Zero Knowledge Compiler
 ============================
-0K is a DSL (domain-specific language) that enables the specification of zero knowledge protocols. It is written in Java and uses the [Xtext](https://www.eclipse.org/Xtext/) language development framework.
-This website features a code editor for writing 0K programs, and a compiler to generate a Java project that can execute the protocol described by 0K code.
+Subzero is a DSL (domain-specific language) for the specification of zero knowledge protocols. It is written in Java and uses the [Xtext](https://www.eclipse.org/Xtext/) language development framework.
+This website features a code editor for writing Subzero programs, and a compiler to generate a Java project that can execute the protocol described by Subzero code.
 
 
 Running the project with Maven
 ==============================
 Make sure that you are using Java 11. After downloading the repo, run the following commands:
 ```
-cd org.cryptimeleon.zeroknowledge.parent/
+cd org.cryptimeleon.subzero.parent/
 mvn install
 ```
 Next, to start the web server, run:
 ```
-cd org.cryptimeleon.zeroknowledge.web/
+cd org.cryptimeleon.subzero.web/
 mvn jetty:run
 ```
 Go to http://localhost:8080/
 
 
-Running the project with Eclipse
-================================
-
-Importing the project into Eclipse
-----------------------------------
-After downloading the repo, open Eclipse and select File -> Import -> Maven -> Existing Maven Projects. Then make org.cryptimeleon.zeroknowledge.parent the root directory and click Finish. Finally, go to the org.cryptimeleon.zeroknowledge package, right-click on ZeroKnowledge.xtext and click Run As -> Generate Xtext Artifacts.
-
-Using the language editor in Eclipse
---------------------------------
-The following steps will bring up an Eclipse editor for the 0K language, with validation feedback and allowing compilation to Java code.
-- Open the project in Eclipse
-- Right-click on the root org.cryptimeleon.zeroknowledge package
-- Under 'Run As', select 'Eclipse Application'
-- Click 'Launch Runtime Eclipse' and OK
-- This will create a new runtime-EclipseXtext workspace
-- Click 'Create a project' and select 'Java Project'
-- Give it a name and click Next
-- Click the Libraries tab, click 'Add Library', select 'Xtend Library' and click Next
-- Click Finish twice, and then 'Don't create' for the module-info
-- Any additional popups can be exited
-- Right-click the src folder, and go to New -> Other -> File (type File to find it in the dropdown)
-- Click Next and give the file a name with the extension `.zkak`, then click Finish
-- When a popup occurs for converting the project to an Xtext project, click Yes
-- Write a valid 0K program (free of syntax and validation errors)
-- Press `Ctrl+s`. The file will be saved, a new `src-gen` folder will be created, and the 0K code will be compiled to `proof.java` in that folder
-- Every time the `.zkak` file is saved it will be recompiled to Java code
-- If a popup error ever occurs, just ignore it and click OK
-
-Using the website language editor
----------------------------------
-The following steps will bring up the website editor for the 0K language
-- Under org.cryptimeleon.zeroknowledge.web, right-click on ServerLauncher.xtend and choose Run As -> Java Application
-- The server will start up
-- Go to http://localhost:8080/
-
-
-0K Syntax
+Subzero Syntax
 =========
 The following describes the EBNF (Extended Backus-Naur Form) of the domain specific language grammar.
 The grammar is similar to Camenisch-Stadler notation.
-A 0K program consists of a single ```<model>```.
+A Subzero program consists of a single ```<model>```.
 
 ```
-<model> ::= <function-definition>* <witness-list> ';'? <expression> ';'?
+<model> ::= <protocol-name>? <function-definition>* (<pp-list> ';'?)? <witness-list> ';'? ('statement' ':'?)? <expression> ';'?
 
-<function-definition> ::= <identifier> <parameter-list> '{' <expression> ';'? '}' ';'?
+<function-definition> ::= 'inline'? <identifier> <parameter-list> '{' <expression> ';'? '}' ';'?
 <parameter-list> ::= '(' (<parameter> (',' <parameter>)*)? ')'
 <parameter> ::= <identifier>
 
-<witness-list> ::= '(' (<witness> (',' <witness>)*)? ')'
+<pp-list> ::= 'pp' ':'? (<pp> (',' <pp>)*)
+<pp> ::= <identifier>
+
+<witness-list> ::= 'witness' ':'? (<witness> (',' <witness>)*)
 <witness> ::= <identifier>
 
 <expression> ::= <conjunction>
 <conjunction> ::= <disjunction> | <conjunction> '&' <disjunction>
 <disjunction> ::= <comparison> | <disjunction> '|' <comparison>
-<comparison> ::= <sum> | <comparison> '=' <sum> | <comparison> '!=' <sum> | <comparison> '<' <sum>
-                       | <comparison> '>' <sum> | <comparison> '<=' <sum> | <comparison> '>=' <sum>
+<comparison> ::= <sum> | <comparison> <operator> <sum> (<operator> <sum>)? <protocol-name>?
 <sum> ::= <product> | <sum> '+' <product> | <sum> '-' <product>
 <product> ::= <power> | <product> '*' <power> | <product> '/' <power>
 <power> ::= <construct> | <construct> '^' <power>
@@ -90,12 +56,14 @@ A 0K program consists of a single ```<model>```.
 <number-literal> ::= [0-9]+
 <brackets> ::= <conjunction>
 
+<operator> ::= '!=' | '=' | '<' | '<=' | '>' | '>='
+<protocol-name> ::= '[' [a-zA-z] [a-zA-Z0-9_' ]* ']'
 <identifier> ::= [a-zA-Z] [a-zA-Z0-9_']*
 ```
 
-0K Language Specification
+Subzero Language Specification
 -------------------------
-### 0K expressions
+### Subzero expressions
 An expression is a construct that evaluates to some value.
 Expressions can contain nested expressions, which terminate in values.
 Expressions can be viewed as binary trees, where leaf nodes are values and non-leaf nodes are operators. Any subtree is also a valid expression.
@@ -175,7 +143,7 @@ A function call consists of the name of a valid function followed by a comma-del
 Any integer
 
 #### Variables
-Variable names must start with a letter, can contain letters and numbers, can contain at most one underscore, and any number of terminating single quotes. Single quotes and one underscore are allowed so that names can contain subscripts or the prime symbol, respectively, which allows for nicer LaTeX output.
+Variable names must start with a letter, can contain letters and numbers, can contain at most one underscore (non-terminating), and any number of terminating single quotes. Single quotes and one underscore are allowed so that names can contain subscripts or the prime symbol, respectively, which allows for nicer LaTeX output.
 Variables can either be of type EXPONENT or GROUP_ELEMENT, not STRING or BOOLEAN.
 Variables can also be scalar or be a tuple of some arbitrary size.
 
@@ -223,9 +191,9 @@ Multi line comments start with `/*` and end with `*/`.
    comment */
 ```
 
-### Format of a 0K program
+### Format of a Subzero program
 ---
-A 0K program consists of function definitions, a witness list, and a proof expression.
+A Subzero program consists of function definitions, a witness list, and a proof expression.
 
 #### The proof expression
 This expression describes the zero knowledge argument of knowledge protocol, and consists of a single logical expression followed by an optional semicolon.
@@ -241,7 +209,7 @@ A witness name starts with a letter, can contain letters and numbers, can contai
 #### Function definitions
 The user can define zero or more functions at the start of the program.
 A function definition starts with a function name, which must begin with a letter, and can contain letters and numbers.
-This is followed by a comma-delimited list of parameter names enclosed in parentheses, and finally a 0K expression (followed by an optional semicolon) enclosed in curly braces, with an optional terminating semicolon.
+This is followed by a comma-delimited list of parameter names enclosed in parentheses, and finally a Subzero expression (followed by an optional semicolon) enclosed in curly braces, with an optional terminating semicolon.
 A parameter name starts with a letter, can contain letters and numbers, can contain at most 1 underscore, and can contain any number of terminating single quotes.
 
 ```
@@ -262,11 +230,11 @@ Note that user defined functions cannot contain function calls to user defined f
 Witnesses and function parameters must be declared. All other variables are global, and do not need to be declared.
 
 ### Type Inference
-In 0K there is no need to declare the type of a variable; it supports full type inference.
+In Subzero there is no need to declare the type of a variable; it supports full type inference.
 The type of each variable is determined based on its context. The parser will label as many variables as possible as EXPONENT, and then all remaining variables will be labeled as GROUP_ELEMENT.
 
 ### Size inference
-0K supports both scalar and tuple variables. There is also no need to declare the size of a variable.
+Subzero supports both scalar and tuple variables. There is also no need to declare the size of a variable.
 The size of a variable will be inferred based on the context, and will default to a scalar. Thus, it becomes a tuple only if it is involved in an operation with some other explicit tuple, that is, a parentheses-enclosed list of expressions).
 
 Compiler Website Features
@@ -275,7 +243,7 @@ Compiler Website Features
 ### Code editor
 The website uses [Ace](https://ace.c9.io/) to provide an easy to use code editor.
 Syntax errors will occur when the entered text does not match the described EBNF grammar.
-Validation errors and warnings will occur when the entered text does not match the additional validation rules that dictate the structure of 0K programs.
+Validation errors and warnings will occur when the entered text does not match the additional validation rules that dictate the structure of Subzero programs.
 Errors will be displayed with a red X, and the corresponding error location will be underlined in red.
 Warnings will be displayed with a yellow triangle, and the corresponding warning location will be underlined in yellow.
 The red X and yellow triangle can be hovered over with the mouse to display information about the error/warning.
@@ -283,7 +251,7 @@ The code editor font size can be increased and decreased by pressing `Ctrl+'+'` 
 
 ### LaTeX preview
 The website uses [MathJax](https://www.mathjax.org/) to display formatted LaTeX based on the code in the editor.
-If the entered text in the code editor is free of syntax and validation errors, and if the corresponding checkboxes are enabled, this box will display a formatted LaTeX interpretation of the 0K code.
+If the entered text in the code editor is free of syntax and validation errors, and if the corresponding checkboxes are enabled, this box will display a formatted LaTeX interpretation of the Subzero code.
 The LaTeX preview font size can be increased and decreased by pressing the corresponding buttons in the top left corner of the display box.
 
 ### Checkboxes
@@ -331,7 +299,7 @@ The console box in the bottom right corner of the page displays error, warning, 
 
 Validation rules
 ----------------
-These are additional rules which dictate the allowed structure and data of 0K programs.
+These are additional rules which dictate the allowed structure and data of Subzero programs.
 
 ### Name format rules
 - Function names must start with a letter, and only contain letters and numbers
@@ -415,21 +383,21 @@ Code Organization
 -----------------
 The most important packages and files are listed below. All other packages/files are either for configuration or were generated by Xtext.
 
-### org.cryptimeleon.zeroknowledge
-- `GenerateZeroKnowledge.mwe2` is a configuration file for the DSL. The DSL file extension can be changed here
-- `ZeroKnowledge.xtext` specifies the grammar for the language, according to the EBNF
+### org.cryptimeleon.subzero
+- `Generatesubzero.mwe2` is a configuration file for the DSL. The DSL file extension can be changed here
+- `subzero.xtext` specifies the grammar for the language, according to the EBNF
 
 ### org.cryptimeleon.console
 - `Console.java` contains functions for sending messages to the website's console box. Currently unused and not implemented.
 
 ### org.cryptimeleon.generator
-- `ZeroKnowledgeGenerator.xtend` delegates code generation to the Java code generation and LaTeX preview generation
+- `SubzeroGenerator.xtend` delegates code generation to the Java code generation and LaTeX preview generation
 - `CodeGeneration.xtend` contains all code for code generation for compiling DSL code to Java code. Currently works in the Eclipse editor (with sample outputs) and on the website.
 
-### org.cryptimeleon.zeroknowledge.latex
+### org.cryptimeleon.subzero.latex
 - `LatexPreview.xtend` generates LaTeX text from the DSL code. Essentially this is code generation for translating DSL code to LaTeX. Now working on the website.
 
-### org.cryptimeleon.zeroknowledge.model
+### org.cryptimeleon.subzero.model
 Contains code for working with the model produced by the parser
 - `BranchState.xtend` is a class to represent information about a node's ancestors in the parse tree, which helps in validating the parse tree without using a large amount of traversals.
 - `ExponentExpr.xtend` is a temporary class to stand in for exponent expression objects. Remove once linked to the other library.
@@ -442,18 +410,18 @@ Contains code for working with the model produced by the parser
 - `ReturnsTuple.xtend` is a custom annotation used on predefined functions to indicate that it returns a tuple, and specify its multiplicity
 - `TupleParameters.java` is a custom annotation used on predefined functions to indicate that it has tuple parameters, and specify their multiplicities. A better method of indicating this might be possible.
 
-### org.cryptimeleon.zeroknowledge.predefined
+### org.cryptimeleon.subzero.predefined
 - `PredefinedFunctions.java` is a class to hold all predefined functions
 - `PredefinedFunctionsHelper.xtend` is a helper class to get information on all predefined functions using reflection
 
 ### org.cryptimeleon.type
-- `Type.java` is an enum class representing valid 0K types
+- `Type.java` is an enum class representing valid Subzero types
 - `TypeInference.xtend` implements type inference. Depends on the `predefined` package for handling predefined functions. Type inference is working, but may have some edge case issues still.
 
-### org.cryptimeleon.zeroknowledge.validation
-- `ZeroKnowledgeValidator.xtend` contains all validation rules that are checked against a parsed model.
+### org.cryptimeleon.subzero.validation
+- `SubzeroValidator.xtend` contains all validation rules that are checked against a parsed model.
 
-### org.cryptimeleon.zeroknowledge.web
+### org.cryptimeleon.subzero.web
 Contains all code for the compiler website. All important files are in the WebRoot folder
 - `index.html` is the main page
 - `style.css` is the main stylesheet
