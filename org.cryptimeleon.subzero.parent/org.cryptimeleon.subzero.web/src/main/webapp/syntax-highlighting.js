@@ -91,6 +91,7 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 			],
 
 			"mainBody": [
+				{token: ["keyword", "colon"], regex: "(statement)(:?)"},
 				stringStart,
 				functionCallStart,
 				variable,
