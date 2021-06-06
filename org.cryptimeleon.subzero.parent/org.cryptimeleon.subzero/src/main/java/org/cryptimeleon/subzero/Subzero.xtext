@@ -12,7 +12,11 @@ generate subzero "http://www.cryptimeleon.org/subzero/Subzero"
  */
 
 Model returns Model:
-  (protocolName=PROTOCOL_NAME)? functions+=(FunctionDefinition)* (publicParameterList=PublicParameterList ';'?)? (witnessList=WitnessList ';'?) ('statement' ':')? (proof=Expression) ';'?;
+  (protocolName=PROTOCOL_NAME)?
+  functions+=(FunctionDefinition)*
+  (publicParameterList=PublicParameterList ';'?)?
+  (witnessList=WitnessList ';'?)
+  ('statement' ':')? (proof=Expression) test=';'?;
 
 FunctionDefinition returns FunctionDefinition:
   inline?='inline'? name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;

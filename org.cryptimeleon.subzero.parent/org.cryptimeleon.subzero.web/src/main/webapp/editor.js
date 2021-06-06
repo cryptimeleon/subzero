@@ -47,7 +47,9 @@ function createEditor(xtext) {
     theme: "ace/theme/monokai",
     selectionUpdateDelay: SELECTION_UPDATE_DELAY,
     textUpdateDelay: TEXT_UPDATE_DELAY
-  })
+  });
+
+  var session = editor.getSession();
 
   editor.setFontSize(DEFAULT_FONT_SIZE);
   editor.on("change", function() {
@@ -57,9 +59,36 @@ function createEditor(xtext) {
     }
   });
 
-  editor.getSession().setOptions({
+  session.setOptions({
     tabSize: TAB_SIZE,
     useSoftTabs: true
+  });
+
+  let hasInfo = false;
+  session.on("changeAnnotation", function() {
+    var annotations = session.getAnnotations() || [];
+    
+    if (hasInfo) {
+      hasInfo = false;
+      return;
+    }
+
+    var infoAnnotation;
+    for (let i = 0; i < annotations.length; i++) {
+      let annotation = annotations[i];
+      if (annotation.type === 'info') {
+        hasInfo = true;
+        infoAnnotation = annotation;
+        annotations.splice(i, 1);
+        
+        break;
+      }
+    }
+
+    if (hasInfo) {
+      updateEnvironment(JSON.parse(infoAnnotation.text));
+      session.setAnnotations(annotations);
+    }
   });
 
   editor.commands.addCommand({

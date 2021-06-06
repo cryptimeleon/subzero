@@ -51,8 +51,6 @@ class AugmentedModel {
 	
 	Model model;
 
-	boolean functionsInlined;
-	boolean negativesNormalized;
 	boolean bracketsRemoved;
 	boolean specialVariablesIdentified;
 	
@@ -79,8 +77,10 @@ class AugmentedModel {
 	Map<String, Type> witnessTypes;
 	Set<String> constrainedWitnessNames;
 	
+	Map<String, PublicParameter> publicParameters;
 	Set<String> publicParameterNames;
 	List<String> sortedPublicParameterNames;
+	Map<String, Type> publicParameterTypes;
 	
 	Map<String, List<Variable>> variables;
 	Set<String> variableNames;
@@ -104,8 +104,6 @@ class AugmentedModel {
 	
 	new(Model model) {
 		this.model = model;
-		this.functionsInlined = false;
-		this.negativesNormalized = false;
 		this.bracketsRemoved = false;
 		this.specialVariablesIdentified = false;
 		
@@ -127,6 +125,11 @@ class AugmentedModel {
 		this.sortedWitnessNames = null;
 		this.witnessTypes = null;
 		
+		this.publicParameters = null;
+		this.publicParameterNames = null;
+		this.sortedPublicParameterNames = null;
+		this.publicParameterTypes = null;
+		
 		this.variables = null;
 		this.variableNames = null;
 		this.sortedVariableNames = null;
@@ -143,20 +146,20 @@ class AugmentedModel {
 		this.predefinedFunctionCalls = null;
 		this.userFunctionSignatures = null;
 		this.constrainedWitnessNames = null;
-		this.publicParameterNames = null;
 		this.userFunctionWithConstant = null;
 		this.userFunctionWitnesses = null;
 		this.inlineFunctionNames = null;
 		
 		trimStringsTransformation();
 		comparisonTransformation();
-		normalizeNegativesTransformation();
 	}
 	
+	// Returns the model representing the syntax tree
 	def Model getModel() {
 		return model;
 	}
 	
+	// Returns the protocol name, if specified, or the default protocol name
 	def String getProtocolName() {
 		if (protocolName !== null) return protocolName;
 		
@@ -223,11 +226,13 @@ class AugmentedModel {
 		}
 	}
 	
+	
 	def boolean hasRangeProof() {
 		if (checkedForRangeProof) return containsRangeProof;
 		
 		checkedForRangeProof = true;
 		
+		// The model has a range proof if it contain any inequality comparison
 		containsRangeProof = ModelMap.preorderAny(model, [EObject node |
 			return node instanceof Comparison && ModelHelper.isInequalityComparison(node as Comparison);
 		]);
@@ -240,6 +245,7 @@ class AugmentedModel {
 		
 		checkedForPairing = true;
 		
+		// The model has a pairing if it has a function call to the 'e' function
 		containsPairing = ModelMap.preorderAny(model, [EObject node |
 			if (node instanceof FunctionCall) {
 				return (node as FunctionCall).getName() == "e";
@@ -256,6 +262,7 @@ class AugmentedModel {
 		
 		checkedForOrProof = true;
 		
+		// The model has an OR proof if it contains a disjunction
 		containsOrProof = ModelMap.preorderAny(model, [EObject node |
 			if (node instanceof Disjunction) {
 				return true;
@@ -270,6 +277,7 @@ class AugmentedModel {
 		
 		checkedForOrDescendantOfAnd = true;
 		
+		// The model has an OR descedant of an AND if it contains a disjunction nested within a conjunction
 		containsOrDescendantOfAnd = ModelMap.preorderWithControl(model, [EObject node, ModelMap.Controller controller |
 			if (node instanceof Conjunction) {
 				
@@ -288,44 +296,6 @@ class AugmentedModel {
 				controller.continueTraversal();
 			}
 		]);
-	}
-	
-	// Takes the user functions of the syntax tree and inlines them for each corresponding function call
-	// Precondition: model has passed all validation rules
-	def void inlineFunctions() {
-		if (functionsInlined) return;
-		
-		val Map<String, FunctionDefinition> functions = new HashMap<String, FunctionDefinition>();
-		for (FunctionDefinition function : model.getFunctions()) {
-			functions.put(function.getName(), function);
-		}
-
-		ModelMap.postorder(model.getProof(), [ EObject node |
-			ModelHelper.replaceFunctionCallWithDefinition(node, functions);
-		]);
-		
-		functionsInlined = true;
-	}
-	
-	// Replace all occurrences of Sum nodes that have the subtraction operation with a Sum 
-	// node with the addition operation, where the right operand is now a Negative node
-	def void normalizeNegatives() {
-		if (negativesNormalized) return;
-		
-		ModelMap.postorder(model, [ EObject node |
-			if (node instanceof Sum) {
-				val Sum sum = node as Sum;
-				if (sum.getOperation() === "-") {
-					val Expression rightSide = sum.getRight();
-					val Negative negative = SubzeroFactory.eINSTANCE.createNegative();
-					ModelHelper.replaceParentReferenceToSelf(rightSide, negative);
-					negative.setTerm(rightSide);
-					sum.setOperation("+");
-				}
-			}
-		]);
-		
-		negativesNormalized = true;
 	}
 	
 	def private void trimStringsTransformation() {
@@ -353,23 +323,6 @@ class AugmentedModel {
 				}
 			}
 		]);
-	}
-	
-	def void normalizeNegativesTransformation() {
-		if (negativesNormalized) return;
-		
-		ModelMap.postorder(model, [EObject node |
-			if (node instanceof Negative) {
-				val EObject term = node.getTerm();
-				
-				if (term instanceof NumberLiteral) {
-					term.setValue(-term.getValue());
-					ModelHelper.replaceParentReferenceToSelf(node, term);
-				}
-			}
-		]);
-		
-		negativesNormalized = true;
 	}
 	
 	// Simplifies the model by removing all bracket nodes
@@ -545,6 +498,21 @@ class AugmentedModel {
 		}
 
 		return witnesses;
+	}
+	
+	// Returns a map from public parameter names to public parameter nodes
+	def Map<String, PublicParameter> getAllPublicParameters() {
+		if (publicParameters !== null) return publicParameters;
+		
+		publicParameters = new HashMap<String, PublicParameter>();
+
+		if (model.getPublicParameterList() !== null) {
+			for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
+				publicParameters.put(publicParameter.getName(), publicParameter);
+			}
+		}
+
+		return publicParameters;
 	}
 
 	// Precondition: requires that all local variables have been identified, and that the
@@ -795,6 +763,18 @@ class AugmentedModel {
 		}
 		
 		return witnessTypes;
+	}
+	
+	def Map<String, Type> getPublicParameterTypes() {
+		if (publicParameterTypes !== null) return publicParameterTypes;
+		
+		publicParameterTypes = new HashMap<String, Type>();
+		
+		for (Entry<String, PublicParameter> entry : getAllPublicParameters().entrySet()) {
+			publicParameterTypes.put(entry.getKey(), types.get(entry.getValue()));
+		}
+		
+		return publicParameterTypes;
 	} 
 	
 	def Set<String> getVariableNames() {
@@ -831,7 +811,7 @@ class AugmentedModel {
 			val Variable variable = entry.getValue().get(0);
 			val String variableName = entry.getKey();
 			
-			if (!(variable instanceof WitnessVariable) && !variableNames.contains(variableName)) {
+			if (variable instanceof ConstantVariable && !variableNames.contains(variableName)) {
 				variableNames.add(variableName);
 				sortedVariableNames.add(variableName);
 				variableTypes.put(variableName, types.get(variable));
