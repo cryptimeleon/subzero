@@ -29,6 +29,16 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
 
+/*
+ * The size inference algorithm determines the multiplicity of every node
+ * in the parse tree (where 1 is a scalar, >1 is a tuple, and 0 means that multiplicity is not
+ * applicable). The algorithm performs the following steps:
+ * 1. 
+ * 
+ * 
+ * 
+ * 3. A top-down traversal of the parse tree labels all unlabeled nodes as scalars
+ */
 class SizeInference {
 	// Stores the inferred multiplicity for every node in the syntax tree that requires a multiplicity
 	// Multiplicity of 1 is a scalar, multiplicity greater than 1 is a tuple

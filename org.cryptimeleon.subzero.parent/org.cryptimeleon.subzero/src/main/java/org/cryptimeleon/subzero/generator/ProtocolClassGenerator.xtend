@@ -92,10 +92,14 @@ class ProtocolClassGenerator extends ClassGenerator {
 		
 		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
+		
 		val List<String> variableNames = augmentedModel.getSortedVariableNames();
 		val Map<String, Type> variableTypes = augmentedModel.getVariableTypes();
+		
 		val List<String> sortedPublicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Set<String> publicParameterNames = augmentedModel.getPublicParameterNames();
+		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
+		
 		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getAllUserFunctionCalls();
 		
 		val Class<?> groupClass = augmentedModel.getGroupClass();
@@ -130,7 +134,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		}
 		
 		for (String publicParameterName : sortedPublicParameterNames) {
-			protocolClass.addField(new FieldBuilder(PROTECTED, FINAL, variableTypes.get(publicParameterName).getTypeClass(), publicParameterName));
+			protocolClass.addField(new FieldBuilder(PROTECTED, FINAL, publicParameterTypes.get(publicParameterName).getTypeClass(), publicParameterName));
 		}
 		
 		// Build constructor
@@ -138,7 +142,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		constructor.addParameter(groupClass, groupName);
 		if (requiresPublicParameterClass) constructor.addParameter(publicParametersClassName, "pp");
 		for (String publicParameterName : sortedPublicParameterNames) {
-			constructor.addParameter(variableTypes.get(publicParameterName).getTypeClass(), publicParameterName);
+			constructor.addParameter(publicParameterTypes.get(publicParameterName).getTypeClass(), publicParameterName);
 		}
 		
 		val String constructorBody = '''
@@ -415,10 +419,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 		commonInputClass.addBasicConstructor(PUBLIC);
 		
 		for (String variableName : variableNames) {
-			if (!publicParameterNames.contains(variableName)) {
-				val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypes.get(variableName).getTypeClass(), variableName);
-				commonInputClass.addField(variableField);
-			}
+			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypes.get(variableName).getTypeClass(), variableName);
+			commonInputClass.addField(variableField);
 		}
 
 		return commonInputClass;

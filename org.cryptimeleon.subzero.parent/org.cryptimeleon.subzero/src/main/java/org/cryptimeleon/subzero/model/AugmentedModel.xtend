@@ -18,14 +18,11 @@ import org.cryptimeleon.subzero.subzero.FunctionCall
 import org.cryptimeleon.subzero.subzero.FunctionDefinition
 import org.cryptimeleon.subzero.subzero.LocalVariable
 import org.cryptimeleon.subzero.subzero.Model
-import org.cryptimeleon.subzero.subzero.Negative
 import org.cryptimeleon.subzero.subzero.NumberLiteral
 import org.cryptimeleon.subzero.subzero.Parameter
 import org.cryptimeleon.subzero.subzero.Power
 import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.PublicParameterList
-import org.cryptimeleon.subzero.subzero.StringLiteral
-import org.cryptimeleon.subzero.subzero.Sum
 import org.cryptimeleon.subzero.subzero.Tuple
 import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
@@ -51,13 +48,11 @@ class AugmentedModel {
 	
 	Model model;
 
-	boolean bracketsRemoved;
-	boolean specialVariablesIdentified;
-	
 	boolean containsRangeProof;
 	boolean containsPairing;
 	boolean containsOrProof;
 	boolean containsOrDescendantOfAnd;
+
 	boolean checkedForRangeProof;
 	boolean checkedForPairing;
 	boolean checkedForOrProof;
@@ -104,13 +99,12 @@ class AugmentedModel {
 	
 	new(Model model) {
 		this.model = model;
-		this.bracketsRemoved = false;
-		this.specialVariablesIdentified = false;
 		
 		this.containsRangeProof = false;
 		this.containsPairing = false;
 		this.containsOrProof = false;
 		this.containsOrDescendantOfAnd = false;
+
 		this.checkedForRangeProof = false;
 		this.checkedForPairing = false;
 		this.checkedForOrProof = false;
@@ -150,8 +144,9 @@ class AugmentedModel {
 		this.userFunctionWitnesses = null;
 		this.inlineFunctionNames = null;
 		
-		trimStringsTransformation();
 		comparisonTransformation();
+		removeBracketsTransformation();
+		variableRoleTransformation();
 	}
 	
 	// Returns the model representing the syntax tree
@@ -226,7 +221,6 @@ class AugmentedModel {
 		}
 	}
 	
-	
 	def boolean hasRangeProof() {
 		if (checkedForRangeProof) return containsRangeProof;
 		
@@ -298,22 +292,8 @@ class AugmentedModel {
 		]);
 	}
 	
-	def private void trimStringsTransformation() {
-		ModelMap.postorder(model, [EObject node |
-			if (node instanceof StringLiteral) {
-				val String value = node.getValue();
-				if (value.charAt(0) == '"') {
-					node.setValue(value.substring(1, value.length()-1));
-				}
-			} else if (node instanceof Comparison) {
-				val String subprotocolName = node.getSubprotocolName();
-				if (subprotocolName !== null && subprotocolName.charAt(0) == '[') {
-					node.setSubprotocolName(subprotocolName.substring(1, subprotocolName.length()-1));
-				}
-			}
-		]);
-	}
-	
+	// Fixes single comparisons to have left and right subtrees, instead of left and center subtrees
+	// This is needed due to how the grammar is written
 	def private void comparisonTransformation() {
 		ModelMap.postorder(model, [EObject node | 
 			if (node instanceof Comparison) {
@@ -326,25 +306,21 @@ class AugmentedModel {
 	}
 	
 	// Simplifies the model by removing all bracket nodes
-	def void removeBrackets() {
-		if (bracketsRemoved) return;
-		
+	def private void removeBracketsTransformation() {
 		ModelMap.postorder(model, [ EObject node |
 			if (node instanceof Brackets) {
 				val EObject contents = node.getContent();
 				ModelHelper.replaceParentReferenceToSelf(node, contents);
 			}
 		]);
-		
-		bracketsRemoved = true;
 	}
 	
 	// Changes any Variable node within a FunctionDefinition that references
-	// a Parameter into a LocalVariable node
-	// Changes any Variable node that references a Witness into a Witness node
-	def void identifySpecialVariables() {
-		if (specialVariablesIdentified) return;
-		
+	// a parameter into a LocalVariable node
+	// Changes any Variable node that references a witness into a WitnessVariable node,
+	// that references a public parameter into a PPVariable node, and all other Variable nodes
+	// into ConstantVariable nodes
+	def private void variableRoleTransformation() {
 		val Set<String> witnessNames = getWitnessNames();
 		val Set<String> ppNames = getPublicParameterNames();
 
@@ -362,24 +338,22 @@ class AugmentedModel {
 						localVariable.setFunction(function.getName());
 						ModelHelper.replaceParentReferenceToSelf(node, localVariable);
 					} else {
-						identifySpecialVariablesHelper(node, witnessNames, ppNames);
+						variableRoleTransformationHelper(node, witnessNames, ppNames);
 					}
 
 				}
 			]);
-
 		}
 
 		ModelMap.preorder(model.getProof(), [ EObject node |
 			if (node instanceof Variable) {
-				identifySpecialVariablesHelper(node, witnessNames, ppNames);
+				variableRoleTransformationHelper(node, witnessNames, ppNames);
 			}
 		]);
 		
-		specialVariablesIdentified = true;	
 	}
 	
-	def private void identifySpecialVariablesHelper(Variable variable, Set<String> witnessNames, Set<String> ppNames) {
+	def private void variableRoleTransformationHelper(Variable variable, Set<String> witnessNames, Set<String> ppNames) {
 		val String name = variable.getName();
 		
 		if (witnessNames.contains(name)) {
@@ -396,7 +370,6 @@ class AugmentedModel {
 			ModelHelper.replaceParentReferenceToSelf(variable, constantVariable);
 		}
 	}
-	
 	
 	// Returns the set of witness names
 	def Set<String> getWitnessNames() {
@@ -665,9 +638,6 @@ class AugmentedModel {
 		return predefinedFunctionCalls;
 	}
 	
-	
-	
-	
 	// Returns a map from user function names to function signatures
 	def Map<String, FunctionSignature> getUserFunctionSignatures() {
 		if (userFunctionSignatures !== null) return userFunctionSignatures;
@@ -920,11 +890,6 @@ class AugmentedModel {
 			builder.append("\n");
 		]);
 		
-		
-		
 		return builder.toString();
 	}
-	
-	
-	
 }

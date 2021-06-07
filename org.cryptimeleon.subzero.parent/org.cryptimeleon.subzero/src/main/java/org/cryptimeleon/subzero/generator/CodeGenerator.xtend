@@ -19,9 +19,6 @@ class CodeGenerator {
 
 	def ProjectBuilder generate() {
 		System.out.println(augmentedModel);
-		
-		// Replace Variables with LocalVariable and WitnessVariable nodes, where applicable
-		augmentedModel.identifySpecialVariables();
 
 		val String protocolName = augmentedModel.getProtocolName();
 		val String packageName = augmentedModel.getPackageName();
