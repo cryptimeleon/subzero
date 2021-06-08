@@ -28,6 +28,12 @@ import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
+import org.cryptimeleon.subzero.subzero.WitnessList
+import org.cryptimeleon.subzero.subzero.PublicParameterList
+import org.cryptimeleon.subzero.subzero.PublicParameter
+import java.util.Map.Entry
+import org.cryptimeleon.subzero.subzero.PPVariable
+import org.cryptimeleon.subzero.subzero.ConstantVariable
 
 /*
  * The size inference algorithm determines the multiplicity of every node
@@ -40,45 +46,47 @@ import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
  * 3. A top-down traversal of the parse tree labels all unlabeled nodes as scalars
  */
 class SizeInference {
-	// Stores the inferred multiplicity for every node in the syntax tree that requires a multiplicity
-	// Multiplicity of 1 is a scalar, multiplicity greater than 1 is a tuple
+
 	Map<EObject, Integer> sizes;
-	
-	// Stores the inferred Type for every node in the syntax tree that requires a type
+
 	Map<EObject, Type> types;
-	
-	// A map from predefined function names to the function signature
 	Map<String, FunctionSignature> predefinedFunctionsMap;
-	
-	// A map from function names to user function calls
 	Map<String, List<FunctionCall>> predefinedFunctionCallsMap;
-	
-	// A map from function names to user function definition nodes
 	Map<String, FunctionDefinition> userFunctionsMap;
-	
-	// A map from function names to user function calls
 	Map<String, List<FunctionCall>> userFunctionCallsMap;
-	
-	// A map from variable names to variable nodes
 	Map<String, List<Variable>> variablesMap;
-	
-	// A map from witness names to witness nodes
 	Map<String, Witness> witnessesMap;
-	
-	// A map from function names and parameter names to local variable nodes
+	Map<String, PublicParameter> publicParametersMap;
 	Map<String, Map<String, List<LocalVariable>>> localVariablesMap;
-	
-	// A map from user function names and local variable names to the corresponding Parameter node in the function definition
 	Map<String, Map<String, Parameter>> parametersMap;	
-	
-	// A map from user function names and parameter names to corresponding arguments in function calls
 	Map<String, Map<String, List<Argument>>> argumentsMap;
+	
+	new(AugmentedModel augmentedModel) {
+		this.sizes = new HashMap<EObject, Integer>();
+		
+		// Get type information
+		this.types = augmentedModel.getTypes();
+		
+		// Get all maps needed to traverse the syntax tree easily
+		this.predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();	
+		this.predefinedFunctionCallsMap = augmentedModel.getPredefinedFunctionCallNodes();
+		this.userFunctionsMap = augmentedModel.getUserFunctionNodes();
+		this.userFunctionCallsMap = augmentedModel.getUserFunctionCallNodes();
+		this.variablesMap = augmentedModel.getVariableNodes();
+		this.witnessesMap = augmentedModel.getWitnessNodes();
+		this.publicParametersMap = augmentedModel.getPublicParameterNodes();
+		this.localVariablesMap = augmentedModel.getLocalVariableNodes();
+		this.parametersMap = augmentedModel.getParameterNodes();
+		this.argumentsMap = augmentedModel.getArgumentNodes();
+		
+		inferSizes(augmentedModel);
+	}
 	
 	def Map<EObject, Integer> getSizes() {
 		return sizes;
 	}
 	
-	def int getNodeType(EObject node) {
+	def int getNodeSize(EObject node) {
 		return sizes.get(node);
 	}
 	
@@ -88,7 +96,7 @@ class SizeInference {
 		
 		sizes.put(node, size);
 		
-		// Stop backpropagating when
+		// Stop backpropagating when root, conjunction, or disjunction is reached
 		val EObject parent = node.eContainer();
 		if (
 			parent instanceof Model ||
@@ -98,57 +106,51 @@ class SizeInference {
 		
 		switch parent {
 			Comparison: {
-				if (!sizes.containsKey(parent.getLeft())) {
-					fillSize(parent.getLeft(), size);
-				}
-				if (!sizes.containsKey(parent.getRight())) {
-					fillSize(parent.getRight(), size);
-				}
+				fillSize(parent.getLeft(), size);
+				fillSize(parent.getRight(), size);
+				// Do not backpropagate further
 			}
-			Brackets: {
-				backpropagateSize(parent, size);
-			}
-			Negative: {
-				backpropagateSize(parent, size);
-			}
+			
 			Sum: {
-				if (!sizes.containsKey(parent.getLeft())) {
-					fillSize(parent.getLeft(), size);
-				}
-				if (!sizes.containsKey(parent.getRight())) {
-					fillSize(parent.getRight(), size);
-				}
+				fillSize(parent.getLeft(), size);
+				fillSize(parent.getRight(), size);
 				backpropagateSize(parent, size);
 			}
+			
 			Product: {
 				if (types.get(parent) === Type.GROUP_ELEMENT) {
-					if (!sizes.containsKey(parent.getLeft())) {
-						fillSize(parent.getLeft(), size);
-					}
-					if (!sizes.containsKey(parent.getRight())) {
-						fillSize(parent.getRight(), size);
-					}
+					fillSize(parent.getLeft(), size);
+					fillSize(parent.getRight(), size);
 				}
 				backpropagateSize(parent, size);
 			}
+			
 			Power: {
-				if (node.eContainmentFeature().getName() === "left") {
+				val String subtree = node.eContainmentFeature().getName();
+				if (subtree === "left") {
 					backpropagateSize(parent, size);
 				}
 			}
+			
+			Negative: {
+				backpropagateSize(parent, size);
+			}
+			
 			FunctionDefinition: {
 				sizes.put(parent, size);
 				for (FunctionCall call : userFunctionCallsMap.get(parent.getName())) {
 					backpropagateSize(call, size);
 				}
 			}
+			
 			Argument: {
 				val String functionName = ModelHelper.getArgumentFunction(parent);
 				
 				sizes.put(parent, size);
 				
-				if (userFunctionsMap.containsKey(functionName)) {
-					val EList<Parameter> parameters = userFunctionsMap.get(functionName).getParameterList().getParameters();
+				val FunctionDefinition function = userFunctionsMap.get(functionName);
+				if (function !== null) {
+					val EList<Parameter> parameters = function.getParameterList().getParameters();
 					val int index = ModelHelper.getArgumentIndex(parent);
 					
 					if (index < parameters.size()) {
@@ -156,11 +158,16 @@ class SizeInference {
 					}
 				}
 			}
+			
+			Brackets: {
+				backpropagateSize(parent, size);
+			}
 		}
 	}
 	
 	// Sets the size of a node and all of its descendants to a given size
 	def private void fillSize(EObject node, int size) {
+		
 		// If the node is already labeled, all of its descendants are also labeled, so return
 		if (sizes.containsKey(node)) return;
 		
@@ -169,8 +176,67 @@ class SizeInference {
 		if (node instanceof Tuple) return;
 		
 		switch node {
+			Product: {
+				if (types.get(node) === Type.GROUP_ELEMENT) {
+					fillSize(node.getLeft(), size);
+					fillSize(node.getRight(), size);
+				}
+			}
+			
+			Power: {
+				fillSize(node.getLeft(), size);
+			}
+			
+			WitnessVariable: {
+				fillSize(witnessesMap.get(node.getName()), size);
+			}
+			
+			PPVariable: {
+				fillSize(publicParametersMap.get(node.getName()), size);
+			}
+			
+			ConstantVariable: {
+				for (Variable variable : variablesMap.get(node.getName())) {
+					backpropagateSize(variable, size);
+				}
+			}
+			
+			Witness: {
+				// For every global variable with the same name, perform backpropagation
+				for (Variable variable: variablesMap.get(node.getName())) {
+					backpropagateSize(variable, size);
+				}
+			}
+			
+			PublicParameter: {
+				// For every global variable with the same name, perform backpropagation
+				for (Variable variable : variablesMap.get(node.getName())) {
+					backpropagateSize(variable, size);
+				}
+			}
+			
+			FunctionDefinition: {
+				// For every function call to this function, perform backpropagation
+				for (FunctionCall call : userFunctionCallsMap.get(node.getName())) {
+					backpropagateSize(call, size);
+				}
+
+				fillSize(node.getBody(), size);
+			}
+			
+			LocalVariable: {
+				fillSize(parametersMap.get(node.getFunction()).get(node.getName()), size);
+			}
+			
+			FunctionCall: {
+				val FunctionDefinition function = userFunctionsMap.get(node.getName());
+				if (function !== null) {
+					fillSize(function, size);
+				}
+			}
+			
 			Parameter: {
-				val String functionName = (node.eContainer().eContainer() as FunctionDefinition).getName();
+				val String functionName = ModelHelper.getParameterFunction(node);
 				val String parameterName = node.getName();
 
 				// For each local variable with the same name in the same function, perform backpropagation
@@ -183,56 +249,17 @@ class SizeInference {
 					fillSize(argument, size);					
 				}
 			}
-			Witness: {
-				// For every global variable with the same name, perform backpropagation
-				for (Variable variable: variablesMap.get(node.getName())) {
-					backpropagateSize(variable, size);
-				}
-			}
-			WitnessVariable: {
-				fillSize(witnessesMap.get(node.getName()), size);
-			}			
-			LocalVariable: {
-				fillSize(parametersMap.get(node.getFunction()).get(node.getName()), size);
-			}
-			Variable: {
-				for (Variable variable : variablesMap.get(node.getName())) {
-					backpropagateSize(variable, size);
-				}
-			}
-			Product: {
-				if (types.get(node) === Type.GROUP_ELEMENT) {
-					fillSize(node.getLeft(), size);
-					fillSize(node.getRight(), size);
-				}
-			}
-			Power: {
-				fillSize(node.getLeft(), size);
-			}
-			FunctionCall: {
-				if (userFunctionsMap.containsKey(node.getName())) {
-					fillSize(userFunctionsMap.get(node.getName()), size);
-				}
-			}
-			FunctionDefinition: {
-				// For every function call to this function, perform backpropagation
-				for (FunctionCall call : userFunctionCallsMap.get(node.getName())) {
-					backpropagateSize(call, size);
-				}
-
-				fillSize(node.getBody(), size);
-			}
+			
 			default: {
 				for (EObject child : node.eContents()) {
 					fillSize(child, size);
 				}
 			}
 		}
-		
 	}
 	
 	// Labels all remaining nodes with size 1 (scalar)
-	def private void fillDefaultSizes(Model model) {
+	def private void fillDefaultSize(Model model) {
 		ModelMap.preorder(model.getProof(), [EObject node |
 			sizes.putIfAbsent(node, 1);
 		]);
@@ -244,32 +271,25 @@ class SizeInference {
 				sizes.putIfAbsent(node, 1);
 			]);
 			
-			for (Parameter parameter : function.getParameterList.getParameters()) {
+			for (Parameter parameter : function.getParameterList().getParameters()) {
 				sizes.putIfAbsent(parameter, 1);
 			}
 		}
 		
-		for (Witness witness : model.getWitnessList().getWitnesses()) {
-			sizes.putIfAbsent(witness, 1);
+		val WitnessList witnessList = model.getWitnessList();
+		if (witnessList !== null) {
+			for (Witness witness : witnessList.getWitnesses()) {
+				sizes.putIfAbsent(witness, 1);
+			}
+		}
+		
+		val PublicParameterList publicParameterList = model.getPublicParameterList();
+		if (publicParameterList !== null) {
+			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
+				sizes.putIfAbsent(publicParameter, 1);
+			}
 		}
 	}
-	
-	// Conjunctions, disjunctions, comparisons, string literals get size 0
-	// Model, parameter list, witness list, have no assigned size
-	// All remaining unlabeled nodes get size 1
-	def private void fillDefaultsHelper(EObject node) {
-		if (
-			node instanceof Conjunction ||
-			node instanceof Disjunction ||
-			node instanceof Comparison ||
-			node instanceof StringLiteral
-		) {
-			sizes.putIfAbsent(node, 0);
-		} else {
-			sizes.putIfAbsent(node, 1);
-		}
-	}
-
 	
 	/*
 	 * For every tuple, get the tuple's size and propagate that size upwards through the parse tree,
@@ -277,37 +297,35 @@ class SizeInference {
 	 * 
 	 * 
 	 * 
-	 * Perform a top-down traversal of the parse tree, labeling all unlabeled nodes as scalars (size 1),
-	 * or size 0 if multiplicity is not applicable
-	 * 
+	 * Finally, perform a top-down traversal of the parse tree, labeling all unlabeled nodes as scalars (size 1)
 	 */
-	
-	
-	
 	def private void inferSizes(AugmentedModel augmentedModel) {
 		val Model model = augmentedModel.getModel();
-		val List<Tuple> tupleNodes = augmentedModel.getAllTuples();
+		
+		val List<Tuple> tupleNodes = augmentedModel.getTupleNodes();
 		
 		// Backpropagate from every tuple node (except illegal nested tuples)
 		for (Tuple tuple : tupleNodes) {
 			backpropagateSize(tuple, tuple.getElements().size());
 		}
 		
-		for (String predefinedFunctionName : predefinedFunctionCallsMap.keySet()) {
-			val FunctionSignature signature = predefinedFunctionsMap.get(predefinedFunctionName);
+		for (Entry<String, List<FunctionCall>> entry : predefinedFunctionCallsMap.entrySet()) {
+			val String functionName = entry.getKey();
+			val List<FunctionCall> functionCalls = entry.getValue();
+			
+			val FunctionSignature signature = predefinedFunctionsMap.get(functionName);
 			val int returnSize = signature.getReturnSize();
 			val ArrayList<Integer> parameterSizes = signature.getParameterSizes();
 			
 			// Backpropagate from every predefined function call node that returns a tuple
 			if (returnSize > 1) {
-				for (FunctionCall call : predefinedFunctionCallsMap.get(predefinedFunctionName)) {
+				for (FunctionCall call : functionCalls) {
 					backpropagateSize(call, returnSize);
 				}
 			}
 			
 			// Fill size for every argument in a predefined function call node
-			for (FunctionCall call : predefinedFunctionCallsMap.get(predefinedFunctionName)) {
-				
+			for (FunctionCall call : functionCalls) {
 				val Iterator<Expression> argumentsIterator = call.getArguments().iterator();
 				val Iterator<Integer> parameterSizesIterator = parameterSizes.iterator();
 				
@@ -316,31 +334,10 @@ class SizeInference {
 					val int parameterSize = parameterSizesIterator.next();
 					fillSize(argument, parameterSize);
 				}
-				
 			}
-			
 		}
 		
-		// Label all remaining nodes with their corresponding default size
-		fillDefaultSizes(model);
+		// Label all remaining nodes with the default size (1)
+		fillDefaultSize(model);
 	}
-	
-	new(AugmentedModel augmentedModel) {
-		this.types = augmentedModel.getTypes();
-		this.sizes = new HashMap<EObject, Integer>();
-		
-		// Get all maps needed to traverse the syntax tree easily
-		this.predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();	
-		this.predefinedFunctionCallsMap = augmentedModel.getAllPredefinedFunctionCalls();
-		this.userFunctionsMap = augmentedModel.getAllUserFunctions();
-		this.userFunctionCallsMap = augmentedModel.getAllUserFunctionCalls();
-		this.variablesMap = augmentedModel.getAllVariables();
-		this.witnessesMap = augmentedModel.getAllWitnesses();
-		this.localVariablesMap = augmentedModel.getAllLocalVariables();
-		this.parametersMap = augmentedModel.getAllParameters();
-		this.argumentsMap = augmentedModel.getAllArguments();
-		
-		inferSizes(augmentedModel);
-	}
-	
 }

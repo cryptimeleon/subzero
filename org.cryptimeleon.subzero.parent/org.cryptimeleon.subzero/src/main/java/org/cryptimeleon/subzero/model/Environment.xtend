@@ -27,8 +27,8 @@ class Environment {
 		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
 		
-		val List<String> commonInputNames = augmentedModel.getSortedVariableNames();
-		val Map<String, Type> commonInputTypes = augmentedModel.getVariableTypes();
+		val List<String> commonInputNames = augmentedModel.getSortedConstantVariableNames();
+		val Map<String, Type> commonInputTypes = augmentedModel.getConstantVariableTypes();
 
 		builder.append('"publicParameterVariables":[');
 		buildVariables(builder, publicParameterNames, publicParameterTypes);

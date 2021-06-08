@@ -38,6 +38,7 @@ import org.cryptimeleon.math.structures.groups.Group
 import org.eclipse.xtext.resource.XtextResource
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.cryptimeleon.subzero.subzero.ConstantVariable
+import org.cryptimeleon.subzero.subzero.WitnessList
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -66,7 +67,7 @@ class AugmentedModel {
 	SizeInference sizeInference;
 	GroupInference groupInference;
 	
-	Map<String, Witness> witnesses;
+	Map<String, Witness> witnessNodes;
 	Set<String> witnessNames;
 	List<String> sortedWitnessNames;
 	Map<String, Type> witnessTypes;
@@ -78,10 +79,10 @@ class AugmentedModel {
 	Map<String, Type> publicParameterTypes;
 	
 	Map<String, List<Variable>> variables;
-	Set<String> variableNames;
-	List<String> sortedVariableNames;
-	Map<String, Type> variableTypes;
-	Map<String, GroupType> variableGroups;
+	Set<String> constantVariableNames;
+	List<String> sortedConstantVariableNames;
+	Map<String, Type> constantVariableTypes;
+	Map<String, GroupType> constantVariableGroups;
 	
 	Map<String, FunctionDefinition> userFunctions;
 	Map<String, List<FunctionCall>> userFunctionCalls;
@@ -114,7 +115,7 @@ class AugmentedModel {
 		this.sizeInference = null;
 		this.groupInference = null;
 		
-		this.witnesses = null;
+		this.witnessNodes = null;
 		this.witnessNames = null;
 		this.sortedWitnessNames = null;
 		this.witnessTypes = null;
@@ -125,10 +126,10 @@ class AugmentedModel {
 		this.publicParameterTypes = null;
 		
 		this.variables = null;
-		this.variableNames = null;
-		this.sortedVariableNames = null;
-		this.variableTypes = null;
-		this.variableGroups = null;
+		this.constantVariableNames = null;
+		this.sortedConstantVariableNames = null;
+		this.constantVariableTypes = null;
+		this.constantVariableGroups = null;
 		
 		this.userFunctions = null;
 		this.userFunctionCalls = null;
@@ -149,6 +150,10 @@ class AugmentedModel {
 		variableRoleTransformation();
 	}
 	
+	/*
+	 * Getters for basic model information
+	 */
+	
 	// Returns the model representing the syntax tree
 	def Model getModel() {
 		return model;
@@ -167,6 +172,7 @@ class AugmentedModel {
 		return protocolName;
 	}
 	
+	// Returns the default package name for now
 	def String getPackageName() {
 		return GenerationHelper.DEFAULT_PACKAGE_NAME;
 	}
@@ -175,6 +181,11 @@ class AugmentedModel {
 	def String getCode() {
 		return (model.eResource() as XtextResource).getParseResult().getRootNode().getText();
 	}
+	
+	
+	/*
+	 * Getters for inference-based model information (types, sizes, and groups)
+	 */
 	
 	def Map<EObject, Type> getTypes() {
 		if (typeInference !== null) return typeInference.getTypes();
@@ -208,6 +219,10 @@ class AugmentedModel {
 		
 		return groupInference.getGroupsByName();
 	}
+	
+	/*
+	 * Methods for getting high-level model structure information
+	 */
 	
 	def boolean requiresPublicParametersClass() {
 		return hasRangeProof() || hasOrDescendantOfAnd();
@@ -292,6 +307,11 @@ class AugmentedModel {
 		]);
 	}
 	
+	/*
+	 * Model transformations that change the structure and node attributes of the syntax tree
+	 * All transformations are applied to the model when an augmented model object is instantiated
+	 */	
+	
 	// Fixes single comparisons to have left and right subtrees, instead of left and center subtrees
 	// This is needed due to how the grammar is written
 	def private void comparisonTransformation() {
@@ -371,21 +391,256 @@ class AugmentedModel {
 		}
 	}
 	
-	// Returns the set of witness names
+	
+	/*
+	 * Witness variable information
+	 */
+	 
+	// Returns a map from witness names to witness variable nodes
+	def Map<String, Witness> getWitnessNodes() {
+		if (witnessNodes !== null) return witnessNodes;
+		
+		witnessNodes = new HashMap<String, Witness>();
+
+		val WitnessList witnessList = model.getWitnessList();
+		if (witnessList !== null) {
+			for (Witness witness : witnessList.getWitnesses()) {
+				witnessNodes.put(witness.getName(), witness);
+			}
+		}
+
+		return witnessNodes;
+	}
+	
+	// Returns the set of witness variable names
 	def Set<String> getWitnessNames() {
 		if (witnessNames !== null) return witnessNames;
 			
 		witnessNames = new HashSet<String>();
 
-		for (Witness witness : model.getWitnessList().getWitnesses()) {
-			witnessNames.add(witness.getName());
+		val WitnessList witnessList = model.getWitnessList();
+		if (witnessList !== null) {
+			for (Witness witness : witnessList.getWitnesses()) {
+				witnessNames.add(witness.getName());
+			}
 		}
-	
+		
 		return witnessNames;	
 	}
+	
+	// Returns a list of witness variable names, in sorted order
+	def List<String> getSortedWitnessNames() {
+		if (sortedWitnessNames !== null) return sortedWitnessNames;
+		
+		// TODO: change
+//		val Set<String> witnessNames = getWitnessNames();
+//		sortedWitnessNames = new ArrayList<String>(witnessNames);
+//		Collections.sort(sortedWitnessNames);
+		
+		sortedWitnessNames = new ArrayList<String>();
+		val WitnessList witnessList = model.getWitnessList();
+		if (witnessList !== null) {
+			for (Witness witness : witnessList.getWitnesses()) {
+				sortedWitnessNames.add(witness.getName());
+			}
+		}
+		
+		return sortedWitnessNames;
+	}
+	
+	// Returns a map from witness variable names to their type
+	def Map<String, Type> getWitnessTypes() {
+		if (witnessTypes !== null) return witnessTypes;
+		
+		witnessTypes = new HashMap<String, Type>();
+		
+		for (Entry<String, Witness> entry : getWitnessNodes().entrySet()) {
+			witnessTypes.put(entry.getKey(), types.get(entry.getValue()));
+		}
+		
+		return witnessTypes;
+	}
+	
+	// Returns a set containing the names of all witnesses that are constrained by a range or linear exponent constraint
+	def Set<String> getConstrainedWitnessNames() {
+		if (constrainedWitnessNames !== null) return constrainedWitnessNames;
+		
+		constrainedWitnessNames = new HashSet<String>();
+		
+		ModelMap.preorderWithControl(model, [EObject node, ModelMap.Controller controller |
+			if (node instanceof Power) {
+				controller.continueTraversal();
+				return;
+			}
+			
+			if (node instanceof WitnessVariable) {
+				constrainedWitnessNames.add(node.getName());
+			}
+		]);
+		
+		return constrainedWitnessNames;
+	}
+	
+	/*
+	 * Public parameter information
+	 */
+	 
+	// Returns a map from public parameter names to public parameter nodes
+	def Map<String, PublicParameter> getPublicParameterNodes() {
+		if (publicParameters !== null) return publicParameters;
+		
+		publicParameters = new HashMap<String, PublicParameter>();
+
+		if (model.getPublicParameterList() !== null) {
+			for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
+				publicParameters.put(publicParameter.getName(), publicParameter);
+			}
+		}
+
+		return publicParameters;
+	}
+	
+	// Returns a set containing the names of all public parameters
+	def Set<String> getPublicParameterNames() {
+		if (publicParameterNames !== null) return publicParameterNames;
+		
+		publicParameterNames = new HashSet<String>();
+		
+		val PublicParameterList publicParameterList = model.getPublicParameterList();
+		
+		if (publicParameterList !== null) {
+			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
+				publicParameterNames.add(publicParameter.getName());
+			}
+		}
+		
+		return publicParameterNames;
+	}
+	
+	def List<String> getSortedPublicParameterNames() {
+		if (sortedPublicParameterNames !== null) return sortedPublicParameterNames;
+		
+		sortedPublicParameterNames = new ArrayList<String>(getPublicParameterNames());
+		Collections.sort(sortedPublicParameterNames);
+		
+		return sortedPublicParameterNames;
+	}
+	
+	def Map<String, Type> getPublicParameterTypes() {
+		if (publicParameterTypes !== null) return publicParameterTypes;
+		
+		publicParameterTypes = new HashMap<String, Type>();
+		
+		for (Entry<String, PublicParameter> entry : getPublicParameterNodes().entrySet()) {
+			publicParameterTypes.put(entry.getKey(), types.get(entry.getValue()));
+		}
+		
+		return publicParameterTypes;
+	}
+	
+	/*
+	 * Constant variable information
+	 */
+	 
+	def Set<String> getConstantVariableNames() {
+		if (constantVariableNames !== null) return constantVariableNames;
+		getVariablesHelper();
+		return constantVariableNames;
+	}
+	
+	def List<String> getSortedConstantVariableNames() {
+		if (sortedConstantVariableNames !== null) return sortedConstantVariableNames;
+		getVariablesHelper();
+		return sortedConstantVariableNames;
+	}
+	
+	def Map<String, Type> getConstantVariableTypes() {
+		if (constantVariableTypes !== null) return constantVariableTypes;
+		getVariablesHelper();
+		return constantVariableTypes;
+	}
+	
+	def Map<String, GroupType> getVariableGroups() {
+		if (constantVariableGroups !== null) return constantVariableGroups;
+		getVariablesHelper();
+		return constantVariableGroups;
+	}
+	
+	private def getVariablesHelper() {
+		constantVariableNames = new HashSet<String>();
+		sortedConstantVariableNames = new ArrayList<String>();
+		constantVariableTypes = new HashMap<String, Type>();
+		constantVariableGroups = new HashMap<String, GroupType>();
+		
+		for (Entry<String, List<Variable>> entry : getVariableNodes().entrySet()) {
+			val Variable variable = entry.getValue().get(0);
+			val String variableName = entry.getKey();
+			
+			if (variable instanceof ConstantVariable && !constantVariableNames.contains(variableName)) {
+				constantVariableNames.add(variableName);
+				sortedConstantVariableNames.add(variableName);
+				constantVariableTypes.put(variableName, types.get(variable));
+				if (groups.containsKey(variable)) constantVariableGroups.put(variableName, groups.get(variable));
+			}
+		}
+		
+		// Sort first by variable type, and then by variable name
+		Collections.sort(sortedConstantVariableNames, new Comparator<String>() {
+			override compare(String arg1, String arg2) {
+				val Type argType1 = constantVariableTypes.get(arg1);
+				val Type argType2 = constantVariableTypes.get(arg2);
+				
+				if (argType1 === argType2) {
+					return arg1.compareTo(arg2);
+				}
+				return argType1.compareTo(argType2);
+			}
+		});
+	}
+	
+	/*
+	 * General variable information (witness, public parameter, and constant variables)
+	 */
+	
+	// Returns a map from variable names to a list of variable nodes
+	// This includes witness variables, pp variables, and constant variables
+	def Map<String, List<Variable>> getVariableNodes() {
+		if (variables !== null) return variables;
+		
+		variables = new HashMap<String, List<Variable>>();
+
+		for (FunctionDefinition function : model.getFunctions()) {
+			ModelMap.preorder(function.getBody(), [ EObject node |
+				getVariableNodesHelper(node, variables);
+			]);
+		}
+
+		ModelMap.preorder(model.getProof(), [ EObject node |
+			getVariableNodesHelper(node, variables);
+		]);
+
+		return variables;
+	}
+
+	def private void getVariableNodesHelper(EObject node, Map<String, List<Variable>> variables) {
+		if (node instanceof Variable) {
+			if(node instanceof LocalVariable) return;
+			if (variables.containsKey(node.getName())) {
+				variables.get(node.getName()).add(node);
+			} else {
+				val List<Variable> list = new ArrayList<Variable>();
+				list.add(node);
+				variables.put(node.getName(), list);
+			}
+		}
+	}
+	
+	/*
+	 * User function information
+	 */
 
 	// Returns a map from user function names to user function nodes
-	def Map<String, FunctionDefinition> getAllUserFunctions() {
+	def Map<String, FunctionDefinition> getUserFunctionNodes() {
 		if (userFunctions !== null) return userFunctions;
 		
 		userFunctions = new HashMap<String, FunctionDefinition>();
@@ -398,10 +653,10 @@ class AugmentedModel {
 	}
 
 	// Returns a map from user function names to user function call nodes
-	def Map<String, List<FunctionCall>> getAllUserFunctionCalls() {
+	def Map<String, List<FunctionCall>> getUserFunctionCallNodes() {
 		if (userFunctionCalls !== null) return userFunctionCalls;
 		
-		val Map<String, FunctionDefinition> userFunctionsMap = getAllUserFunctions();
+		val Map<String, FunctionDefinition> userFunctionsMap = getUserFunctionNodes();
 		
 		userFunctionCalls = new HashMap<String, List<FunctionCall>>();
 
@@ -423,75 +678,34 @@ class AugmentedModel {
 
 		return userFunctionCalls;
 	}
-
-	// Precondition: requires that all local variables have been identified, and that the
-	// corresponding Variable objects have been replaced with LocalVariable objects
-	// Returns a map from variable names to a list of variable nodes, including witness variables
-	def Map<String, List<Variable>> getAllVariables() {
-		if (variables !== null) return variables;
+	
+	// Returns a map from user function names to function signatures
+	def Map<String, FunctionSignature> getUserFunctionSignatures() {
+		if (userFunctionSignatures !== null) return userFunctionSignatures;
 		
-		variables = new HashMap<String, List<Variable>>();
+		val Map<EObject, Type> types = this.getTypes();
+		val Map<EObject, Integer> tuples = this.getSizes(); // Change to sizes
+		
+		userFunctionSignatures = new HashMap<String, FunctionSignature>();
 
 		for (FunctionDefinition function : model.getFunctions()) {
-			ModelMap.preorder(function.getBody(), [ EObject node |
-				getAllVariablesHelper(node, variables);
-			]);
-		}
+			val List<Type> parameterTypes = new ArrayList<Type>();
+			val List<Integer> parameterSizes = new ArrayList<Integer>();
 
-		ModelMap.preorder(model.getProof(), [ EObject node |
-			getAllVariablesHelper(node, variables);
-		]);
-
-		return variables;
-	}
-
-	def private void getAllVariablesHelper(EObject node, Map<String, List<Variable>> variables) {
-		if (node instanceof Variable) {
-			if(node instanceof LocalVariable) return;
-			if (variables.containsKey(node.getName())) {
-				variables.get(node.getName()).add(node);
-			} else {
-				val List<Variable> list = new ArrayList<Variable>();
-				list.add(node);
-				variables.put(node.getName(), list);
+			for (Parameter parameter : function.getParameterList().getParameters()) {
+				parameterTypes.add(types.get(parameter));
+				parameterSizes.add(tuples.get(parameter));
 			}
-		}
-	}
 
-	// Returns a map from witness names to witness nodes
-	def Map<String, Witness> getAllWitnesses() {
-		if (witnesses !== null) return witnesses;
-		
-		witnesses = new HashMap<String, Witness>();
-
-		if (model.getWitnessList() !== null) {
-			for (Witness witness : model.getWitnessList().getWitnesses()) {
-				witnesses.put(witness.getName(), witness);
-			}
+			val FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), tuples.get(function), parameterTypes, parameterSizes);
+			userFunctionSignatures.put(function.getName(), signature);
 		}
 
-		return witnesses;
+		return userFunctionSignatures;
 	}
 	
-	// Returns a map from public parameter names to public parameter nodes
-	def Map<String, PublicParameter> getAllPublicParameters() {
-		if (publicParameters !== null) return publicParameters;
-		
-		publicParameters = new HashMap<String, PublicParameter>();
-
-		if (model.getPublicParameterList() !== null) {
-			for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
-				publicParameters.put(publicParameter.getName(), publicParameter);
-			}
-		}
-
-		return publicParameters;
-	}
-
-	// Precondition: requires that all local variables have been identified, and that the
-	// corresponding Variable objects have been replaced with LocalVariable objects
 	// Returns a map from user function names and local variable names to a list of local variable objects	
-	def Map<String, Map<String, List<LocalVariable>>> getAllLocalVariables() {
+	def Map<String, Map<String, List<LocalVariable>>> getLocalVariableNodes() {
 		if (localVariables !== null) return localVariables;
 		
 		localVariables = new HashMap<String, Map<String, List<LocalVariable>>>();
@@ -514,9 +728,89 @@ class AugmentedModel {
 
 		return localVariables;
 	}
+	
+	def boolean userFunctionHasConstant(String functionName) {
+		if (userFunctionWithConstant !== null) return userFunctionWithConstant.contains(functionName);
+		
+		userFunctionWithConstant = new HashSet<String>();
+		for (FunctionDefinition function : model.getFunctions()) {
+			val hasConstant = ModelMap.preorderAny(function.getBody(), [EObject node |
+				return node instanceof ConstantVariable;
+			]);
+			
+			if (hasConstant) userFunctionWithConstant.add(function.getName());
+		}
+		
+		return userFunctionWithConstant.contains(functionName);
+	}
+	
+	def Set<String> getUserFunctionWitnessNames(String functionName) {
+		if (userFunctionWitnesses !== null) return userFunctionWitnesses.get(functionName);
+		
+		userFunctionWitnesses = new HashMap<String, Set<String>>();
+		for (FunctionDefinition function : model.getFunctions()) {
+			val witnessNames = new HashSet<String>();
+			
+			ModelMap.preorder(function.getBody(), [EObject node |
+				if (node instanceof WitnessVariable) {
+					witnessNames.add(node.getName());
+				}
+			]);
+			
+			userFunctionWitnesses.put(function.getName(), witnessNames);
+		}
+		
+		return userFunctionWitnesses.get(functionName);
+	}
+	
+	def boolean isInlineFunction(String functionName) {
+		if (inlineFunctionNames !== null) return inlineFunctionNames.contains(functionName);
+		
+		inlineFunctionNames = new HashSet<String>();
+		for (FunctionDefinition function : model.getFunctions()) {
+			if (function.isInline()) inlineFunctionNames.add(function.getName());
+		}
+		
+		return inlineFunctionNames.contains(functionName);
+	}
+	
+	/*
+	 * Predefined function call nodes
+	 */
+	
+	// Returns a map from predefined function names to predefined function call nodes
+	def Map<String, List<FunctionCall>> getPredefinedFunctionCallNodes() {
+		if (predefinedFunctionCalls !== null) return predefinedFunctionCalls;
+		
+		val Map<String, FunctionSignature> predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+		
+		predefinedFunctionCalls = new HashMap<String, List<FunctionCall>>();
+
+		ModelMap.preorder(model.getProof(), [EObject node |
+			if (node instanceof FunctionCall) {
+				val String functionName = node.getName();
+				if (predefinedFunctionsMap.containsKey(functionName)) {
+					if (predefinedFunctionCalls.containsKey(functionName)) {
+						predefinedFunctionCalls.get(functionName).add(node);
+					} else {
+						val List<FunctionCall> list = new ArrayList<FunctionCall>;
+						list.add(node);
+						predefinedFunctionCalls.put(functionName, list);
+					}
+				}
+			}
+
+		]);
+
+		return predefinedFunctionCalls;
+	}
+
+	/*
+	 * General function information (user defined and predefined functions) 
+	 */
 
 	// Returns a map from user function names and parameter names to parameter nodes
-	def Map<String, Map<String, Parameter>> getAllParameters() {
+	def Map<String, Map<String, Parameter>> getParameterNodes() {
 		if (localParameters !== null) return localParameters;
 		
 		localParameters = new HashMap<String, Map<String, Parameter>>();
@@ -535,11 +829,11 @@ class AugmentedModel {
 	}
 
 	// Returns a map from user function names and parameter names to corresponding arguments in function calls
-	def Map<String, Map<String, List<Argument>>> getAllArguments() {
+	def Map<String, Map<String, List<Argument>>> getArgumentNodes() {
 		if (arguments !== null) return arguments;
 		
 		
-		val Map<String, FunctionDefinition> userFunctionsMap = this.getAllUserFunctions();
+		val Map<String, FunctionDefinition> userFunctionsMap = this.getUserFunctionNodes();
 			
 		arguments = new HashMap<String, Map<String, List<Argument>>>();
 		val Map<String, List<String>> functionParameters = new HashMap<String, List<String>>();
@@ -581,275 +875,39 @@ class AugmentedModel {
 		return arguments;
 	}
 	
-	
+	/*
+	 * Tuple information
+	 */
 	
 	// Returns a list of all tuple nodes in the model, except for tuples nested within
 	// other tuples, unless they are first nested within a function call
-	def List<Tuple> getAllTuples() {
+	def List<Tuple> getTupleNodes() {
 		if (tuples !== null) return tuples;
 		
 		tuples = new ArrayList<Tuple>();
-		getAllTuplesHelper1(tuples, model);
+		getTupleNodesHelper1(tuples, model);
 		
 		return tuples;
 	}
-	def private static void getAllTuplesHelper1(List<Tuple> tuples, EObject node) {
+	
+	def private void getTupleNodesHelper1(List<Tuple> tuples, EObject node) {
 		ModelMap.preorderWithControl(node, [EObject child, ModelMap.Controller controller |
 			if (child instanceof Tuple) {
 				tuples.add(child);
-				getAllTuplesHelper2(tuples, child);				
+				getTupleNodesHelper2(tuples, child);				
 				controller.continueTraversal();
 			}
 		]);
 	}
-	def private static void getAllTuplesHelper2(List<Tuple> tuples, EObject node) {
+	
+	def private void getTupleNodesHelper2(List<Tuple> tuples, EObject node) {
 		ModelMap.preorderWithControl(node, [EObject child, ModelMap.Controller controller |
 			if (child instanceof FunctionCall) {
-				getAllTuplesHelper1(tuples, child);
+				getTupleNodesHelper1(tuples, child);
 				controller.continueTraversal();
 			}
 		]);
 	}
-	
-	// Returns a map from predefined function names to predefined function call nodes
-	def Map<String, List<FunctionCall>> getAllPredefinedFunctionCalls() {
-		if (predefinedFunctionCalls !== null) return predefinedFunctionCalls;
-		
-		val Map<String, FunctionSignature> predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-		
-		predefinedFunctionCalls = new HashMap<String, List<FunctionCall>>();
-
-		ModelMap.preorder(model.getProof(), [EObject node |
-			if (node instanceof FunctionCall) {
-				val String functionName = node.getName();
-				if (predefinedFunctionsMap.containsKey(functionName)) {
-					if (predefinedFunctionCalls.containsKey(functionName)) {
-						predefinedFunctionCalls.get(functionName).add(node);
-					} else {
-						val List<FunctionCall> list = new ArrayList<FunctionCall>;
-						list.add(node);
-						predefinedFunctionCalls.put(functionName, list);
-					}
-				}
-			}
-
-		]);
-
-		return predefinedFunctionCalls;
-	}
-	
-	// Returns a map from user function names to function signatures
-	def Map<String, FunctionSignature> getUserFunctionSignatures() {
-		if (userFunctionSignatures !== null) return userFunctionSignatures;
-		
-		val Map<EObject, Type> types = this.getTypes();
-		val Map<EObject, Integer> tuples = this.getSizes(); // Change to sizes
-		
-		userFunctionSignatures = new HashMap<String, FunctionSignature>();
-
-		for (FunctionDefinition function : model.getFunctions()) {
-			val List<Type> parameterTypes = new ArrayList<Type>();
-			val List<Integer> parameterSizes = new ArrayList<Integer>();
-
-			for (Parameter parameter : function.getParameterList().getParameters()) {
-				parameterTypes.add(types.get(parameter));
-				parameterSizes.add(tuples.get(parameter));
-			}
-
-			val FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), tuples.get(function), parameterTypes, parameterSizes);
-			userFunctionSignatures.put(function.getName(), signature);
-		}
-
-		return userFunctionSignatures;
-	}
-	
-	// Returns a set containing the names of all witnesses that are constrained by a range or linear exponent constraint
-	def Set<String> getConstrainedWitnessNames() {
-		if (constrainedWitnessNames !== null) return constrainedWitnessNames;
-		
-		constrainedWitnessNames = new HashSet<String>();
-		
-		ModelMap.preorderWithControl(model, [EObject node, ModelMap.Controller controller |
-			if (node instanceof Power) {
-				controller.continueTraversal();
-				return;
-			}
-			
-			if (node instanceof WitnessVariable) {
-				constrainedWitnessNames.add(node.getName());
-			}
-		]);
-		
-		return constrainedWitnessNames;
-	}
-	
-	// Returns a set containing the names of all public parameters
-	def Set<String> getPublicParameterNames() {
-		if (publicParameterNames !== null) return publicParameterNames;
-		
-		publicParameterNames = new HashSet<String>();
-		
-		val PublicParameterList publicParameterList = model.getPublicParameterList();
-		
-		if (publicParameterList !== null) {
-			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
-				publicParameterNames.add(publicParameter.getName());
-			}
-		}
-		
-		return publicParameterNames;
-	}
-	
-	def List<String> getSortedPublicParameterNames() {
-		if (sortedPublicParameterNames !== null) return sortedPublicParameterNames;
-		sortedPublicParameterNames = new ArrayList<String>(getPublicParameterNames());
-		Collections.sort(sortedPublicParameterNames);
-		return sortedPublicParameterNames;
-	}
-	
-	def List<String> getSortedWitnessNames() {
-		if (sortedWitnessNames !== null) return sortedWitnessNames;
-		
-		// TODO: change
-//		val Set<String> witnessNames = getWitnessNames();
-//		sortedWitnessNames = new ArrayList<String>(witnessNames);
-//		Collections.sort(sortedWitnessNames);
-		
-		sortedWitnessNames = new ArrayList<String>();
-		for (Witness witness : model.getWitnessList().getWitnesses()) {
-			sortedWitnessNames.add(witness.getName());
-		}
-		
-		return sortedWitnessNames;
-	}
-	
-	def Map<String, Type> getWitnessTypes() {
-		if (witnessTypes !== null) return witnessTypes;
-		
-		witnessTypes = new HashMap<String, Type>();
-		
-		for (Entry<String, Witness> entry : getAllWitnesses().entrySet()) {
-			witnessTypes.put(entry.getKey(), types.get(entry.getValue()));
-		}
-		
-		return witnessTypes;
-	}
-	
-	def Map<String, Type> getPublicParameterTypes() {
-		if (publicParameterTypes !== null) return publicParameterTypes;
-		
-		publicParameterTypes = new HashMap<String, Type>();
-		
-		for (Entry<String, PublicParameter> entry : getAllPublicParameters().entrySet()) {
-			publicParameterTypes.put(entry.getKey(), types.get(entry.getValue()));
-		}
-		
-		return publicParameterTypes;
-	} 
-	
-	def Set<String> getVariableNames() {
-		if (variableNames !== null) return variableNames;
-		getVariablesHelper();
-		return variableNames;
-	}
-	
-	def List<String> getSortedVariableNames() {
-		if (sortedVariableNames !== null) return sortedVariableNames;
-		getVariablesHelper();
-		return sortedVariableNames;
-	}
-	
-	def Map<String, Type> getVariableTypes() {
-		if (variableTypes !== null) return variableTypes;
-		getVariablesHelper();
-		return variableTypes;
-	}
-	
-	def Map<String, GroupType> getVariableGroups() {
-		if (variableGroups !== null) return variableGroups;
-		getVariablesHelper();
-		return variableGroups;
-	}
-	
-	private def getVariablesHelper() {
-		variableNames = new HashSet<String>();
-		sortedVariableNames = new ArrayList<String>();
-		variableTypes = new HashMap<String, Type>();
-		variableGroups = new HashMap<String, GroupType>();
-		
-		for (Entry<String, List<Variable>> entry : getAllVariables().entrySet()) {
-			val Variable variable = entry.getValue().get(0);
-			val String variableName = entry.getKey();
-			
-			if (variable instanceof ConstantVariable && !variableNames.contains(variableName)) {
-				variableNames.add(variableName);
-				sortedVariableNames.add(variableName);
-				variableTypes.put(variableName, types.get(variable));
-				if (groups.containsKey(variable)) variableGroups.put(variableName, groups.get(variable));
-			}
-		}
-		
-		// Sort first by variable type, and then by variable name
-		Collections.sort(sortedVariableNames, new Comparator<String>() {
-			override compare(String arg1, String arg2) {
-				val Type argType1 = variableTypes.get(arg1);
-				val Type argType2 = variableTypes.get(arg2);
-				
-				if (argType1 === argType2) {
-					return arg1.compareTo(arg2);
-				}
-				return argType1.compareTo(argType2);
-			}
-		});
-	}
-	
-	
-	def boolean userFunctionHasConstant(String functionName) {
-		if (userFunctionWithConstant !== null) return userFunctionWithConstant.contains(functionName);
-		
-		userFunctionWithConstant = new HashSet<String>();
-		for (FunctionDefinition function : model.getFunctions()) {
-			val hasConstant = ModelMap.preorderAny(function.getBody(), [EObject node |
-				return node instanceof ConstantVariable;
-			]);
-			
-			if (hasConstant) userFunctionWithConstant.add(function.getName());
-		}
-		
-		return userFunctionWithConstant.contains(functionName);
-	}
-	
-	def Set<String> getUserFunctionWitnesses(String functionName) {
-		if (userFunctionWitnesses !== null) return userFunctionWitnesses.get(functionName);
-		
-		userFunctionWitnesses = new HashMap<String, Set<String>>();
-		for (FunctionDefinition function : model.getFunctions()) {
-			val witnessNames = new HashSet<String>();
-			
-			ModelMap.preorder(function.getBody(), [EObject node |
-				if (node instanceof WitnessVariable) {
-					witnessNames.add(node.getName());
-				}
-			]);
-			
-			userFunctionWitnesses.put(function.getName(), witnessNames);
-		}
-		
-		return userFunctionWitnesses.get(functionName);
-	}
-	
-	def boolean isInlineFunction(String functionName) {
-		if (inlineFunctionNames !== null) return inlineFunctionNames.contains(functionName);
-		
-		inlineFunctionNames = new HashSet<String>();
-		for (FunctionDefinition function : model.getFunctions()) {
-			if (function.isInline()) inlineFunctionNames.add(function.getName());
-		}
-		
-		return inlineFunctionNames.contains(functionName);
-	}
-	
-	
 	
 	/*
 	 * String representation
@@ -877,14 +935,14 @@ class AugmentedModel {
 			
 			if (types !== null && types.containsKey(node)) {
 				builder.append(" - " + types.get(node).toString());
-			} else {
-				builder.append("");
 			}
 			
 			if (sizes !== null && sizes.containsKey(node)) {
 				builder.append(" (" + sizes.get(node).toString() + ")");
-			} else {
-				builder.append("");
+			}
+			
+			if (groups !== null && groups.containsKey(node)) {
+				builder.append(" (" + groups.get(node).toString() + ")");
 			}
 			
 			builder.append("\n");

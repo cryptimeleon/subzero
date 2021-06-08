@@ -90,11 +90,11 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		sizes = augmentedModel.getSizes();
 		groupsByName = augmentedModel.getGroupsByName();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
-		userFunctionCalls = augmentedModel.getAllUserFunctionCalls();
+		userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
 		predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 		witnessNames = augmentedModel.getWitnessNames();
 		publicParameterNames = augmentedModel.getPublicParameterNames();
-		variables = augmentedModel.getAllVariables();
+		variables = augmentedModel.getVariableNodes();
 		
 		System.out.println("Validating the model");
 		info(new Environment(augmentedModel).toString(), null, null);
@@ -866,7 +866,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def private void createOrErrors(List<WitnessVariable> witnessVariables) {
 		for (WitnessVariable variable : witnessVariables) {
 			error(
-				"A group element witness cannot be in both subtrees of a disjunction with a conjunction ancestor",
+				"A group element witness cannot be in both subtrees of a disjunction that has a conjunction ancestor",
 				variable,
 				getDefaultFeature(variable)
 			);

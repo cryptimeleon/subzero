@@ -594,15 +594,15 @@ package class TypeInference {
 
 		// Get all maps needed to traverse the syntax tree easily
 		this.predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();	
-		this.predefinedFunctionCallsMap = augmentedModel.getAllPredefinedFunctionCalls();
-		this.userFunctionsMap = augmentedModel.getAllUserFunctions();
-		this.userFunctionCallsMap = augmentedModel.getAllUserFunctionCalls();
-		this.variablesMap = augmentedModel.getAllVariables();
-		this.witnessesMap = augmentedModel.getAllWitnesses();
-		this.publicParametersMap = augmentedModel.getAllPublicParameters();
-		this.localVariablesMap = augmentedModel.getAllLocalVariables();
-		this.parametersMap = augmentedModel.getAllParameters();
-		this.argumentsMap = augmentedModel.getAllArguments();
+		this.predefinedFunctionCallsMap = augmentedModel.getPredefinedFunctionCallNodes();
+		this.userFunctionsMap = augmentedModel.getUserFunctionNodes();
+		this.userFunctionCallsMap = augmentedModel.getUserFunctionCallNodes();
+		this.variablesMap = augmentedModel.getVariableNodes();
+		this.witnessesMap = augmentedModel.getWitnessNodes();
+		this.publicParametersMap = augmentedModel.getPublicParameterNodes();
+		this.localVariablesMap = augmentedModel.getLocalVariableNodes();
+		this.parametersMap = augmentedModel.getParameterNodes();
+		this.argumentsMap = augmentedModel.getArgumentNodes();
 		
 		inferTypes(augmentedModel);
 	}

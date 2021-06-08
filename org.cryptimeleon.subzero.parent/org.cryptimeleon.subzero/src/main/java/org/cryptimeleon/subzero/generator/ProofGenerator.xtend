@@ -80,7 +80,7 @@ class ProofGenerator {
 		subprotocolCount = 0;
 		functionSubprotocolCount = 0;
 		types = augmentedModel.getTypes();
-		functions = augmentedModel.getAllUserFunctions();
+		functions = augmentedModel.getUserFunctionNodes();
 		inFunctionBody = false;
 		inlineFunctionsCode = new HashMap<String, String>();
 	}
@@ -416,7 +416,7 @@ class ProofGenerator {
 			}
 			
 			// If the function has witness variables anywhere, add each witness variable as an argument
-			val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnesses(name);
+			val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames(name);
 			if (functionWitnesses !== null) {
 				for (String witnessName : functionWitnesses) {
 					arguments.add(witnessName);
