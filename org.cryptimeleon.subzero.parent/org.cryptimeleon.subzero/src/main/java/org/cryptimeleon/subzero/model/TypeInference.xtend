@@ -42,12 +42,61 @@ import java.util.Map.Entry
  
 /*
  * The type inference algorithm determines the type of every node in
- * the parse tree. The algorithm performs the following steps:
- * 1. A top-down traversal of the proof parse tree identifies all BOOLEAN nodes, all STRING nodes,
- *    and some EXPONENT nodes where possible
- * 2. A top-down traversal of each function body's parse tree performs the same thing
+ * the parse tree. It works by identifying all BOOLEAN and STRING nodes (trivially), and then using
+ * many inference rules to label nodes as EXPONENT based on the node's context. All remaining unlabeled
+ * nodes after this are then labeled as GROUP_ELEMENT.
  * 
+ * The following inference rules are used:
+ * - All Conjunction, Disjunction, and Comparison nodes are labeled as BOOLEAN.
  * 
+ * - All StringLiteral nodes are labeled as STRING.
+
+ * - NumberLiteral nodes are EXPONENT.
+ * 
+ * - Negative nodes are EXPONENT, and all descendant nodes are EXPONENT.
+ * 
+ * - Sum nodes are EXPONENT, and all descendant nodes of left and right subtrees are EXPONENT.
+
+ * - If one child of a Product node is EXPONENT, then all descendants of both subtrees, as well as
+ *   the product node, are labeled as EXPONENT.
+ * 
+ * - All descendants of the right subtree of a Power node are labeled as EXPONENT.
+ * 
+ * - If the left child of a Power node is EXPONENT, then the Power node is labeled as EXPONENT.
+ * 
+ * - If a Comparison node is an inequality (uses the <, >, <=, >= operators) then all descendant nodes of
+ *   left and right subtress are EXPONENT.
+ * 
+ * - If a Comparison node is an equality (= operator) and one child is EXPONENT, then all descendants of
+ *   both subtrees are labeled as EXPONENT.
+ * 
+ * - If a non-local Variable node (WitnessVariable, PPVariable, ConstantVariable) is labeled as EXPONENT,
+ *   then all Variable nodes with the same name are labeled as EXPONENT, and the EXPONENT label is backpropagated
+ *   up the parse tree from each of these nodes.
+ * 
+ * - If a LocalVariable node is labeled as EXPONENT, then all LocalVariable nodes in the same function with
+ *   the same name are labeled as EXPONENT, the EXPONENT label is backpropagated up the parse tree from all
+ *   of these nodes, and the corresponding Parameter node is labeled as EXPONENT.
+ * 
+ * - If a Parameter node of a function is labeled as EXPONENT, then all LocalVariable nodes in that function with
+ * 	 the same name are labeled as EXPONENT, and all corresponding Argument nodes in all function calls referencing
+ * 	 the same function are labeled as EXPONENT.
+ * 
+ * - If an Argument node in a function call is labeled as EXPONENT, then all descendants are labeled EXPONENT, and
+ *   the corresponding Parameter node of that function is labeled as EXPONENT.
+ * 
+ * - If a FunctionDefinition is labeled as EXPONENT, then the root body node and its descendants are labeled as EXPONENT, and all
+ * 	 FunctionCall nodes that reference the function are labeled as EXPONENT
+ * 
+ * - If the root body node of a function is EXPONENT, then the FunctionDefinition node is labeled EXPONENT.
+ * 
+ * - If a FunctionCall is labeled EXPONENT, then the EXPONENT label is backpropagated up the parse tree,
+ * 	 and the FunctionDefinition referencing the same function is labeled as EXPONENT
+ * 
+ * - If any child of a Tuple node is labeled as EXPONENT, then all children nodes, as well as the Tuple node,
+ * 	 are labeled as EXPONENT.
+ * 
+ * - All unlabeled nodes after inference are labeled as GROUP_ELEMENT
 
  */
 package class TypeInference {
@@ -59,34 +108,16 @@ package class TypeInference {
 	// Used only during type inference
 	Set<EObject> visited;
 	
-	// A map from predefined function names to the function signature
+	// Model information necessary for type inference
 	Map<String, FunctionSignature> predefinedFunctionsMap;
-	
-	// A map from function names to predefined function calls
 	Map<String, List<FunctionCall>> predefinedFunctionCallsMap;
-	
-	// A map from function names to user function definition nodes
 	Map<String, FunctionDefinition> userFunctionsMap;
-	
-	// A map from function names to user function calls
 	Map<String, List<FunctionCall>> userFunctionCallsMap;
-	
-	// A map from variable names to variable nodes
 	Map<String, List<Variable>> variablesMap;
-	
-	// A map from witness names to witness nodes
 	Map<String, Witness> witnessesMap;
-	
-	// A map from public parameter names to public parameter nodes
 	Map<String, PublicParameter> publicParametersMap;
-	
-	// A map from function names and parameter names to local variable nodes
 	Map<String, Map<String, List<LocalVariable>>> localVariablesMap;
-	
-	// A map from user function names and local variable names to the corresponding Parameter node in the function definition
 	Map<String, Map<String, Parameter>> parametersMap;	
-	
-	// A map from user function names and parameter names to corresponding arguments in function calls
 	Map<String, Map<String, List<Argument>>> argumentsMap;
 	
 	def Map<EObject, Type> getTypes() {

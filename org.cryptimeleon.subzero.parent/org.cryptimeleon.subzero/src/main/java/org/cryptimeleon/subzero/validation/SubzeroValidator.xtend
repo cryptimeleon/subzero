@@ -211,7 +211,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def dispatch void checkNode(FunctionCall call, BranchState state) {
 		checkFunctionCallIsValid(call);
-		checkFunctionHasNoUserFunctionCalls(call, state);
+		checkFunctionHasNoFunctionCalls(call, state);
 		checkFunctionCallPositionIsValid(call, state);
 		checkPredefinedFunctionCallType(call);
 	}
@@ -412,9 +412,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 */
 	 
 	// Function definitions cannot contain function calls to other user functions
-	def private void checkFunctionHasNoUserFunctionCalls(FunctionCall call, BranchState state) {
-		if (state.hasFunctionDefinitionAncestor() && userFunctions.containsKey(call.getName())) {
-			error("Cannot call user functions from within a user function", call, getDefaultFeature(call));
+	def private void checkFunctionHasNoFunctionCalls(FunctionCall call, BranchState state) {
+		if (state.hasFunctionDefinitionAncestor()) {
+			error("Cannot call functions from within a user function", call, getDefaultFeature(call));
 		}
 	}
 

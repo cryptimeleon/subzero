@@ -544,29 +544,29 @@ class AugmentedModel {
 	 
 	def Set<String> getConstantVariableNames() {
 		if (constantVariableNames !== null) return constantVariableNames;
-		getVariablesHelper();
+		getConstantVariablesHelper();
 		return constantVariableNames;
 	}
 	
 	def List<String> getSortedConstantVariableNames() {
 		if (sortedConstantVariableNames !== null) return sortedConstantVariableNames;
-		getVariablesHelper();
+		getConstantVariablesHelper();
 		return sortedConstantVariableNames;
 	}
 	
 	def Map<String, Type> getConstantVariableTypes() {
 		if (constantVariableTypes !== null) return constantVariableTypes;
-		getVariablesHelper();
+		getConstantVariablesHelper();
 		return constantVariableTypes;
 	}
 	
-	def Map<String, GroupType> getVariableGroups() {
+	def Map<String, GroupType> getConstantVariableGroups() {
 		if (constantVariableGroups !== null) return constantVariableGroups;
-		getVariablesHelper();
+		getConstantVariablesHelper();
 		return constantVariableGroups;
 	}
 	
-	private def getVariablesHelper() {
+	private def getConstantVariablesHelper() {
 		constantVariableNames = new HashSet<String>();
 		sortedConstantVariableNames = new ArrayList<String>();
 		constantVariableTypes = new HashMap<String, Type>();

@@ -8,6 +8,11 @@ import org.cryptimeleon.subzero.subzero.FunctionCall
 import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.subzero.Variable
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.common.util.EList
+import org.cryptimeleon.subzero.subzero.Argument
+import org.cryptimeleon.subzero.subzero.Expression
+import org.cryptimeleon.subzero.subzero.FunctionDefinition
+import org.cryptimeleon.subzero.subzero.LocalVariable
 
 /*
  * Determines what group each group element is from
@@ -18,11 +23,15 @@ class GroupInference {
 	val Map<EObject, Type> types;
 	val Map<EObject, GroupType> groups;
 	val Map<String, GroupType> groupsByName;
+	val Map<String, FunctionDefinition> userFunctions;
 	
 	new(AugmentedModel augmentedModel) {
-		types = augmentedModel.getTypes();
 		groups = new HashMap<EObject, GroupType>();
 		groupsByName = new HashMap<String, GroupType>();
+		
+		types = augmentedModel.getTypes();
+		userFunctions = augmentedModel.getUserFunctionNodes();
+		
 		inferGroups(augmentedModel);
 	}
 
@@ -42,11 +51,16 @@ class GroupInference {
 	// Label all group elements within the second argument of an e call as G2 elements
 	def private void fillG2(EObject node) {
 		ModelMap.postorder(node, [EObject childNode |
-			if (childNode instanceof Variable && types.get(childNode) === Type.GROUP_ELEMENT) {
+			if (childNode instanceof Variable && !(childNode instanceof LocalVariable) && types.get(childNode) === Type.GROUP_ELEMENT) {
 				if (groups.get(childNode) === GroupType.GT) {
 					groups.put(childNode, GroupType.UNKNOWN);
 				} else {
 					groups.put(childNode, GroupType.G2);
+				}
+			} else if (childNode instanceof FunctionCall) {
+				val FunctionDefinition function = userFunctions.get(childNode.getName());
+				if (function !== null) {
+					fillG2(function.getBody());
 				}
 			}
 		]);
@@ -56,14 +70,21 @@ class GroupInference {
 	// Label all group elements within an equality that contains an e call as GT elements
 	def private void fillGT(EObject node) {
 		ModelMap.preorderWithControl(node, [EObject childNode, ModelMap.Controller controller |
-			if (childNode instanceof FunctionCall) {
-				controller.continueTraversal();
-			} else if (childNode instanceof Variable && types.get(childNode) === Type.GROUP_ELEMENT) {
+			if (childNode instanceof Variable && !(childNode instanceof LocalVariable) && types.get(childNode) === Type.GROUP_ELEMENT) {
 				if (groups.get(childNode) === GroupType.G2) {
 					groups.put(childNode, GroupType.UNKNOWN)
 				} else {
 					groups.put(childNode, GroupType.GT);
 				}
+			} else if (childNode instanceof FunctionCall) {
+				val String functionName = childNode.getName();
+				if (childNode.getName() == "e") {
+					controller.continueTraversal();
+				} else if (userFunctions.containsKey(functionName)) {
+					fillGT(userFunctions.get(functionName).getBody());
+					// Model map will also label all function arguments as GT
+				}
+				
 			}
 		]);
 	}
@@ -72,7 +93,7 @@ class GroupInference {
 	// Label all remaining unlabeled group elements as G1 elements
 	def private void fillG1(Model model) {
 		ModelMap.postorder(model, [EObject node |
-			if (node instanceof Variable && types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(node)) {
+			if (node instanceof Variable && !(node instanceof LocalVariable) && types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(node)) {
 				groups.put(node, GroupType.G1);
 			}
 		]);
@@ -91,10 +112,10 @@ class GroupInference {
 					
 					containsECall = ModelMap.preorderWithControl(node, [EObject newNode, ModelMap.Controller newController |
 						if (newNode instanceof FunctionCall) {
-							
-							if (newNode.getName() == "e" && newNode.getArguments().size() == 2) {
+							val EList<Expression> arguments = newNode.getArguments();
+							if (newNode.getName() == "e" && arguments.size() == 2) {
 								newController.returnTrue();
-								fillG2(newNode.getArguments().get(1));
+								fillG2(arguments.get(1));
 							}
 							
 							newController.continueTraversal();

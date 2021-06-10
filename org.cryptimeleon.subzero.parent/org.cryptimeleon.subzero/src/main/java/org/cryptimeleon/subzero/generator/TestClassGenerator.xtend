@@ -59,7 +59,7 @@ class TestClassGenerator extends ClassGenerator {
 		
 		val List<String> variableNames = augmentedModel.getSortedConstantVariableNames();
 		val Map<String, Type> variableTypes = augmentedModel.getConstantVariableTypes();
-		val Map<String, GroupType> variableGroups = augmentedModel.getVariableGroups();
+		val Map<String, GroupType> variableGroups = augmentedModel.getConstantVariableGroups();
 		
 		// Code generation
 		val ClassBuilder testClass = new ClassBuilder(PUBLIC, "LibraryTest");
