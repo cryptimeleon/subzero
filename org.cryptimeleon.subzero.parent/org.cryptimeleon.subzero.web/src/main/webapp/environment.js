@@ -11,7 +11,9 @@ function formatFunction(func) {
 }
 
 function formatVariable(func) {
-    return func.name + ": " + func.type;
+    let varRepr = func.name + ": " + func.type;
+    if (func.group) varRepr += " (" + func.group + ")";
+    return varRepr;
 }
 
 function updateEnvironment(environment) {

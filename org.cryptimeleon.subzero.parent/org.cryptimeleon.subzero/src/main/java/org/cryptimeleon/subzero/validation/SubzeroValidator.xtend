@@ -97,7 +97,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		variables = augmentedModel.getVariableNodes();
 		
 		System.out.println("Validating the model");
-		info(new Environment(augmentedModel).toString(), null, null);
+		
+		val Environment environment = new Environment(augmentedModel);
+		info(environment.toString(), null, null);
 
 		// Iterate over the tree in a preorder traversal and perform validation on each node
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |

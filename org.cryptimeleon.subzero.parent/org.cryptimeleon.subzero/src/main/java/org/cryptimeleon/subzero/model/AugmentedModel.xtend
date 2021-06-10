@@ -467,18 +467,36 @@ class AugmentedModel {
 		
 		constrainedWitnessNames = new HashSet<String>();
 		
-		ModelMap.preorderWithControl(model, [EObject node, ModelMap.Controller controller |
-			if (node instanceof Power) {
-				controller.continueTraversal();
-				return;
-			}
-			
-			if (node instanceof WitnessVariable) {
-				constrainedWitnessNames.add(node.getName());
-			}
-		]);
+		val Map<String, FunctionDefinition> userFunctions = getUserFunctionNodes();
+		val Set<String> checkedFunctions = new HashSet<String>();
+		
+		getConstrainedWitnessNamesHelper(model.getProof(), userFunctions, checkedFunctions);
 		
 		return constrainedWitnessNames;
+	}
+	
+	def private void getConstrainedWitnessNamesHelper(EObject root, Map<String, FunctionDefinition> userFunctions, Set<String> checkedFunctions) {
+		ModelMap.preorderWithControl(root, [EObject node, ModelMap.Controller controller |
+			if (node instanceof Power) {
+				// Witness variables in the exponent of a power expression are not constrained
+				controller.continueTraversal();
+				
+			} else if (node instanceof WitnessVariable) {
+				constrainedWitnessNames.add(node.getName());
+				
+			} else if (node instanceof FunctionCall) {
+				val String functionName = node.getName();
+				
+				if (!checkedFunctions.contains(functionName) && userFunctions.containsKey(functionName)) {
+					val FunctionDefinition function = userFunctions.get(functionName);
+					checkedFunctions.add(functionName);
+					getConstrainedWitnessNamesHelper(function.getBody(), userFunctions, checkedFunctions);
+				}
+				
+				// controller.continueTraversal() is NOT used here, because we want the witness names
+				// in the function call arguments to also be added to the constrained set
+			}
+		]);
 	}
 	
 	/*

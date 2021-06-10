@@ -8,9 +8,9 @@ public enum GroupType {
 	
 	public String toString() {
 		switch(this) {
-			case G1: return "groupG1";
-			case G2: return "groupG2";
-			case GT: return "groupGT";
+			case G1: return "G1";
+			case G2: return "G2";
+			case GT: return "GT";
 			default: return "";
 		}
 	}

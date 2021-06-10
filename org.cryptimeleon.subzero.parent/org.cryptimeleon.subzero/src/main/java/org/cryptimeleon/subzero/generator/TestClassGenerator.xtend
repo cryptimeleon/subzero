@@ -119,7 +119,7 @@ class TestClassGenerator extends ClassGenerator {
 				// Group element variable
 				var String variableGroup;
 				if (hasPairing && variableGroups.containsKey(variableName)) {
-					variableGroup = variableGroups.get(variableName).toString();
+					variableGroup = "group" + variableGroups.get(variableName).toString();
 				} else {
 					variableGroup = defaultGroup;
 				}

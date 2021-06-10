@@ -29,17 +29,19 @@ class Environment {
 		
 		val List<String> commonInputNames = augmentedModel.getSortedConstantVariableNames();
 		val Map<String, Type> commonInputTypes = augmentedModel.getConstantVariableTypes();
+		
+		val Map<String, GroupType> variableGroups = augmentedModel.getGroupsByName();
 
 		builder.append('"publicParameterVariables":[');
-		buildVariables(builder, publicParameterNames, publicParameterTypes);
+		buildVariables(builder, publicParameterNames, publicParameterTypes, variableGroups);
 		builder.append("],");
 		
 		builder.append('"witnessVariables":[');
-		buildVariables(builder, witnessNames, witnessTypes);
+		buildVariables(builder, witnessNames, witnessTypes, variableGroups);
 		builder.append("],");
 		
 		builder.append('"commonInputVariables":[');
-		buildVariables(builder, commonInputNames, commonInputTypes);
+		buildVariables(builder, commonInputNames, commonInputTypes, variableGroups);
 		builder.append("]");
 		builder.append("}");
 		representation = builder.toString();
@@ -62,14 +64,19 @@ class Environment {
 		}
 	}
 	
-	def void buildVariables(StringBuilder builder, List<String> variableNames, Map<String, Type> variableTypes) {
+	def void buildVariables(StringBuilder builder, List<String> variableNames, Map<String, Type> variableTypes, Map<String, GroupType> variableGroups) {
 		var String delimiter = '';
 		for (String variableName : variableNames) {
 			val Type variableType = variableTypes.get(variableName);
 			builder.append(delimiter);
 			builder.append("{");
 			builder.append('''"name": "«variableName»",''');
-			builder.append('''"type": "«variableType»"''')
+			if (variableGroups.containsKey(variableName)) {
+				val GroupType variableGroup = variableGroups.get(variableName);
+				builder.append('''"group": "«variableGroup»",''');
+			}
+			builder.append('''"type": "«variableType»"''');
+			
 			builder.append("}");
 			delimiter = ", ";
 		}
