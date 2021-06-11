@@ -846,15 +846,18 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def private void orTreeHelper(EObject node, Map<String, List<WitnessVariable>> witnessNodes) {
 		if (node instanceof WitnessVariable) {
-			if (types.get(node) == Type.GROUP_ELEMENT) {
-				val String name = node.getName();
-				if (witnessNodes.containsKey(name)) {
-					witnessNodes.get(name).add(node);
-				} else {
-					val List<WitnessVariable> variables = new ArrayList<WitnessVariable>();
-					variables.add(node);
-					witnessNodes.put(name, variables);
+			orTreeWitnessNodeHelper(node, witnessNodes);
+			
+		} else if (node instanceof FunctionCall) {
+			val String functionName = node.getName();
+			if (userFunctionWitnessNodes.containsKey(functionName)) {
+				val List<WitnessVariable> functionWitnessNodes = userFunctionWitnessNodes.get(functionName);
+				for (WitnessVariable witnessNode : functionWitnessNodes) {
+					orTreeWitnessNodeHelper(witnessNode, witnessNodes);
 				}
+			}
+			for (Expression argument : node.getArguments()) {
+				orTreeHelper(argument, witnessNodes);
 			}
 			
 		} else if (node instanceof Disjunction) {
@@ -873,6 +876,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			
 			mergeMapsOfLists(witnessNodes, leftWitnessNodes);
 			mergeMapsOfLists(witnessNodes, rightWitnessNodes);
+			
 		} else {
 			for (EObject child : node.eContents()) {
 				orTreeHelper(child, witnessNodes);
@@ -880,10 +884,24 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 	}
 	
+	def private void orTreeWitnessNodeHelper(WitnessVariable witness, Map<String, List<WitnessVariable>> witnessNodes) {
+		if (types.get(witness) === Type.GROUP_ELEMENT) {
+			val String name = witness.getName();
+			
+			if (witnessNodes.containsKey(name)) {
+				witnessNodes.get(name).add(witness);
+			} else {
+				val List<WitnessVariable> variables = new ArrayList<WitnessVariable>();
+				variables.add(witness);
+				witnessNodes.put(name, variables);
+			}
+		}
+	}
+	
 	def private void createOrErrors(List<WitnessVariable> witnessVariables) {
 		for (WitnessVariable variable : witnessVariables) {
 			error(
-				"A group element witness cannot be in both subtrees of a disjunction that has a conjunction ancestor",
+				"A group element witness cannot be in both operands of a disjunction that is within a conjunction",
 				variable,
 				getDefaultFeature(variable)
 			);
