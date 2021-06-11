@@ -39,6 +39,8 @@ import org.eclipse.xtext.resource.XtextResource
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.cryptimeleon.subzero.subzero.ConstantVariable
 import org.cryptimeleon.subzero.subzero.WitnessList
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.resource.Resource.Diagnostic
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -160,6 +162,11 @@ class AugmentedModel {
 	// Returns the model representing the syntax tree
 	def Model getModel() {
 		return model;
+	}
+	
+	// Returns the model errors
+	def EList<Diagnostic> getErrors() {
+		return model.eResource.errors;
 	}
 	
 	// Returns the protocol name, if specified, or the default protocol name

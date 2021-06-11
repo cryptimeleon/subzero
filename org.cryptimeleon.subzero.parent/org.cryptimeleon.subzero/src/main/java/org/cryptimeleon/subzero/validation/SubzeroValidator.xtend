@@ -84,6 +84,12 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 */
 	@Check
 	def void checkModel(Model model) {
+		// Do not perform validation if there are still syntax errors
+		if (!model.eResource.errors.isEmpty()) {
+			System.out.println("Syntax errors");
+			return;
+		}
+
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
 		// Get all data needed for validation
