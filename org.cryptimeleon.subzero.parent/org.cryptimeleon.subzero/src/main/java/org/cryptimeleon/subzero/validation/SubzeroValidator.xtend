@@ -66,6 +66,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	var Map<String, GroupType> groupsByName;
 	var Map<String, FunctionSignature> userFunctions;
 	var Map<String, List<FunctionCall>> userFunctionCalls;
+	var Map<String, List<WitnessVariable>> userFunctionWitnessNodes;
 	var Map<String, FunctionSignature> predefinedFunctions;
 	var Set<String> witnessNames;
 	var Set<String> publicParameterNames;
@@ -91,6 +92,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		groupsByName = augmentedModel.getGroupsByName();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
 		userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
+		userFunctionWitnessNodes = augmentedModel.getUserFunctionWitnessNodes();
 		predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 		witnessNames = augmentedModel.getWitnessNames();
 		publicParameterNames = augmentedModel.getPublicParameterNames();
@@ -667,11 +669,24 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		if (left instanceof WitnessVariable) {
 			ModelMap.preorder(right, [EObject node |
 				if (node instanceof WitnessVariable) {
-					error("A witness cannot be in the exponent of another witness", node, getDefaultFeature(node));
+					createWitnessIsNotInExponentOfWitnessError(node);
+				} else if (node instanceof FunctionCall) {
+					val String functionName = node.getName();
+					if (userFunctionWitnessNodes.containsKey(functionName)) {
+						val List<WitnessVariable> witnessNodes = userFunctionWitnessNodes.get(functionName);
+						for (WitnessVariable witnessNode : witnessNodes) {
+							createWitnessIsNotInExponentOfWitnessError(witnessNode);
+						}
+					}
 				}
 			]);
 		}
 	}
+	
+	def private void createWitnessIsNotInExponentOfWitnessError(WitnessVariable witness) {
+		error("A witness cannot be in the exponent of another witness", witness, getDefaultFeature(witness));
+	}
+	
 	
 	/*
 	 * Validate that the operands of a binary operation are of compatible type

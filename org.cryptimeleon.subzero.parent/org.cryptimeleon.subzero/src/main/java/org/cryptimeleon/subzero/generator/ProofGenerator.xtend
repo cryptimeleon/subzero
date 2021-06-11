@@ -339,7 +339,7 @@ class ProofGenerator {
 	def private dispatch String generateCode(FunctionCall call) {
 		var String name = call.getName();
 		
-		val boolean isInlineFunction = augmentedModel.isInlineFunction(name);
+		val boolean isInlineFunction = augmentedModel.isInlineFunctionName(name);
 		
 		if (name == "e") {
 			// Handle the special pairing function case

@@ -87,6 +87,7 @@ class AugmentedModel {
 	Map<String, FunctionDefinition> userFunctions;
 	Map<String, List<FunctionCall>> userFunctionCalls;
 	
+	Map<String, List<WitnessVariable>> userFunctionWitnessNodes;
 	
 	Map<String, Map<String, List<LocalVariable>>> localVariables;
 	Map<String, Map<String, Parameter>> localParameters;
@@ -133,6 +134,8 @@ class AugmentedModel {
 		
 		this.userFunctions = null;
 		this.userFunctionCalls = null;
+		
+		this.userFunctionWitnessNodes = null;
 		
 		this.localVariables = null;
 		this.localParameters = null;
@@ -412,6 +415,11 @@ class AugmentedModel {
 		return witnessNodes;
 	}
 	
+	// Returns the witness node associated with a witness name
+	def Witness getWitnessNode(String witnessName) {
+		return getWitnessNodes().get(witnessName);
+	}
+	
 	// Returns the set of witness variable names
 	def Set<String> getWitnessNames() {
 		if (witnessNames !== null) return witnessNames;
@@ -426,6 +434,11 @@ class AugmentedModel {
 		}
 		
 		return witnessNames;	
+	}
+	
+	// Returns true if the name is used for a witness variable
+	def boolean isWitnessName(String witnessName) {
+		return getWitnessNames().contains(witnessName);
 	}
 	
 	// Returns a list of witness variable names, in sorted order
@@ -459,6 +472,11 @@ class AugmentedModel {
 		}
 		
 		return witnessTypes;
+	}
+	
+	// Returns the type of a witness
+	def Type getWitnessType(String witnessName) {
+		return getWitnessTypes().get(witnessName);
 	}
 	
 	// Returns a set containing the names of all witnesses that are constrained by a range or linear exponent constraint
@@ -499,6 +517,11 @@ class AugmentedModel {
 		]);
 	}
 	
+	// Returns true if the witness is constrained by a range or linear exponent constraint
+	def boolean isConstrainedWitness(String witnessName) {
+		return getConstrainedWitnessNames().contains(witnessName);
+	}
+	
 	/*
 	 * Public parameter information
 	 */
@@ -518,6 +541,11 @@ class AugmentedModel {
 		return publicParameters;
 	}
 	
+	// Returns the public parameter node associated with a witness name
+	def PublicParameter getPublicParameterNode(String ppName) {
+		return getPublicParameterNodes().get(ppName);
+	}
+	
 	// Returns a set containing the names of all public parameters
 	def Set<String> getPublicParameterNames() {
 		if (publicParameterNames !== null) return publicParameterNames;
@@ -533,6 +561,11 @@ class AugmentedModel {
 		}
 		
 		return publicParameterNames;
+	}
+	
+	// Returns true if the name is used for a public parameter variable
+	def boolean isPublicParameterName(String ppName) {
+		return getPublicParameterNames().contains(ppName);
 	}
 	
 	def List<String> getSortedPublicParameterNames() {
@@ -556,6 +589,10 @@ class AugmentedModel {
 		return publicParameterTypes;
 	}
 	
+	def Type getPublicParameterType(String ppName) {
+		return getPublicParameterTypes().get(ppName);
+	}
+	
 	/*
 	 * Constant variable information
 	 */
@@ -564,6 +601,10 @@ class AugmentedModel {
 		if (constantVariableNames !== null) return constantVariableNames;
 		getConstantVariablesHelper();
 		return constantVariableNames;
+	}
+	
+	def boolean isConstantVariableName(String constantName) {
+		return getConstantVariableNames.contains(constantName);
 	}
 	
 	def List<String> getSortedConstantVariableNames() {
@@ -578,10 +619,18 @@ class AugmentedModel {
 		return constantVariableTypes;
 	}
 	
+	def Type getConstantVariableType(String constantName) {
+		return getConstantVariableType(constantName);
+	}
+	
 	def Map<String, GroupType> getConstantVariableGroups() {
 		if (constantVariableGroups !== null) return constantVariableGroups;
 		getConstantVariablesHelper();
 		return constantVariableGroups;
+	}
+	
+	def GroupType getConstantVariableGroup(String constantName) {
+		return getConstantVariableGroups().get(constantName);
 	}
 	
 	private def getConstantVariablesHelper() {
@@ -669,6 +718,10 @@ class AugmentedModel {
 
 		return userFunctions;
 	}
+	
+	def FunctionDefinition getUserFunctionNode(String functionName) {
+		return getUserFunctionNodes.get(functionName);
+	}
 
 	// Returns a map from user function names to user function call nodes
 	def Map<String, List<FunctionCall>> getUserFunctionCallNodes() {
@@ -722,6 +775,10 @@ class AugmentedModel {
 		return userFunctionSignatures;
 	}
 	
+	def FunctionSignature getUserFunctionSignature(String functionName) {
+		return getUserFunctionSignatures().get(functionName);
+	}
+	
 	// Returns a map from user function names and local variable names to a list of local variable objects	
 	def Map<String, Map<String, List<LocalVariable>>> getLocalVariableNodes() {
 		if (localVariables !== null) return localVariables;
@@ -747,8 +804,8 @@ class AugmentedModel {
 		return localVariables;
 	}
 	
-	def boolean userFunctionHasConstant(String functionName) {
-		if (userFunctionWithConstant !== null) return userFunctionWithConstant.contains(functionName);
+	def Set<String> getUserFunctionsWithConstant() {
+		if (userFunctionWithConstant !== null) return userFunctionWithConstant;
 		
 		userFunctionWithConstant = new HashSet<String>();
 		for (FunctionDefinition function : model.getFunctions()) {
@@ -759,37 +816,60 @@ class AugmentedModel {
 			if (hasConstant) userFunctionWithConstant.add(function.getName());
 		}
 		
-		return userFunctionWithConstant.contains(functionName);
+		return userFunctionWithConstant;
 	}
+	
+	def boolean userFunctionHasConstant(String functionName) {
+		return getUserFunctionsWithConstant().contains(functionName);
+	}
+	
 	
 	def Set<String> getUserFunctionWitnessNames(String functionName) {
 		if (userFunctionWitnesses !== null) return userFunctionWitnesses.get(functionName);
-		
+		getUserFunctionWitnessesHelper();
+		return userFunctionWitnesses.get(functionName);
+	}
+	
+	def Map<String, List<WitnessVariable>> getUserFunctionWitnessNodes() {
+		if (userFunctionWitnessNodes !== null) return userFunctionWitnessNodes;
+		getUserFunctionWitnessesHelper();		
+		return userFunctionWitnessNodes;
+	}
+	
+	def void getUserFunctionWitnessesHelper() {
 		userFunctionWitnesses = new HashMap<String, Set<String>>();
+		userFunctionWitnessNodes = new HashMap<String, List<WitnessVariable>>();
+		
 		for (FunctionDefinition function : model.getFunctions()) {
+			val String functionName = function.getName();
 			val witnessNames = new HashSet<String>();
+			val witnessNodes = new ArrayList<WitnessVariable>();
 			
 			ModelMap.preorder(function.getBody(), [EObject node |
 				if (node instanceof WitnessVariable) {
 					witnessNames.add(node.getName());
+					witnessNodes.add(node);
 				}
 			]);
 			
-			userFunctionWitnesses.put(function.getName(), witnessNames);
+			userFunctionWitnesses.put(functionName, witnessNames);
+			userFunctionWitnessNodes.put(functionName, witnessNodes);
 		}
-		
-		return userFunctionWitnesses.get(functionName);
 	}
 	
-	def boolean isInlineFunction(String functionName) {
-		if (inlineFunctionNames !== null) return inlineFunctionNames.contains(functionName);
+	def Set<String> getInlineFunctionNames() {
+		if (inlineFunctionNames !== null) return inlineFunctionNames;
 		
 		inlineFunctionNames = new HashSet<String>();
 		for (FunctionDefinition function : model.getFunctions()) {
 			if (function.isInline()) inlineFunctionNames.add(function.getName());
 		}
 		
-		return inlineFunctionNames.contains(functionName);
+		return inlineFunctionNames;
+	}
+	
+	def boolean isInlineFunctionName(String functionName) {
+		return getInlineFunctionNames().contains(functionName);
 	}
 	
 	/*
