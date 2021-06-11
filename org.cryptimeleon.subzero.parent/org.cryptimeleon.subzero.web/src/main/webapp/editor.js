@@ -46,7 +46,8 @@ function createEditor(xtext) {
     syntaxDefinition: "syntax-highlighting",
     theme: "ace/theme/monokai",
     selectionUpdateDelay: SELECTION_UPDATE_DELAY,
-    textUpdateDelay: TEXT_UPDATE_DELAY
+    textUpdateDelay: TEXT_UPDATE_DELAY,
+    wrap: true // Enables word wrap
   });
 
   var session = editor.getSession();
