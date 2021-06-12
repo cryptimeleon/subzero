@@ -25,6 +25,8 @@ import org.cryptimeleon.subzero.subzero.Witness
 import org.cryptimeleon.subzero.subzero.WitnessList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
+import java.util.Map
+import java.lang.Math
 
 /**
  * Converts a syntax tree to valid LaTeX output
@@ -73,6 +75,8 @@ class LatexPreview {
 	static val String OPERATOR_GREATER = ">";
 	static val String OPERATOR_LESSEQUAL = "<=";
 	static val String OPERATOR_GREATEREQUAL = ">=";
+	
+	val Map<String, String> greekLetters;
 
 	// Contains the final generated LaTeX output
 	var String latexCode;
@@ -87,6 +91,48 @@ class LatexPreview {
 	var boolean inlineFunctions;
 
 	new(AugmentedModel augmentedModel) {
+		
+		// Some LaTeX commands are slightly different, so a map is needed as opposed to a set
+		greekLetters = Map.ofEntries(
+			Map.entry("alpha", "alpha"),
+			Map.entry("beta", "beta"),
+			Map.entry("gamma", "gamma"),
+			Map.entry("Gamma", "Gamma"),
+			Map.entry("delta", "delta"),
+			Map.entry("Delta", "Delta"),
+			Map.entry("eps", "varepsilon"),
+			Map.entry("epsilon", "varepsilon"),
+			Map.entry("zeta", "zeta"),
+			Map.entry("eta", "eta"),
+			Map.entry("theta", "theta"),
+			Map.entry("Theta", "theta"),
+			Map.entry("iota", "iota"),
+			Map.entry("kappa", "kappa"),
+			Map.entry("lambda", "lambda"),
+			Map.entry("Lambda", "Lambda"),
+			Map.entry("mu", "mu"),
+			Map.entry("nu", "nu"),
+			Map.entry("xi", "xi"),
+			Map.entry("Xi", "Xi"),
+			Map.entry("pi", "pi"),
+			Map.entry("Pi", "Pi"),
+			Map.entry("rho", "rho"),
+			Map.entry("sigma", "sigma"),
+			Map.entry("Sigma", "Sigma"),
+			Map.entry("tau", "tau"),
+			Map.entry("ups", "upsilon"),
+			Map.entry("upsilon", "upsilon"),
+			Map.entry("Ups", "Upsilon"),
+			Map.entry("Upsilon", "Upsilon"),
+			Map.entry("phi", "phi"),
+			Map.entry("Phi", "Phi"),
+			Map.entry("chi", "chi"),
+			Map.entry("psi", "psi"),
+			Map.entry("Psi", "Psi"),
+			Map.entry("omega", "omega"),
+			Map.entry("Omega", "Omega")
+		);
+		
 		openBraces = 0;
 		builder = new StringBuilder();
 		builder.append(DELIMITER);
@@ -94,6 +140,8 @@ class LatexPreview {
 		builder.append(DELIMITER);
 		
 		latexCode = builder.toString();
+		
+		
 	}
 	
 	def String getRawLatex() {
@@ -101,9 +149,31 @@ class LatexPreview {
 	}
 
 	// Formats underscores in identifiers as subscript in Latex
-	def private String formatIdentifier(String name) {
-		if (name.indexOf('_') > 0) {
-			if (name.charAt(name.length() - 1) == '\'') {
+	def private String formatIdentifier(String oldName) {
+		var String name = oldName;
+		val int underscoreIndex = name.indexOf('_');
+		val int quoteIndex = name.indexOf('\'');
+		var int endIndex = 0;
+		
+		if (underscoreIndex < 0 && quoteIndex < 0) {
+			endIndex = name.length();
+		} else if (underscoreIndex < 0) {
+			endIndex = quoteIndex;
+		} else if (quoteIndex < 0) {
+			endIndex = underscoreIndex;
+		} else {
+			endIndex = Math.min(underscoreIndex, quoteIndex);
+		}
+		
+		val String nameStart = name.substring(0, endIndex);
+		
+		if (greekLetters.containsKey(nameStart)) {
+			name = name.replace(nameStart, "\\" + greekLetters.get(nameStart));
+		}
+
+		if (underscoreIndex > 0) {
+			val char quote = '\'';
+			if (name.charAt(name.length() - 1) == quote) {
 				return name.replace("_", "_{").replaceFirst("'", "}'");
 			} else {
 				return name.replace("_", "_{") + "}";

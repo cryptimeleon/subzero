@@ -36,6 +36,8 @@ function zoomPreviewIn() {
 
   currentPreviewFontSize += FONT_SIZE_INCREMENT;
   document.getElementById("latex-preview").style.fontSize = currentPreviewFontSize;
+
+  updateLatexPreviewBox(document.getElementById("latex-code").value);
 }
 
 function zoomPreviewOut() {
@@ -43,4 +45,6 @@ function zoomPreviewOut() {
 
   currentPreviewFontSize -= FONT_SIZE_INCREMENT;
   document.getElementById("latex-preview").style.fontSize = currentPreviewFontSize;
+
+  updateLatexPreviewBox(document.getElementById("latex-code").value);
 }
