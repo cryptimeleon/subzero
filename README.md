@@ -11,12 +11,12 @@ Building the project
 ====================
 You can also run an instance of the website yousrelf. Make sure that you are using Java 11 and have [Maven](https://maven.apache.org/) installed. After downloading the repo, run the following commands:
 ```
-cd org.cryptimeleon.zeroknowledge.parent/
+cd org.cryptimeleon.subzero.parent/
 mvn install
 ```
 Next, to start the web server, run:
 ```
-cd org.cryptimeleon.zeroknowledge.web/
+cd org.cryptimeleon.subzero.web/
 mvn jetty:run
 ```
 Go to http://localhost:8080/
