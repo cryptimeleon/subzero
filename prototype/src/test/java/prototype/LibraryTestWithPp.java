@@ -13,11 +13,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class LibraryTest {
+public class LibraryTestWithPp {
     @Test public void protocolTest() {
         //Set up public paramters
         Group group = new LazyGroup(new Secp256k1());
         Zp zp = (Zp) group.getZn();
+        GroupElement g = group.getNeutralElement();
+        GroupElement h = group.getNeutralElement();
 
         //Set witness
         Zp.ZpElement x = zp.getUniformlyRandomElement();
@@ -26,14 +28,12 @@ public class LibraryTest {
         //Set constants
         GroupElement C = group.getNeutralElement(); //Jeremy: for now. Later, we may want generate a more useful example
         GroupElement C2 = group.getNeutralElement();
-        GroupElement g = group.getNeutralElement();
-        GroupElement h = group.getNeutralElement();
 
         //Instantiate protocol and input
-        MySigmaProtocol protocol = new MySigmaProtocol(group);
+        MySigmaProtocolWithPp protocol = new MySigmaProtocolWithPp(group, g, h);
 
-        CommonInput commonInput = new MySigmaProtocol.MySigmaProtocolCommonInput(C, C2, g, h);
-        SecretInput secretInput = new MySigmaProtocol.MySigmaProtocolSecretInput(x, r);
+        CommonInput commonInput = new MySigmaProtocolWithPp.MySigmaProtocolCommonInput(C, C2);
+        SecretInput secretInput = new MySigmaProtocolWithPp.MySigmaProtocolSecretInput(x, r);
 
         SigmaProtocolProverInstance prover = protocol.getProverInstance(commonInput, secretInput);
         SigmaProtocolVerifierInstance verifier = protocol.getVerifierInstance(commonInput);

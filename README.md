@@ -1,12 +1,15 @@
 Subzero - Zero Knowledge Compiler
 ============================
-Subzero is a DSL (domain-specific language) for the specification of zero knowledge protocols. It is written in Java and uses the [Xtext](https://www.eclipse.org/Xtext/) language development framework.
+Subzero is a DSL (domain-specific language) that enables the specification of zero knowledge protocols. It is written in Java and uses the [Xtext](https://www.eclipse.org/Xtext/) language development framework.
 This website features a code editor for writing Subzero programs, and a compiler to generate a Java project that can execute the protocol described by Subzero code.
 
+Using the compiler
+==================
+The compiler website is available [here](https://cryptimeleon.org/).
 
-Running the project with Maven
-==============================
-Make sure that you are using Java 11. After downloading the repo, run the following commands:
+Building the project
+====================
+You can also run an instance of the website yousrelf. Make sure that you are using Java 11 and have [Maven](https://maven.apache.org/) installed. After downloading the repo, run the following commands:
 ```
 cd org.cryptimeleon.subzero.parent/
 mvn install
@@ -19,85 +22,47 @@ mvn jetty:run
 Go to http://localhost:8080/
 
 
-Subzero Syntax
-=========
-The following describes the EBNF (Extended Backus-Naur Form) of the domain specific language grammar.
-The grammar is similar to Camenisch-Stadler notation.
-A Subzero program consists of a single ```<model>```.
-
-```
-<model> ::= <protocol-name>? <function-definition>* (<pp-list> ';'?)? <witness-list> ';'? ('statement' ':'?)? <expression> ';'?
-
-<function-definition> ::= 'inline'? <identifier> <parameter-list> '{' <expression> ';'? '}' ';'?
-<parameter-list> ::= '(' (<parameter> (',' <parameter>)*)? ')'
-<parameter> ::= <identifier>
-
-<pp-list> ::= 'pp' ':'? (<pp> (',' <pp>)*)
-<pp> ::= <identifier>
-
-<witness-list> ::= 'witness' ':'? (<witness> (',' <witness>)*)
-<witness> ::= <identifier>
-
-<expression> ::= <conjunction>
-<conjunction> ::= <disjunction> | <conjunction> '&' <disjunction>
-<disjunction> ::= <comparison> | <disjunction> '|' <comparison>
-<comparison> ::= <sum> | <comparison> <operator> <sum> (<operator> <sum>)? <protocol-name>?
-<sum> ::= <product> | <sum> '+' <product> | <sum> '-' <product>
-<product> ::= <power> | <product> '*' <power> | <product> '/' <power>
-<power> ::= <construct> | <construct> '^' <power>
-<construct> ::= <string-literal> | <tuple> | <negative>
-<string-literal> ::= '"' ('//' . | !('\\' | '"') )* '"'
-<tuple> ::= '(' <conjunction> (',' <conjunction>)+ ')'
-<negative> ::= <value> | '-' <value>
-<value> ::= <function-call> | <variable> | <number-literal> | '(' <brackets> ')'
-<function-call> ::= <identifier> '(' (<argument> (',' <argument>)*)? ')'
-<argument> ::= <conjunction>
-<variable> ::= <identifier>
-<number-literal> ::= [0-9]+
-<brackets> ::= <conjunction>
-
-<operator> ::= '!=' | '=' | '<' | '<=' | '>' | '>='
-<protocol-name> ::= '[' [a-zA-z] [a-zA-Z0-9_' ]* ']'
-<identifier> ::= [a-zA-Z] [a-zA-Z0-9_']*
-```
-
-Subzero Language Specification
--------------------------
-### Subzero expressions
-An expression is a construct that evaluates to some value.
-Expressions can contain nested expressions, which terminate in values.
-Expressions can be viewed as binary trees, where leaf nodes are values and non-leaf nodes are operators. Any subtree is also a valid expression.
-
-Expressions are divided into two kinds: logical and algebraic.
-Logical expressions are conjunctions, disjunctions, comparisons, and function calls which return a logical expression. They evaluate to a BOOLEAN value.
-Algebraic expressions are sums, products, exponentiations, negatives, variables, number literals, and function calls which return an algebraic expression. They evaluate to either an EXPONENT or GROUP_ELEMENT value.
-Two other terms are used to further describe logical expressions.
-Propositional expressions are conjunctions and disjunctions.
-Comparison expressions are just comparisons.
+Getting started with Subzero
+============================
 
 ### Types
-There are 4 types of value.
-STRING is used for string literals, and can only be used as an argument in function calls to predefined functions.
-BOOLEAN is the result of evaluating a logical expression.
-EXPONENT and GROUP_ELEMENT are the possible results of evaluting an algebraic expression.
-There is no type declaration and all types are inferred (explained later).
+There are three distinct types in Subzero: `boolean`, `exponent`, and `group element`. Variables and function parameters can either be of type `exponent` or `group element`. A function's return type can be `boolean`, `exponent`, or `group element`. Types are not declared; instead, all variable and function types are inferred based on their context, and validation errors will be shown if they are used in conflicting type contexts.
+
+### Roles
+In addition to a type, all variables have a role. This role determines the usage of the variable within the protocol. Every variable is either a witness variable, a public parameter variable, a common input variable, or a local variable. Witness and public parameter variables are declared explicitly within the witness and public parameter lists, respectively. Local variables are declared in the parameter list of their corresponding function definition. All other variables are implicitly declared as common input variables. This mix of explicit/implicit declaration is intended for readability and to keep protocols looking similar to the existing notation in literature.
+
+### Expressions
+An expression is a construct that evaluates to a value of a certain type.
+Expressions can be composed of other expressions
+
+An expression can be either an operation (which consists of an operator and operand expressions), or a value.
+
+There are two kinds of expressions: logical and algebraic.
+Logical expressions are conjunctions, disjunctions, comparisons, and function calls which return a logical expression. They evaluate to a `boolean` value.
+Algebraic expressions are sums, products, exponentiations, negations, variables, number literals, and function calls which return an algebraic expression. They evaluate to either an `exponent` or `group element` value.
+Two other terms are used to further describe logical expressions.
+Propositional expressions are conjunctions and disjunctions.
+Comparison expressions are equalities and inequalities.
 
 ### Operators
 ---
-The language contains various binary operators and one unary operator
+The language contains various unary, binary, and ternary operators.
 
 #### Conjunction
-```a & b```
+```A & B```
+The expression evaluates to true if and only if the expressions A and B both evaluate to true
 
 #### Disjunction
 ```a | b```
+The expression evaluates to true if and only if at least one of the expressions A and B evaluate to true
 
-#### Comparison
-Equality
+#### Equality
+Equality expressions evaluate to a `boolean`, and the operands must be either both `exponent` or both `group element`.
 ```a = b```
 
-Inequality
-```a != b```
+#### Inequality
+Inequality expressions evaluate to a `boolean`, and both operands must have type `exponent`.
+
 
 Greater than
 ```a > b```
@@ -111,7 +76,22 @@ Greater than or equal to
 Less than or equal to
 ```a <= b```
 
+Double inequality
+```a > b > c```
+```a >= b > c```
+```a > b >= c```
+```a >= b >= c```
+```a < b < c```
+```a <= b < c```
+```a < b <= c```
+```a <= b <= c```
+
+Comparisons can also have a subprotocol name specified after the expression that will appear in the generated code. It uses the same syntax to the protocol name.
+```g^x * h^r = C [Example subprotocol]```
+
 #### Sum
+Sum expressions evaluate to an `exponent`, and both operands must have type `exponent`.
+
 Addition
 ```a + b```
 
@@ -119,6 +99,8 @@ Subtraction
 ```a - b```
 
 #### Product
+Product expressions evaluate to an `exponent` or a `group element`. The operands must both have type `exponent`, or both have type `group element`.
+
 Multiplication
 ```a * b```
 
@@ -126,9 +108,12 @@ Division
 ```a / b```
 
 #### Exponentiation
+Exponentiation expressions evaluate to an `exponent` if the left operand is of type `exponent`, or to a `group element` if the left operand is of type `group element`.
+
 ```a ^ b```
 
 #### Unary negation
+Negation expressions evaluate to an `exponent` and the operand must be of type `exponent`.
 ```-a```
 
 ### Values
@@ -137,24 +122,15 @@ Division
 #### Function calls
 A function call consists of the name of a valid function followed by a comma-delimited list of arguments enclosed in parantheses, where each argument is some algebraic expression or string literal.
 
-```functionCall(a + b, "string", x, y^(a+b))```
+```foo(a + b, bar(x,r), x, y^(a+b))```
 
 #### Number literals
-Any integer
+Any integer, evaluates to `exponent`.
 
 #### Variables
-Variable names must start with a letter, can contain letters and numbers, can contain at most one underscore (non-terminating), and any number of terminating single quotes. Single quotes and one underscore are allowed so that names can contain subscripts or the prime symbol, respectively, which allows for nicer LaTeX output.
-Variables can either be of type EXPONENT or GROUP_ELEMENT, not STRING or BOOLEAN.
-Variables can also be scalar or be a tuple of some arbitrary size.
+Variable names must start with a letter, can contain letters and numbers, can contain at most one underscore, and any number of terminating single quotes. Single quotes and one underscore are allowed so that names can contain subscripts or the prime symbol, respectively, which allows for nicer LaTeX output.
+Variables can either be of type `exponent` or `group element`.
 
-#### String literals
-Any string of characters, enclosed in double quotes. Only used as arguments in function calls to predefined functions.
-
-```"This is a string"```
-
-### Tuples
-Tuples are a comma-delimited list of at least 2 expressions enclosed in parentheses.
-All expressions within the tuple must be either all EXPONENT or all GROUP_ELEMENT.
 
 ### Associativity and Precedence
 The following table describes the precedence and associativity (when relevant) of each operator.
@@ -170,151 +146,179 @@ Operators are listed in descending precedence from top to bottom.
 | 5 | x + y | Addition | Left |
 | 5 | x - y | Subtraction | Left |
 | 6 | x = y | Equality | - |
-| 6 | x != y | Inequality | - |
 | 6 | x > y | Greater than | - |
 | 6 | x < y | Less than | - |
 | 6 | x >= y | Greater than or equal | - |
 | 6 | x <= y | Less than or equal | - |
+| 6 | x > y > z | Double inequality | - |
 | 7 | x \| y | Disjunction | Left |
 | 8 | x & y | Conjunction | Left |
+
+An expression surrounded by parentheses is also an expression, so the precedence order does not need to be remembered as long as sufficient parentheses are used.
 
 ### Comments
 Single line comments start with `//`.
 Multi line comments start with `/*` and end with `*/`.
+Note that comments will not be included anywhere in the generated code.
 
 ```
 // This is a single line comment
-/* This
-   is
-   a
-   multi-line
+/* This is
+   a multi-line
    comment */
 ```
 
-### Format of a Subzero program
----
-A Subzero program consists of function definitions, a witness list, and a proof expression.
+Format of a Subzero program
+---------------------------
+A Subzero program specifies a single zero knowledge proof of knowledge protocol.
+A program consists of a protocol name, function definitions, a public parameter list, a witness list, and a proof expression.
 
-#### The proof expression
-This expression describes the zero knowledge argument of knowledge protocol, and consists of a single logical expression followed by an optional semicolon.
-When the protocol is run, this expression returns either true or false, signifying whether the protocol was run successfully or not.
+### Protocol name
+The protocol name is an optional string that will be used to name the generated classes during compilation; if omitted, a default protocol name will be used. It must be the first line of the program, between a pair of square brackets. The name must start with a letter, and can be followed by letters, numbers, underscores, and spaces.
 
-#### Witness list
-The witness list follows any user defined functions.
-It is a comma-delimited list of witness names enclosed in parentheses, ending with an optional semicolon.
-A witness name starts with a letter, can contain letters and numbers, can contain at most 1 underscore, and can contain any number of terminating single quotes.
+```[My example protocol]```
 
-```(x1, x2, x3, x4, x5);```
-
-#### Function definitions
+### Function definitions
 The user can define zero or more functions at the start of the program.
 A function definition starts with a function name, which must begin with a letter, and can contain letters and numbers.
-This is followed by a comma-delimited list of parameter names enclosed in parentheses, and finally a Subzero expression (followed by an optional semicolon) enclosed in curly braces, with an optional terminating semicolon.
-A parameter name starts with a letter, can contain letters and numbers, can contain at most 1 underscore, and can contain any number of terminating single quotes.
+This is followed by a comma-delimited list of parameter names enclosed in parentheses, and finally a single expression (followed by an optional semicolon) enclosed in curly braces.
+A parameter name starts with a letter, can contain letters and numbers, can contain at most 1 underscore (non-terminating), and can contain any number of terminating single quotes.
 
 ```
-functionName(parameterA, parameterB, parameterC) {
-  parameterA + parameterB + parameterC;
+foo(a, b, c) {
+  a + b + c;
 };
 ```
 
+Since all functions are pure functions, they are also inlinable. To make a function inlined, prefix it with the 'inline' keyword. In the generated code, a non-inlined function will generate as a class method, and function calls to that method, whereas an inline function will generate the function body expression in place of every function call to it.
+
+```
+inline bar(g, x) {
+   g^x
+}
+```
+
 Any variable that references a parameter in the function is called a local variable.
-Any other variable is a global variable.
+Any other variable is a global variable, and can reference a witness variable, public parameter variable, or common input variable.
 
 All parameters in the parameter list should be referenced at least once by a variable, so that type inference can occur.
 A warning will appear if there is a parameter in the parameter list with no variable referencing it.
 
-Note that user defined functions cannot contain function calls to user defined functions, only to predefined functions, thus recursion is not supported.
+Note that user defined functions cannot contain function calls.
 
-### Variable declaration
-Witnesses and function parameters must be declared. All other variables are global, and do not need to be declared.
 
-### Type Inference
-In Subzero there is no need to declare the type of a variable; it supports full type inference.
-The type of each variable is determined based on its context. The parser will label as many variables as possible as EXPONENT, and then all remaining variables will be labeled as GROUP_ELEMENT.
+### Public parameter list
+This is an optional list that declares public parameter variables. The colon and terminating semicolon are optional.
 
-### Size inference
-Subzero supports both scalar and tuple variables. There is also no need to declare the size of a variable.
-The size of a variable will be inferred based on the context, and will default to a scalar. Thus, it becomes a tuple only if it is involved in an operation with some other explicit tuple, that is, a parentheses-enclosed list of expressions).
+```pp: m1, m2;```
+```pp m1```
 
-Compiler Website Features
--------------------------
+A public parameter name starts with a letter, can contain letters and numbers, can contain at most 1 underscore (non-terminating), and can contain any number of terminating single quotes.
+
+### Witness list
+This is a list that declares witness variables. A protocol must have at least one witness, so this list is required. The colon and terminating semicolon are optional.
+
+```witness: x, r;```
+
+A witness name starts with a letter, can contain letters and numbers, can contain at most 1 underscore (non-terminating), and can contain any number of terminating single quotes.
+
+### The proof expression
+This expression describes the zero knowledge argument of knowledge protocol, and consists of a single logical expression followed by an optional semicolon.
+When the protocol is run, this expression evaluates to either true or false, signifying whether the protocol was run successfully or not.
+
+Compiler website features
+=========================
 
 ### Code editor
-The website uses [Ace](https://ace.c9.io/) to provide an easy to use code editor.
-Syntax errors will occur when the entered text does not match the described EBNF grammar.
-Validation errors and warnings will occur when the entered text does not match the additional validation rules that dictate the structure of Subzero programs.
+The website uses [Ace](https://ace.c9.io/) to provide an easy to use code editor. The editor has the following features:
+- Syntax highlighting
+- Syntax errors will occur when the entered text does not match the described EBNF grammar.
+Validation errors and warnings will occur when the entered text does not match the additional semantic rules that dictate the structure of Subzero programs.
 Errors will be displayed with a red X, and the corresponding error location will be underlined in red.
 Warnings will be displayed with a yellow triangle, and the corresponding warning location will be underlined in yellow.
 The red X and yellow triangle can be hovered over with the mouse to display information about the error/warning.
-The code editor font size can be increased and decreased by pressing `Ctrl+'+'` and `Ctrl+'-'` respectively.
+- Automatic bracket matching
+- Automatic indentation
+
+- Increase or decrease font size with `Ctrl+'+'` and `Ctrl+'-'`
+- Use `Ctrl+'l'` to jump to a specific line number
+- Use `Ctrl+'s'` to save the Subzero program code 
+
+### Compilation
+Once a valid Subzero program is written, it can be compiled. This will generate a complete Java program (buildable with Gradle) that specifies and runs the protocol using the Cryptimeleon [Math](https://github.com/cryptimeleon/math) and [Craco](https://github.com/cryptimeleon/craco) libraries. Note that because syntax and semantic errors are raised as you type a program, once the protocol is free from errors in the editor then there will be no errors during compilation.
+
+### Example protocols
+A dropdown menu allows you to load existing example protocols into the editor.
 
 ### LaTeX preview
 The website uses [MathJax](https://www.mathjax.org/) to display formatted LaTeX based on the code in the editor.
-If the entered text in the code editor is free of syntax and validation errors, and if the corresponding checkboxes are enabled, this box will display a formatted LaTeX interpretation of the Subzero code.
+If the entered text in the code editor is free of syntax and validation errors, this box will display a formatted LaTeX interpretation of the Subzero code. Because variable names support a single non-terminating underscore, this allows for variables with subscripts, and because of the supported terminating single quotes, variables can also have the prime symbol at the end.
 The LaTeX preview font size can be increased and decreased by pressing the corresponding buttons in the top left corner of the display box.
 
-### Checkboxes
----
-There are 4 checkboxes which toggle various functionality on the website.
-
-#### Enable LaTeX preview
-The LaTeX preview box will now display formatted LaTeX.
-By default, enabling this option will generate the formatted LaTeX once, and subsequent updates are done by pressing the 'Update LaTeX preview' button.
-
-#### Enable continuous LaTeX preview update
-This option can only be enabled if 'Enable LaTeX preview' is checked.
-The LaTeX preview box will now be continuously updated, after a short pause after the user stops typing in the text editor.
-
-#### Enable inlining functions in LaTeX preview
-If this is enabled, functions will be inlined before the editor code is displayed as formatted LaTeX.
-Inlining means that any function call in the code will be replaced with the corresponding function definition, where all local variables have been replaced by the corresponding arguments in the function call.
-The exception to this is function calls to predefined functions, which will not be inlined.
-
-#### Enable inlining functions in generated Java code
-If this is enabled, functions will be inlined before the editor code is compiled to Java code.
-Inlining means that any function call in the code will be replaced with the corresponding function definition, where all local variables have been replaced by the corresponding arguments in the function call.
-The exception to this is function calls to predefined functions, which will not be inlined.
-
-### Buttons
----
-
-#### Download editor code
-Downloads a text file with the .zkak extension containing the current contents of the code editor.
-
-#### Download LaTeX code
-Downloads a file with the .tex extension containing the LaTeX code used to generate the current LaTeX preview.
-
-#### Compile and download Java code
-If the current contents of the code editor are free of syntax and validation errors, parses the code into a syntax tree model, then compiles this to Java code.
-A Java project is then created and downloaded by the user.
-
-#### Update LaTeX preview
-This button is only enabled when 'Enable LaTeX preview' is checked and 'Enable continuous LaTeX preview update' is unchecked.
-Manually updates the LaTeX preview box based on the current contents of the code editor.
-
-### Console
-The console box in the bottom right corner of the page displays error, warning, and info messages. These messages can be generated when downloading editor code, downloading LaTeX code, or during compilation to Java code.
+### Environment
 
 
-Validation rules
+### Options
+
+
+
+Language details
+================
+
+Subzero syntax
+--------------
+The following describes the [EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form) (Extended Backus-Naur Form) of the DSL grammar.
+The grammar is similar to Camenisch-Stadler notation.
+A Subzero program consists of a single ```<model>```.
+
+```
+<model> ::= <function-definition>* <witness-list> ';'? <expression> ';'?
+
+<function-definition> ::= <identifier> <parameter-list> '{' <expression> ';'? '}' ';'?
+<parameter-list> ::= '(' (<parameter> (',' <parameter>)*)? ')'
+<parameter> ::= <identifier>
+
+<witness-list> ::= '(' (<witness> (',' <witness>)*)? ')'
+<witness> ::= <identifier>
+
+<expression> ::= <conjunction>
+<conjunction> ::= <disjunction> | <conjunction> '&' <disjunction>
+<disjunction> ::= <comparison> | <disjunction> '|' <comparison>
+<comparison> ::= <sum> | <comparison> '=' <sum> | <comparison> '!=' <sum> | <comparison> '<' <sum>
+                       | <comparison> '>' <sum> | <comparison> '<=' <sum> | <comparison> '>=' <sum>
+<sum> ::= <product> | <sum> '+' <product> | <sum> '-' <product>
+<product> ::= <power> | <product> '*' <power> | <product> '/' <power>
+<power> ::= <construct> | <construct> '^' <power>
+<construct> ::= <string-literal> | <tuple> | <negative>
+<string-literal> ::= '"' ('//' . | !('\\' | '"') )* '"'
+<tuple> ::= '(' <conjunction> (',' <conjunction>)+ ')'
+<negative> ::= <value> | '-' <value>
+<value> ::= <function-call> | <variable> | <number-literal> | '(' <brackets> ')'
+<function-call> ::= <identifier> '(' (<argument> (',' <argument>)*)? ')'
+<argument> ::= <conjunction>
+<variable> ::= <identifier>
+<number-literal> ::= [0-9]+
+<brackets> ::= <conjunction>
+
+<identifier> ::= [a-zA-Z] [a-zA-Z0-9_']*
+```
+
+Semantic rules
 ----------------
-These are additional rules which dictate the allowed structure and data of Subzero programs.
+These are additional validation rules which dictate the allowed structure and data of Subzero programs.
 
 ### Name format rules
 - Function names must start with a letter, and only contain letters and numbers
-- Witness names must start with a letter, and only contain letters, numbers, at most 1 underscore (to denote subscript) and any number of terminating single quotes
-- Variable names must start with a letter, and only contain letters, numbers, at most 1 underscore (to denote subscript) and any number of terminating single quotes
-- Parameter names must start with a letter, and only contain letters, numbers, at most 1 underscore (to denote subscript) and any number of terminating single quotes
+- Witness, public parameter, common input, and local variable names must start with a letter, and only contain letters, numbers, at most 1 underscore (non-terminating) and any number of terminating single quotes
 
 ### Name uniqueness rules
 - Function definition names must be unique
-- Function definition names cannot have the same name as a predefined function
-- Witness names must be unique
+- Function definition names cannot have the same name as a predefined function (e.g. 'e' is used already for pairings)
+- Declared witness and public parameter names must be unique
 - Function parameter names must be unique within their corresponding function signature
 
 ### Function definition rules
-- Function definitions cannot contain function calls to functions defined by the user, only to predefined functions
+- Function definitions cannot contain any function calls
 - Every function parameter should be used at least once in the function definition (warning)
 - User-defined functions should be called at least once in the proof expression (warning)
 
@@ -325,10 +329,9 @@ These are additional rules which dictate the allowed structure and data of Subze
 - Function calls must reference either a valid user defined function or predefined function
 - The number of arguments in a function call must match the number of parameters in the function definition
 - The type of each argument in a function call must match the type of each parameter in the function definition
-- The size of each argument in a function call must match the size of each parameter in the function definition
-- Function calls cannot contain logical expressions as arguments
-- A function call whose return type is BOOLEAN cannot be within an algebraic expression or a comparison expression
-- A function call whose return type is EXPONENT or GROUP_ELEMENT must be contained within a comparison expression
+- Function calls cannot contain logical expressions as arguments, only algebraic expressions
+- A function call whose return type is `boolean` cannot be within an algebraic expression or a comparison expression
+- A function call whose return type is `exponent` or `group element` must be contained within a comparison expression
 
 ### String literal rules
 - String literals can only be used as arguments in function calls
@@ -341,95 +344,23 @@ These are additional rules which dictate the allowed structure and data of Subze
 - Algebraic expressions must be contained within a comparison expression before being contained within a propositional expression
 
 ### Additional type rules
-These occur when grammar errors cause the type inference to mislabel the type of nodes in the syntax tree
-- Conjunctions must be of type BOOLEAN
-- Conjunction operands must be of type BOOLEAN
-- Disjunctions must be of type BOOLEAN
-- Disjunction operands must be of type BOOLEAN
-- Comparisons must be of type BOOLEAN
-- Comparison operands must be the same type
-- Sums must be of type EXPONENT
-- Sum operands must be of type EXPONENT
+These errors can occur when expressions are used in incorrect or conflicting type contexts.
+- Conjunctions must be of type `boolean`
+- Conjunction operands must be of type `boolean`
+- Disjunctions must be of type `boolean`
+- Disjunction operands must be of type `boolean`
+- Comparisons must be of type `boolean`
+- Equality comparison operands must be the same type
+- Inequality comparison operands must be of type `exponent`
+- Sums must be of type `exponent`
+- Sum operands must be of type `exponent`
+- Products must be of type `exponent` or `group element`
 - Product operands must be the same type
-- The left operand of an exponentiation must be of type EXPONENT or GROUP_ELEMENT
-- The right operand of an exponentiation must be of type EXPONENT
+- The left operand of an exponentiation must be of type `exponent` or `group element`
+- The right operand of an exponentiation must be of type `exponent`
 - An exponentiation must be the same type as the type of its left operand
-- Negatives must be of type EXPONENT
-- Number literals must be of type EXPONENT
-- String literals must be of type STRING
-- Tuple elements must be either all of type EXPONENT or all of type GROUP_ELEMENT
+- Negatives must be of type `exponent`
+- Number literals must be of type `exponent`
 - The type of a function call to a predefined function must match the return type of the predefined function
 - The type of each argument in a function call to a predefined function must match the type of the corresponding parameter of the predefined function
-
-### Tuple rules
-- Tuples cannot be nested within other tuples, unless first nested within a function call
-
-### Additional size rules
-These occur when grammar errors cause the size inference to mislabel the size of nodes in the syntax tree
-- Conjunctions must be scalar
-- Disjunctions must be scalar
-- Comparisons must be scalar
-- Comparison operands must be the same size
-- Sum operands must be the same size
-- Product operands of a GROUP_ELEMENT product must be the same size
-- Product operands of an EXPONENT product must be the same size, or one is a scalar and the other is a tuple
-- The right operand of an exponentiation must be a scalar
-- Number literals must be scalar
-- String literals must be scalar
-- Tuples must have a size of at least 2
-- The size of a tuple must match the number of elements it contains
-
-Code Organization
------------------
-The most important packages and files are listed below. All other packages/files are either for configuration or were generated by Xtext.
-
-### org.cryptimeleon.subzero
-- `Generatesubzero.mwe2` is a configuration file for the DSL. The DSL file extension can be changed here
-- `subzero.xtext` specifies the grammar for the language, according to the EBNF
-
-### org.cryptimeleon.console
-- `Console.java` contains functions for sending messages to the website's console box. Currently unused and not implemented.
-
-### org.cryptimeleon.generator
-- `SubzeroGenerator.xtend` delegates code generation to the Java code generation and LaTeX preview generation
-- `CodeGeneration.xtend` contains all code for code generation for compiling DSL code to Java code. Currently works in the Eclipse editor (with sample outputs) and on the website.
-
-### org.cryptimeleon.subzero.latex
-- `LatexPreview.xtend` generates LaTeX text from the DSL code. Essentially this is code generation for translating DSL code to LaTeX. Now working on the website.
-
-### org.cryptimeleon.subzero.model
-Contains code for working with the model produced by the parser
-- `BranchState.xtend` is a class to represent information about a node's ancestors in the parse tree, which helps in validating the parse tree without using a large amount of traversals.
-- `ExponentExpr.xtend` is a temporary class to stand in for exponent expression objects. Remove once linked to the other library.
-- `FunctionSignature.xtend` stores information about a function's signature (name, return type, parameters)
-- `GroupElementExpression.xtend` is a temporary class to stand in for group element expression objects. Remove once linked to the other library.
-- `ModelHelper.xtend` contains various helper functions for working with the parse tree model
-- `ModelMap.xtend` contains functions for traversing the model tree and applying functions to each node
-- `ModelMapController.xtend` is a class that allows control of a traversal of the parse tree model. This allows nodes to end traversals early or prune branches when deeper traversal is not necessary.
-- `ModelPrinter.xtend` is a debugging class for printing out a text representation of the parse tree model
-- `ReturnsTuple.xtend` is a custom annotation used on predefined functions to indicate that it returns a tuple, and specify its multiplicity
-- `TupleParameters.java` is a custom annotation used on predefined functions to indicate that it has tuple parameters, and specify their multiplicities. A better method of indicating this might be possible.
-
-### org.cryptimeleon.subzero.predefined
-- `PredefinedFunctions.java` is a class to hold all predefined functions
-- `PredefinedFunctionsHelper.xtend` is a helper class to get information on all predefined functions using reflection
-
-### org.cryptimeleon.type
-- `Type.java` is an enum class representing valid Subzero types
-- `TypeInference.xtend` implements type inference. Depends on the `predefined` package for handling predefined functions. Type inference is working, but may have some edge case issues still.
-
-### org.cryptimeleon.subzero.validation
-- `SubzeroValidator.xtend` contains all validation rules that are checked against a parsed model.
-
-### org.cryptimeleon.subzero.web
-Contains all code for the compiler website. All important files are in the WebRoot folder
-- `index.html` is the main page
-- `style.css` is the main stylesheet
-- `libraries.js` loads all required libraries, and implements some editor features
-- `editor.js` creates the code editor and adds functionality
-- `console.js` controls the information console box
-- `latex.js` adds LaTeX preview functionality
-- `options.js` controls the options box
-- `export.js` controls code generation from DSL code to Java code, and DSL code to LaTeX, as well as downloading files
-
 

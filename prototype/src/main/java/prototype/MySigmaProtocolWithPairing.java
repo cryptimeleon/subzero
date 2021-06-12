@@ -3,30 +3,37 @@ package prototype;
 import org.cryptimeleon.craco.protocols.CommonInput;
 import org.cryptimeleon.craco.protocols.SecretInput;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpecBuilder;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
-import org.cryptimeleon.math.structures.groups.Group;
+import org.cryptimeleon.math.expressions.group.GroupElementExpression;
 import org.cryptimeleon.math.structures.groups.GroupElement;
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap;
 import org.cryptimeleon.math.structures.rings.zn.Zp;
 
 import java.math.BigInteger;
 
 /**
  * Protocol for
- * (x,r); g^x * h^r = C
- * & h^r = C2
+ * (x,r); e(g^x, h) = z * e(g*C, h^x)
  */
-public class MySigmaProtocol extends DelegateProtocol {
-    protected Group group;
+public class MySigmaProtocolWithPairing extends DelegateProtocol {
+    //protected MyProtocolPublicParameters pp;
+    protected BilinearGroup bilinearGroup;
     protected Zp zp;
+    protected BilinearMap e;
 
-    public MySigmaProtocol(Group group) {
-        this.group = group;
-        this.zp = (Zp) this.group.getZn();
+    public MySigmaProtocolWithPairing(BilinearGroup bilinearGroup) {
+        //this.pp = pp;
+        this.bilinearGroup = bilinearGroup;
+        this.zp = (Zp) bilinearGroup.getZn();
+        this.e = bilinearGroup.getBilinearMap();
     }
 
     @Override
@@ -39,10 +46,7 @@ public class MySigmaProtocol extends DelegateProtocol {
 
         //Add statements
         subprotocolSpecBuilder.addSubprotocol("statement1",
-                new LinearStatementFragment(input.g.pow(x).op(input.h.pow(r)).isEqualTo(input.C))
-        );
-        subprotocolSpecBuilder.addSubprotocol("statement2",
-                new LinearStatementFragment(input.h.pow(r).isEqualTo(input.C2))
+                new LinearStatementFragment(this.e.applyExpr(input.g.pow(x), input.h).isEqualTo(input.z.op(this.e.applyExpr(input.g.op(input.C), input.h.pow(x)))))
         );
 
         return subprotocolSpecBuilder.build();
@@ -65,13 +69,13 @@ public class MySigmaProtocol extends DelegateProtocol {
 
     public static class MySigmaProtocolCommonInput implements CommonInput {
         public final GroupElement C;
-        public final GroupElement C2;
+        public final GroupElement z;
         public final GroupElement g;
         public final GroupElement h;
 
-        public MySigmaProtocolCommonInput(GroupElement C, GroupElement C2, GroupElement g, GroupElement h) {
+        public MySigmaProtocolCommonInput(GroupElement C, GroupElement z, GroupElement g, GroupElement h) {
             this.C = C;
-            this.C2 = C2;
+            this.z = z;
             this.g = g;
             this.h = h;
         }

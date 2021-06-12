@@ -8,31 +8,30 @@ import org.cryptimeleon.math.serialization.StandaloneRepresentable;
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
 import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup;
 
-/**
- * Jeremy: Ignore for now.
- */
 public class MyProtocolPublicParameters implements StandaloneRepresentable {
     public final BilinearGroup bilinearGroup;
-    //public final SetMembershipPublicParameters setMembershipPp;
+    public final SetMembershipPublicParameters rangeProofpp; //only needed if there's a two-sided range proof
 
-    public MyProtocolPublicParameters(BilinearGroup bilinearGroup/*, SetMembershipPublicParameters setMembershipPp*/) {
+    public MyProtocolPublicParameters(BilinearGroup bilinearGroup, SetMembershipPublicParameters rangeProofpp) {
         this.bilinearGroup = bilinearGroup;
-        //this.setMembershipPp = setMembershipPp;
+        this.rangeProofpp = rangeProofpp;
     }
 
     public MyProtocolPublicParameters(Representation repr) {
         bilinearGroup = (BilinearGroup) repr.obj().get("bilinearGroup").repr().recreateRepresentable();
-        //setMembershipPp = new SetMembershipPublicParameters(bilinearGroup, repr.obj().get("setMembershipPp"));
+        rangeProofpp = new SetMembershipPublicParameters(bilinearGroup, repr.obj().get("setMembershipPp"));
     }
 
-    public static MyProtocolPublicParameters generateNewParameters() {
-        BilinearGroup bilinearGroup = new BarretoNaehrigBilinearGroup(128);
-        //SetMembershipPublicParameters setMembershipPp = TwoSidedRangeProof.generatePublicParameters(bilinearGroup, 100);
-        return new MyProtocolPublicParameters(bilinearGroup/*, setMembershipPp*/);
+    public static MyProtocolPublicParameters generateNewParameters(BilinearGroup bilinearGroup) {
+        SetMembershipPublicParameters rangeProof1pp = TwoSidedRangeProof.generatePublicParameters(bilinearGroup, 100);
+        return new MyProtocolPublicParameters(bilinearGroup, rangeProof1pp);
     }
 
     @Override
     public Representation getRepresentation() {
-        return new ObjectRepresentation("bilinearGroup", bilinearGroup.getRepresentation());
+        ObjectRepresentation repr = new ObjectRepresentation();
+        repr.put("bilinearGroup", bilinearGroup.getRepresentation());
+        repr.put("rangeProofpp", rangeProofpp.getRepresentation());
+        return repr;
     }
 }

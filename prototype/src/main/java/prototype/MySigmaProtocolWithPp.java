@@ -17,16 +17,21 @@ import java.math.BigInteger;
 
 /**
  * Protocol for
+ * pp: (g,h); //or whatever syntax may be appropriate.
  * (x,r); g^x * h^r = C
  * & h^r = C2
  */
-public class MySigmaProtocol extends DelegateProtocol {
+public class MySigmaProtocolWithPp extends DelegateProtocol {
     protected Group group;
     protected Zp zp;
+    protected final GroupElement g;
+    protected final GroupElement h;
 
-    public MySigmaProtocol(Group group) {
+    public MySigmaProtocolWithPp(Group group, GroupElement g, GroupElement h) {
         this.group = group;
         this.zp = (Zp) this.group.getZn();
+        this.g = g;
+        this.h = h;
     }
 
     @Override
@@ -39,10 +44,10 @@ public class MySigmaProtocol extends DelegateProtocol {
 
         //Add statements
         subprotocolSpecBuilder.addSubprotocol("statement1",
-                new LinearStatementFragment(input.g.pow(x).op(input.h.pow(r)).isEqualTo(input.C))
+                new LinearStatementFragment(g.pow(x).op(h.pow(r)).isEqualTo(input.C))
         );
         subprotocolSpecBuilder.addSubprotocol("statement2",
-                new LinearStatementFragment(input.h.pow(r).isEqualTo(input.C2))
+                new LinearStatementFragment(h.pow(r).isEqualTo(input.C2))
         );
 
         return subprotocolSpecBuilder.build();
@@ -66,14 +71,10 @@ public class MySigmaProtocol extends DelegateProtocol {
     public static class MySigmaProtocolCommonInput implements CommonInput {
         public final GroupElement C;
         public final GroupElement C2;
-        public final GroupElement g;
-        public final GroupElement h;
 
-        public MySigmaProtocolCommonInput(GroupElement C, GroupElement C2, GroupElement g, GroupElement h) {
+        public MySigmaProtocolCommonInput(GroupElement C, GroupElement C2) {
             this.C = C;
             this.C2 = C2;
-            this.g = g;
-            this.h = h;
         }
     }
 
