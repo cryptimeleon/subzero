@@ -208,12 +208,16 @@ a:hover {
 }
 
 #zoom-out {
-	top: 26px;
+	/* top: 26px;
+	left: 0; */
+	bottom: 0px;
 	left: 0;
 }
 
 #zoom-in {
-	top: 0;
+	/* top: 0;
+	left: 0; */
+	bottom: 26px;
 	left: 0;
 }
 
@@ -230,7 +234,7 @@ a:hover {
 	max-width: 100%;
 	height: 100%;
 	max-height: 100%;
-	overflow-x: hidden;
+	/* overflow-x: hidden; */
 	overflow-y: auto;
 	text-align: center;
 }

@@ -47,7 +47,9 @@ class LatexPreview {
 	static val String RIGHTPAREN = ")";
 	static val String LEFTBRACE = "{";
 	static val String RIGHTBRACE = "}";
-	static val String DELIMITER = "$$";
+	static val String AND = "&";
+	static val String START = "\\begin{align*}";
+	static val String END = "\\end{align*}";
 	
 	static val String CONJUNCTION = "\\land";
 	static val String DISJUNCTION = "\\lor";
@@ -135,9 +137,9 @@ class LatexPreview {
 		
 		openBraces = 0;
 		builder = new StringBuilder();
-		builder.append(DELIMITER);
+		builder.append(START);
 		generateLatex(augmentedModel.getModel());
-		builder.append(DELIMITER);
+		builder.append(END);
 		
 		latexCode = builder.toString();
 		
@@ -147,39 +149,90 @@ class LatexPreview {
 	def String getRawLatex() {
 		return latexCode;
 	}
-
-	// Formats underscores in identifiers as subscript in Latex
-	def private String formatIdentifier(String oldName) {
-		var String name = oldName;
-		val int underscoreIndex = name.indexOf('_');
-		val int quoteIndex = name.indexOf('\'');
-		var int endIndex = 0;
+	
+	// Formats identifiers into a nicer format for LaTeX
+	def private String formatIdentifier(String identifier) {
+		var String name = identifier;
 		
-		if (underscoreIndex < 0 && quoteIndex < 0) {
-			endIndex = name.length();
-		} else if (underscoreIndex < 0) {
-			endIndex = quoteIndex;
-		} else if (quoteIndex < 0) {
-			endIndex = underscoreIndex;
+		val char quote = '\'';
+		val char underscore = '_';
+		val char tilde = '~';
+		
+		var String primes = "";
+		var boolean hasTilde = false;
+		var boolean hasBar = false;
+		var boolean hasHat = false;
+		
+		// Get all terminating single quotes
+		val int quoteIndex = name.indexOf(quote);
+		if (quoteIndex !== -1) {
+			primes = name.substring(quoteIndex);
+			name = name.substring(0, quoteIndex);
+		}
+		while (name.endsWith("Prime")) {
+			primes += "'";
+			name = name.substring(0, name.length()-5);
+		}
+		
+		// Check if the variable should have a bar over it
+		if (name.charAt(name.length()-1) == underscore) {
+			hasBar = true;
+			name = name.substring(0, name.length()-1);
+		}
+		
+		// Check if the variable should have a tilde over it
+		if (name.charAt(name.length()-1) == tilde) {
+			hasTilde = true;
+			name = name.substring(0, name.length()-1);
+		}
+		
+		// Get the variable subscript
+		var String subscript = "";
+		val int underscoreIndex = name.indexOf(underscore);
+		val int subIndex = name.indexOf("Sub");
+		
+		var int skipChars;
+		var int subscriptIndex;
+		if (underscoreIndex > subIndex) {
+			subscriptIndex = underscoreIndex;
+			skipChars = 1;
 		} else {
-			endIndex = Math.min(underscoreIndex, quoteIndex);
+			subscriptIndex = subIndex;
+			skipChars = 3;
 		}
 		
-		val String nameStart = name.substring(0, endIndex);
+		if (subscriptIndex !== -1) {
+			subscript = "_{" + name.substring(subscriptIndex + skipChars) + "}";
+			name = name.substring(0, subscriptIndex);
+		}
 		
-		if (greekLetters.containsKey(nameStart)) {
-			name = name.replace(nameStart, "\\" + greekLetters.get(nameStart));
+		
+		
+		// Check if the variable should have a bar, tilde, or hat over it
+		if (name.endsWith("Tilde")) {
+			hasTilde = true;
+			name = name.substring(0, name.length()-5);
+		} else if (name.endsWith("Bar")) {
+			hasBar = true;
+			name = name.substring(0, name.length()-3);
+		} else if (name.endsWith("Hat")) {
+			hasHat = true;
+			name = name.substring(0, name.length()-3);
 		}
-
-		if (underscoreIndex > 0) {
-			val char quote = '\'';
-			if (name.charAt(name.length() - 1) == quote) {
-				return name.replace("_", "_{").replaceFirst("'", "}'");
-			} else {
-				return name.replace("_", "_{") + "}";
-			}
+		
+		if (greekLetters.containsKey(name)) {
+			name = "\\" + greekLetters.get(name);
 		}
-		return name;
+		
+		if (hasTilde) {
+			name = "\\tilde{" + name + "}";
+		} else if (hasBar) {
+			name = "\\bar{" + name + "}"; 
+		} else if (hasHat) {
+			name = "\\hat{" + name + "}";
+		}
+		
+		return name + subscript + primes;
 	}
 
 	def private void generateBraces(EObject node) {
@@ -212,33 +265,45 @@ class LatexPreview {
 	}
 
 	def dispatch private void generateLatex(Model model) {
-		if (!inlineFunctions) {
-			for (FunctionDefinition function : model.getFunctions()) {
-				generateLatex(function);
-				builder.append(NEWLINE);
-				builder.append(NEWLINE);
-			}
+		for (FunctionDefinition function : model.getFunctions()) {
+			generateLatex(function);
+			builder.append(NEWLINE);
+			builder.append(NEWLINE);
 		}
 
 		if (model.getPublicParameterList() !== null) {
 			generateLatex(model.getPublicParameterList());
 			builder.append(SEMICOLON);
 			builder.append(NEWLINE);
+			builder.append(NEWLINE);
 		}
 		
+		builder.append("\\mathrm{ZK} & \\{");
 		generateLatex(model.getWitnessList());
-		builder.append(SEMICOLON);
+		builder.append(COLON);
+		builder.append(SPACE);
 		builder.append(NEWLINE);
 		
+		builder.append(AND);
+		builder.append(SPACE);
 		generateLatex(model.getProof());
+		builder.append(SPACE);
+		builder.append(NEWLINE);
+		
+		builder.append(AND);
+		builder.append(SPACE);
+		builder.append("\\}");
 	}
 
 	def dispatch private void generateLatex(FunctionDefinition function) {
-		builder.append(function.getName());		
+		builder.append(function.getName());
+		builder.append(AND);
+		builder.append(SPACE);
 		generateLatex(function.getParameterList());
 		builder.append(COLON);
 		builder.append(NEWLINE);
-		builder.append(NEWLINE);
+		builder.append(AND);
+		builder.append(SPACE);
 		generateLatex(function.getBody());
 	}
 	
@@ -253,9 +318,10 @@ class LatexPreview {
 	}
 	
 	def dispatch private void generateLatex(PublicParameterList publicParameterList) {
-		builder.append("\\{");
+		builder.append("pp & = ");
+		builder.append(LEFTPAREN);
 		generateList(publicParameterList.getPublicParameters());
-		builder.append("\\}");
+		builder.append(RIGHTPAREN);
 	}
 	
 	def dispatch private void generateLatex(PublicParameter publicParameter) {

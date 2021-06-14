@@ -255,12 +255,20 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 
 	// User defined function names must start with a letter, and contain only letters and numbers
 	def private void checkFunctionNameFormat(FunctionDefinition function) {
-		if (function.getName().contains("_")) {
+		val String name = function.getName();
+		
+		if (name.contains("_")) {
 			error("Function names cannot contain underscores", function,
 				getDefaultFeature(function));
 		}
-		if (function.getName().contains("'")) {
+		
+		if (name.contains("'")) {
 			error("Function names cannot contain single quotes", function,
+				getDefaultFeature(function));
+		}
+		
+		if (name.contains("~")) {
+			error("Function names cannot contain tildes", function,
 				getDefaultFeature(function));
 		}
 	}

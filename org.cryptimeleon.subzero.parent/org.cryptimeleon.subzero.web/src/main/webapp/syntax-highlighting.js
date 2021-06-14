@@ -5,7 +5,7 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 	var HighlightRules = function() {
 		
 		// Reused regex definitions
-		var identifier = "([a-zA-Z][a-zA-Z0-9_\\']*)";
+		var identifier = "([a-zA-Z][a-zA-Z0-9_~\\']*)";
 		var operator = "&|\\||=|!=|<|<=|>|>=|\\^|\\*|\\+|\\-";
 		var number = "[0-9]+";
 		var leftParen = "(\\()";
@@ -51,6 +51,7 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 			"witnessDeclarationList": createDeclarationListState("mainBody"),
 
 			"afterProtocolName": [
+				inline,
 				functionName,
 				ppList,
 				witnessList

@@ -34,7 +34,7 @@ function enableLatexPreviewBox() {
 function zoomPreviewIn() {
   if (currentPreviewFontSize >= MAXIMUM_FONT_SIZE) return;
 
-  currentPreviewFontSize += FONT_SIZE_INCREMENT;
+  currentPreviewFontSize += FONT_SIZE_INCREMENT * 2;
   document.getElementById("latex-preview").style.fontSize = currentPreviewFontSize;
 
   updateLatexPreviewBox(document.getElementById("latex-code").value);
@@ -43,7 +43,7 @@ function zoomPreviewIn() {
 function zoomPreviewOut() {
   if (currentPreviewFontSize <= MINIMUM_FONT_SIZE) return;
 
-  currentPreviewFontSize -= FONT_SIZE_INCREMENT;
+  currentPreviewFontSize -= FONT_SIZE_INCREMENT * 2;
   document.getElementById("latex-preview").style.fontSize = currentPreviewFontSize;
 
   updateLatexPreviewBox(document.getElementById("latex-code").value);

@@ -4,7 +4,8 @@ var timer;
 
 var SELECTION_UPDATE_DELAY = 550;
 var TEXT_UPDATE_DELAY = 500;
-var DEFAULT_FONT_SIZE = 18;
+var DEFAULT_EDITOR_FONT_SIZE = 18;
+var DEFAULT_LATEX_FONT_SIZE = 20;
 var MINIMUM_FONT_SIZE = 8;
 var MAXIMUM_FONT_SIZE = 40;
 
@@ -23,8 +24,8 @@ var TAB_SIZE = 2;
 // Blank transparent icon
 var BLANK_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
-var currentEditorFontSize = DEFAULT_FONT_SIZE;
-var currentPreviewFontSize = DEFAULT_FONT_SIZE;
+var currentEditorFontSize = DEFAULT_EDITOR_FONT_SIZE;
+var currentPreviewFontSize = DEFAULT_LATEX_FONT_SIZE;
 var FONT_SIZE_INCREMENT = 2;
 
 // Stores whether the last key pressed was
@@ -47,12 +48,12 @@ function createEditor(xtext) {
     theme: "ace/theme/monokai",
     selectionUpdateDelay: SELECTION_UPDATE_DELAY,
     textUpdateDelay: TEXT_UPDATE_DELAY,
-    wrap: true // Enables word wrap
   });
 
   var session = editor.getSession();
 
-  editor.setFontSize(DEFAULT_FONT_SIZE);
+  editor.setOptions({wrap: true}); // Has to be set separately for some reason
+  editor.setFontSize(DEFAULT_EDITOR_FONT_SIZE);
   editor.on("change", function() {
     if (isContinuousPreviewEnabled()) {
         clearTimeout(timer);
