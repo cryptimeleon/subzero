@@ -79,6 +79,7 @@ class AugmentedModel {
 	Set<String> publicParameterNames;
 	List<String> sortedPublicParameterNames;
 	Map<String, Type> publicParameterTypes;
+	Map<String, GroupType> publicParameterGroups;
 	
 	Map<String, List<Variable>> variables;
 	Set<String> constantVariableNames;
@@ -127,6 +128,7 @@ class AugmentedModel {
 		this.publicParameterNames = null;
 		this.sortedPublicParameterNames = null;
 		this.publicParameterTypes = null;
+		this.publicParameterGroups = null;
 		
 		this.variables = null;
 		this.constantVariableNames = null;
@@ -594,6 +596,18 @@ class AugmentedModel {
 		}
 		
 		return publicParameterTypes;
+	}
+	
+	def Map<String, GroupType> getPublicParameterGroups() {
+		if (publicParameterGroups !== null) return publicParameterGroups;
+		
+		publicParameterGroups = new HashMap<String, GroupType>();
+		
+		for (String publicParameterName : getPublicParameterNames()) {
+			publicParameterGroups.put(publicParameterName, groups.get(publicParameterName));
+		}
+		
+		return publicParameterGroups;
 	}
 	
 	def Type getPublicParameterType(String ppName) {

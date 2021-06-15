@@ -55,11 +55,13 @@ class TestClassGenerator extends ClassGenerator {
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 		val Set<String> constrainedWitnessNames = augmentedModel.getConstrainedWitnessNames();
 		
-		val Set<String> publicParameterNames = augmentedModel.getPublicParameterNames();
+		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
+		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
+		val Map<String, GroupType> publicParameterGroups = augmentedModel.getPublicParameterGroups();
 		
-		val List<String> variableNames = augmentedModel.getSortedConstantVariableNames();
-		val Map<String, Type> variableTypes = augmentedModel.getConstantVariableTypes();
-		val Map<String, GroupType> variableGroups = augmentedModel.getConstantVariableGroups();
+		val List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
+		val Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
+		val Map<String, GroupType> constantGroups = augmentedModel.getConstantVariableGroups();
 		
 		// Code generation
 		val ClassBuilder testClass = new ClassBuilder(PUBLIC, "LibraryTest");
@@ -81,7 +83,6 @@ class TestClassGenerator extends ClassGenerator {
 		}
 		
 		val StringBuilder witnessesBuilder = new StringBuilder();
-		val StringBuilder publicParameterArgumentsBuilder = new StringBuilder();
 		val StringBuilder publicParametersBuilder = new StringBuilder();
 		val StringBuilder constantsBuilder = new StringBuilder();
 		
@@ -100,35 +101,14 @@ class TestClassGenerator extends ClassGenerator {
 			witnessesBuilder.append('\n');
 		}
 		
-		// Build initialization statements for all public parameters and constants
-		for (String variableName : variableNames) {
-			var StringBuilder builder;
-			if (publicParameterNames.contains(variableName)) {
-				builder = publicParametersBuilder;
-				publicParameterArgumentsBuilder.append(", " + variableName);
-			} else {
-				builder = constantsBuilder;
-			} 
+		// Build initialization statements for all public parameters
+		for (String publicParameterName : publicParameterNames) {
+			createVariableInitialization(publicParameterName, publicParameterTypes, publicParameterGroups, defaultGroup, publicParametersBuilder);
+		}
 		
-			val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
-			val Type variableType = variableTypes.get(variableName)
-			val String variableTypeClassName = variableTypes.get(variableName).getTypeClass().getSimpleName();
-			
-			if (variableType === Type.EXPONENT) {
-				// Exponent variable
-				builder.append('''«variableTypeClassName» «javaVariableName» = zp.getZeroElement();''');
-			} else {
-				// Group element variable
-				var String variableGroup;
-				if (hasPairing && variableGroups.containsKey(variableName)) {
-					variableGroup = "group" + variableGroups.get(variableName).toString();
-				} else {
-					variableGroup = defaultGroup;
-				}
-				
-				builder.append('''«variableTypeClassName» «javaVariableName» = «variableGroup».getNeutralElement();''');
-			}
-			builder.append('\n');
+		// Build initialization statements for all constants
+		for (String constantName : constantNames) {
+			createVariableInitialization(constantName, constantTypes, constantGroups, defaultGroup, constantsBuilder);
 		}
 		
 		val String witnesses = witnessesBuilder.toString();
@@ -136,12 +116,14 @@ class TestClassGenerator extends ClassGenerator {
 		val String constants = constantsBuilder.toString();
 		
 		// Create a comma-delimited list of all public parameter variables
-		val String publicParameterArguments = publicParameterArgumentsBuilder.toString();
+		var String publicParameterArguments = "";
+		if (!publicParameterNames.isEmpty()) {
+			publicParameterArguments = ", " + GenerationHelper.createCommaList(publicParameterNames);
+		}
 		
 		// Create a comma-delimited list of all common input variables
 		val String commonInputArguments = GenerationHelper.createCommaList(
-			variableNames.stream()
-			.filter([name | !publicParameterNames.contains(name)])
+			constantNames.stream()
 			.map(name | GenerationHelper.convertToJavaName(name))
 			.collect(Collectors.toList())
 		);
@@ -165,14 +147,20 @@ class TestClassGenerator extends ClassGenerator {
 			Group groupGT = bilinearGroup.getGT();
 			«ENDIF»
 			Zp zp = (Zp) «defaultGroup».getZn();
+			
+			«IF !publicParameters.isEmpty()»
+			// Set public parameters
 			«publicParameters»
 			
-			// Set witness
+			«ENDIF»
+			// Set witnesses
 			«witnesses»
 			
+			«IF !constants.isEmpty()»
 			// Set constants
 			«constants»
 			
+			«ENDIF»
 			// Instantiate protocol and input
 			«protocolClassName» protocol = new «protocolClassName»(«groupVariableName»«IF hasRangeProof || hasOrDescendantOfAnd», pp«ENDIF»«publicParameterArguments»);
 			
@@ -192,6 +180,29 @@ class TestClassGenerator extends ClassGenerator {
 		testMethod.addBody(methodBody);
 		testClass.addMethod(testMethod);
 		return testClass;
+	}
+	
+	// Helper class for building initialization statements for variables
+	private def void createVariableInitialization(String variableName, Map<String, Type> variableTypes, Map<String, GroupType> variableGroups, String defaultGroup, StringBuilder builder) {
+		val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
+		val Type variableType = variableTypes.get(variableName);
+		val String variableTypeClassName = variableType.getTypeClass().getSimpleName();
+		
+		if (variableType === Type.EXPONENT) {
+			// Exponent variable
+			builder.append('''«variableTypeClassName» «javaVariableName» = zp.getZeroElement();''');
+		} else {
+			// Group element variable
+			var String variableGroup;
+			if (hasPairing && variableGroups.containsKey(variableName)) {
+				variableGroup = "group" + variableGroups.get(variableName).toString();
+			} else {
+				variableGroup = defaultGroup;
+			}
+			
+			builder.append('''«variableTypeClassName» «javaVariableName» = «variableGroup».getNeutralElement();''');
+		}
+		builder.append('\n');
 	}
 	
 	private def String buildImports() {

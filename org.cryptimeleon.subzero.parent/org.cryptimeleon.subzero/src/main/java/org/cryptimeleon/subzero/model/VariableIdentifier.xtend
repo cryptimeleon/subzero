@@ -1,5 +1,8 @@
 package org.cryptimeleon.subzero.model
 
+/*
+ * A class to parse the format of a variable identifier
+ */
 class VariableIdentifier {
 	static val String underscore = '_';
 	static val String tilde = '~';
@@ -60,7 +63,6 @@ class VariableIdentifier {
 			// Check if the variable should have a tilde over it
 			hasTilde = true;
 			name = name.substring(0, name.length()-1);
-			System.out.println(name);
 		}
 
 		// Any more tildes are invalid
