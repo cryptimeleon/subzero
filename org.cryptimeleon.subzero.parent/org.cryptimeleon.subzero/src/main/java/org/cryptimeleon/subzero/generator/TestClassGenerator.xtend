@@ -87,14 +87,15 @@ class TestClassGenerator extends ClassGenerator {
 		
 		// Build initialization statements for all witnesses
 		for (String witnessName : witnessNames) {
+			val String javaWitnessName = GenerationHelper.createWitnessName(witnessName);
 			if (witnessTypes.get(witnessName) == Type.EXPONENT) {
 				if (constrainedWitnessNames.contains(witnessName)) {
-					witnessesBuilder.append('''ZpElement «witnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness''')
+					witnessesBuilder.append('''ZpElement «javaWitnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness''')
 				} else {
-					witnessesBuilder.append('''ZpElement «witnessName» = zp.getUniformlyRandomElement();''');
+					witnessesBuilder.append('''ZpElement «javaWitnessName» = zp.getUniformlyRandomElement();''');
 				}
 			} else {
-				witnessesBuilder.append('''GroupElement «witnessName» = «defaultGroup».getUniformlyRandomElement();''');
+				witnessesBuilder.append('''GroupElement «javaWitnessName» = «defaultGroup».getUniformlyRandomElement();''');
 			}
 			witnessesBuilder.append('\n');
 		}
@@ -109,12 +110,13 @@ class TestClassGenerator extends ClassGenerator {
 				builder = constantsBuilder;
 			} 
 		
+			val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
 			val Type variableType = variableTypes.get(variableName)
 			val String variableTypeClassName = variableTypes.get(variableName).getTypeClass().getSimpleName();
 			
 			if (variableType === Type.EXPONENT) {
 				// Exponent variable
-				builder.append('''«variableTypeClassName» «variableName» = zp.getZeroElement();''');
+				builder.append('''«variableTypeClassName» «javaVariableName» = zp.getZeroElement();''');
 			} else {
 				// Group element variable
 				var String variableGroup;
@@ -124,7 +126,7 @@ class TestClassGenerator extends ClassGenerator {
 					variableGroup = defaultGroup;
 				}
 				
-				builder.append('''«variableTypeClassName» «variableName» = «variableGroup».getNeutralElement();''');
+				builder.append('''«variableTypeClassName» «javaVariableName» = «variableGroup».getNeutralElement();''');
 			}
 			builder.append('\n');
 		}
@@ -138,10 +140,17 @@ class TestClassGenerator extends ClassGenerator {
 		
 		// Create a comma-delimited list of all common input variables
 		val String commonInputArguments = GenerationHelper.createCommaList(
-			variableNames.stream().filter([name | !publicParameterNames.contains(name)]).collect(Collectors.toList())
+			variableNames.stream()
+			.filter([name | !publicParameterNames.contains(name)])
+			.map(name | GenerationHelper.convertToJavaName(name))
+			.collect(Collectors.toList())
 		);
 		// Create a comma-delimited list of all witnesses
-		val String secretInputArguments = GenerationHelper.createCommaList(witnessNames);
+		val String secretInputArguments = GenerationHelper.createCommaList(
+			witnessNames.stream()
+			.map(name | GenerationHelper.convertToJavaName(name))
+			.collect(Collectors.toList())
+		);
 		
 		val String methodBody = '''
 			«groupClassName» «groupVariableName» = «groupInstance»;

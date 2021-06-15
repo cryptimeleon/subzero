@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.cryptimeleon.craco.protocols.CommonInput;
 import org.cryptimeleon.craco.protocols.SecretInput;
+import org.cryptimeleon.subzero.model.VariableIdentifier;
 
 /**
  * A general helper class to assist with code generation
@@ -18,15 +19,15 @@ public class GenerationHelper {
 	public final static String SUBPROTOCOL_VARIABLE = "name";
 	
 	public static String createWitnessName(String witnessName) {
-		return witnessName;
+		return convertToJavaName(witnessName);
 	}
 	
 	public static String createConstantName(String constantName) {
-		return INPUT_VARIABLE + '.' + constantName;
+		return INPUT_VARIABLE + '.' + convertToJavaName(constantName);
 	}
 	
 	public static String createPPName(String ppName) {
-		return ppName;
+		return convertToJavaName(ppName);
 	}
 	
 	public static String createLocalName(String variableName) {
@@ -46,8 +47,28 @@ public class GenerationHelper {
 	}
 
 	// Converts variable names and witness names to Java variable names
-	public static String convertToJavaName(String name) {
-		return name.replace("'", "_prime");
+	public static String convertToJavaName(String identifier) {
+		VariableIdentifier varIdentifier = new VariableIdentifier(identifier);
+		String name = varIdentifier.getName();
+		
+		if (varIdentifier.hasTilde()) {
+			name += "Tilde";
+		} else if (varIdentifier.hasBar()) {
+			name += "Bar";
+		} else if (varIdentifier.hasHat()) {
+			name += "Hat";
+		}
+		
+		if (varIdentifier.hasSubscript()) {
+			name += "_" + varIdentifier.getSubscript();
+		}
+		
+		int primes = varIdentifier.getPrimes();
+		for (int i = 0; i < primes; i++) {
+			name += "Prime";
+		}
+		
+		return name;
 	}
 	
 	// Converts a class into a camelCase variable name

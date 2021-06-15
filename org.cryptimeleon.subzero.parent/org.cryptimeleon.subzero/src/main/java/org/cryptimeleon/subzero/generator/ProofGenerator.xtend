@@ -351,7 +351,7 @@ class ProofGenerator {
 				arguments.add(argumentCode);
 			}
 			
-			return '''this.e.applyExpr(«GenerationHelper.createCommaList(arguments)»)''';
+			return '''e.applyExpr(«GenerationHelper.createCommaList(arguments)»)''';
 						
 		} else if (isInlineFunction) {
 			// Handle calls to inline user defined functions

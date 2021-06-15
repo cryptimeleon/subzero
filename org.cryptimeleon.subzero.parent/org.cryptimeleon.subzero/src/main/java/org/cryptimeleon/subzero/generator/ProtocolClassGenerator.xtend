@@ -183,8 +183,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 			createProtocolTree(rootNode, protocolTreeBuilder, subtreeRootNodes, subprotocolNames);
 			
 			val MethodBuilder provideProtocolTreeMethod = buildProvideProtocolTreeMethod(commonInputClassName, protocolTreeBuilder.toString());
-			val MethodBuilder restoreSendFirstValueMethod = buildRestoreSendFirstValueMethod();
-			val MethodBuilder simulateSendFirstValueMethod = buildSimulateSendFirstValueMethod(groupName);
+			val MethodBuilder restoreSendFirstValueMethod = buildRestoreSendFirstValueMethod(groupClass);
+			val MethodBuilder simulateSendFirstValueMethod = buildSimulateSendFirstValueMethod(groupClass);
 			val MethodBuilder provideAdditionalCheckMethod = buildProvideAdditionalCheckMethod();
 			val MethodBuilder getChallengeSpaceMethod = buildGetChallengeSpaceMethod(false);
 			
@@ -266,7 +266,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		
 		val List<String> exponentWitnessNames = witnessNames.stream()
 			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
-			.map([witnessName | "overallSecretInput." + witnessName])
+			.map([witnessName | "overallSecretInput." + GenerationHelper.convertToJavaName(witnessName)])
 			.collect(Collectors.toList());
 			
 		val String secretInput = hasOrDescendantOfAnd ? "subprotocolSecret" : "secretInput"
@@ -378,7 +378,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			«ENDIF»
 
 			«FOR String witnessName : witnessNames»
-			proverSpecBuilder.putWitnessValue("«witnessName»", witness.«witnessName»);
+			proverSpecBuilder.putWitnessValue("«witnessName»", witness.«GenerationHelper.convertToJavaName(witnessName)»);
 	        «ENDFOR»
 			
 			«IF hasOrDescendantOfAnd»
@@ -419,7 +419,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 		commonInputClass.addBasicConstructor(PUBLIC);
 		
 		for (String variableName : variableNames) {
-			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypes.get(variableName).getTypeClass(), variableName);
+			val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
+			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypes.get(variableName).getTypeClass(), javaVariableName);
 			commonInputClass.addField(variableField);
 		}
 
@@ -430,7 +431,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName, SecretInput);
 		
 		for (String witnessName : witnessNames) {
-			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, witnessTypes.get(witnessName).getTypeClass(), witnessName);
+			val String javaWitnessName = GenerationHelper.convertToJavaName(witnessName);
+			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, witnessTypes.get(witnessName).getTypeClass(), javaWitnessName);
 			secretInputClass.addField(field);
 		}
 		
@@ -518,15 +520,17 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return GenerationHelper.organizeImports(imports); 
 	}
 	
-	def MethodBuilder buildRestoreSendFirstValueMethod() {
+	def MethodBuilder buildRestoreSendFirstValueMethod(Class<?> groupClass) {
 		val MethodBuilder method = new MethodBuilder(PROTECTED, SendFirstValue, "restoreSendFirstValue");
 		method.setOverride();
 		
 		method.addParameter(CommonInput, "commonInput");
 		method.addParameter(Representation, "repr");
 		
+		val String groupUsed = (groupClass == Group) ? "group" : "bilinearGroup.getG1()";
+		
 		if (hasOrDescendantOfAnd) {
-			method.addStatement("return new SendFirstValue.AlgebraicSendFirstValue(repr, group);");
+			method.addStatement('''return new SendFirstValue.AlgebraicSendFirstValue(repr, «groupUsed»);''');
 		} else {
 			method.addStatement("return SendFirstValue.EMPTY;");
 		}
@@ -534,14 +538,16 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return method; 
 	}
 	
-	def MethodBuilder buildSimulateSendFirstValueMethod(String groupName) {
+	def MethodBuilder buildSimulateSendFirstValueMethod(Class<?> groupClass) {
 		val MethodBuilder method = new MethodBuilder(PROTECTED, SendFirstValue, "simulateSendFirstValue");
 		method.setOverride();
 		
 		method.addParameter(CommonInput, "commonInput");
 		
+		val String groupUsed = (groupClass == Group) ? "group" : "bilinearGroup.getG1()";
+		
 		if (hasOrDescendantOfAnd) {
-			method.addStatement('''return new SendFirstValue.AlgebraicSendFirstValue(«groupName».getUniformlyRandomElement());''');
+			method.addStatement('''return new SendFirstValue.AlgebraicSendFirstValue(«groupUsed».getUniformlyRandomElement());''');
 		} else {
 			method.addStatement("return SendFirstValue.EMPTY;");
 		}
