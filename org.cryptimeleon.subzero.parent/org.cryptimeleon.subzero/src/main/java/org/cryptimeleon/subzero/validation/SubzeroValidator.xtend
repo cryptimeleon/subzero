@@ -49,6 +49,7 @@ import org.cryptimeleon.subzero.subzero.WitnessVariable
 import java.util.HashMap
 import java.util.Map.Entry
 import org.cryptimeleon.subzero.model.Environment
+import org.cryptimeleon.subzero.model.VariableIdentifier
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -312,32 +313,21 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	// Helper function for checking the name format of identifiers
 	def private List<String> nameFormatErrors(String identifier, String type) {
 		var List<String> nameErrors = new ArrayList<String>();
-
-		val char underscore = '_';
-		var int underscores = 0;
-		for (var int i = 0; i < identifier.length(); i++) {
-			if (identifier.charAt(i) == underscore) {
-				underscores++;
-				if (underscores > 1) {
-					nameErrors.add(type + " name can contain at most 1 underscore");
-					i = identifier.length();
-				}
+		
+		val VariableIdentifier variableIdentifier = new VariableIdentifier(identifier);
+		
+		if (!variableIdentifier.isValid()) {
+			if (variableIdentifier.hasInvalidUnderscore()) {
+				nameErrors.add(type + " name has an invalid underscore");
 			}
-		}
-
-		val char quote = '\'';
-		var boolean hasQuote = false;
-		for (var int i = 0; i < identifier.length(); i++) {
-			if (hasQuote && identifier.charAt(i) != quote) {
+			
+			if (variableIdentifier.hasInvalidTilde()) {
+				nameErrors.add(type + " name has an invalid tilde")
+			}
+			
+			if (variableIdentifier.hasInvalidQuote()) {
 				nameErrors.add(type + " name can only contain single quotes at the end of the name");
-				i = identifier.length();
-			} else if (identifier.charAt(i) == quote) {
-				hasQuote = true;
 			}
-		}
-
-		if (identifier.charAt(identifier.length() - 1) == underscore) {
-			nameErrors.add(type + " name cannot end with an underscore");
 		}
 
 		return nameErrors;

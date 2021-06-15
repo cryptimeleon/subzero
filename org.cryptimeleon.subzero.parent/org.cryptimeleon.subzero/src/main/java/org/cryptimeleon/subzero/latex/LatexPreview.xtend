@@ -27,6 +27,7 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import java.util.Map
 import java.lang.Math
+import org.cryptimeleon.subzero.model.VariableIdentifier
 
 /**
  * Converts a syntax tree to valid LaTeX output
@@ -142,8 +143,6 @@ class LatexPreview {
 		builder.append(END);
 		
 		latexCode = builder.toString();
-		
-		
 	}
 	
 	def String getRawLatex() {
@@ -152,87 +151,33 @@ class LatexPreview {
 	
 	// Formats identifiers into a nicer format for LaTeX
 	def private String formatIdentifier(String identifier) {
-		var String name = identifier;
-		
-		val char quote = '\'';
-		val char underscore = '_';
-		val char tilde = '~';
-		
-		var String primes = "";
-		var boolean hasTilde = false;
-		var boolean hasBar = false;
-		var boolean hasHat = false;
-		
-		// Get all terminating single quotes
-		val int quoteIndex = name.indexOf(quote);
-		if (quoteIndex !== -1) {
-			primes = name.substring(quoteIndex);
-			name = name.substring(0, quoteIndex);
-		}
-		while (name.endsWith("Prime")) {
-			primes += "'";
-			name = name.substring(0, name.length()-5);
-		}
-		
-		// Check if the variable should have a bar over it
-		if (name.charAt(name.length()-1) == underscore) {
-			hasBar = true;
-			name = name.substring(0, name.length()-1);
-		}
-		
-		// Check if the variable should have a tilde over it
-		if (name.charAt(name.length()-1) == tilde) {
-			hasTilde = true;
-			name = name.substring(0, name.length()-1);
-		}
-		
-		// Get the variable subscript
-		var String subscript = "";
-		val int underscoreIndex = name.indexOf(underscore);
-		val int subIndex = name.indexOf("Sub");
-		
-		var int skipChars;
-		var int subscriptIndex;
-		if (underscoreIndex > subIndex) {
-			subscriptIndex = underscoreIndex;
-			skipChars = 1;
-		} else {
-			subscriptIndex = subIndex;
-			skipChars = 3;
-		}
-		
-		if (subscriptIndex !== -1) {
-			subscript = "_{" + name.substring(subscriptIndex + skipChars) + "}";
-			name = name.substring(0, subscriptIndex);
-		}
-		
-		
-		
-		// Check if the variable should have a bar, tilde, or hat over it
-		if (name.endsWith("Tilde")) {
-			hasTilde = true;
-			name = name.substring(0, name.length()-5);
-		} else if (name.endsWith("Bar")) {
-			hasBar = true;
-			name = name.substring(0, name.length()-3);
-		} else if (name.endsWith("Hat")) {
-			hasHat = true;
-			name = name.substring(0, name.length()-3);
-		}
+		val VariableIdentifier varIdentifier = new VariableIdentifier(identifier);
+		var String name = varIdentifier.getName();
 		
 		if (greekLetters.containsKey(name)) {
 			name = "\\" + greekLetters.get(name);
 		}
 		
-		if (hasTilde) {
+		if (varIdentifier.hasTilde()) {
 			name = "\\tilde{" + name + "}";
-		} else if (hasBar) {
+		} else if (varIdentifier.hasBar()) {
 			name = "\\bar{" + name + "}"; 
-		} else if (hasHat) {
+		} else if (varIdentifier.hasHat()) {
 			name = "\\hat{" + name + "}";
 		}
 		
-		return name + subscript + primes;
+		var String subscript = "";
+		if (varIdentifier.hasSubscript()) {
+			subscript = "_{" + varIdentifier.getSubscript() + "}";
+		}
+		
+		var String primeString = "";
+		if (varIdentifier.hasPrimes()) {
+			val int primes = varIdentifier.getPrimes();
+			for (var int i = 0; i < primes; i++) primeString += '\'';
+		}
+		
+		return name + subscript + primeString;
 	}
 
 	def private void generateBraces(EObject node) {
