@@ -10,6 +10,7 @@
 	<packaging>war</packaging>
 
 	<build>
+		<finalName>subzero</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
@@ -29,6 +30,9 @@
 				<version>9.4.34.v20201102</version>
 				<configuration>
 					<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
+					<webApp>
+						<contextPath>/subzero</contextPath>
+					</webApp>
 				</configuration>
 			</plugin>
 			<plugin>

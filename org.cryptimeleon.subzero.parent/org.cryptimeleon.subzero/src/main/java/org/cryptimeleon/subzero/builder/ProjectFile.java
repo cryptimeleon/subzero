@@ -22,14 +22,14 @@ public class ProjectFile {
 	
 	public ProjectFile(String name, String partialPath, boolean isBinary) {
 		this.name = name;
-		String path = partialPath + '/' + name;
+		String path = "/" + partialPath + '/' + name;
 		
 		try {
-			if (isBinary) {
-				byte[] fileContent = Files.readAllBytes(Paths.get(path));
+			byte[] fileContent = ProjectFile.class.getResourceAsStream(path).readAllBytes();
+			if (isBinary) {		
 				contents = Base64.getEncoder().encodeToString(fileContent);
 			} else {
-				contents = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
+				contents = new String(fileContent, StandardCharsets.UTF_8);
 			}
 		} catch (IOException e) {
 			System.out.println("Cannot read project file: " + path);

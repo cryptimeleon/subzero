@@ -62,7 +62,7 @@ function noCodeErrors(annotations) {
 
 function validateCode(callback) {
   var request = $.ajax({
-      url: `http://${location.host}/xtext-service/validate?resource=${CODE_RESOURCE_ID}`
+      url: `xtext-service/validate?resource=${CODE_RESOURCE_ID}`
   });
       
   request.done((result) => {

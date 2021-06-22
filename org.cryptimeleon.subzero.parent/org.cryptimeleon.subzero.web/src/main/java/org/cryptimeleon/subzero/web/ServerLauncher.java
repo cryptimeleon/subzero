@@ -24,7 +24,7 @@ public class ServerLauncher {
 //		ctx.setResourceBase("WebRoot");
 		ctx.setResourceBase("src/main/webapp");
 		ctx.setWelcomeFiles(new String[] {"index.html"});
-		ctx.setContextPath("/");
+		ctx.setContextPath("/subzero");
 		ctx.setConfigurations(new Configuration[] {
 			new AnnotationConfiguration(),
 			new WebXmlConfiguration(),
