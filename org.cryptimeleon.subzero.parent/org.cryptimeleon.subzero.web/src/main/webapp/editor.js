@@ -28,8 +28,11 @@ var currentEditorFontSize = DEFAULT_EDITOR_FONT_SIZE;
 var currentPreviewFontSize = DEFAULT_LATEX_FONT_SIZE;
 var FONT_SIZE_INCREMENT = 2;
 
-// Stores whether the last key pressed was
+// Stores whether the last key pressed was '{'
 var lastCharWasLeftCurlyBrace = false;
+
+// Stores whether the editor text has been changed at all
+var editorTextHasChanged = false;
 
 // Returns the editor object
 function getEditor() {
@@ -55,6 +58,7 @@ function createEditor(xtext) {
   editor.setOptions({wrap: true}); // Has to be set separately for some reason
   editor.setFontSize(DEFAULT_EDITOR_FONT_SIZE);
   editor.on("change", function() {
+    editorTextHasChanged = true;
     if (isContinuousPreviewEnabled()) {
         clearTimeout(timer);
         timer = setTimeout(updateLatexPreview, TIMER_INTERVAL);
