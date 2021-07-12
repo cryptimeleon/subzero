@@ -9,6 +9,7 @@ target/
 
 build.sh
 protocols.txt
+prototype/
 
 *.xml-gen
 *.java._trace

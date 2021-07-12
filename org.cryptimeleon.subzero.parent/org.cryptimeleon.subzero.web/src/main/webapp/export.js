@@ -38,7 +38,7 @@ function downloadRawLatex() {
   var latex = document.getElementById("latex-code").value;
 
   if (latex === "") {
-    consoleError("There is no raw latex to download");
+    consoleError("There is no LaTeX text to download");
     return;
   }
 

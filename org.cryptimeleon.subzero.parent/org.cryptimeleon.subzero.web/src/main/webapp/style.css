@@ -65,7 +65,7 @@ a:hover {
 
 #header-title {
 	margin-left: 0.5em;
-	font-size: 1.5em;
+	font-size: 1.75em;
 	color: white;
 	font-family: Monospace;
 	font-weight: normal;
@@ -78,6 +78,7 @@ a:hover {
 }
 
 #examples {
+	font-size: 1.25em;
 	float: right;
 	height: 2em;
 	
@@ -89,7 +90,7 @@ a:hover {
 }
 
 .header-link {
-	font-size: 1em;
+	font-size: 1.25em;
 	font-family: Helvetica;
 	float: right;
 	padding-right: 0.5em;
@@ -162,12 +163,8 @@ a:hover {
 #preview {
 	display: flex;
 	position: relative;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 65%;
-	max-height: 65%;
+	height: 75%;
+	max-height: 75%;
 	width: 100%;
 	max-width: 100%;
 	align-items: center;
@@ -254,6 +251,7 @@ a:hover {
 	/* overflow-x: hidden; */
 	overflow-y: auto;
 	text-align: center;
+	font-size: 1.5em;
 }
 
 #control {
@@ -282,135 +280,27 @@ a:hover {
 	max-width: 100%;
 }
 
-#options-checkboxes {
-	display: inline-block;
-	position: relative;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 75%;
-	max-height: 75%;
-	width: 100%;
-	max-width: 100%;
-	border-style: solid;
-	border-width: 10px;
-	border-top-width: 0;
-	border-color: #303030;
-	background-color: #424242;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
-
-.checkbox-wrapper {
-	display: flex;
-	position: relative;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 25%;
-	max-height: 25%;
-	width: 100%;
-	max-width: 100%;
-	align-items: center;
-}
-
-.option-checkbox {
-	margin-left: 10px;
-	margin-right: 10px;
-	outline: 0;
-	height: 3vh;
-	width: 3vh;
-	cursor: pointer;
-	border-radius: 5px;
-	-webkit-transition: background-color 0.3s;
-	-moz-transition: background-color 0.3s;
-	outline: 0;
-	padding: 0;
-	border-style: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-}
-
-.checkbox-text {
-	font-family: Arial;
-	font-size: 15px;
-	color: white;
-	-moz-user-select: -moz-none;
-  -webkit-user-select: none;
-}
-
-.checkbox-text.disabled {
-	color: #777777;
-}
-
-.checkbox-off {
-	background-color: #9A9A9A;
-}
-
-.checkbox-on {
-	background-color: #4CB050;
-}
-
-.checkbox-on:focus, .checkbox-on:hover {
-	background-color: #66BB6A;
-}
-
-.option-checkbox.disabled, .checkbox-off.disabled, .checkbox-on.disabled {
-	background-color: #777777;
-	cursor: default;
-}
-
-.checkbox-icon {
-	height: 75%;
-	width: 75%;
-	-webkit-user-drag: none;
-	-moz-user-drag: none;
-}
 
 #options-buttons {
 	display: inline-block;
 	position: relative;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 25%;
-	max-height: 25%;
+	height: 10%;
+	max-height: 10%;
 	width: 100%;
 	max-width: 100%;
 	background-color: #27ae60;
-
-}
-
-.left, .right {
-	display: flex;
-	position: relative;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	width: 50%;
-	max-width: 50%;
-	height: 100%;
-	max-height: 100%;
-	float: left;
-	align-items: center;
-	justify-content: center;
 }
 
 .options-button {
 	border-style: solid;
 	border-width: 3px;
-	width: 100%;
-	max-width: 100%;
+	width: 33%;
+	max-width: 33%;
 	height: 100%;
 	max-height: 100%;
-	left: auto;
-	right: auto;
+	margin: 0;
 	outline: 0;
-	font-size: 13px;
+	font-size: 1.25em;
 	font-family: Arial;
 	color: white;
 	border-color: #43A047;
@@ -418,6 +308,7 @@ a:hover {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	cursor: pointer;
+	float: left;
 }
 
 .options-button:hover, .options-button:focus {
@@ -431,14 +322,15 @@ a:hover {
 	cursor: default;
 }
 
+
 #console {
 	display: inline-block;
 	position: relative;
 	top: 0;
 	bottom: 0;
 	left: 0;
-	height: 30%;
-	max-height: 30%;
+	height: 15%;
+	max-height: 15%;
 	width: 100%;
 	max-width: 100%;
 	background-color: #424242;
@@ -450,7 +342,7 @@ a:hover {
 	-moz-box-sizing: border-box;
 	color: white;
 	font-family: monospace;
-	font-size: 14px;
+	font-size: 1.5em;
 }
 
 #console::selection {
