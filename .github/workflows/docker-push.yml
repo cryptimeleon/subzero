@@ -3,15 +3,15 @@ name: docker-push
 on:
   push:
     branches:
-      - 'main'
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      # -
-      #   name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v1
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -26,7 +26,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name == 'push' }}
           tags: cptml/subzero:latest
       -
         name: Image digest
