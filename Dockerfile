@@ -2,7 +2,7 @@
 FROM maven:3.8.1-jdk-11 as builder
 
 WORKDIR /app
-COPY . .
+COPY org.cryptimeleon.subzero.parent/ .
 RUN mvn install
 
 WORKDIR /app/org.cryptimeleon.subzero.web
