@@ -3,10 +3,10 @@ name: docker-push
 on:
   push:
     branches:
-      - 'main'
-  pull_reqest:
+      - main
+  pull_request:
     branches:
-      - 'main'
+      - main
 
 jobs:
   docker:
