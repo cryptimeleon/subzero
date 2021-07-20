@@ -21,6 +21,11 @@ mvn jetty:run
 ```
 Go to http://localhost:8080/subzero
 
+Alternatively, you can run the website as a [Docker](https://www.docker.com/) container:
+```
+docker build -t subzero .
+docker run -p 8080:8080 subzero
+```
 
 Getting started with Subzero
 ============================
