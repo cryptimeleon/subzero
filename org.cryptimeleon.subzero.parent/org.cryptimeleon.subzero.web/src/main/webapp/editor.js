@@ -59,10 +59,8 @@ function createEditor(xtext) {
   editor.setFontSize(DEFAULT_EDITOR_FONT_SIZE);
   editor.on("change", function() {
     editorTextHasChanged = true;
-    if (isContinuousPreviewEnabled()) {
-        clearTimeout(timer);
-        timer = setTimeout(updateLatexPreview, TIMER_INTERVAL);
-    }
+    clearTimeout(timer);
+    timer = setTimeout(updateLatexPreview, TIMER_INTERVAL);
   });
 
   session.setOptions({

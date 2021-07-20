@@ -6,6 +6,7 @@ import org.cryptimeleon.subzero.builder.ProjectFolder
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.subzero.Model
+import org.cryptimeleon.subzero.latex.LatexPreview
 
 /**
  * Generates the Java code for a protocol
@@ -42,9 +43,13 @@ class CodeGenerator {
 		// Fetch the raw DSL code
 		val String rawCode = augmentedModel.getCode();
 		
+		// Fetch the LaTeX text
+		val String latexText = new LatexPreview(augmentedModel).getRawLatex();
+		
 		val ProjectFolder root = new ProjectFolder(packageName);
 		
 		val ProjectFile code = new ProjectFile(protocolName + '.sub0', rawCode);
+		val ProjectFile latex = new ProjectFile(protocolName + '.tex', latexText);
 		val ProjectFile gradleBuilder = new ProjectFile("build.gradle", "project", false);
 		val ProjectFile gradleSettings = new ProjectFile("settings.gradle", "project", false);
 		val ProjectFile gradleBat = new ProjectFile("gradlew.bat", "project", false);
@@ -53,6 +58,7 @@ class CodeGenerator {
 		val ProjectFile dotClasspath = new ProjectFile(".classpath", "project", false);
 		
 		root.addFile(code);
+		root.addFile(latex);
 		root.addFile(gradleBuilder);
 		root.addFile(gradleSettings);
 		root.addFile(gradleBat);
