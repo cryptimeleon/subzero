@@ -17,6 +17,8 @@ function formatVariable(func) {
 }
 
 function updateEnvironment(environment) {
+    return;
+
     console.log(environment);
 
     console.log("Predefined functions");

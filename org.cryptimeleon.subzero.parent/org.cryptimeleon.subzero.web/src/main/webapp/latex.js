@@ -21,6 +21,9 @@ function updateLatexPreviewBox(latex) {
   document.getElementById("latex-code").value = latex;
   document.getElementById("latex-preview").innerHTML = latex;
   MathJax.Hub.Queue(["Typeset", MathJax.Hub, "latex-preview"]);
+
+  // Use this if we ever update to MathJax 3
+  // MathJax.typeset([document.getElementById("latex-preview")]);
 }
 
 function disableLatexPreviewBox() {
