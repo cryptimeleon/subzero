@@ -13,7 +13,7 @@ import org.cryptimeleon.craco.protocols.SecretInput
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpecBuilder
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SendFirstValue
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder
 import org.cryptimeleon.math.expressions.bool.BooleanExpression
