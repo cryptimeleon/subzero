@@ -14,42 +14,46 @@ Subzero code
 
 let PROTOCOLS = {
 
-"Simple protocol":
+"Dlog equality":
+`
+witness: k;
+b = a^k & h = g^k
+`,
+
+"ElGamal plaintext":
 `
 witness: x,r;
-g^x * h^r = C & h^r = C2
+g^x * h^r = C_1 & h^r = C_2
 `,
 
-
-"Pedersen commitment":
+"Pedersen commitment with range proof":
 `
-[Pedersen commitment]
+[Pedersen commitment with range proof]
 
-pp : h_1 , h_2 , g
-witness : m_1 , m_2 , r
+pp : h_1, h_2, g
+witness : m_1, m_2 ,r
 
-C_1 = h_1 ^ m_1 * h_2 ^ m_2 * g ^ r & 20 <= m_1 + m_2 <= 100
+C_1 = h_1^m_1 * h_2^m_2 * g^r & 20 <= m_1 + m_2 <= 100
 `,
 
-
-"Proof of partial knowledge":
+"Basic proof of partial knowledge":
 `
 [Partial knowledge]
 
 witness: x,r;
 g^x * h^r = C
-& (h^r = C2 | h^x = C2)
+& (h^r = C_2 | h^x = C_2)
 `,
 
 
-"Pointcheval Sanders signature":
+"Pointcheval Sanders credential":
 `
-[Pointcheval Sanders signature]
+[Pointcheval Sanders credential showing]
 
-witness: age_, pos_, r_
+witness: age, pos, r
 
-e(sigma_1', X~) * e(sigma_1', Y_1~^age_ * Y_2~^pos_) * e(sigma_1', g~)^r_ = e(sigma_2', g~) // valid signature
-& (age_ < 18 | pos_ = 17) // young or student
+e(sigma_1', X~) * e(sigma_1', Y_1~^age * Y_2~^pos) * e(sigma_1', g~)^r = e(sigma_2', g~) // valid signature
+& (age < 18 | pos = 17) // young or student
 `,
 
 
