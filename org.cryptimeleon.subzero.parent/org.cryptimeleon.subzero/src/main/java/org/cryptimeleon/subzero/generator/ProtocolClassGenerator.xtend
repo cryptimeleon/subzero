@@ -118,8 +118,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 		
 		// Build fields
 		if (requiresPublicParameterClass) {
-			val FieldBuilder ppField = new FieldBuilder(PROTECTED, publicParametersClassName, "pp");
-			protocolClass.addField(ppField);
+			val FieldBuilder ppClassField = new FieldBuilder(PROTECTED, publicParametersClassName, "pp");
+			protocolClass.addField(ppClassField);
 		}
 		
 		val FieldBuilder groupField = new FieldBuilder(PROTECTED, groupClass, groupName);
@@ -134,7 +134,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 		}
 		
 		for (String publicParameterName : sortedPublicParameterNames) {
-			protocolClass.addField(new FieldBuilder(PROTECTED, FINAL, publicParameterTypes.get(publicParameterName).getTypeClass(), publicParameterName));
+			val FieldBuilder ppField = new FieldBuilder(
+				PROTECTED, FINAL, publicParameterTypes.get(publicParameterName).getTypeClass(),
+				GenerationHelper.convertToJavaName(publicParameterName)
+			);
+			protocolClass.addField(ppField);
 		}
 		
 		// Build constructor
@@ -142,7 +146,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 		constructor.addParameter(groupClass, groupName);
 		if (requiresPublicParameterClass) constructor.addParameter(publicParametersClassName, "pp");
 		for (String publicParameterName : sortedPublicParameterNames) {
-			constructor.addParameter(publicParameterTypes.get(publicParameterName).getTypeClass(), publicParameterName);
+			val String javaPublicParameterName = GenerationHelper.convertToJavaName(publicParameterName);
+			constructor.addParameter(publicParameterTypes.get(publicParameterName).getTypeClass(), javaPublicParameterName);
 		}
 		
 		val String constructorBody = '''
@@ -155,7 +160,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			this.e = «groupName».getBilinearMap();
 			«ENDIF»
 			«FOR String publicParameterName : sortedPublicParameterNames»
-			this.«publicParameterName» = «publicParameterName»;
+			this.«GenerationHelper.convertToJavaName(publicParameterName)» = «GenerationHelper.convertToJavaName(publicParameterName)»;
 			«ENDFOR»
 		''';
 		constructor.addBody(constructorBody);

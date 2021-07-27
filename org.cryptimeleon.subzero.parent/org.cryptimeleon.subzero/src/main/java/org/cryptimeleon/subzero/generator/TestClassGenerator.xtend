@@ -118,7 +118,11 @@ class TestClassGenerator extends ClassGenerator {
 		// Create a comma-delimited list of all public parameter variables
 		var String publicParameterArguments = "";
 		if (!publicParameterNames.isEmpty()) {
-			publicParameterArguments = ", " + GenerationHelper.createCommaList(publicParameterNames);
+			publicParameterArguments = ", " + GenerationHelper.createCommaList(
+				publicParameterNames.stream()
+				.map(name | GenerationHelper.convertToJavaName(name))
+				.collect(Collectors.toList())
+			);
 		}
 		
 		// Create a comma-delimited list of all common input variables

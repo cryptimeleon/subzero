@@ -270,7 +270,7 @@ class LatexPreview {
 	}
 	
 	def dispatch private void generateLatex(PublicParameter publicParameter) {
-		builder.append(publicParameter.getName());
+		builder.append(formatIdentifier(publicParameter.getName()));
 	}
 	
 	def dispatch private void generateLatex(WitnessList witnessList) {

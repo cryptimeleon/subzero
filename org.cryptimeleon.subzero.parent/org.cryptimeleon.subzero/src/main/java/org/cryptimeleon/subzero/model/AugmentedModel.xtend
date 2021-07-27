@@ -475,6 +475,7 @@ class AugmentedModel {
 		if (witnessTypes !== null) return witnessTypes;
 		
 		witnessTypes = new HashMap<String, Type>();
+		val Map<EObject, Type> types = getTypes();
 		
 		for (Entry<String, Witness> entry : getWitnessNodes().entrySet()) {
 			witnessTypes.put(entry.getKey(), types.get(entry.getValue()));
@@ -590,6 +591,7 @@ class AugmentedModel {
 		if (publicParameterTypes !== null) return publicParameterTypes;
 		
 		publicParameterTypes = new HashMap<String, Type>();
+		val Map<EObject, Type> types = getTypes();
 		
 		for (Entry<String, PublicParameter> entry : getPublicParameterNodes().entrySet()) {
 			publicParameterTypes.put(entry.getKey(), types.get(entry.getValue()));
@@ -602,9 +604,10 @@ class AugmentedModel {
 		if (publicParameterGroups !== null) return publicParameterGroups;
 		
 		publicParameterGroups = new HashMap<String, GroupType>();
+		val Map<String, GroupType> groupsByName = getGroupsByName();
 		
 		for (String publicParameterName : getPublicParameterNames()) {
-			publicParameterGroups.put(publicParameterName, groups.get(publicParameterName));
+			publicParameterGroups.put(publicParameterName, groupsByName.get(publicParameterName));
 		}
 		
 		return publicParameterGroups;
@@ -659,6 +662,9 @@ class AugmentedModel {
 		sortedConstantVariableNames = new ArrayList<String>();
 		constantVariableTypes = new HashMap<String, Type>();
 		constantVariableGroups = new HashMap<String, GroupType>();
+		
+		val Map<EObject, Type> types = getTypes();
+		val Map<EObject, GroupType> groups = getGroups();
 		
 		for (Entry<String, List<Variable>> entry : getVariableNodes().entrySet()) {
 			val Variable variable = entry.getValue().get(0);
@@ -775,8 +781,8 @@ class AugmentedModel {
 	def Map<String, FunctionSignature> getUserFunctionSignatures() {
 		if (userFunctionSignatures !== null) return userFunctionSignatures;
 		
-		val Map<EObject, Type> types = this.getTypes();
-		val Map<EObject, Integer> tuples = this.getSizes(); // Change to sizes
+		val Map<EObject, Type> types = getTypes();
+		val Map<EObject, Integer> sizes = getSizes();
 		
 		userFunctionSignatures = new HashMap<String, FunctionSignature>();
 
@@ -786,10 +792,10 @@ class AugmentedModel {
 
 			for (Parameter parameter : function.getParameterList().getParameters()) {
 				parameterTypes.add(types.get(parameter));
-				parameterSizes.add(tuples.get(parameter));
+				parameterSizes.add(sizes.get(parameter));
 			}
 
-			val FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), tuples.get(function), parameterTypes, parameterSizes);
+			val FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), sizes.get(function), parameterTypes, parameterSizes);
 			userFunctionSignatures.put(function.getName(), signature);
 		}
 
@@ -1033,6 +1039,10 @@ class AugmentedModel {
 	 */
 	override String toString() {
 		val StringBuilder builder = new StringBuilder();
+		
+		val Map<EObject, Type> types = getTypes();
+		val Map<EObject, Integer> sizes = getSizes();
+		val Map<EObject, GroupType> groups = getGroups();
 		
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
 			for (var int i = 0; i < state.getDepth(); i++) {
