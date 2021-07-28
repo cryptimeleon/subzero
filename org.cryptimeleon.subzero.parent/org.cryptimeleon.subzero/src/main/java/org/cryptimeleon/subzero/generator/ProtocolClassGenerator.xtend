@@ -45,6 +45,7 @@ import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
 import org.cryptimeleon.subzero.subzero.FunctionCall
+import org.cryptimeleon.subzero.subzero.Brackets
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -274,6 +275,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 			.map([witnessName | "overallSecretInput." + GenerationHelper.convertToJavaName(witnessName)])
 			.collect(Collectors.toList());
 			
+		var String exponentWitnessArguments = "";
+		if (!exponentWitnessNames.isEmpty()) {
+			exponentWitnessArguments = GenerationHelper.createCommaList(exponentWitnessNames) + ", ";
+		}
+			
 		val String secretInput = hasOrDescendantOfAnd ? "subprotocolSecret" : "secretInput"
 		
 		val String methodBody = '''
@@ -282,7 +288,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			«IF hasOrDescendantOfAnd»
 			// Commit to all Zn variables
 			ZnElement crossOrCommitmentRandomness = zp.getUniformlyRandomElement();
-			GroupElement crossOrCommitment = pp.crossOrCommitmentBases.innerProduct(RingElementVector.of(«GenerationHelper.createCommaList(exponentWitnessNames)», crossOrCommitmentRandomness));
+			GroupElement crossOrCommitment = pp.crossOrCommitmentBases.innerProduct(RingElementVector.of(«exponentWitnessArguments»crossOrCommitmentRandomness));
 			
 			// Send this commitment
 			builder.setSendFirstValue(new SendFirstValue.AlgebraicSendFirstValue(crossOrCommitment));
@@ -320,6 +326,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 			.map([witnessName | GenerationHelper.createWitnessName(witnessName)])
 			.collect(Collectors.toList());
 		
+		var String exponentWitnessArguments = "";
+		if (!exponentWitnessNames.isEmpty()) {
+			exponentWitnessArguments = GenerationHelper.createCommaList(exponentWitnessNames) + ", ";
+		}
+		
 		val String methodBody = '''
 			«IF hasOrDescendantOfAnd»
 			«commonInputClassName» «GenerationHelper.INPUT_VARIABLE» = ((SubprotocolCommonInput) commonInput).commonInput;
@@ -344,7 +355,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 			SchnorrZnVariable crossOrCommitmentRandomness = subprotocolSpecBuilder.addZnVariable("crossOrCommitmentRandomness", zp);
 			subprotocolSpecBuilder.addSubprotocol("orProofConsistency",
 				new LinearStatementFragment(
-					pp.crossOrCommitmentBases.expr().innerProduct(ExponentExpressionVector.of(«GenerationHelper.createCommaList(exponentWitnessNames)», crossOrCommitmentRandomness))
+					pp.crossOrCommitmentBases.expr().innerProduct(ExponentExpressionVector.of(«exponentWitnessArguments»crossOrCommitmentRandomness))
 						.isEqualTo(((SubprotocolCommonInput) commonInput).crossOrCommitment)
 				)
 			);
@@ -639,6 +650,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 				return false;				
 			}
 			
+		} else if (node instanceof Brackets) {
+			return createProtocolTreeHelper(node.getContent(), builder, subtreeRootNodes, subprotocolNames);
 		} else {
 			val String subprotocolName = createProtocolLeaf(node, builder, subtreeRootNodes.size());
 			subtreeRootNodes.add(node);

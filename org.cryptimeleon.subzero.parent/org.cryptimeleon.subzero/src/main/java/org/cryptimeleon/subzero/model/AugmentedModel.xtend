@@ -153,7 +153,7 @@ class AugmentedModel {
 		this.inlineFunctionNames = null;
 		
 		comparisonTransformation();
-		removeBracketsTransformation();
+//		removeBracketsTransformation(); // Likely unnecessary
 		variableRoleTransformation();
 	}
 	

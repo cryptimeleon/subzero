@@ -243,7 +243,13 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	def dispatch void checkNode(Brackets brackets, BranchState state) {
-		checkProofAlgebraicPosition(brackets, state);
+		if (types.get(brackets) === Type.BOOLEAN) {
+			if (!isValidBooleanPosition(brackets, state)) {
+				error("Boolean expressions cannot be nested within algebraic expressions, comparison expressions, or function calls", brackets, getDefaultFeature(brackets));
+			}
+		} else {
+			checkProofAlgebraicPosition(brackets, state);
+		}
 	}
 	
 	def dispatch void checkNode(EObject node, BranchState state) {
@@ -620,7 +626,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	// Helper function for checkValidConjunctionPosition, checkValidDisjunctionPosition, and checkValidComparisonPosition
 	def private boolean isValidBooleanPosition(EObject node, BranchState state) {
 		val EObject parent = state.getParent();
-		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Conjunction || parent instanceof Disjunction) {
+		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Conjunction || parent instanceof Disjunction || parent instanceof Brackets) {
 			return true;
 		}
 		return false;
@@ -1021,11 +1027,16 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	// Returns the name of the type of node
 	def private String getNodeName(EObject node) {
-		val String className = node.class.getSimpleName();
+		var String className = node.class.getSimpleName();
+		System.out.println(className);
 		var String nodeName = "";
 		nodeName += Character.toLowerCase(className.charAt(0));
 		
-		for (var int i = 0; i < className.length(); i++) {
+		if (className.endsWith("Impl")) {
+			className = className.substring(0, className.length - 4);
+		}
+		
+		for (var int i = 1; i < className.length(); i++) {
 			val char letter = className.charAt(i);
 			if (Character.isUpperCase(letter)) {
 				nodeName += " " + Character.toLowerCase(letter);
