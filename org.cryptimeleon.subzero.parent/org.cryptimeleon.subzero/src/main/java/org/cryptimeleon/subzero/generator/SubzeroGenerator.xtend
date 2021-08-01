@@ -3,6 +3,8 @@
  */
 package org.cryptimeleon.subzero.generator
 
+import org.cryptimeleon.subzero.builder.ErrorBuilder
+import org.cryptimeleon.subzero.builder.ProjectBuilder
 import org.cryptimeleon.subzero.latex.LatexPreview
 import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.subzero.Model
@@ -10,8 +12,6 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.eclipse.xtext.resource.XtextResource
-import org.cryptimeleon.subzero.builder.ProjectBuilder
 
 /**
  * Generates code from your model files on save.
@@ -48,10 +48,14 @@ class SubzeroGenerator extends AbstractGenerator {
 			
 		} else if (resourceId.endsWith(CODE_RESOURCE)) {
 			// Generate Java project
-			val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
-			val ProjectBuilder project = codeGeneration.generate();
-			contents = project.getProject();
-			
+			try {
+				val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
+				val ProjectBuilder project = codeGeneration.generate();
+				contents = project.getProject();
+			} catch (Throwable e) {
+				val ErrorBuilder error = new ErrorBuilder(e);
+				contents = error.toString();
+			}
 		} else {
 			System.out.println("Error: invalid resource ID");
 			return;
