@@ -25,7 +25,10 @@ class Environment {
 		val List<String> commonInputNames = augmentedModel.getSortedConstantVariableNames();
 		val Map<String, Type> commonInputTypes = augmentedModel.getConstantVariableTypes();
 		
-		val Map<String, GroupType> variableGroups = augmentedModel.getGroupsByName();
+		var Map<String, GroupType> variableGroups = null;
+		if (augmentedModel.hasPairing()) {
+			variableGroups = augmentedModel.getGroupsByName();
+		}
 		
 		buildFunctions(builder, predefinedFunctions, "predefined");
 		buildFunctions(builder, userFunctions , "user");
@@ -75,7 +78,7 @@ class Environment {
 			builder.append("{");
 			builder.append('''"construct": "variable",''');
 			builder.append('''"name": "«variableName»",''');
-			if (variableGroups.containsKey(variableName)) {
+			if (variableGroups !== null && variableGroups.containsKey(variableName)) {
 				val GroupType variableGroup = variableGroups.get(variableName);
 				builder.append('''"group": "«variableGroup»",''');
 			}
