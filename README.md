@@ -94,12 +94,19 @@ Inequality expressions evaluate to a `boolean`, and both operands must have type
 
 ##### Double inequality
 ```A > B > C```  
+
 ```A >= B > C```  
+
 ```A > B >= C```  
+
 ```A >= B >= C```  
+
 ```A < B < C```  
+
 ```A <= B < C```  
+
 ```A < B <= C```  
+
 ```A <= B <= C```
 
 Comparisons (equalities and inequalities) can also have a subprotocol name specified after the expression that will appear in the generated code. It uses the same syntax as the protocol name.
