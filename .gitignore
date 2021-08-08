@@ -6,10 +6,14 @@ xtend-gen/
 xtext-gen/
 generated/
 target/
+webapp/
 
 build.sh
 protocols.txt
 prototype/
+
+node_modules/
+documentation.js
 
 *.xml-gen
 *.java._trace
