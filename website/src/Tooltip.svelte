@@ -1,9 +1,12 @@
 <script>
+    import { darkMode } from './stores.js';
+
     export let position = 'bottom';
     export let size = 'small';
     export let text;
 
-    const className = `tooltip tooltip-${size} tooltip-${position}`;
+    $: brightness = $darkMode ? 'dark' : 'light';
+    $: className = `tooltip tooltip-${size} tooltip-${position} tooltip-${brightness}`;
 </script>
 
 <div class='tooltip-container'>
@@ -27,6 +30,17 @@
 		text-align: center;
 	}
 
+    .tooltip-light:hover:after {
+		background-color: #e0e0e0;
+        color: black;
+
+    }
+
+    .tooltip-dark:hover:after {
+		background-color: #393939;
+		color: white;
+    }
+
 	.tooltip:hover:after { 
 		opacity: 1;
 		transition: opacity  0s linear 0.5s;
@@ -34,8 +48,6 @@
 		position: absolute;
 		padding: 5px;
 		border-radius: 5px;
-		background-color: #393939;
-		color: white;
 		z-index: 10;
 	}
 
