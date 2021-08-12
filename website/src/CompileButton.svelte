@@ -196,9 +196,11 @@
 >
     <p>An error occurred during compilation. The stack trace is included below. Please consider opening a <Link href='https://github.com/cryptimeleon/subzero/issues/new'>GitHub issue</Link>.</p>
     <br/>
-    <div class='code-snippet'>
-        <CodeSnippet showMoreLess={false} type='multi' code={stackTrace} />
-    </div>
+    {#key stackTrace}
+        <div class='code-snippet'>
+                <CodeSnippet showMoreLess={false} type='multi' code={stackTrace} />
+        </div>
+    {/key}
 </Modal>
 
 <style>
@@ -223,5 +225,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .code-snippet :global(div::-webkit-scrollbar), .code-snippet :global(pre::-webkit-scrollbar) {
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+    
+    .code-snippet :global(div::-webkit-scrollbar-track), .code-snippet :global(pre::-webkit-scrollbar-track) {
+        box-shadow: inset 0 0 6px rgba(240, 202, 202, 0.3);
+    }
+    
+    .code-snippet :global(div::-webkit-scrollbar-thumb), .code-snippet :global(pre::-webkit-scrollbar-thumb) {
+        background-color: darkgrey;
+        outline: 1px solid slategrey;
     }
 </style>
