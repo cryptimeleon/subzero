@@ -13,6 +13,9 @@ import org.cryptimeleon.subzero.subzero.Argument
 import org.cryptimeleon.subzero.subzero.Expression
 import org.cryptimeleon.subzero.subzero.FunctionDefinition
 import org.cryptimeleon.subzero.subzero.LocalVariable
+import org.cryptimeleon.subzero.subzero.Witness
+import org.cryptimeleon.subzero.subzero.PublicParameterList
+import org.cryptimeleon.subzero.subzero.PublicParameter
 
 /*
  * Determines what group each group element is from
@@ -93,10 +96,27 @@ class GroupInference {
 	// Label all remaining unlabeled group elements as G1 elements
 	def private void fillG1(Model model) {
 		ModelMap.postorder(model, [EObject node |
-			if (node instanceof Variable && !(node instanceof LocalVariable) && types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(node)) {
-				groups.put(node, GroupType.G1);
+			if (node instanceof Variable && !(node instanceof LocalVariable)) {
+				setG1(node);
 			}
 		]);
+		
+		for (Witness witness : model.getWitnessList().getWitnesses()) {
+			setG1(witness);
+		}
+		
+		val PublicParameterList publicParameterList = model.getPublicParameterList();
+		if (publicParameterList !== null) {
+			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
+				setG1(publicParameter);
+			}
+		}
+	}
+	
+	def private void setG1(EObject node) {
+		if (types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(node)) {
+			groups.put(node, GroupType.G1);
+		}
 	}
 	
 	
@@ -134,18 +154,23 @@ class GroupInference {
 		fillG1(model);
 		
 		for (Entry<EObject, GroupType> entry : groups.entrySet()) {
-			val Variable node = entry.getKey() as Variable;
+			val EObject node = entry.getKey();
 			val GroupType groupType = entry.getValue();
-			val String variableName = node.getName();
+			var String variableName = '';
+			
+			if (node instanceof Variable) {
+				variableName = (node as Variable).getName();	
+			} else if (node instanceof PublicParameter) {
+				variableName = (node as PublicParameter).getName();
+			} else if (node instanceof Witness) {
+				variableName = (node as Witness).getName();
+			}
 			
 			if (groupsByName.containsKey(variableName) && groupsByName.get(variableName) !== groupType) {
 				groupsByName.put(variableName, GroupType.UNKNOWN);
 			} else {
 				groupsByName.put(variableName, groupType);
 			}
-			
 		}
-		
 	}
-	
 }
