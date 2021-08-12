@@ -14,7 +14,7 @@
     import Add32 from 'carbon-icons-svelte/lib/Add32';
 	import Subtract32 from 'carbon-icons-svelte/lib/Subtract32';
     
-    import { latexText } from './stores.js';
+    import { darkMode, latexText } from './stores.js';
     import SaveLatexButton from './SaveLatexButton.svelte';
     import Tooltip from './Tooltip.svelte';
 
@@ -88,7 +88,7 @@
 </script>
 
 <Tile>
-    <div class='preview-container'>
+    <div class={'preview-container preview-' + ($darkMode ? 'dark' : 'light')}>
         <!-- Flow direction is column reverse -->
         <div class='control-container'>
             <div class='save-container'>
@@ -134,6 +134,14 @@
         flex-flow: column;
         align-items: center;
     }
+
+    .preview-light :global(svg) {
+		fill: black;
+	}
+
+	.preview-light :global(.bx--header__action:hover) {
+		background-color: #e0e0e0;
+	}
 
     .latex-preview {
         flex-grow: 1;

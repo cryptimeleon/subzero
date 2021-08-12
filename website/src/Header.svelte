@@ -11,7 +11,9 @@
 	import SaveCodeButton from './SaveCodeButton.svelte';
 	import Examples from './Examples.svelte';
 	import SourceButton from './SourceButton.svelte';
+	import DarkModeButton from './DarkModeButton.svelte';
 	import Tooltip from './Tooltip.svelte';
+	import { darkMode } from './stores.js';
 
 	let zoomInButtonDisabled = false;
 	let zoomOutButtonDisabled = false;
@@ -29,7 +31,7 @@
 	}
 </script>
 
-<div class='header'>
+<div class={'header header-' + ($darkMode ? 'dark' : 'light')}>
     <div class='left-header-container'>
         <div class='title-container'>
             <h1>Subzero - Zero Knowledge Compiler</h1>
@@ -71,6 +73,10 @@
 		<Tooltip position='left' text='Source code'>
 			<SourceButton/>
 		</Tooltip>
+		<Tooltip text='Toggle dark mode'>
+			<DarkModeButton/>	
+		</Tooltip>
+		
     </div>
 </div>
 
@@ -81,6 +87,14 @@
   		flex-shrink: 1;
 		flex-basis: 3rem;
 		width: 100%;
+	}
+
+	.header-light :global(svg) {
+		fill: black;
+	}
+
+	.header-light :global(.bx--header__action:hover) {
+		background-color: #e0e0e0;
 	}
 
     .left-header-container {

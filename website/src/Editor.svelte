@@ -55,7 +55,7 @@
 <script>
     import { Tab, TabContent, Tabs } from 'carbon-components-svelte';
 
-    import { javaClasses } from './stores.js';
+    import { darkMode, javaClasses } from './stores.js';
     
 	import SubzeroEditor from './SubzeroEditor.svelte';
 	import JavaEditor from './JavaEditor.svelte';
@@ -64,9 +64,11 @@
     let editors = [];
     editorSets.push(editors);
 
-    const THEME = 'ace/theme/monokai';
+    const DARK_THEME = 'ace/theme/monokai';
+    const LIGHT_THEME = 'ace/theme/tomorrow';
     const TAB_SIZE = 2;
 
+    $: theme = $darkMode ? DARK_THEME : LIGHT_THEME;
     $: classNames = Object.keys($javaClasses);
     $: hideTabs = classNames.length === 0;
 
@@ -109,7 +111,7 @@
             <TabContent>
                 <SubzeroEditor
                     bind:this={editors[0]}
-                    theme={THEME}
+                    theme={theme}
                     tabSize={TAB_SIZE}
                     defaultFontSize={currentFontSize}
                 />
@@ -119,7 +121,7 @@
                     <JavaEditor
                         bind:this={editors[index]}
                         javaClass={$javaClasses[className]}
-                        theme={THEME}
+                        theme={theme}
                         tabSize={TAB_SIZE}
                         defaultFontSize={currentFontSize}
                     />

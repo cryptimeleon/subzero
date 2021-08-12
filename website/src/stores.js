@@ -28,3 +28,4 @@ export const includeCode = writable(true);
 export const includeLatex = writable(true);
 export const openClassFilesInNewTabs = writable(false);
 export const generatedProject = writable('Full project');
+export const darkMode = writable(true);

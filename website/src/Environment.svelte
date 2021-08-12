@@ -2,9 +2,9 @@
     import { Accordion, AccordionItem, DataTable } from 'carbon-components-svelte';
 
     import { conditionalEventListener } from './actions';
-    import { environment } from './stores';
+    import { darkMode, environment } from './stores';
 
-    const tableColors = {
+    const darkTableColors = {
         'witness': '#94def6', // Blue
         'public parameter': '#f694ac', // Red
         'common input': '#94f6ac', // Green
@@ -16,10 +16,24 @@
         'group element (GT)': '#f6aaef', // Pink
     };
 
+    const lightTableColors = {
+        'witness': '#299ad3', // Blue
+        'public parameter': '#c52b56', // Red
+        'common input': '#00bc48', // Green
+        'boolean': '#ef9f2e', // Yellow
+        'exponent': '#00ba84', // Turquoise
+        'group element': '#5036dc', // Purple
+        'group element (G1)': '#5036dc', // Purple
+        'group element (G2)': '#9b56dd', // Periwinkle
+        'group element (GT)': '#d34bd0', // Pink
+    };
+
     let tableFunctions = [];
     let tableVariables = [];
     let openFunctions = true;
     let openVariables = true;
+
+    $: tableColors = $darkMode ? darkTableColors : lightTableColors;
 
     // Runs when $environment is changed
     $: {

@@ -53,6 +53,8 @@
         }
     }
 
+    $: if (editor) editor.setTheme(theme);
+
     // Creates the code editor and sets up features
     function createEditor(xtext) {
         // Creates the editor and adds it to the DOM

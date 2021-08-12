@@ -6,6 +6,7 @@
     import { Tile } from 'carbon-components-svelte';
     import { onMount } from 'svelte';
     
+    import { darkMode } from './stores.js';
     import documentation from './documentation.js';
     
     const markdownOptions = {gfm: true};
@@ -30,28 +31,28 @@
 </script>
 
 <Tile>
-    <div class='documentation markdown-body-dark'>
+    <div class={'documentation markdown-body' + ($darkMode ? '-dark' : '')}>
         <SvelteMarkdown source={documentation} options={markdownOptions}/>
     </div>
 </Tile>
 
-<style lang='scss' global>
+<style>
     .documentation {
         height: 44rem;
         width: 100%;
         overflow: auto;
     }
 
-    .documentation::-webkit-scrollbar, .documentation pre::-webkit-scrollbar {
+    .documentation::-webkit-scrollbar, .documentation :global(pre::-webkit-scrollbar) {
         width: 0.75rem;
         height: 0.75rem;
     }
     
-    .documentation::-webkit-scrollbar-track, .documentation pre::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    .documentation::-webkit-scrollbar-track, .documentation :global(pre::-webkit-scrollbar-track) {
+        box-shadow: inset 0 0 6px rgba(240, 202, 202, 0.3);
     }
     
-    .documentation::-webkit-scrollbar-thumb, .documentation pre::-webkit-scrollbar-thumb {
+    .documentation::-webkit-scrollbar-thumb, .documentation :global(pre::-webkit-scrollbar-thumb) {
         background-color: darkgrey;
         outline: 1px solid slategrey;
     }
