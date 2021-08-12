@@ -1,12 +1,14 @@
 <script>
-    import { DataTable } from 'carbon-components-svelte';
+    import { Accordion, AccordionItem, DataTable } from 'carbon-components-svelte';
 
+    import { conditionalEventListener } from './actions';
     import { environment } from './stores';
 
     const tableColors = {
         'witness': '#94def6', // Blue
         'public parameter': '#f694ac', // Red
         'common input': '#94f6ac', // Green
+        'boolean': '#f6de94', // Yellow
         'exponent': '#52edc9', // Turquoise
         'group element': '#a394f6', // Purple
         'group element (G1)': '#a394f6', // Purple
@@ -14,8 +16,10 @@
         'group element (GT)': '#f6aaef', // Pink
     };
 
-    let tableVariables = [];
     let tableFunctions = [];
+    let tableVariables = [];
+    let openFunctions = true;
+    let openVariables = true;
 
     // Runs when $environment is changed
     $: {
@@ -51,6 +55,7 @@
             const tableFunction = {
                 id: index+1,
                 name: func.name,
+                parameterNames: func.parameterNames.join('|'),
                 parameterTypes: func.parameterTypes.join('|'),
                 returnType: func.returnType,
                 origin: func.origin
@@ -59,93 +64,118 @@
             tableFunctions.push(tableFunction);
         });
     }
-    
-    function formatParameterTypes(parameterTypesString) {
-        const parameterTypes = parameterTypesString.split('|');
-        const length = parameterTypes.length;
-        const formattedParameterTypes = [];
 
-        parameterTypes.forEach((parameterType, index) => {
-            formattedParameterTypes.push([parameterType, index < length-1]);
-        });
-
-        return formattedParameterTypes;
+    function setCellTitle() {
+        if (this.title) {
+            if (this.offsetWidth >= this.scrollWidth) {
+                this.title = '';
+            }
+        } else {
+            if (this.offsetWidth < this.scrollWidth) {
+                this.title = this.innerHTML;
+            }
+        }
     }
 </script>
 
 <div class='environment'>
-    <div class='functions-container'>
-        <p class='table-title'>
-            Functions
-        </p>
-        {#if tableFunctions.length === 0}
-            <p class='empty-table-message'>
-                Any protocol functions will be displayed here
-            </p>
-        {:else}
-            <div class='functions-table-container table-container'>
-                <DataTable
-                    useStaticWidth
-                    sortable
-                    headers={[
-                        {key: 'name', value: 'Function name'},
-                        {key: 'parameterTypes', value: 'Parameter types', sort: false},
-                        {key: 'returnType', value: 'Return type'},
-                        {key: 'origin', value: 'Origin'}
-                    ]}
-                    rows={tableFunctions}
-                >
-                    <p slot='cell' let:cell>
-                        {#if cell.key === 'returnType'}
-                            <span style='color: {tableColors[cell.value]}'>
-                                {cell.value}
-                            </span>
-                        {:else if cell.key === 'parameterTypes'}
-                            {#each formatParameterTypes(cell.value) as [parameterType, addComma]}
-                                <!-- This must be all on one line, otherwise an extra space char will be inserted between the type and the comma after it -->
-                                <span style='color: {tableColors[parameterType]}'>{parameterType}</span>{#if addComma}<span>, </span>{/if}
-                            {/each}
-                        {:else}
-                            {cell.value}
-                        {/if}
+    <Accordion>
+        <AccordionItem bind:open={openFunctions} title='Functions'>
+            <div class='functions-container'>
+                {#if tableFunctions.length === 0}
+                    <p class='empty-table-message'>
+                        Any protocol functions will be displayed here
                     </p>
-                </DataTable>
+                {:else}
+                    <div class={'functions-table-container table-container ' + (openVariables ? 'small-container' : 'full-container')}>
+                        <DataTable
+                            useStaticWidth
+                            sortable
+                            headers={[
+                                {key: 'name', value: 'Function name'},
+                                {key: 'parameterNames', value: 'Parameter names', sort: false},
+                                {key: 'parameterTypes', value: 'Parameter types', sort: false},
+                                {key: 'returnType', value: 'Return type'},
+                                {key: 'origin', value: 'Origin'}
+                            ]}
+                            rows={tableFunctions}
+                        >
+                            <div
+                                let:cell
+                                use:conditionalEventListener={{
+                                    condition: cell.key === 'name',
+                                    type: 'mouseenter',
+                                    listener: setCellTitle
+                                }}
+                                class='table-cell'
+                                slot='cell'
+                            >
+                                {#if cell.key === 'returnType'}
+                                    <p style='color: {tableColors[cell.value]}'>
+                                        {cell.value}
+                                    </p>
+                                {:else if cell.key === 'parameterNames'}
+                                    {#each cell.value.split('|') as parameterName}
+                                        <p class='table-cell' on:mouseenter={setCellTitle}>
+                                            {parameterName}
+                                        </p>
+                                    {/each}
+                                {:else if cell.key === 'parameterTypes'}
+                                    {#each cell.value.split('|') as parameterType}
+                                        <p style='color: {tableColors[parameterType]}'>
+                                            {parameterType}
+                                        </p>
+                                    {/each}
+                                {:else}
+                                    {cell.value}
+                                {/if}
+                            </div>
+                        </DataTable>
+                    </div>
+                {/if}
             </div>
-        {/if}
-    </div>
-
-    <div class='variables-container'>
-        <p class='table-title'>
-            Variables
-        </p>
-        {#if tableVariables.length === 0}
-            <p class='empty-table-message'>
-                Any protocol variables will be displayed here
-            </p>
-        {:else}
-            <div class='variables-table-container table-container'>
-                <DataTable
-                    sortable
-                    headers={[
-                        {key: 'name', value: 'Variable name'},
-                        {key: 'type', value: 'Type'},
-                        {key: 'role', value: 'Role'},
-                    ]}
-                    rows={tableVariables}
-                >
-                    <p slot='cell' let:cell>
-                        {#if cell.key === 'role' || cell.key === 'type'}
-                            <span style='color: {tableColors[cell.value]}'>
-                                {cell.value}
-                            </span>
-                        {:else}
-                            {cell.value}
-                        {/if}
+        </AccordionItem>
+        <AccordionItem bind:open={openVariables} title='Variables'>
+            <div class='variables-container'>
+                {#if tableVariables.length === 0}
+                    <p class='empty-table-message'>
+                        Any protocol variables will be displayed here
                     </p>
-                </DataTable>
+                {:else}
+                    <div class={'variables-table-container table-container ' + (openFunctions ? 'medium-container' : 'full-container')}>
+                        <DataTable
+                            sortable
+                            headers={[
+                                {key: 'name', value: 'Variable name'},
+                                {key: 'type', value: 'Type'},
+                                {key: 'role', value: 'Role'},
+                            ]}
+                            rows={tableVariables}
+                        >
+                            <div
+                                let:cell
+                                use:conditionalEventListener={{
+                                    condition: cell.key === 'name',
+                                    type: 'mouseenter',
+                                    listener: setCellTitle
+                                }}
+                                class='table-cell'
+                                slot='cell'
+                            >
+                                {#if cell.key === 'role' || cell.key === 'type'}
+                                    <span style='color: {tableColors[cell.value]}'>
+                                        {cell.value}
+                                    </span>
+                                {:else}
+                                    {cell.value}
+                                {/if}
+                            </div>
+                        </DataTable>
+                    </div>
+                {/if}
             </div>
-        {/if}
-    </div>
+        </AccordionItem>
+    </Accordion>
 </div>
 
 <style>
@@ -155,20 +185,22 @@
         height: 100%;
     }
 
+    .environment :global(.bx--accordion__title) {
+        font-size: 1.25rem;
+    }
+
+    .environment :global(.bx--accordion__content) {
+        padding: 0;
+    }
+
     .functions-container {
         height: 100%;
-        flex-grow: 1;
+        width: 100%;
     }
 
     .variables-container {
         height: 100%;
-        flex-grow: 2;
-    }
-
-    p.table-title {
-        padding: 0.25rem;
-        padding-left: 1rem;
-        font-size: 1.5rem;
+        width: 100%;
     }
 
     p.empty-table-message {
@@ -184,50 +216,43 @@
         height: 100%;
     }
 
-    /* Set the column widths for the functions table */
-    .functions-table-container :global(td:nth-child(1)), .functions-table-container  :global(th:nth-child(1)) {
+    .functions-table-container :global(td), .functions-table-container :global(th) {
         width: 20%;
     }
 
-    .functions-table-container :global(td:nth-child(2)), .functions-table-container  :global(th:nth-child(2)) {
-        width: 40%;
-    }
-
-    .functions-table-container :global(td:nth-child(3)), .functions-table-container  :global(th:nth-child(3)) {
-        width: 15%;
-    }
-
-    .functions-table-container :global(td:nth-child(4)), .functions-table-container  :global(th:nth-child(4)) {
-        width: 15%;
-    }
-    /**********/
-
-    /* Set the column widths for the variables table */
-    .variables-table-container :global(td:nth-child(1)), .variables-table-container :global(th:nth-child(1)) {
+    .variables-table-container :global(td), .variables-table-container :global(th) {
         width: 33.3%;
     }
 
-    .variables-table-container :global(td:nth-child(2)), .variables-table-container  :global(th:nth-child(2)) {
-        width: 33.4%;
+    .table-container :global(.bx--table-header-label) {
+        text-align: left;
     }
 
-    .variables-table-container :global(td:nth-child(3)), .variables-table-container  :global(th:nth-child(3)) {
-        width: 33.3%;
+    .small-container :global(tbody) {
+        min-height: 10.5rem;
+        max-height: 10.5rem;
     }
-    /**********/
+
+    .medium-container :global(tbody) {
+        min-height: 23rem;
+        max-height: 23rem;
+    }
+
+    .full-container :global(tbody) {
+        min-height: 36.5rem;
+        max-height: 36.5rem;
+    }
+
+    .table-cell {
+        font-size: 1rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
     
     /* Makes the tables scrollable */
     .table-container :global(tbody) {
         display: block;
         overflow-y: scroll;
-    }
-
-    .functions-container .table-container :global(tbody) {
-        max-height: 11rem;
-    }
-
-    .variables-container .table-container :global(tbody) {
-        max-height: 23rem;
     }
 
     .table-container :global(thead), .table-container :global(tbody tr) {

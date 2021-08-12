@@ -315,7 +315,7 @@ class SizeInference {
 			
 			val FunctionSignature signature = predefinedFunctionsMap.get(functionName);
 			val int returnSize = signature.getReturnSize();
-			val ArrayList<Integer> parameterSizes = signature.getParameterSizes();
+			val List<Integer> parameterSizes = signature.getParameterSizes();
 			
 			// Backpropagate from every predefined function call node that returns a tuple
 			if (returnSize > 1) {
