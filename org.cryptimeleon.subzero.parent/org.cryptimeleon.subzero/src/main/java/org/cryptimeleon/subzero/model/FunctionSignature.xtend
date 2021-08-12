@@ -9,6 +9,7 @@ import org.cryptimeleon.subzero.model.Type
 import org.cryptimeleon.subzero.predefined.TupleParameters
 import org.cryptimeleon.subzero.predefined.ReturnsTuple
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
+import java.util.List
 
 /**
  * Contains information about a function's name, return type, and parameters
@@ -19,36 +20,22 @@ class FunctionSignature {
 	Type returnType;
 	int returnSize;
 	int parameterCount;
-	ArrayList<Type> parameterTypes;
-	ArrayList<Integer> parameterSizes;
+	List<String> parameterNames;
+	List<Type> parameterTypes;
+	List<Integer> parameterSizes;
 	
-	new(String name, String returnTypeName, int returnSize, String[] parameterTypes, int[] parameterSizes) {
-		this.name = name;
-		this.returnType = Type.toType(returnTypeName);
-		this.returnSize = returnSize;
-		this.parameterCount = parameterTypes.length;
-		this.parameterTypes = new ArrayList();
-		for (String parameterType : parameterTypes) {
-			this.parameterTypes.add(Type.toType(parameterType));
-		}
-		this.parameterSizes = new ArrayList(parameterSizes);
-	}
-	
-	new(String name, Type returnType, int returnSize, Type[] parameterTypes, int[] parameterSizes) {
+	new(String name, Type returnType, int returnSize, List<String> parameterNames, List<Type> parameterTypes, int[] parameterSizes) {
 		this.name = name;
 		this.returnType = returnType;
 		this.returnSize = returnSize;
-		this.parameterCount = parameterTypes.length;
+		this.parameterCount = parameterNames.length;
+		this.parameterNames = new ArrayList(parameterNames);
 		this.parameterTypes = new ArrayList(parameterTypes);
 		this.parameterSizes = new ArrayList(parameterSizes);
 	}
 	
-	new(String name, String returnType, String[] parameterTypes) {
-		this(name, returnType, 1, parameterTypes, new ArrayList<Integer>(Collections.nCopies(parameterTypes.length, 1)));
-	}
-	
-	new(String name, Type returnType, Type[] parameterTypes) {
-		this(name, returnType, 1, parameterTypes, new ArrayList<Integer>(Collections.nCopies(parameterTypes.length, 1)));
+	new(String name, Type returnType, List<String> parameterNames, List<Type> parameterTypes) {
+		this(name, returnType, 1, parameterNames, parameterTypes, new ArrayList<Integer>(Collections.nCopies(parameterTypes.length, 1)));
 	}
 	
 	new(Method method) {
@@ -78,7 +65,12 @@ class FunctionSignature {
 		}
 		
 		this.parameterCount = method.getParameterTypes.size();
+		this.parameterNames = new ArrayList<String>();
 		this.parameterTypes = new ArrayList<Type>;
+		
+		for (var i = 0; i < this.parameterCount; i++) {
+			this.parameterNames.add("arg" + (i+1));
+		}
 
 		for (Class<?> classObject : method.getParameterTypes()) {
 			this.parameterTypes.add(Type.toType(classObject.getSimpleName()));			
@@ -105,11 +97,15 @@ class FunctionSignature {
 		return returnSize > 1;
 	}
 	
-	def ArrayList<Type> getParameterTypes() {
+	def List<String> getParameterNames() {
+		return parameterNames;
+	}
+	
+	def List<Type> getParameterTypes() {
 		return parameterTypes;
 	}
 	
-	def ArrayList<Integer> getParameterSizes() {
+	def List<Integer> getParameterSizes() {
 		return parameterSizes;
 	}
 		

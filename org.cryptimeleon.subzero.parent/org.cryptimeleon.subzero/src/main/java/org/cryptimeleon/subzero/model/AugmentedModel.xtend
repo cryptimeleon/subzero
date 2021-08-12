@@ -787,15 +787,17 @@ class AugmentedModel {
 		userFunctionSignatures = new HashMap<String, FunctionSignature>();
 
 		for (FunctionDefinition function : model.getFunctions()) {
+			val List<String> parameterNames = new ArrayList<String>();
 			val List<Type> parameterTypes = new ArrayList<Type>();
 			val List<Integer> parameterSizes = new ArrayList<Integer>();
 
 			for (Parameter parameter : function.getParameterList().getParameters()) {
+				parameterNames.add(parameter.getName());
 				parameterTypes.add(types.get(parameter));
 				parameterSizes.add(sizes.get(parameter));
 			}
 
-			val FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), sizes.get(function), parameterTypes, parameterSizes);
+			val FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), sizes.get(function), parameterNames, parameterTypes, parameterSizes);
 			userFunctionSignatures.put(function.getName(), signature);
 		}
 

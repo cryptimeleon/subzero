@@ -3,29 +3,21 @@ Subzero - Zero Knowledge Compiler
 Subzero is a declarative domain-specific language (DSL) that enables the specification of zero knowledge protocols. It is written in Java and [Xtend](https://www.eclipse.org/xtend/) and uses the [Xtext](https://www.eclipse.org/Xtext/) language development framework.
 This website features a code editor for writing Subzero programs, and a compiler to generate a Java project that can execute the protocol described by Subzero code.
 
+<!--startExclude-->
 Using the compiler
 ==================
 The compiler website is available [here](https://cryptimeleon.org/subzero).
 
 Building the project
 ====================
-You can also run an instance of the website yourself. Make sure that you are using Java 11 and have [Maven](https://maven.apache.org/) installed. After downloading the repo, run the following commands:
-```
-cd org.cryptimeleon.subzero.parent/
-mvn install
-```
-Next, to start the web server, run:
-```
-cd org.cryptimeleon.subzero.web/
-mvn jetty:run
-```
-Go to http://localhost:8080/subzero
-
-Alternatively, you can run the website as a [Docker](https://www.docker.com/) container:
+You can also run an instance of the website yourself as a [Docker](https://www.docker.com/) container. After downloading the repo, run the following commands:
 ```
 docker build -t subzero .
-docker run -p 8080:8080 subzero
+docker run -p 8080:8080 subzero:latest
 ```
+
+Go to http://localhost:8080/subzero
+<!--endExclude-->
 
 Getting started with Subzero
 ============================

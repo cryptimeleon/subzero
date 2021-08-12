@@ -57,11 +57,12 @@ class Environment {
 			val FunctionSignature function = entry.getValue();
 			
 			builder.append("{");
-			builder.append('''"construct": "function",''');
-			builder.append('''"name": "«functionName»",''');
-			builder.append('''"returnType": "«function.getReturnType()»",''');
-			builder.append('''"parameterTypes": [«FOR Type parameterType : function.getParameterTypes() SEPARATOR ', '»"«parameterType»"«ENDFOR»],''');
-			builder.append('''"origin": "«functionOrigin»"''');
+			builder.append('''"construct":"function",''');
+			builder.append('''"name":"«functionName»",''');
+			builder.append('''"returnType":"«function.getReturnType()»",''');
+			builder.append('''"parameterNames":[«FOR String parameterName : function.getParameterNames() SEPARATOR ','»"«parameterName»"«ENDFOR»],''');
+			builder.append('''"parameterTypes":[«FOR Type parameterType : function.getParameterTypes() SEPARATOR ','»"«parameterType»"«ENDFOR»],''');
+			builder.append('''"origin":"«functionOrigin»"''');
 			builder.append("},");
 		}
 	}

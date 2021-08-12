@@ -1,32 +1,32 @@
 /*
 Add example protocols here.
 The object key is the protocol name in the dropdown menu.
-The associated value is the Subzero code that will be loaded into the editor
+The associated value is the Subzero code that will be loaded into the editor.
 
 Use the following formatting:
 
-"Protocol name":
+'Protocol name':
 `
 Subzero code
 `,
 
 */
 
-let PROTOCOLS = {
+export default {
 
-"Dlog equality":
+'Dlog equality':
 `
 witness: k;
 b = a^k & h = g^k
 `,
 
-"ElGamal plaintext":
+'ElGamal plaintext':
 `
 witness: x,r;
 g^x * h^r = C_1 & h^r = C_2
 `,
 
-"Pedersen commitment with range proof":
+'Pedersen commitment with range proof':
 `
 [Pedersen commitment with range proof]
 
@@ -36,7 +36,7 @@ witness : m_1, m_2 ,r
 C_1 = h_1^m_1 * h_2^m_2 * g^r & 20 <= m_1 + m_2 <= 100
 `,
 
-"Basic proof of partial knowledge":
+'Basic proof of partial knowledge':
 `
 [Partial knowledge]
 
@@ -46,7 +46,7 @@ g^x * h^r = C
 `,
 
 
-"Pointcheval Sanders credential":
+'Pointcheval Sanders credential':
 `
 [Pointcheval Sanders credential showing]
 

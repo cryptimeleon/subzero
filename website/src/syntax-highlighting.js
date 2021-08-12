@@ -1,6 +1,4 @@
-/*
- * Specifies the syntax highlighting rules for the website code editor
-*/
+// Specifies the syntax highlighting rules for the website code editor
 define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], function(oop, mText, mTextHighlightRules) {
 	var HighlightRules = function() {
 		
@@ -138,7 +136,8 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 		this.HighlightRules = HighlightRules;
 	};
 	oop.inherits(Mode, mText.Mode);
-	Mode.prototype.$id = "xtext/" + DSL_EXTENSION;
+	// Mode.prototype.$id = "xtext/" + DSL_EXTENSION;
+	Mode.prototype.$id = "xtext/sub0";
 	Mode.prototype.getCompletions = function(state, session, pos, prefix) {
 		return [];
 	}
