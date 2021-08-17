@@ -63,7 +63,7 @@ export default {
 
 		copy({
 			targets: [
-				{ src: ['index.html', 'global.css', 'src/syntax-highlighting.js'], dest: outputFolder},
+				{ src: ['index.html', 'favicon.png', 'src/syntax-highlighting.js'], dest: outputFolder},
 			],
 			verbose: true,
 		}),

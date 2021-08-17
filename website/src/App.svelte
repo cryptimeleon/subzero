@@ -14,6 +14,12 @@
 </div>
 
 <style>
+	:global(html), :global(body) {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
 	.page {
 		width: 100%;
 		height: 100%;
