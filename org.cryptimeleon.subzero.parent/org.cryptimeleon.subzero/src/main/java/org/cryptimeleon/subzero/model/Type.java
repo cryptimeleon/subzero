@@ -35,6 +35,7 @@ public enum Type {
 			case GROUP_ELEMENT: return "group element";
 			case EXPONENT: return "exponent";
 			case STRING: return "string";
+			case UNKNOWN: return "unknown";
 			default: return "";
 		}
 	}

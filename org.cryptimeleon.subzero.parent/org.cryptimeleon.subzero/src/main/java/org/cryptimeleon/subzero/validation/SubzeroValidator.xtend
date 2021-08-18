@@ -72,6 +72,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	var Set<String> witnessNames;
 	var Set<String> publicParameterNames;
 	var Map<String, List<Variable>> variables;
+	var Map<String, Map<String, List<LocalVariable>>> localVariables;
 	
 	/*
 	 * Validation proceeds in a topdown, preorder traversal of the syntax tree,
@@ -87,7 +88,6 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def void checkModel(Model model) {
 		// Do not perform validation if there are still syntax errors
 		if (!model.eResource.errors.isEmpty()) {
-			System.out.println("Syntax errors");
 			return;
 		}
 
@@ -104,6 +104,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		witnessNames = augmentedModel.getWitnessNames();
 		publicParameterNames = augmentedModel.getPublicParameterNames();
 		variables = augmentedModel.getVariableNodes();
+		localVariables = augmentedModel.getLocalVariableNodes();
 		
 		System.out.println("Validating the model");
 		
@@ -434,16 +435,10 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 
 	// Every function parameter should be used at least once in the function definition
 	def private void checkFunctionParametersAreUsed(FunctionDefinition function) {
-		val HashSet<String> functionVariables = new HashSet<String>();
-		
-		ModelMap.postorder(function.getBody(), [EObject node |
-			if (node instanceof LocalVariable) {
-				functionVariables.add(node.getName());
-			}
-		])
-		
+		val Map<String, List<LocalVariable>> functionLocalVariables = localVariables.get(function.getName());
+				
 		for (Parameter parameter: function.getParameterList().getParameters()) {
-			if (!functionVariables.contains(parameter.getName())) {
+			if (functionLocalVariables.get(parameter.getName()).size() === 0) {
 				warning('''Parameter '«parameter.getName()»' should be used within the function definition''', parameter, getDefaultFeature(parameter));
 			}
 		}
@@ -1028,7 +1023,6 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	// Returns the name of the type of node
 	def private String getNodeName(EObject node) {
 		var String className = node.class.getSimpleName();
-		System.out.println(className);
 		var String nodeName = "";
 		nodeName += Character.toLowerCase(className.charAt(0));
 		

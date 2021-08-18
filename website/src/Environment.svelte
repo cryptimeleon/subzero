@@ -14,18 +14,20 @@
         'group element (G1)': '#a394f6', // Purple
         'group element (G2)': '#d6aaf6', // Periwinkle
         'group element (GT)': '#f6aaef', // Pink
+        'unknown': '#ffffff', // White
     };
 
     const lightTableColors = {
         'witness': '#299ad3', // Blue
         'public parameter': '#c52b56', // Red
         'common input': '#00bc48', // Green
-        'boolean': '#ef9f2e', // Yellow
+        'boolean': '#ef9f2e', // Orange
         'exponent': '#00ba84', // Turquoise
         'group element': '#5036dc', // Purple
         'group element (G1)': '#5036dc', // Purple
         'group element (G2)': '#9b56dd', // Periwinkle
         'group element (GT)': '#d34bd0', // Pink
+        'unknown': '#000000', // Black
     };
 
     let tableFunctions = [];
