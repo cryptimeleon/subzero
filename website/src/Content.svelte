@@ -10,6 +10,8 @@
 	import Environment from './Environment.svelte';
 	import Options from './Options.svelte';
 	import CompileButton from './CompileButton.svelte';
+
+	let latexPreview;
 </script>
 
 <div class='content'>
@@ -21,7 +23,7 @@
             <div class='tab-container'>
                 <Tabs type='container'>
                     <Tab label='Documentation'/>
-                    <Tab label='LaTeX Preview'/>
+                    <Tab label='LaTeX Preview' on:click={() => {latexPreview.refreshPreview()}}/>
                     <Tab label='Environment'/>
                     <Tab label='Options'/>
                     <div class='tab-container-content' slot='content'>
@@ -29,7 +31,7 @@
 							<Documentation/>
                         </TabContent>
                         <TabContent>
-							<LatexPreview/>
+							<LatexPreview bind:this={latexPreview}/>
                         </TabContent>
                         <TabContent>
 							<Environment/>

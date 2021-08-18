@@ -13,11 +13,13 @@
 	import { latexText } from './stores.js';
 
     import SaveButton from './SaveButton.svelte';
+
+    $: data = $latexText.trimEnd();
 </script>
 
 <SaveButton
     bind:ref={button}
-    data={$latexText}
+    {data}
     dataName={'LaTeX text'}
     extension='tex'
 />

@@ -6,7 +6,7 @@
 
     import { darkMode } from './stores.js';
 
-    $: document.documentElement.setAttribute("theme", $darkMode ? 'g100' : 'white');
+    $: document.documentElement.setAttribute('theme', $darkMode ? 'g100' : 'white');
 </script>
 
 <style lang='scss' global>
@@ -23,7 +23,7 @@
     :global(.xtext-marker_error) {
         position: absolute;
         z-index: 30;
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAABmJLR0QA/wD/AP+gvaeTAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAABmJLR0QA/wD/AP+gvaeTAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==');
         background-repeat: repeat-x;
         background-position: left bottom;
     }
@@ -33,7 +33,7 @@
     :global(.xtext-marker_warning) {
         position: absolute;
         z-index: 20;
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAABmJLR0QA/wD/AP+gvaeTAAAAMklEQVQI12NkgIIvJ3QXMjAwdDN+OaEbysDA4MPAwNDNwMCwiOHLCd1zX07o6kBVGQEAKBANtobskNMAAAAASUVORK5CYII=");
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAABmJLR0QA/wD/AP+gvaeTAAAAMklEQVQI12NkgIIvJ3QXMjAwdDN+OaEbysDA4MPAwNDNwMCwiOHLCd1zX07o6kBVGQEAKBANtobskNMAAAAASUVORK5CYII=');
         background-repeat: repeat-x;
         background-position: left bottom;
     }

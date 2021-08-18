@@ -12,6 +12,7 @@
         DSL_EXTENSION,
         editorCode,
         generatedProject,
+        generatedProjectOptions,
         includeCode,
         includeLatex,
         javaClasses,
@@ -91,19 +92,19 @@
         let testFilename = 'LibraryTest.java';
         let ppFilename = protocolName + 'PublicParameters.java';
         switch ($generatedProject) {
-            case 'Protocol class only':
+            case $generatedProjectOptions.protocol:
                 filename = protocolFilename;
                 code = project.prototype.src.main.java.prototype[filename];
                 if ($openClassFilesInNewTabs) $javaClasses = {[filename]: code};
                 saveCode(code, filename);
                 break;
-            case 'Test class only':
+            case $generatedProjectOptions.test:
                 filename = testFilename;
                 code = project.prototype.src.test.java.prototype[filename];
                 if ($openClassFilesInNewTabs) $javaClasses = {[filename]: code};
                 saveCode(code, filename);
                 break;
-            case 'Public parameters class only':
+            case $generatedProjectOptions.publicParameters:
                 filename = ppFilename;
                 code = project.prototype.src.main.java.prototype[filename];
 
@@ -116,7 +117,7 @@
                 if ($openClassFilesInNewTabs) $javaClasses = {[filename]: code};
                 saveCode(code, filename);
                 break;
-            case 'Full project':
+            case $generatedProjectOptions.full:
                 let projectZip = new JSZip();
                 createProjectZip(projectZip, project);
 

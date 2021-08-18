@@ -1,4 +1,5 @@
 import { writable, readable } from 'svelte/store';
+import { loadFromStorage } from './storage.js';
 
 const baseUrl = window.location.pathname;
 const fileIndex = baseUrl.indexOf('index.html');
@@ -24,8 +25,18 @@ export const ace = writable(undefined);
 export const environment = writable([]);
 export const javaClasses = writable({});
 
-export const includeCode = writable(true);
-export const includeLatex = writable(true);
-export const openClassFilesInNewTabs = writable(false);
-export const generatedProject = writable('Full project');
-export const darkMode = writable(true);
+const projectOptions = {
+    full: 'Full project',
+    protocol: 'Protocol class only',
+    publicParameters: 'Public parameters class only',
+    test: 'Test class only',
+};
+export const generatedProjectOptions = readable(projectOptions);
+
+export const includeCode = writable(loadFromStorage('includeCode', true));
+export const includeLatex = writable(loadFromStorage('includeLatex', true));
+export const openClassFilesInNewTabs = writable(loadFromStorage('openClassFilesInNewTabs', false));
+export const generatedProject = writable(loadFromStorage('generatedProject', projectOptions.full));
+export const darkMode = writable(loadFromStorage('darkMode', true));
+export const darkTheme = writable(loadFromStorage('darkTheme', ''));
+export const lightTheme = writable(loadFromStorage('lightTheme', ''));

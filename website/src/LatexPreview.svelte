@@ -14,9 +14,16 @@
     import Add32 from 'carbon-icons-svelte/lib/Add32';
 	import Subtract32 from 'carbon-icons-svelte/lib/Subtract32';
     
+    import { loadFromStorage, saveToStorage } from './storage.js';
     import { darkMode, latexText } from './stores.js';
+
     import SaveLatexButton from './SaveLatexButton.svelte';
     import Tooltip from './Tooltip.svelte';
+
+    export function refreshPreview() {
+        // Force MathJax to update
+        if ($latexText && $latexText.slice(-1) !== ' ') $latexText += ' ';
+    }
 
     let mathjaxReady = false;
     let mounted = false;
@@ -30,7 +37,7 @@
     const MAX_PREVIEW_FONT_SIZE = 40;
     const PREVIEW_FONT_SIZE_INCREMENT = 4;
 
-    let currentPreviewFontSize = DEFAULT_PREVIEW_FONT_SIZE;
+    let currentPreviewFontSize = loadFromStorage('latexFontSize', DEFAULT_PREVIEW_FONT_SIZE);
 
     // Updates the LaTeX preview whenever the text changes
     $: {
@@ -78,12 +85,14 @@
         if (currentPreviewFontSize >= MAX_PREVIEW_FONT_SIZE) return;
 
         currentPreviewFontSize += PREVIEW_FONT_SIZE_INCREMENT;
+        saveToStorage('latexFontSize', currentPreviewFontSize);
     }
 
     function zoomPreviewOut() {
         if (currentPreviewFontSize <= MIN_PREVIEW_FONT_SIZE) return;
 
         currentPreviewFontSize -= PREVIEW_FONT_SIZE_INCREMENT;
+        saveToStorage('latexFontSize', currentPreviewFontSize);
     }
 </script>
 
