@@ -106,7 +106,7 @@
     <Tile>
         <Dropdown
             light
-            titleText='Dark mode theme:'
+            titleText='Dark mode editor theme:'
             direction='top'
             items={darkThemeOptions}
             bind:selectedIndex={selectedDarkThemeIndex}
@@ -116,7 +116,7 @@
     <Tile>
         <Dropdown
             light
-            titleText='Light mode theme:'
+            titleText='Light mode editor theme:'
             direction='top'
             items={lightThemeOptions}
             bind:selectedIndex={selectedLightThemeIndex}

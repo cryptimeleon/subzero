@@ -143,13 +143,16 @@
         class={hideTabs ? 'hide-tabs' : ''}
     >
         <div class='editor-tabs-container'>
-            <Tab label='Subzero'/>
-            
+            <div class='editor-tab-container'>
+                <Tab label='Subzero'/>
+            </div>
             {#each classNames as className (className)}
-                <EditorTab
-                    className={className}
-                    on:selectedDelete={() => selectedTabIndex = 0}
-                />
+                <div class='editor-tab-container java-editor-tab-container'>
+                    <EditorTab
+                        className={className}
+                        on:selectedDelete={() => selectedTabIndex = 0}
+                    />
+                </div>
             {/each}
         </div>
         <div class='editor-content' slot='content'>
@@ -191,6 +194,13 @@
         display: flex;
     }
 
+    .editor-tabs-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        overflow-x: scroll;
+    }
+
     .editor-tabs-container :global(.bx--tabs__nav-item) {
         width: 100%;
     }
@@ -200,11 +210,17 @@
         text-align: center;
     }
 
-    .editor-tabs-container {
+    .editor-tab-container {
         width: 100%;
-        height: 100%;
+        min-width: 0;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0;
+    }
+
+    .java-editor-tab-container :global(.bx--tabs__nav-link) {
         display: flex;
-        overflow-x: scroll;
+        padding-right: 0;
     }
 
     .editor-content {

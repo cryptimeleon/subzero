@@ -4,6 +4,7 @@
     import Close32 from 'carbon-icons-svelte/lib/Close32';
 
     import { javaClasses } from './stores.js';
+    import { setTitleOnOverflow } from './helpers.js';
 
     const dispatch = createEventDispatcher();
 
@@ -24,27 +25,22 @@
 
 </script>
 
-<div class='editor-tab-container'>
-    <Tab label={className} bind:ref={tab}>
-        <div class='editor-tab-name'>
-            {className}
-        </div>
-        <div
-            class='editor-tab-delete'
-            on:click={deleteTab}
-            on:mouseenter={() => {hovered = true}}
-            on:mouseleave={() => {hovered = false}}
-        >
-            <Close32 class={hovered ? 'delete-icon-hovered' : 'delete-icon'}/>
-        </div>
-    </Tab>
-</div>
+<Tab bind:ref={tab} label={className}>
+    <div class='editor-tab-name' on:mouseenter={setTitleOnOverflow}>
+        {className}
+    </div>
+    <div
+        class='editor-tab-delete'
+        on:click={deleteTab}
+        on:mouseenter={() => {hovered = true}}
+        on:mouseleave={() => {hovered = false}}
+    >
+        <Close32 class={hovered ? 'delete-icon-hovered' : 'delete-icon'}/>
+    </div>
+</Tab>
 
 <style>
-    .editor-tab-container :global(.bx--tabs__nav-link) {
-        display: flex;
-        padding-right: 0;
-    }
+    
     .editor-tab-name {
         flex-shrink: 1;
         flex-grow: 0;

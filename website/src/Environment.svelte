@@ -1,8 +1,9 @@
 <script>
     import { Accordion, AccordionItem, DataTable } from 'carbon-components-svelte';
 
-    import { conditionalEventListener } from './actions';
-    import { darkMode, environment } from './stores';
+    import { conditionalEventListener } from './actions.js';
+    import { setTitleOnOverflow } from './helpers.js';
+    import { darkMode, environment } from './stores.js';
 
     const darkTableColors = {
         'witness': '#94def6', // Blue
@@ -80,18 +81,6 @@
             tableFunctions.push(tableFunction);
         });
     }
-
-    function setCellTitle() {
-        if (this.title) {
-            if (this.offsetWidth >= this.scrollWidth) {
-                this.title = '';
-            }
-        } else {
-            if (this.offsetWidth < this.scrollWidth) {
-                this.title = this.innerHTML;
-            }
-        }
-    }
 </script>
 
 <div class='environment'>
@@ -121,7 +110,7 @@
                                 use:conditionalEventListener={{
                                     condition: cell.key === 'name',
                                     type: 'mouseenter',
-                                    listener: setCellTitle
+                                    listener: setTitleOnOverflow
                                 }}
                                 class='table-cell'
                                 slot='cell'
@@ -132,7 +121,7 @@
                                     </p>
                                 {:else if cell.key === 'parameterNames'}
                                     {#each cell.value.split('|') as parameterName}
-                                        <p class='table-cell' on:mouseenter={setCellTitle}>
+                                        <p class='table-cell' on:mouseenter={setTitleOnOverflow}>
                                             {parameterName}
                                         </p>
                                     {/each}
@@ -173,7 +162,7 @@
                                 use:conditionalEventListener={{
                                     condition: cell.key === 'name',
                                     type: 'mouseenter',
-                                    listener: setCellTitle
+                                    listener: setTitleOnOverflow
                                 }}
                                 class='table-cell'
                                 slot='cell'
