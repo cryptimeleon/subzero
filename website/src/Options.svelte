@@ -147,4 +147,8 @@
         padding-left: 1rem;
         padding-right: 1rem;
     }
+
+    .options :global(.bx--list-box__menu::-webkit-scrollbar) {
+        width: 0.5rem;
+    }
 </style>

@@ -15,8 +15,25 @@
 
     :global(body) {
 		margin: 0;
-		overflow: hidden;
 	}
+
+    :global(::-webkit-scrollbar) {
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+    
+    :global(::-webkit-scrollbar-track) {
+        box-shadow: inset 0 0 6px rgba(240, 202, 202, 0.3);
+    }
+    
+    :global(::-webkit-scrollbar-thumb) {
+        background-color: darkgrey;
+        outline: 1px solid slategrey;
+    }
+
+    :global(::-webkit-scrollbar-corner) {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
 
     // Fixes issue where syntax/semantic errors are not underlined in red
     // CSS is from xtext-web source code

@@ -1,4 +1,4 @@
-<svelte:window on:keydown={handleKeydown} on:wheel|nonpassive={handleWheel}/>
+<svelte:window on:keydown={handleKeydown}/>
 
 <script context='module'>
     import { loadFromStorage, saveToStorage } from './storage.js';
@@ -133,13 +133,6 @@
             event.preventDefault();
             event.stopPropagation();
             event.key === '=' ? zoomIn() : zoomOut();
-        }
-    }
-
-    function handleWheel(event) {
-        if (event.ctrlKey) {
-            event.preventDefault();
-            event.deltaY > 0 ? zoomOut() : zoomIn();
         }
     }
 </script>

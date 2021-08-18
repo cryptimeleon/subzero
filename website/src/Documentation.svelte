@@ -42,18 +42,4 @@
         width: 100%;
         overflow: auto;
     }
-
-    .documentation::-webkit-scrollbar, .documentation :global(pre::-webkit-scrollbar) {
-        width: 0.75rem;
-        height: 0.75rem;
-    }
-    
-    .documentation::-webkit-scrollbar-track, .documentation :global(pre::-webkit-scrollbar-track) {
-        box-shadow: inset 0 0 6px rgba(240, 202, 202, 0.3);
-    }
-    
-    .documentation::-webkit-scrollbar-thumb, .documentation :global(pre::-webkit-scrollbar-thumb) {
-        background-color: darkgrey;
-        outline: 1px solid slategrey;
-    }
 </style>

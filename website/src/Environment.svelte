@@ -274,20 +274,8 @@
         width: 100%;
         table-layout: fixed;
     }
-    /**********/
 
-    /* Styles the table scrollbar */
     .table-container :global(tbody::-webkit-scrollbar) {
         width: 0.5rem;
     }
-    
-    .table-container :global(tbody::-webkit-scrollbar-track) {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    }
-    
-    .table-container :global(tbody::-webkit-scrollbar-thumb) {
-    background-color: darkgrey;
-    outline: 1px solid slategrey;
-    }
-    /**********/
 </style>

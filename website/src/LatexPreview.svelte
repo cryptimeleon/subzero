@@ -139,6 +139,7 @@
     .preview-container {
         height: 100%;
         width: 100%;
+        padding: 0.5rem;
         display: flex;
         flex-flow: column;
         align-items: center;
@@ -158,19 +159,6 @@
         flex-basis: auto;
         overflow-y: auto;
         max-height: 40rem;
-    }
-
-    .latex-preview::-webkit-scrollbar {
-        width: 0.5rem;
-    }
-    
-    .latex-preview::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    }
-    
-    .latex-preview::-webkit-scrollbar-thumb {
-        background-color: darkgrey;
-        outline: 1px solid slategrey;
     }
 
     .control-container {

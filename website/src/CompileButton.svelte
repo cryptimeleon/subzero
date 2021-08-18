@@ -240,20 +240,6 @@
         justify-content: center;
     }
 
-    .code-snippet :global(div::-webkit-scrollbar), .code-snippet :global(pre::-webkit-scrollbar) {
-        width: 0.75rem;
-        height: 0.75rem;
-    }
-    
-    .code-snippet :global(div::-webkit-scrollbar-track), .code-snippet :global(pre::-webkit-scrollbar-track) {
-        box-shadow: inset 0 0 6px rgba(240, 202, 202, 0.3);
-    }
-    
-    .code-snippet :global(div::-webkit-scrollbar-thumb), .code-snippet :global(pre::-webkit-scrollbar-thumb) {
-        background-color: darkgrey;
-        outline: 1px solid slategrey;
-    }
-
     .loading {
         position: fixed;
         top: 50%;

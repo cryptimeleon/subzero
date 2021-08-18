@@ -255,21 +255,7 @@
         height: 100%;
     }
 
-    /* Styles the table scrollbar */
     .editor :global(::-webkit-scrollbar) {
         width: 1em;
-    }
-    
-    .editor :global(::-webkit-scrollbar-track) {
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    }
-    
-    .editor :global(::-webkit-scrollbar-thumb) {
-        background-color: darkgrey;
-        outline: 1px solid slategrey;
-    }
-
-    .editor :global(::-webkit-scrollbar-corner) {
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     }
 </style>
