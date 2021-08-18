@@ -5,7 +5,7 @@
     import JSZip from 'jszip';
     import { saveAs } from 'file-saver';
     
-    import { Button, CodeSnippet, Link, Modal } from 'carbon-components-svelte';
+    import { Button, CodeSnippet, Link, Loading, Modal } from 'carbon-components-svelte';
     
     import {
         CODE_RESOURCE_ID,
@@ -26,6 +26,7 @@
 
     $: editor = $xtextEditor;
 
+    let isCompiling = false;
     let filename;
     let openDownloadDialog = false;
     let openErrorDialog = false;
@@ -42,10 +43,14 @@
             return;
         }
 
+        isCompiling = true;
+
         validateCode($CODE_RESOURCE_ID, (isValid, issues) => {
             if (isValid) {
                 editor.xtextServices.generatorService._encodedResourceId = $CODE_RESOURCE_ID;
                 editor.xtextServices.generate().then((projectJSON) => {
+                    isCompiling = false;
+
                     if (projectJSON.length === 0) {
                         openErrorDialog = true;
                         errorMessage = 'There is no generated code to download.';
@@ -60,6 +65,7 @@
                     }
                 });
             } else {
+                isCompiling = false;
                 openErrorDialog = true;
                 errorMessage = 'Code cannot be compiled until there are no syntax or semantic errors.';
             }
@@ -203,6 +209,12 @@
     {/key}
 </Modal>
 
+{#if isCompiling}
+    <div class='loading'>
+        <Loading withOverlay={false} description='Compiling'/>
+    </div>
+{/if}
+
 <style>
     .compile-button {
         width: 25rem;
@@ -239,5 +251,12 @@
     .code-snippet :global(div::-webkit-scrollbar-thumb), .code-snippet :global(pre::-webkit-scrollbar-thumb) {
         background-color: darkgrey;
         outline: 1px solid slategrey;
+    }
+
+    .loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 </style>
