@@ -23,6 +23,8 @@ import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
 import org.cryptimeleon.subzero.subzero.WitnessList
 import org.eclipse.emf.ecore.EObject
+import org.cryptimeleon.subzero.subzero.ConstantList
+import org.cryptimeleon.subzero.subzero.Constant
 
 /**
  * Contains information about the current branch of the abstract syntax tree
@@ -153,6 +155,14 @@ class BranchState {
 	
 	def dispatch void updateState(PublicParameter publicParameter) {
 		updateGeneral(publicParameter);
+	}
+	
+	def dispatch void updateState(ConstantList constantList) {
+		updateGeneral(constantList);
+	}
+	
+	def dispatch void updateState(Constant constant) {
+		updateGeneral(constant);
 	}
 	
 	def dispatch void updateState(WitnessList witnessList) {

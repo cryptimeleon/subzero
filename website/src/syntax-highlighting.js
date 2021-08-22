@@ -3,60 +3,75 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 	var HighlightRules = function() {
 		
 		// Reused regex definitions
-		var identifier = "([a-zA-Z][a-zA-Z0-9_~\\']*)";
-		var operator = "&|\\||=|!=|<|<=|>|>=|\\^|\\*|\\+|\\-";
-		var number = "[0-9]+";
-		var leftParen = "(\\()";
-		var rightParen = "(\\))";
-		var space = "([ ]+)";
+		const identifier = "([a-zA-Z][a-zA-Z0-9_~\\']*)";
+		const protocol = "[a-zA-Z][a-zA-Z0-9_\\' ]*\\]";
+		const operator = "&|\\||=|!=|<|<=|>|>=|\\^|\\*|\\+|\\-";
+		const number = "[0-9]+";
+		const leftParen = "(\\()";
+		const rightParen = "(\\))";
+		const space = "([ ]+)";
 
 		// Reused token definitions
-		var protocolNameStart = {token: ["string"], regex: "\\[", next: "protocolName"};
-		var subprotocolNameStart = {token: ["string"], regex: "\\[", push: "subprotocolName"};
-		var inline = {token: "keyword", regex: "(inline)", next: "inlineFunctionName"};
-		var functionName = {token: ["support.function", "lparen"], regex: identifier + leftParen, next: "parameterList"};
-		var witnessList = {token: ["keyword", "colon"], regex: "(witness)(:?)", next: "witnessDeclarationList"};
-		var ppList = {token: ["keyword", "colon"], regex: "(pp)(:?)", next: "ppDeclarationList"};
-		var stringStart = {token: "string", regex: "\\\"", push: "stringLiteral"};
-		var functionCallStart = {token: ["support.function", "lparen"], regex: identifier + leftParen, push: "argumentList"};
-		var variable = {token: "variable", regex: identifier};
-		var constant = {token: "constant.numeric", regex: number};
-		var operation = {token: "operator", regex: operator};
+		const protocolNameStart = {token: ["string"], regex: "\\[", next: "protocolName"};
+		const subprotocolNameStart = {token: ["string"], regex: "\\[", push: "subprotocolName"};
+		
+		const inline = {token: "keyword", regex: "(inline)", next: "inlineFunctionName"};
+		const functionName = {token: ["support.function", "lparen"], regex: identifier + leftParen, next: "parameterList"};
+		
+		const witnessList = {token: ["keyword", "colon"], regex: "(witness)(:?)"};
+		const ppList = {token: ["keyword", "colon"], regex: "(pp)(:?)"};
+		const constantList = {token: ["keyword", "colon"], regex: "(common)(:?)"};
 
-		// Reused state definitions
-		var createDeclarationListState = function(nextState) {
+		const initialWitnessList = {...witnessList, next: 'initialWitnessList'};
+		const initialPPList = {...ppList, next: 'initialPPList'};
+		const initialConstantList = {...constantList, next: 'initialConstantList'};
+		
+		const functionCallStart = {token: ["support.function", "lparen"], regex: identifier + leftParen, push: "argumentList"};
+		const preFunctionCallStart = {token: ["support.function", "lparen"], regex: identifier + leftParen, next: "preArgumentList"};
+		
+		// Partial reused token definitions (needs next state)
+		const variable = {token: "variable", regex: identifier};
+		const constant = {token: "constant.numeric", regex: number};
+		const operation = {token: "operator", regex: operator};
+		const separator = {token: "comma", regex: ","};
+
+		// Partial reused state definitions
+		const preBodyState = [
+			preFunctionCallStart,
+			{...variable, next: 'mainBody'},
+			{...operation, next: 'mainBody'},
+			{...constant, next: 'mainBody'}
+		];
+
+		// Generate state definitions
+		const createDeclarationListState = (nextState) => {
 			return [
 				{token: ["variable", "comma"], regex: identifier + "(,)"},
 				{token: ["variable", "end"], regex: identifier + "(;?)", next: nextState},
 			]
 		}
 
-		var highlightingRules = {
+		const highlightingRules = {
 			"start": [
 				protocolNameStart,
 				inline,
 				functionName,
-				ppList,
-				witnessList,
+				initialWitnessList,
+				initialPPList,
+				initialConstantList,
 			],
 
 			"protocolName": [
-				{token: ["string"], "regex": "[a-zA-Z][a-zA-Z0-9_\\' ]*\\]", next: "afterProtocolName"},
+				{token: ["string"], "regex": protocol, next: "afterProtocolName"},
 				{defaultToken: "string"}
 			],
-
-			"ppDeclarationList": createDeclarationListState("afterPP"),
-			"witnessDeclarationList": createDeclarationListState("mainBody"),
 
 			"afterProtocolName": [
 				inline,
 				functionName,
-				ppList,
-				witnessList
-			],
-
-			"afterPP": [
-				witnessList,
+				initialWitnessList,
+				initialPPList,
+				initialConstantList,
 			],
 
 			"inlineFunctionName": [
@@ -70,28 +85,91 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 			],
 
 			"functionBody": [
-				stringStart,
 				functionCallStart,
 				variable,
 				operation,
 				constant,
 				subprotocolNameStart,
-				{token: "rbrace", regex: "\\}", next: "start"},
+				{token: "rbrace", regex: "\\}", next: "afterProtocolName"},
 			],
 
-			"argumentList": [
-				stringStart,
+			'initialWitnessList': createDeclarationListState('afterWitness'),
+
+			'initialPPList': createDeclarationListState('afterPP'),
+
+			'initialConstantList': createDeclarationListState('afterConstant'),
+
+			'afterWitness': [
+				{...ppList, next: 'ppListAfterWitness'},
+				{...constantList, next: 'constantListAfterWitness'},
+				...preBodyState
+			],
+
+			'afterPP': [
+				{...witnessList, next: 'witnessListAfterPP'},
+				{...constantList, next: 'constantListAfterPP'},
+				...preBodyState
+			],
+
+			'afterConstant': [
+				{...witnessList, next: 'witnessListAfterConstant'},
+				{...ppList, next: 'ppListAfterConstant'},
+				...preBodyState
+			],
+			
+			'ppListAfterWitness': createDeclarationListState('afterWitnessAndPP'),
+
+			'constantListAfterWitness': createDeclarationListState('afterWitnessAndConstant'),
+
+			'witnessListAfterPP': createDeclarationListState('afterWitnessAndPP'),
+
+			'constantListAfterPP': createDeclarationListState('afterPPAndConstant'),
+
+			'witnessListAfterConstant': createDeclarationListState('afterWitnessAndConstant'),
+
+			'ppListAfterConstant': createDeclarationListState('afterPPAndConstant'),
+
+			'afterWitnessAndPP': [
+				{...constantList, next: 'endingConstantList'},
+				...preBodyState,
+			],
+
+			'afterWitnessAndConstant': [
+				{...ppList, next: 'endingPPList'},
+				...preBodyState,
+			],
+
+			'afterPPAndConstant': [
+				{...witnessList, next: 'endingWitnessList'},
+				...preBodyState,
+			],
+
+			'endingWitnessList': createDeclarationListState('mainBody'),
+
+			'endingPPList': createDeclarationListState('mainBody'),
+			
+			'endingConstantList': createDeclarationListState('mainBody'),
+
+			"preArgumentList": [
 				functionCallStart,
 				variable,
 				operation,
 				constant,
-				{token: "comma", regex: ","},
+				separator,
+				{token: "rparen", regex: rightParen, next: "mainBody"},
+			],
+
+			"argumentList": [
+				functionCallStart,
+				variable,
+				operation,
+				constant,
+				separator,
 				{token: "rparen", regex: rightParen, next: "pop"},
 			],
 
 			"mainBody": [
 				{token: ["keyword", "colon"], regex: "(statement)(:?)"},
-				stringStart,
 				functionCallStart,
 				variable,
 				operation,
@@ -100,13 +178,8 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 			],
 
 			"subprotocolName": [
-				{token: ["string"], "regex": "[a-zA-Z][a-zA-Z0-9_\\' ]*\\]", next: "pop"},
+				{token: ["string"], "regex": protocol, next: "pop"},
 				{defaultToken: "string"},
-			],
-
-			"stringLiteral": [
-				{token: "string", regex: "[^\\\"]*\\\"", next: "pop"},
-				{defaultToken: "string"}
 			],
 
 			"blockComment": [

@@ -14,8 +14,14 @@ generate subzero "http://www.cryptimeleon.org/subzero/Subzero"
 Model returns Model:
   (protocolName=PROTOCOL_NAME)?
   functions+=(FunctionDefinition)*
-  (publicParameterList=PublicParameterList ';'?)?
-  (witnessList=WitnessList ';'?)
+  (
+  ( (witnessList=WitnessList ';'?) (publicParameterList=PublicParameterList ';'?)? (constantList=ConstantList ';'?)? ) |
+  ( (witnessList=WitnessList ';'?) (constantList=ConstantList ';'?) (publicParameterList=PublicParameterList ';'?) ) |
+  ( (publicParameterList=PublicParameterList ';'?) (witnessList=WitnessList ';'?) (constantList=ConstantList ';'?)? ) | 
+  ( (publicParameterList=PublicParameterList ';'?) (constantList=ConstantList ';'?) (witnessList=WitnessList ';'?) ) |
+  ( (constantList=ConstantList ';'?) (witnessList=WitnessList ';'?) (publicParameterList=PublicParameterList ';'?)? ) |
+  ( (constantList=ConstantList ';'?) (publicParameterList=PublicParameterList ';'?) (witnessList=WitnessList ';'?) )
+  )
   ('statement' ':')? (proof=Expression) test=';'?;
 
 FunctionDefinition returns FunctionDefinition:
@@ -31,6 +37,12 @@ WitnessList returns WitnessList:
   'witness' symbol=':'? (witnesses+=Witness (',' witnesses+=Witness)*);
 
 Witness returns Witness:
+  name=IDENTIFIER;
+  
+ConstantList returns ConstantList:
+  'common' symbol=':'? (constants+=Constant (',' constants+=Constant)*);
+
+Constant returns Constant:
   name=IDENTIFIER;
   
 PublicParameterList returns PublicParameterList:

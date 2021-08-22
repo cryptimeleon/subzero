@@ -9,7 +9,6 @@ import java.util.Map
 import java.util.Set
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
 import org.cryptimeleon.subzero.subzero.Argument
-import org.cryptimeleon.subzero.subzero.Brackets
 import org.cryptimeleon.subzero.subzero.Comparison
 import org.cryptimeleon.subzero.subzero.Conjunction
 import org.cryptimeleon.subzero.subzero.Disjunction
@@ -41,6 +40,8 @@ import org.cryptimeleon.subzero.subzero.ConstantVariable
 import org.cryptimeleon.subzero.subzero.WitnessList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic
+import org.cryptimeleon.subzero.subzero.ConstantList
+import org.cryptimeleon.subzero.subzero.Constant
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -82,6 +83,7 @@ class AugmentedModel {
 	Map<String, GroupType> publicParameterGroups;
 	
 	Map<String, List<Variable>> variables;
+	Set<String> declaredConstantNames;
 	Set<String> constantVariableNames;
 	List<String> sortedConstantVariableNames;
 	Map<String, Type> constantVariableTypes;
@@ -235,6 +237,9 @@ class AugmentedModel {
 	/*
 	 * Methods for getting high-level model structure information
 	 */
+	def boolean hasExplicitConstants() {
+		return model.getConstantList() !== null;
+	}
 	
 	def boolean requiresPublicParametersClass() {
 		return hasRangeProof() || hasOrDescendantOfAnd();
@@ -333,16 +338,6 @@ class AugmentedModel {
 					node.setRight(node.getCenter());
 					node.setCenter(null);
 				}
-			}
-		]);
-	}
-	
-	// Simplifies the model by removing all bracket nodes
-	def private void removeBracketsTransformation() {
-		ModelMap.postorder(model, [ EObject node |
-			if (node instanceof Brackets) {
-				val EObject contents = node.getContent();
-				ModelHelper.replaceParentReferenceToSelf(node, contents);
 			}
 		]);
 	}
@@ -620,6 +615,21 @@ class AugmentedModel {
 	/*
 	 * Constant variable information
 	 */
+	def Set<String> getDeclaredConstantNames() {
+		if (declaredConstantNames !== null) return declaredConstantNames;
+		
+		declaredConstantNames = new HashSet<String>();
+		
+		val ConstantList constantList = model.getConstantList();
+		
+		if (constantList !== null) {
+			for (Constant constant : constantList.getConstants()) {
+				declaredConstantNames.add(constant.getName());
+			}
+		}
+		
+		return declaredConstantNames;		
+	}
 	 
 	def Set<String> getConstantVariableNames() {
 		if (constantVariableNames !== null) return constantVariableNames;

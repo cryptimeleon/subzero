@@ -50,6 +50,10 @@ import java.util.HashMap
 import java.util.Map.Entry
 import org.cryptimeleon.subzero.model.Environment
 import org.cryptimeleon.subzero.model.VariableIdentifier
+import org.cryptimeleon.subzero.subzero.ConstantList
+import org.cryptimeleon.subzero.subzero.Constant
+import org.cryptimeleon.subzero.subzero.ConstantVariable
+import org.cryptimeleon.subzero.subzero.PPVariable
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -71,8 +75,10 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	var Map<String, FunctionSignature> predefinedFunctions;
 	var Set<String> witnessNames;
 	var Set<String> publicParameterNames;
+	var Set<String> declaredConstantNames;
 	var Map<String, List<Variable>> variables;
 	var Map<String, Map<String, List<LocalVariable>>> localVariables;
+	var boolean hasExplicitConstants;
 	
 	/*
 	 * Validation proceeds in a topdown, preorder traversal of the syntax tree,
@@ -103,8 +109,10 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 		witnessNames = augmentedModel.getWitnessNames();
 		publicParameterNames = augmentedModel.getPublicParameterNames();
+		declaredConstantNames = augmentedModel.getDeclaredConstantNames();
 		variables = augmentedModel.getVariableNodes();
 		localVariables = augmentedModel.getLocalVariableNodes();
+		hasExplicitConstants = augmentedModel.hasExplicitConstants();
 		
 		System.out.println("Validating the model");
 		
@@ -157,6 +165,15 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def dispatch void checkNode(Witness witness, BranchState state) {
 		checkWitnessNameFormat(witness);
 		checkWitnessIsUsed(witness);
+	}
+	
+	def dispatch void checkNode(ConstantList constantList, BranchState state) {
+		checkConstantNamesAreUnique(constantList);
+	}
+	
+	def dispatch void checkNode(Constant constant, BranchState state) {
+		checkConstantNameFormat(constant);
+		checkConstantIsUsed(constant);
 	}
 	
 	def dispatch void checkNode(Conjunction conjunction, BranchState state) {
@@ -233,6 +250,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def dispatch void checkNode(Variable variable, BranchState state) {
 		checkVariableNameFormat(variable);
+		checkVariableIsDeclared(variable);
 		checkProofAlgebraicPosition(variable, state);
 		checkGroupType(variable);
 	}
@@ -281,44 +299,28 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 	}
 	
-	// Public parameter names must start with a letter, and only contain letters, numbers, at most 1 underscore
-	// (to denote subscript) and any number of single quotes at the end
 	def private void checkPublicParameterNameFormat(PublicParameter publicParameter) {
-		var List<String> errors = nameFormatErrors(publicParameter.getName(), "Public parameter");
-		for (String errorMessage : errors) {
-			error(errorMessage, publicParameter, getDefaultFeature(publicParameter));
-		}
+		nameFormatErrors(publicParameter, publicParameter.getName(), "Public parameter");
 	}
 
-	// Witness names must start with a letter, and only contain letters, numbers, at most 1 underscore
-	// (to denote subscript) and any number of single quotes at the end
 	def private void checkWitnessNameFormat(Witness witness) {
-		var List<String> errors = nameFormatErrors(witness.getName(), "Witness");
-		for (String errorMessage : errors) {
-			error(errorMessage, witness, getDefaultFeature(witness));
-		}
+		nameFormatErrors(witness, witness.getName(), "Witness");
 	}
 
-	// Variable names must start with a letter, and only contain letters, numbers, at most 1 underscore
-	// (to denote subscript) and any number of single quotes at the end
 	def private void checkVariableNameFormat(Variable variable) {
-		var List<String> errors = nameFormatErrors(variable.getName(), "Variable");
-		for (String errorMessage : errors) {
-			error(errorMessage, variable, getDefaultFeature(variable));
-		}
+		nameFormatErrors(variable, variable.getName(), "Variable");
 	}
 
-	// Parameter names must start with a letter, and only contain letters, numbers, at most 1 underscore
-	// (to denote subscript) and any number of single quotes at the end
 	def private void checkParameterNameFormat(Parameter parameter) {
-		var List<String> errors = nameFormatErrors(parameter.getName(), "Parameter");
-		for (String errorMessage : errors) {
-			error(errorMessage, parameter, getDefaultFeature(parameter));
-		}
+		nameFormatErrors(parameter, parameter.getName(), "Parameter");
+	}
+	
+	def private void checkConstantNameFormat(Constant constant) {
+		nameFormatErrors(constant, constant.getName(), "Constant");
 	}
 
 	// Helper function for checking the name format of identifiers
-	def private List<String> nameFormatErrors(String identifier, String type) {
+	def private void nameFormatErrors(EObject node, String identifier, String type) {
 		var List<String> nameErrors = new ArrayList<String>();
 		
 		val VariableIdentifier variableIdentifier = new VariableIdentifier(identifier);
@@ -336,8 +338,10 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 				nameErrors.add(type + " name can only contain single quotes at the end of the name");
 			}
 		}
-
-		return nameErrors;
+		
+		for (String errorMessage : nameErrors) {
+			error(errorMessage, node, getDefaultFeature(node));
+		}
 	}
 
 	/*
@@ -381,37 +385,64 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	// Public parameter names must be unique
 	def private void checkPublicParameterNamesAreUnique(PublicParameterList publicParameterList) {
-		val HashSet<String> publicParameters = new HashSet<String>();
+		val Set<String> publicParameters = new HashSet<String>();
 		for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
 			val String name = publicParameter.getName();
 			if (publicParameters.contains(name)) {
-				error("Public parameter names must be unique", publicParameter, getDefaultFeature(publicParameter));
-			} else if (witnessNames.contains(name)) {
-				error("Public parameter name conflicts with a witness name", publicParameter, getDefaultFeature(publicParameter));
-			} else {
-				publicParameters.add(name);				
+				error("Public parameter name conflicts with another public parameter name", publicParameter, getDefaultFeature(publicParameter));
 			}
+			if (witnessNames.contains(name)) {
+				error("Public parameter name conflicts with a witness name", publicParameter, getDefaultFeature(publicParameter));
+			}
+			if (declaredConstantNames.contains(name)) {
+				error("Public parameter name conflicts with a constant name", publicParameter, getDefaultFeature(publicParameter));
+			}
+			
+			publicParameters.add(name);				
 		}
 	}
 
 	// Witness names must be unique
 	def private void checkWitnessNamesAreUnique(WitnessList witnessList) {
-		val HashSet<String> witnesses = new HashSet<String>();
+		val Set<String> witnesses = new HashSet<String>();
 		for (Witness witness : witnessList.getWitnesses()) {
 			val String name = witness.getName();
 			if (witnesses.contains(name)) {
-				error("Witness names must be unique", witness, getDefaultFeature(witness));
-			} else if (publicParameterNames.contains(name)) {
-				error("Witness name conflicts with a public parameter name", witness, getDefaultFeature(witness));
-			} else {
-				witnesses.add(name);				
+				error("Witness name conflicts with another witness name", witness, getDefaultFeature(witness));
 			}
+			if (publicParameterNames.contains(name)) {
+				error("Witness name conflicts with a public parameter name", witness, getDefaultFeature(witness));
+			}
+			if (declaredConstantNames.contains(name)) {
+				error("Witness name conflicts with a constant name", witness, getDefaultFeature(witness));
+			}
+			
+			witnesses.add(name);				
+		}
+	}
+	
+	// Constant names must be unique
+	def private void checkConstantNamesAreUnique(ConstantList constantList) {
+		val Set<String> constants = new HashSet<String>();
+		for (Constant constant : constantList.getConstants()) {
+			val String name = constant.getName();
+			if (constants.contains(name)) {
+				error("Constant name conflicts with another constant name", constant, getDefaultFeature(constant));
+			}
+			if (witnessNames.contains(name)) {
+				error("Constant name conflicts with a witness name", constant, getDefaultFeature(constant));
+			}
+			if (publicParameterNames.contains(name)) {
+				error("Constant name conflicts with a public parameter name", constant, getDefaultFeature(constant));
+			}
+		
+			constants.add(name);
 		}
 	}
 
 	// Function parameter names must be unique within a function signature
 	def private void checkFunctionParameterNamesAreUnique(ParameterList parameterList) {
-		val HashSet<String> parameters = new HashSet<String>();
+		val Set<String> parameters = new HashSet<String>();
 		for (Parameter parameter : parameterList.getParameters()) {
 			val String name = parameter.getName();
 			if (parameters.contains(name)) {
@@ -499,11 +530,23 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 * Validate the public parameter list
 	 */
 	
-	// Each witness should be referenced at least once
+	// Each public parameter should be referenced at least once
 	def private void checkPublicParameterIsUsed(PublicParameter publicParameter) {
 		val name = publicParameter.getName();
 		if (!variables.containsKey(name)) {
 			warning('''The public parameter '«name»' is not used in the proof expression or any function definition''', publicParameter, getDefaultFeature(publicParameter));
+		}
+	}
+	
+	/*
+	 * Validate the constant list
+	 */
+	
+	// Each witness should be referenced at least once
+	def private void checkConstantIsUsed(Constant constant) {
+		val name = constant.getName();
+		if (!variables.containsKey(name)) {
+			warning('''The common input '«name»' is not used in the proof expression or any function definition''', constant, getDefaultFeature(constant));
 		}
 	}
 
@@ -562,6 +605,13 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	/*
 	 * Validate grammar structure
 	 */
+	 
+	// If any constant variables are explicitly declared, then all variables must be explicitly declared
+	def private void checkVariableIsDeclared(Variable variable) {
+		if (hasExplicitConstants && variable instanceof ConstantVariable && !declaredConstantNames.contains(variable.getName())) {
+			error("If any common input variable is explicitly declared, then no common input variable can be implicitly declared", variable, getDefaultFeature(variable));
+		}
+	}
 	
 	// String literals must be directly nested within a tuple, a comparison, or a function call
 	def private void checkStringLiteralPositionIsValid(StringLiteral stringLiteral, BranchState state) {
@@ -1053,6 +1103,8 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			Witness:			return Literals.WITNESS__NAME
 			PublicParameterList:return Literals.PUBLIC_PARAMETER_LIST__PUBLIC_PARAMETERS
 			PublicParameter:    return Literals.PUBLIC_PARAMETER__NAME
+			ConstantList:		return Literals.CONSTANT_LIST__CONSTANTS
+			Constant:			return Literals.CONSTANT__NAME
 			Conjunction: 		return Literals.CONJUNCTION__OPERATION
 			Disjunction: 		return Literals.DISJUNCTION__OPERATION
 			Comparison: 		return Literals.COMPARISON__OPERATION
@@ -1064,6 +1116,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			Negative: 			return Literals.NEGATIVE__OPERATION
 			FunctionCall: 		return Literals.FUNCTION_CALL__NAME
 			LocalVariable: 		return Literals.VARIABLE__NAME
+			ConstantVariable:	return Literals.VARIABLE__NAME
+			PPVariable:			return Literals.VARIABLE__NAME
+			WitnessVariable:	return Literals.VARIABLE__NAME
 			Variable: 			return Literals.VARIABLE__NAME
 			NumberLiteral: 		return Literals.NUMBER_LITERAL__VALUE
 		}

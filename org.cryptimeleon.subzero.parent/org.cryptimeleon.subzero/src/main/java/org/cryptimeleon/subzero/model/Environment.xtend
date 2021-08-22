@@ -8,6 +8,9 @@ import org.cryptimeleon.subzero.subzero.FunctionCall
 import org.cryptimeleon.subzero.subzero.Variable
 import java.util.ArrayList
 import org.cryptimeleon.subzero.subzero.LocalVariable
+import java.util.Set
+import java.util.HashSet
+import java.util.Collection
 
 class Environment {
 	
@@ -30,8 +33,8 @@ class Environment {
 		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
 		
-		val List<String> commonInputNames = augmentedModel.getSortedConstantVariableNames();
-		val Map<String, Type> commonInputTypes = augmentedModel.getConstantVariableTypes();
+		val List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
+		val Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
 		
 		var Map<String, GroupType> variableGroups = null;
 		if (augmentedModel.hasPairing()) {
@@ -42,7 +45,16 @@ class Environment {
 		buildFunctions(builder, userFunctions, userFunctionCalls, localVariableNodes, "user");
 		buildVariables(builder, publicParameterNames, publicParameterTypes, variableGroups, variableNodes, "public parameter");
 		buildVariables(builder, witnessNames, witnessTypes, variableGroups, variableNodes, "witness");
-		buildVariables(builder, commonInputNames, commonInputTypes, variableGroups, variableNodes, "common input");
+		
+		if (augmentedModel.hasExplicitConstants()) {
+			val Set<String> declaredConstantNames = augmentedModel.getDeclaredConstantNames();
+			val Set<String> undeclaredConstantNames = new HashSet(constantNames);
+			undeclaredConstantNames.removeAll(declaredConstantNames);
+			buildVariables(builder, declaredConstantNames, constantTypes, variableGroups, variableNodes, "common input");
+			buildVariables(builder, undeclaredConstantNames, constantTypes, variableGroups, variableNodes, "unknown");
+		} else {
+			buildVariables(builder, constantNames, constantTypes, variableGroups, variableNodes, "common input");
+		}
 
 		// Trim the trailing comma
 		if (builder.length() > 1) {
@@ -103,7 +115,7 @@ class Environment {
 	
 	def void buildVariables(
 		StringBuilder builder,
-		List<String> variableNames,
+		Collection<String> variableNames,
 		Map<String, Type> variableTypes,
 		Map<String, GroupType> variableGroups,
 		Map<String, List<Variable>> variableNodes,
