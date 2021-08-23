@@ -11,6 +11,7 @@ public enum GroupType {
 			case G1: return "G1";
 			case G2: return "G2";
 			case GT: return "GT";
+			case UNKNOWN: return "unknown";
 			default: return "";
 		}
 	}

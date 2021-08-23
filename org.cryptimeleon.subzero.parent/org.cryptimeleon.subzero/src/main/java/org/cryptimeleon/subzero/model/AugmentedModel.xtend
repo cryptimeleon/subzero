@@ -42,6 +42,8 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic
 import org.cryptimeleon.subzero.subzero.ConstantList
 import org.cryptimeleon.subzero.subzero.Constant
+import java.util.LinkedHashSet
+import java.util.LinkedHashMap
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -69,6 +71,7 @@ class AugmentedModel {
 	TypeInference typeInference;
 	SizeInference sizeInference;
 	GroupInference groupInference;
+	
 	
 	Map<String, Witness> witnessNodes;
 	Set<String> witnessNames;
@@ -407,7 +410,7 @@ class AugmentedModel {
 	def Map<String, Witness> getWitnessNodes() {
 		if (witnessNodes !== null) return witnessNodes;
 		
-		witnessNodes = new HashMap<String, Witness>();
+		witnessNodes = new LinkedHashMap<String, Witness>(); // Uses insertion order for iteration order
 
 		val WitnessList witnessList = model.getWitnessList();
 		if (witnessList !== null) {
@@ -428,7 +431,7 @@ class AugmentedModel {
 	def Set<String> getWitnessNames() {
 		if (witnessNames !== null) return witnessNames;
 			
-		witnessNames = new HashSet<String>();
+		witnessNames = new LinkedHashSet<String>(); // Uses insertion order for iteration order
 
 		val WitnessList witnessList = model.getWitnessList();
 		if (witnessList !== null) {
@@ -535,7 +538,7 @@ class AugmentedModel {
 	def Map<String, PublicParameter> getPublicParameterNodes() {
 		if (publicParameters !== null) return publicParameters;
 		
-		publicParameters = new HashMap<String, PublicParameter>();
+		publicParameters = new LinkedHashMap<String, PublicParameter>(); // Uses insertion order for iteration order
 
 		if (model.getPublicParameterList() !== null) {
 			for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
@@ -555,7 +558,7 @@ class AugmentedModel {
 	def Set<String> getPublicParameterNames() {
 		if (publicParameterNames !== null) return publicParameterNames;
 		
-		publicParameterNames = new HashSet<String>();
+		publicParameterNames = new LinkedHashSet<String>(); // Uses insertion order for iteration order
 		
 		val PublicParameterList publicParameterList = model.getPublicParameterList();
 		

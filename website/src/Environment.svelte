@@ -15,6 +15,7 @@
         'group element (G1)': '#a394f6', // Purple
         'group element (G2)': '#d6aaf6', // Periwinkle
         'group element (GT)': '#f6aaef', // Pink
+        'group element (unknown)': '#ffffff', // White
         'unknown': '#ffffff', // White
     };
 
@@ -28,6 +29,7 @@
         'group element (G1)': '#5036dc', // Purple
         'group element (G2)': '#9b56dd', // Periwinkle
         'group element (GT)': '#d34bd0', // Pink
+        'group element (unknown)': '#000000', // Black
         'unknown': '#000000', // Black
     };
 
