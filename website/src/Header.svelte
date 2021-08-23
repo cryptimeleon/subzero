@@ -89,12 +89,30 @@
 		width: 100%;
 	}
 
+	.header-dark :global(.bx--header__action:disabled svg) {
+		fill: dimgray;
+	}
+
+	.header-dark :global(.bx--header__action:hover:disabled) {
+		background-color: inherit;
+		cursor: default;
+	}
+
 	.header-light :global(svg) {
 		fill: black;
 	}
 
 	.header-light :global(.bx--header__action:hover) {
 		background-color: #e0e0e0;
+	}
+
+	.header-light :global(.bx--header__action:disabled svg) {
+		fill: silver;
+	}
+
+	.header-light :global(.bx--header__action:hover:disabled) {
+		background-color: inherit;
+		cursor: default;
 	}
 
     .left-header-container {

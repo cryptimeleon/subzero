@@ -145,12 +145,30 @@
         align-items: center;
     }
 
-    .preview-light :global(svg) {
+	.preview-dark :global(.bx--header__action:disabled svg) {
+		fill: dimgray;
+	}
+
+	.preview-dark :global(.bx--header__action:hover:disabled) {
+		background-color: inherit;
+		cursor: default;
+	}
+
+	.preview-light :global(svg) {
 		fill: black;
 	}
 
 	.preview-light :global(.bx--header__action:hover) {
 		background-color: #e0e0e0;
+	}
+
+	.preview-light :global(.bx--header__action:disabled svg) {
+		fill: silver;
+	}
+
+	.preview-light :global(.bx--header__action:hover:disabled) {
+		background-color: inherit;
+		cursor: default;
 	}
 
     .latex-preview {
