@@ -27,12 +27,14 @@ Documentation
 
 - [Compiler website features](#compiler-website-features)
    - [Code editor](#code-editor)
+   - [Example protocols](#example-protocols)
    - [Compiler](#compiler)
    - [LaTeX preview](#latex-preview)
    - [Environment](#environment)
    - [Options](#options)
 - [Additional language details](#additional-language-details)
    - [Implementation](#implementation)
+   - [Generated Java project](#generated-java-project)
    - [Syntax specification](#syntax-specification)
 
 <!--startExclude-->
@@ -57,7 +59,6 @@ docker run -p 8080:8080 subzero:latest
 Go to http://localhost:8080/subzero
 <!--endExclude-->
 
-
 Tutorial
 ========
 Introduction
@@ -70,26 +71,56 @@ DLog equality
 ----------------
 We begin with a simple first protocol that proves the equality of two discrete logarithms.
 
-`
+```
 witness: k
 b = a^k & h = g^k
-`
+```
 
-The protocol starts with a witness variable declaration list, that declares a single witness variable `k`. Below this is the proof expression, which describes the protocol's proof of knowledge. It consists of a conjunction expression composed of two equality expressions, `b = a^k` and `h = g^k`.
+The protocol starts with a witness variable declaration list, that declares a single witness variable `k`. Below this is the proof expression, which describes the protocol's proof of knowledge. It consists of a conjunction expression (`&`) composed of two equality (`=`) expressions, `b = a^k` and `h = g^k`.
 
-The witness variable `k` is declared explicitly. The other variables, `a`, `b`, `h`, and `g` are common input variables that have been declared implicitly.
+The witness variable `k` is declared explicitly. The other variables, `a`, `b`, `g`, and `h` are common input variables that have been declared implicitly.
 
+Every variable has an algebraic type, that is either `group element` or `exponent`, which is inferred based on its context. By default, a variable is `group element` unless it appears in a specific `exponent` context. In the protocol above, `k` has type `exponent`, since it appears in the exponentiation (`^`) expressions `a^k` and `g^k`. The other variables `a`, `b`, `g`, and `h` have type `group element`.
 
 Pedersen commitment
 -------------------
 
 
+```
+[Pedersen commitment with range proof]
+
+pp : h_1, h_2, g
+witness : m_1, m_2, r
+
+C_1 = h_1^m_1 * h_2^m_2 * g^r & 20 <= m_1 + m_2 <= 100
+
+```
+
+This protocol introduces a few more concepts. First, we start the protocol with a protocol name in between square brackets. This string will be used to name the Java classes in the generated project.
+
+Next, we have a new variable declaration list beginning with the keyword `pp`, which explicitly declares public parameter variables. Once again, witness variables are explicitly declared, and the remaining variables are implicitly declared common input variables.
+
+The protocol also has a double inequality expression `20 <= m_1 + m_2 <= 100`, which represents a range proof. Subzero supports both single and double inequalities with the expected relational operators (`<`, `>`, `<=`, `>=`). `*` and `+` are used for multiplication and addition expressions. `/` and `-` are used similarly for division and subtraction expressions.
+
 Pointcheval Sanders credential
 ------------------------------
+```
+[Pointcheval Sanders credential showing]
 
+witness: age, pos, r
 
+e(sigma_1', X~) * e(sigma_1', Y_1~^age * Y_2~^pos) * e(sigma_1', g~)^r = e(sigma_2', g~) // valid signature
+& (age < 18 | pos = 17) // young or student
 
+```
 
+The final example protocol shows a few more features. Single-line comments start with `//`. Multi-line comments are also supported between `/*` and `*/`.
+
+Variable identifiers support more than letters and numbers, to allow special formatting in the [LaTeX preview](#latex-preview) tab. Underscores allow for subscripts, tildes allow for overtildes, single quotes allow for prime symbols, and names of Greek letters will display as the Greek symbol.
+
+The protocol contains a disjunction (`|`) expression `age < 18 | pos = 17` which represents a partial proof of knowledge.
+
+Finally, there are several function calls to the `e` function, which is a built-in pairing function.
 
 The next section will further explain the language details introduced in this section.
 
@@ -104,9 +135,9 @@ Subzero has two types of identifiers: function identifiers and variable identifi
 A function identifier must begin with a letter, and can contain letters and numbers.
 
 ### Variable identifiers
-A variable identifier must start with a letter, and can contain letters and numbers.
+A variable identifier must start with a letter, and can contain letters and numbers, as well as some special characters in specific contexts.
 
-The identifier can also contain special formatting fragments, which allow for formatting of variables in the [LaTeX Preview](#latex-preview) tab. If you do not intend to use the preview, the rest of this section can be skipped.
+The identifier can contain special formatting fragments, which allow for formatting of variables in the [LaTeX Preview](#latex-preview) tab. If you do not intend to use the preview, the rest of this section can be skipped.
 
 The variable can have any number of terminating single quotes, or terminating substrings 'Prime', to add prime symbols after a variable name.
 
@@ -214,6 +245,8 @@ There are three distinct types in Subzero: `boolean`, `exponent`, and `group ele
 
 ### Roles
 The role determines the usage of a variable within the protocol. Every variable is either a witness variable, a public parameter variable, a common input variable, or a local variable. Witness and public parameter variables are declared explicitly within the witness and public parameter lists, respectively. Local variables are declared in the parameter list of their corresponding function definition. All other variables are implicitly declared as common input variables. This mix of explicit/implicit declaration is intended for readability and to keep protocols looking similar to the existing notation in literature.
+
+The role is not relevant for function return values, or when passing in function arguments.
 
 ### Group Types
 All variables of algebraic type `group element` also have a group type. By default, the group type is `G1`. When pairing functions are used in a protocol, then the group type can also be `G2` or `GT`. See [pairing functions](#pairing-functions) for more details.
@@ -342,7 +375,7 @@ Product expressions evaluate to an `exponent` or a `group element`. The operands
 #### Multiplication
 ```A * B```
 
-##### Division
+#### Division
 ```A / B```
 
 ### Exponentiation
@@ -417,9 +450,10 @@ Any other variable is a global variable, and can reference a witness variable, p
 All parameters in the parameter list should be referenced at least once by a local variable, so that type inference can occur.
 A warning will appear if there is a parameter with no variable referencing it.
 
-Note that function definitions cannot contain function calls.
+Note that function definitions cannot contain function calls or disjunctions at this time.
 
-### Variable declarations
+Variable declarations
+---------------------
 Variables are declared after any function definitions.
 
 A variable declaration list begins with a role keyword with an optional colon, followed by a comma-separated list of variable names, with an optional semicolon at the end. The valid keywords are `witness` for witness variables, `pp` for public parameter variables, and `common` for common input variables. At most one variable declaration list for each role is allowed in a program, and a protocol must contain at least one witness variable.
@@ -443,40 +477,48 @@ common: g, h, i;
 
 ```witness x, r```
 
-### The proof expression
+The proof expression
+--------------------
 This expression describes the zero knowledge argument of knowledge protocol, and is written after all variable declarations. It consists of a single logical expression followed by an optional semicolon. The expression can also be prefixed with the keyword `statement` with an optional colon after.
 
 When the protocol is run, this expression evaluates to either true or false, signifying whether the protocol was run successfully or not.
 
+Nothing can be written after the proof expression.
+
 Compiler website features
 =========================
-### Code editor
+
+Code editor
+-----------
 The editor has the following features:
 - Syntax highlighting
-- Syntax errors will occur when the entered text does not match the described EBNF grammar.
-Validation errors and warnings will occur when the entered text does not match the additional semantic rules that dictate the structure of Subzero programs.
-Errors will be displayed with a red X, and the corresponding error location will be underlined in red.
-Warnings will be displayed with a yellow triangle, and the corresponding warning location will be underlined in yellow.
-The red X and yellow triangle can be hovered over with the mouse to display information about the error/warning.
+- Syntax errors
+- Descriptive semantic errors and warnings (hover over the red X or yellow triangle)
 - Bracket matching
 - Auto-indentation
-- Increase or decrease editor font size with `Ctrl+'+'` and `Ctrl+'-'`
+- Control font size with `Ctrl+'+'` and `Ctrl+'-'`
 - Use `Ctrl+'l'` to jump to a specific line number
-- Use `Ctrl+'s'` to save the Subzero program code 
+- Use `Ctrl+'f'` and `Ctrl+'h'` for find and replace
+- Use `Ctrl+'s'` to save the Subzero program code
 
-### Compiler
-Once a valid Subzero program is written, it can be compiled. This will generate a complete Java program (buildable with [Gradle](https://gradle.org/)) that specifies and runs the protocol using the Cryptimeleon [Math](https://github.com/cryptimeleon/math) and [Craco](https://github.com/cryptimeleon/craco) libraries. Note that because syntax and semantic errors are raised as a program is typed, once the protocol is free from errors in the editor then there will be no errors during compilation. If any compilation error is encountered, opening a [Github issue](https://github.com/cryptimeleon/subzero/issues) would be appreciated.
-
-### Example protocols
+Example protocols
+-----------------
 A dropdown menu allows you to load existing example protocols into the editor. This is an easy way to become familiar with the language.
 
-### LaTeX preview
+Compiler
+--------
+Once a valid Subzero program is written, it can be compiled. This will generate a complete Java program (buildable with [Gradle](https://gradle.org/)) that specifies and runs the protocol using the Cryptimeleon [Math](https://github.com/cryptimeleon/math) and [Craco](https://github.com/cryptimeleon/craco) libraries. Note that because syntax and semantic errors are raised as a program is typed, once the protocol is free from errors in the editor then there will be no errors during compilation. If any compilation error is encountered, opening a [Github issue](https://github.com/cryptimeleon/subzero/issues) would be appreciated.
+
+LaTeX preview
+-------------
 [MathJax](https://www.mathjax.org/) is used to display formatted LaTeX based on the code in the editor. If the Subzero code is free of syntax and semantic errors, the LaTeX Preview tab will display a formatted LaTeX interpretation of the Subzero code. Because variable identifiers support  support a single non-terminating underscore, this allows for variables with subscripts, and because of the supported terminating single quotes, variables can also have the prime symbol at the end. A .tex file can also be downloaded containing the LaTeX text.
 
-### Environment
+Environment
+-----------
 The Environment tab displays information about all variables and functions, and updates as a protocol is written. For variables, the proof role and algebraic type are displayed, as well as the group type when relevant. For functions, the parameter types, return type, and origin (built-in function or user-defined) are displayed. Clicking a column header will also sort the table rows by that column.
 
-### Options
+Options
+-------
 By default, the program will be compiled and downloaded as a zipped Java project. In the Options tab you can choose to generate only certain classes of the project, and also view the Java classes in the website editor. This is useful for seeing how changes in the Subzero code affect the generated Java classes, without having to constantly unzip a full project.
 
 Additional language details
@@ -486,6 +528,20 @@ The following section provides extra information about the language that is not 
 Implementation
 --------------
 The Subzero compiler is written in Java and [Xtend](https://www.eclipse.org/xtend/), using the [Xtext](https://www.eclipse.org/Xtext/) language development framework. The compiler website is built with [Svelte](https://svelte.dev/), with [Ace](https://ace.c9.io/) for the code editor and [Carbon Design System](https://github.com/carbon-design-system/carbon) for the UI.
+
+Generated Java project
+----------------------
+When a Subzero protocol is compiled, it will generate a full Java project buildable with Gradle, containing 2-3 classes.
+
+### Protocol class
+This class provides the specification of the zero knowledge proof of knowledge protocol, using the Cryptimeleon Math and Craco libraries.
+
+### Public parameters class
+This class is required whenever the protocol contains an inequality expression (a range proof) or a disjunction expression (a partial proof of knowledge) that is contained anywhere in a conjunction expression.
+
+### Test class
+This class will create an instance of the protocol and run it. Variables will be instantiated with default values (which may result in the test failing), and thus this class should be edited as needed.
+
 
 Syntax specification
 --------------------
@@ -536,34 +592,5 @@ Note that some programs that follow this syntax are not necessarily valid, as th
 <protocol-name> ::= '[' [a-zA-z] [a-zA-Z0-9_' ]* ']'
 <identifier> ::= [a-zA-Z] [a-zA-Z0-9_']*
 ```
-<!---
-
-Semantic rules
-----------------
-These are additional validation rules which dictate the allowed structure and data of Subzero programs.
 
 
-### Function definition rules
-- Function definitions cannot contain any function calls
-- Every function parameter should be used at least once in the function definition (warning)
-- User-defined functions should be called at least once in the proof expression (warning)
-
-### Witness list rules
-- The witness list must contain at least one witness
-
-### Function calls
-- Function calls must reference either a valid user defined function or predefined function
-- The number of arguments in a function call must match the number of parameters in the function definition
-- The type of each argument in a function call must match the type of each parameter in the function definition
-- Function calls cannot contain logical expressions as arguments, only algebraic expressions
-- A function call whose return type is `boolean` cannot be within an algebraic expression or a comparison expression
-- A function call whose return type is `exponent` or `group element` must be contained within a comparison expression
-
-### Expression rules
-- Conjunctions cannot be nested within algebraic expressions or comparison expressions
-- Disjunctions cannot be nested within algebraic expressions or comparison expressions
-- Comparison expressions cannot be contained within algebraic expressions or other comparison expressions
-- Algebraic expressions in the proof expression must be nested within a comparison expression or function call
-- Algebraic expressions must be contained within a comparison expression before being contained within a propositional expression
-
--->
