@@ -13,6 +13,7 @@ Documentation
    - [Introduction](#introduction)
    - [DLog equality](#dlog-equality)
    - [Pedersen commitment](#pedersen-commitment)
+   - [Basic proof of partial knowledge](#basic-proof-of-partial-knowledge)
    - [Pointcheval Sanders credential](#pointcheval-sanders-credential)
 
 - [The Subzero language](#the-subzero-language)
@@ -80,12 +81,10 @@ The protocol starts with a witness variable declaration list, that declares a si
 
 The witness variable `k` is declared explicitly. The other variables, `a`, `b`, `g`, and `h` are common input variables that have been declared implicitly.
 
-Every variable has an algebraic type, that is either `group element` or `exponent`, which is inferred based on its context. By default, a variable is `group element` unless it appears in a specific `exponent` context. In the protocol above, `k` has type `exponent`, since it appears in the exponentiation (`^`) expressions `a^k` and `g^k`. The other variables `a`, `b`, `g`, and `h` have type `group element`.
+Every variable has an algebraic type, that is either `group element` or `exponent`, which is inferred based on its context. By default, a variable is `group element` unless it appears in a specific `exponent` context. In the protocol above, `k` has type `exponent`, since it appears in the exponentiation (`^`) expressions `a^k` and `g^k`. The other variables `a`, `b`, `g`, and `h` have type `group element`. The [Environment](#environment) tab can be used to see the inferred type of all variables.
 
 Pedersen commitment
 -------------------
-
-
 ```
 [Pedersen commitment with range proof]
 
@@ -96,11 +95,27 @@ C_1 = h_1^m_1 * h_2^m_2 * g^r & 20 <= m_1 + m_2 <= 100
 
 ```
 
-This protocol introduces a few more concepts. First, we start the protocol with a protocol name in between square brackets. This string will be used to name the Java classes in the generated project.
+This protocol introduces a few more concepts. First, we start the protocol with a protocol name in between square brackets. This string will be used to name the Java classes in the generated project; if omitted, a default will be used.
 
 Next, we have a new variable declaration list beginning with the keyword `pp`, which explicitly declares public parameter variables. Once again, witness variables are explicitly declared, and the remaining variables are implicitly declared common input variables.
 
-The protocol also has a double inequality expression `20 <= m_1 + m_2 <= 100`, which represents a range proof. Subzero supports both single and double inequalities with the expected relational operators (`<`, `>`, `<=`, `>=`). `*` and `+` are used for multiplication and addition expressions. `/` and `-` are used similarly for division and subtraction expressions.
+The protocol also has a double inequality expression `20 <= m_1 + m_2 <= 100`, which represents a range proof. Subzero supports both single and double inequalities with the usual relational operators (`<`, `>`, `<=`, `>=`). `*` and `+` are used for multiplication and addition expressions. `/` and `-` are used similarly for division and subtraction expressions.
+
+Basic proof of partial knowledge
+--------------------------------
+```
+[Partial knowledge]
+
+check(y) {
+  h^y = C_2
+}
+
+witness: x,r;
+
+g^x * h^r = C & (check(r) | check(x))
+```
+
+This example introduces functions and disjunctions. The protocol contains a disjunction (`|`) expression `check(r) | check(x)` which represents a partial proof of knowledge. It also contains two function calls to the `check` function defined above it. The function definition consists of the function identifier `check`, the parameter declaration list (only `y`), and the function body expression `h^y = C_2`. Function bodies can implicitly declare common input variables (`C_2` in this case), and use implicitly declared common input variables from the proof expression or other function definitions (`h` in this case).All function definitions must appear after the protocol name (if present) and before variable declarations.
 
 Pointcheval Sanders credential
 ------------------------------
@@ -118,9 +133,7 @@ The final example protocol shows a few more features. Single-line comments start
 
 Variable identifiers support more than letters and numbers, to allow special formatting in the [LaTeX preview](#latex-preview) tab. Underscores allow for subscripts, tildes allow for overtildes, single quotes allow for prime symbols, and names of Greek letters will display as the Greek symbol.
 
-The protocol contains a disjunction (`|`) expression `age < 18 | pos = 17` which represents a partial proof of knowledge.
-
-Finally, there are several function calls to the `e` function, which is a built-in pairing function.
+Finally, there are several function calls to the `e` function. This is the built-in pairing function, which allows for constructing pairing-based schemes, and takes in two `group element` expressions to pair.
 
 The next section will further explain the language details introduced in this section.
 
@@ -177,18 +190,18 @@ xSubA
 
 In the case where multiple of these features are used in an identifier, the fragments have a designated order. If symbols ('~', '_') are used for the tilde/bar, then the subscript fragment goes before the tilde/bar fragment, which goes before the prime fragment. Else if the substrings ('Tilde', 'Bar', 'Hat') are used, the tilde/bar/hat fragment goes before the subscript fragment, which goes before the prime fragment.
 
-`
+```
 x_1~'
 xTildeSub1Prime
-`
+```
 
 If the name of a variable (excluding all other formatting fragments) is the name of a Greek letter in all lowercase letters, it will be displayed in the LaTeX preview as the Greek symbol. For uppercase Greek letters, simply capitalize the first letter of the name. Some shorthand names of Greek letters are also allowed.
 
-`
+```
 theta
 sigma_1'
 eps
-`
+```
 
 <details>
 <summary>Click here to view all supported Greek letters</summary>
