@@ -135,6 +135,8 @@
             }
         });
 
+        editor.commands.removeCommand('gotoline');
+
         // Stores whether the last char typed in the editor was a '}'
         // Used for auto-indentation
         let lastCharWasLeftCurlyBrace = false;
