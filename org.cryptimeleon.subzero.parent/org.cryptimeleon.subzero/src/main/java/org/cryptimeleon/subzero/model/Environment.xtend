@@ -41,7 +41,7 @@ class Environment {
 			variableGroups = augmentedModel.getGroupsByName();
 		}
 
-		buildFunctions(builder, predefinedFunctions, userFunctionCalls, localVariableNodes, "predefined");
+		buildFunctions(builder, predefinedFunctions, userFunctionCalls, localVariableNodes, "built-in");
 		buildFunctions(builder, userFunctions, userFunctionCalls, localVariableNodes, "user");
 		buildVariables(builder, publicParameterNames, publicParameterTypes, variableGroups, variableNodes, "public parameter");
 		buildVariables(builder, witnessNames, witnessTypes, variableGroups, variableNodes, "witness");
