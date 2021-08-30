@@ -47,7 +47,7 @@ class BranchState {
 	boolean inFunctionCall;
 	boolean inTuple;
 	
-	boolean propositionalBeforeComparison;
+	boolean logicalBeforeComparison;
 	boolean tupleBeforeFunctionCall;
 	
 	new() {
@@ -66,7 +66,7 @@ class BranchState {
 		this.inFunctionCall = false;
 		this.inTuple = false;
 		
-		this.propositionalBeforeComparison = false;
+		this.logicalBeforeComparison = false;
 		this.tupleBeforeFunctionCall = false;
 	}
 
@@ -87,7 +87,7 @@ class BranchState {
 		this.inFunctionCall = state.inFunctionCall;
 		this.inTuple = state.inTuple;
 		
-		this.propositionalBeforeComparison = state.propositionalBeforeComparison;
+		this.logicalBeforeComparison = state.logicalBeforeComparison;
 		this.tupleBeforeFunctionCall = state.tupleBeforeFunctionCall;
 	}
 	
@@ -109,7 +109,7 @@ class BranchState {
 	def boolean hasFunctionCallAncestor() {return this.inFunctionCall;}
 	def boolean hasTupleAncestor() {return this.inTuple;}
 	
-	def boolean hasPropositionalBeforeComparison() {return this.propositionalBeforeComparison;}
+	def boolean hasLogicalBeforeComparison() {return this.logicalBeforeComparison;}
 	def boolean hasTupleBeforeFunctionCall() {return this.tupleBeforeFunctionCall;}
 	
 	def void setProofAncestor(boolean inProof) {this.inProof = inProof;}
@@ -124,7 +124,7 @@ class BranchState {
 	def void setFunctionCallAncestor(boolean inFunctionCall) {this.inFunctionCall = inFunctionCall;}
 	def void setTupleAncestor(boolean inTuple) {this.inTuple = inTuple;}
 	
-	def void setPropositionalBeforeComparison(boolean propositionalBeforeComparison) {this.propositionalBeforeComparison = propositionalBeforeComparison}
+	def void setLogicalBeforeComparison(boolean logicalBeforeComparison) {this.logicalBeforeComparison = logicalBeforeComparison}
 	def void setTupleBeforeFunctionCall(boolean tupleBeforeFunctionCall) {this.tupleBeforeFunctionCall = tupleBeforeFunctionCall;}
 	
 	def void updateGeneral(EObject node) {
@@ -176,20 +176,20 @@ class BranchState {
 	def dispatch void updateState(Conjunction conjunction) {
 		updateGeneral(conjunction);
 		setConjunctionAncestor(true);
-		setPropositionalBeforeComparison(true);
+		setLogicalBeforeComparison(true);
 		
 	}
 	
 	def dispatch void updateState(Disjunction disjunction) {
 		updateGeneral(disjunction);
 		setDisjunctionAncestor(true);
-		setPropositionalBeforeComparison(true);
+		setLogicalBeforeComparison(true);
 	}
 	
 	def dispatch void updateState(Comparison comparison) {
 		updateGeneral(comparison);
 		setComparisonAncestor(true);
-		setPropositionalBeforeComparison(false);
+		setLogicalBeforeComparison(false);
 	}
 	
 	def dispatch void updateState(Sum sum) {

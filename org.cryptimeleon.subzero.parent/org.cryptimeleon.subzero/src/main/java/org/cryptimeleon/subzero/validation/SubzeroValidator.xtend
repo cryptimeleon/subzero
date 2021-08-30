@@ -681,7 +681,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def private void checkValidAlgebraicPosition(EObject node, BranchState state) {
 		if (state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor()) return;
 
-		if (state.hasPropositionalBeforeComparison()) {
+		if (state.hasLogicalBeforeComparison()) {
 			error("Algebraic expression must be nested within a comparison expression before being nested within a logical expression", node, getDefaultFeature(node))
 		}
 	}
