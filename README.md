@@ -112,16 +112,32 @@ Basic proof of partial knowledge
 ```
 [Partial knowledge]
 
-check(y) {
+witness: x,r;
+g^x * h^r = C
+& (h^r = C_2 | h^x = C_2)
+```
+This protocol contains a disjunction (`|`) expression `h^r = C_2 | h^x = C_2` which represents a proof of partial knowledge. Because the two operand equality expressions `h^r = C_2` and `h^x = C_2` are quite similar, we can move these out into a function `checkDLog` and replace the expressions with two function calls.
+
+```
+[Partial knowledge]
+
+checkDLog(y) {
   h^y = C_2
 }
 
 witness: x,r;
-
-g^x * h^r = C & (check(r) | check(x))
+g^x * h^r = C
+& (checkDLog(r) | checkDLog(x))
 ```
 
-This example introduces functions and disjunctions. The protocol contains a disjunction (`|`) expression `check(r) | check(x)` which represents a partial proof of knowledge. It also contains two function calls to the `check` function defined above it. The function definition consists of the function identifier `check`, the parameter declaration list (only `y`), and the function body expression `h^y = C_2`. Function bodies can implicitly declare common input variables (`C_2` in this case), and use implicitly declared common input variables from the proof expression or other function definitions (`h` in this case). All function definitions must appear after the protocol name (if present) and before variable declarations.
+The function definition consists of the function identifier `checkDLog`, the parameter declaration list (only `y`), and the function body expression `h^y = C_2`. Function bodies can implicitly declare common input variables (`C_2` in this case), and use implicitly declared common input variables from the proof expression or other function definitions (`h` in this case). All function definitions must appear after the protocol name (if present) and before variable declarations.
+
+Since this function is rather short, we may want it to be inlined in the generated code. To do this, we simply add the `inline` keyword.
+```
+inline checkDLog(y) {
+  h^y = C_2
+}
+```
 
 Pointcheval Sanders credential
 ------------------------------
@@ -167,6 +183,29 @@ Program layout
 --------------
 A Subzero program specifies a single zero knowledge proof of knowledge protocol.
 A program consists of an optional protocol name, optional function definitions, variable declarations, and a proof expression. The protocol must specify these in the given order.
+
+```
+// Protocol name
+[Example protocol]
+
+// Function definitions
+foo(a, b) {
+   ...
+}
+
+inline bar(c, d) {
+   ...
+}
+
+// Variable declarations
+witness: ...
+pp: ...
+common: ...
+
+// Proof expression
+...
+
+```
 
 Protocol name
 -------------
@@ -411,12 +450,12 @@ The following table shows all operators, with their precedence and associativity
 
 An expression surrounded by parentheses is also an expression, so the precedence order does not need to be remembered as long as sufficient parentheses are used.
 
-### Conjunction
+### Conjunction (logical AND)
 Conjunction expressions evaluate to a `boolean`, and both operands must be `boolean`. An expression evaluates to true if and only if the expressions A and B both evaluate to true.
 
 ```A & B```
 
-### Disjunction
+### Disjunction (logical OR)
 Disjunction expressions evaluate to a `boolean`, and both operands must be `boolean`. An expression evaluates to true if and only if at least one of the expressions A and B evaluate to true.
 
 ```A | B```
