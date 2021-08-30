@@ -272,7 +272,7 @@ common: g, h;
 
 The proof expression
 --------------------
-This expression describes the zero knowledge argument of knowledge protocol, and is written after all variable declarations. It consists of a single logical expression followed by an optional semicolon. The expression can also be prefixed with the keyword `statement` with an optional colon after.
+This expression describes the zero knowledge argument of knowledge protocol, and is written after all variable declarations. It consists of a single logical or comparison expression followed by an optional semicolon. The expression can also be prefixed with the keyword `statement` with an optional colon after.
 
 When the protocol is run, this expression evaluates to either true or false, signifying whether the protocol was run successfully or not.
 
@@ -563,7 +563,6 @@ The editor has the following features:
 - Bracket matching
 - Auto-indentation
 - Control font size with `Ctrl+'+'` and `Ctrl+'-'`
-- Use `Ctrl+'l'` to jump to a specific line number
 - Use `Ctrl+'f'` and `Ctrl+'h'` for find and replace
 - Use `Ctrl+'s'` to save the Subzero program code
 
