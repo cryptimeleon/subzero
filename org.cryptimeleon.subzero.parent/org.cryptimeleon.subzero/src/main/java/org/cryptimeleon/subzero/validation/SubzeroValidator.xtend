@@ -677,12 +677,12 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		return false;
 	}
 
-	// Algebraic expressions must be nested within a comparison expression before being nested within a propositional expression
+	// Algebraic expressions must be nested within a comparison expression before being nested within a logical expression
 	def private void checkValidAlgebraicPosition(EObject node, BranchState state) {
 		if (state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor()) return;
 
 		if (state.hasPropositionalBeforeComparison()) {
-			error("Algebraic expression must be nested within a comparison expression before being nested within a propositional expression", node, getDefaultFeature(node))
+			error("Algebraic expression must be nested within a comparison expression before being nested within a logical expression", node, getDefaultFeature(node))
 		}
 	}
 
@@ -778,11 +778,11 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		
 		if (comparison.getOperation2() === null) {
 			if (leftType !== rightType) {
-				error('''The operands of a comparison node must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', comparison, getDefaultFeature(comparison));
+				error('''The operands of a comparison expression must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', comparison, getDefaultFeature(comparison));
 			}
 			
 			if (leftSize !== rightSize) {
-				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getDefaultFeature(comparison));
+				error('''The operands of a comparison expression must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getDefaultFeature(comparison));
 			}
 			
 			if (ModelHelper.isInequalityComparison(comparison)) {
@@ -803,11 +803,11 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			val boolean centerHasWitness = ModelHelper.containsWitnessVariable(center);
 			
 			if (leftType !== centerType || centerType !== rightType) {
-				error('''The operands of a comparison node must be the same type. The left operand is of type «leftType», the middle operand is of type «centerType», and the right operand is of type«rightType»''', comparison, getDefaultFeature(comparison));
+				error('''The operands of a comparison expression must be the same type. The left operand is of type «leftType», the middle operand is of type «centerType», and the right operand is of type«rightType»''', comparison, getDefaultFeature(comparison));
 			}
 			
 			if (leftSize !== centerSize || centerSize !== rightSize) {
-				error('''The operands of a comparison node must be the same size. The left operand is of size «leftSize», the middle operand is of size «centerSize», and the right operand is of size«rightSize»''', comparison, getDefaultFeature(comparison));
+				error('''The operands of a comparison expression must be the same size. The left operand is of size «leftSize», the middle operand is of size «centerSize», and the right operand is of size«rightSize»''', comparison, getDefaultFeature(comparison));
 			}
 			
 			if (!centerHasWitness) {
@@ -832,7 +832,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 		
 		if (leftSize !== rightSize) {
-			error('''The operands of a sum node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', sum, getDefaultFeature(sum));
+			error('''The operands of a sum expression must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', sum, getDefaultFeature(sum));
 		}
 	}
 	
@@ -843,11 +843,11 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		val int rightSize = sizes.get(product.getRight());
 		
 		if (leftType !== rightType) {
-			error('''The operands of a product node must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', product, getDefaultFeature(product));
+			error('''The operands of a product expression must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', product, getDefaultFeature(product));
 		}
 		
 		if (leftType === Type.GROUP_ELEMENT && rightType === Type.GROUP_ELEMENT && leftSize !== rightSize) {
-			error('''The operands of a group element product node must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', product, getDefaultFeature(product));
+			error('''The operands of a group element product expression must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', product, getDefaultFeature(product));
 		}		
 	}
 	
@@ -858,19 +858,19 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		val int rightTuple = sizes.get(power.getRight());
 
 		if (!(leftType === Type.EXPONENT || leftType === Type.GROUP_ELEMENT)) {
-			error('''The left operand of a power node must be of type exponent or group element, not type «leftType»''', power, getDefaultFeature(power));
+			error('''The left operand of an exponentiation expression must be of type exponent or group element, not type «leftType»''', power, getDefaultFeature(power));
 		}
 		
 		if (rightType !== Type.EXPONENT) {
-			error('''The right operand of a power node must be of type exponent, not type «rightType»''', power, getDefaultFeature(power));
+			error('''The right operand of an exponentiation expression must be of type exponent, not type «rightType»''', power, getDefaultFeature(power));
 		}
 		
 		if (type !== leftType) {
-			error('''The type of a power node must be the same as the type of the left operand. The power node is of type «type» but the left operand is of type «leftType»''', power, getDefaultFeature(power));
+			error('''The type of an exponentiation expression must be the same as the type of the left operand. The exponentiation expression is of type «type» but the left operand is of type «leftType»''', power, getDefaultFeature(power));
 		}
 		
 		if (rightTuple > 1) {
-			error('''The right operand of a power node cannot be a tuple''', power, getDefaultFeature(power));
+			error('''The right operand of an exponentiation expression cannot be a tuple''', power, getDefaultFeature(power));
 		}
 	}
 	
