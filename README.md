@@ -70,9 +70,9 @@ Tutorial
 ========
 Introduction
 ------------
-A Subzero program describes a single zero knowledge protocol.
+A Subzero program describes a single zero knowledge protocol. The language grammar is designed to be close to protocols in literature, similar to Camenisch-Stadler notation.
 
-All of the examples in this tutorial can be easily loaded into the code editor using the [examples dropdown](#examples-dropdown). It is recommended to follow along in the code editor, and use the [Environment](#environment) tab to view extra information about the protocol.
+All of the examples in this tutorial can be easily loaded into the code editor using the [example protocols dropdown](#example-protocols). It is recommended to follow along in the code editor, and use the [Environment](#environment) tab to view extra information about the protocol.
 
 DLog equality
 -------------
@@ -175,7 +175,7 @@ The role determines the usage of a variable within the protocol. Every variable 
 The role is not relevant for function return values, or when passing in function arguments.
 
 ### Group Types
-All variables of algebraic type `group element` also have a group type. By default, the group type is `G1`. When pairings are used in a protocol, then the group type can also be `G2` or `GT`. See [pairing](#pairing) for more details.
+All variables of algebraic type `group element` also have a group type. By default, the group type is `G1`. When pairings are used in a protocol, then the group type can also be `G2` or `GT`. See [pairings](#pairings) for more details.
 
 Note that function parameters and function return types will never have a group type, even if they have type `group element`.
 
@@ -430,8 +430,8 @@ The language has logical, comparison, and algebraic operators. These include var
 
 The following table shows all operators, with their precedence and associativity (when relevant). Operators are listed in descending precedence from top to bottom.
 
-| Precedence | Operator | Description | Associativity | Type |
-|:----------:|:--------:|:-----------:|:-------------:|:-----|
+| Precedence | Operator | Description | Associativity | Category |
+|:----------:|:--------:|:-----------:|:-------------:|:--------:|
 | 1 | x() | Function call | - | - |
 | 2 | -x | Unary negation | - | Algebraic |
 | 3 | x ^ y | Exponentiation | Right to left | Algebraic |
