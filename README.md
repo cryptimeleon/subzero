@@ -247,7 +247,7 @@ Variable declarations
 ---------------------
 Variables are declared after any function definitions.
 
-A variable declaration list begins with a role keyword with an optional colon, followed by a comma-separated list of variable names, with an optional semicolon at the end. The valid keywords are `witness` for witness variables, `pp` for public parameter variables, and `common` for common input variables. At most one variable declaration list for each role is allowed in a program, and a protocol must contain at least one witness variable.
+A variable declaration list begins with a role keyword with an optional colon, followed by a comma-separated list of variable names, with an optional semicolon at the end. The valid keywords are `witness` for witness variables, `pp` for public parameter variables, and `common` for common input variables. A protocol must contain at least one witness variable.
 
 Witness variables and public parameter variables are always declared explicitly, whereas common input variables are declared implicitly by default (and thus a `common` declaration list is never necessary). Common input variables can also be declared explicitly if desired; if at least one common input variable is declared explicitly, then no common input variables are allowed to be implicitly declared.
 
@@ -619,42 +619,43 @@ A Subzero program consists of a single ```<protocol>```.
 <protocol> ::= 
    <protocol-name>?
    <function-definition>* 
-   ((<witness-list> | <pp-list> | <constant-list>) ';'?)+
+   (
+      ('witness' ':'? (<witness> (',' <witness>)*) ';'?) |
+      ('pp' ':'? (<pp> (',' <pp>)*) ';'?) |
+      ('common' ':'? (<constant> (',' <constant>)*) ';'?)
+   )*
    ('statement' ':'?)? <expression> ';'?
 
-<function-definition> ::= 'inline'? <identifier> <parameter-list> '{' <expression> ';'? '}' ';'?
-<parameter-list> ::= '(' (<parameter> (',' <parameter>)*)? ')'
-<parameter> ::= <identifier>
-
-<witness-list> ::= 'witness' ':'? (<witness> (',' <witness>)*)
 <witness> ::= <identifier>
-
-<pp-list> ::= 'pp' ':'? (<pp> (',' <pp>)*)
 <pp> ::= <identifier>
-
-<constant-list> ::= 'common' ':'? (<constant> (',' <constant>)*)
 <constant> ::= <identifier>
 
-<expression> ::= <conjunction>
-<conjunction> ::= <disjunction> | <conjunction> '&' <disjunction>
-<disjunction> ::= <comparison> | <disjunction> '|' <comparison>
+<function-definition> ::= 
+   'inline'? <identifier>
+   '(' (<parameter> (',' <parameter>)*)? ')'
+   '{' <expression> ';'? '}' ';'?
+<parameter> ::= <identifier>
+
+<expression> ::= <disjunction>
+<disjunction> ::= <conjunction> | <disjunction> '|' <conjunction>
+<conjunction> ::= <comparison> | <conjunction> '&' <comparison>
 <comparison> ::= <sum> | <comparison> <operator> <sum> (<operator> <sum>)? <protocol-name>?
 <sum> ::= <product> | <sum> '+' <product> | <sum> '-' <product>
 <product> ::= <power> | <product> '*' <power> | <product> '/' <power>
 <power> ::= <construct> | <construct> '^' <power>
 <construct> ::= <tuple> | <negative>
-<tuple> ::= '(' <conjunction> (',' <conjunction>)+ ')'
+<tuple> ::= '(' <disjunction> (',' <disjunction>)+ ')'
 <negative> ::= <value> | '-' <value>
 <value> ::= <function-call> | <variable> | <number-literal> | '(' <brackets> ')'
 <function-call> ::= <identifier> '(' (<argument> (',' <argument>)*)? ')'
-<argument> ::= <conjunction>
+<argument> ::= <disjunction>
 <variable> ::= <identifier>
 <number-literal> ::= [0-9]+
-<brackets> ::= <conjunction>
+<brackets> ::= <disjunction>
 
 <operator> ::= '=' | '<' | '<=' | '>' | '>='
 <protocol-name> ::= '[' [a-zA-z] [a-zA-Z0-9_' ]* ']'
-<identifier> ::= [a-zA-Z] [a-zA-Z0-9_']*
+<identifier> ::= [a-zA-Z] [a-zA-Z0-9_~']*
 ```
 
 
