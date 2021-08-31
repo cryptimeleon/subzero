@@ -14,39 +14,29 @@ generate subzero "http://www.cryptimeleon.org/subzero/Subzero"
 Model returns Model:
   (protocolName=PROTOCOL_NAME)?
   functions+=(FunctionDefinition)*
+
   (
-  ( (witnessList=WitnessList ';'?) (publicParameterList=PublicParameterList ';'?)? (constantList=ConstantList ';'?)? ) |
-  ( (witnessList=WitnessList ';'?) (constantList=ConstantList ';'?) (publicParameterList=PublicParameterList ';'?) ) |
-  ( (publicParameterList=PublicParameterList ';'?) (witnessList=WitnessList ';'?) (constantList=ConstantList ';'?)? ) | 
-  ( (publicParameterList=PublicParameterList ';'?) (constantList=ConstantList ';'?) (witnessList=WitnessList ';'?) ) |
-  ( (constantList=ConstantList ';'?) (witnessList=WitnessList ';'?) (publicParameterList=PublicParameterList ';'?)? ) |
-  ( (constantList=ConstantList ';'?) (publicParameterList=PublicParameterList ';'?) (witnessList=WitnessList ';'?) )
-  )
+  ('witness' ':'? (witnesses+=Witness (',' witnesses+=Witness)*) ';'?) |
+  ('common' ':'? (constants+=Constant (',' constants+=Constant)*) ';'?) |
+  ('pp' ':'? (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*) ';'?)
+  )*
+
   ('statement' ':')? (proof=Expression) test=';'?;
 
 FunctionDefinition returns FunctionDefinition:
-  inline?='inline'? name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
-
-ParameterList returns ParameterList:
-  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')';
+  inline?='inline'?
+  name=IDENTIFIER
+  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')'
+  '{' body=Expression ';'? '}' ';'?;
 
 Parameter returns Parameter:
   name=IDENTIFIER;
   
-WitnessList returns WitnessList:
-  'witness' symbol=':'? (witnesses+=Witness (',' witnesses+=Witness)*);
-
 Witness returns Witness:
   name=IDENTIFIER;
   
-ConstantList returns ConstantList:
-  'common' symbol=':'? (constants+=Constant (',' constants+=Constant)*);
-
 Constant returns Constant:
   name=IDENTIFIER;
-  
-PublicParameterList returns PublicParameterList:
-  'pp' symbol=':'? (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*);
   
 PublicParameter returns PublicParameter:
   name=IDENTIFIER;

@@ -30,17 +30,14 @@ import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.subzero.Negative
 import org.cryptimeleon.subzero.subzero.NumberLiteral
 import org.cryptimeleon.subzero.subzero.Parameter
-import org.cryptimeleon.subzero.subzero.ParameterList
 import org.cryptimeleon.subzero.subzero.Power
 import org.cryptimeleon.subzero.subzero.Product
 import org.cryptimeleon.subzero.subzero.PublicParameter
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import org.cryptimeleon.subzero.subzero.StringLiteral
 import org.cryptimeleon.subzero.subzero.Sum
 import org.cryptimeleon.subzero.subzero.Tuple
 import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
-import org.cryptimeleon.subzero.subzero.WitnessList
 import org.cryptimeleon.subzero.subzero.SubzeroPackage.Literals
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
@@ -50,10 +47,10 @@ import java.util.HashMap
 import java.util.Map.Entry
 import org.cryptimeleon.subzero.model.Environment
 import org.cryptimeleon.subzero.model.VariableIdentifier
-import org.cryptimeleon.subzero.subzero.ConstantList
 import org.cryptimeleon.subzero.subzero.Constant
 import org.cryptimeleon.subzero.subzero.ConstantVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
+import org.eclipse.emf.common.util.EList
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -126,10 +123,15 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	def dispatch void checkNode(Model model, BranchState state) {
-		checkFunctionNamesAreUnique(model);
+		checkModelHasWitness(model);
 		checkSubprotocolNamesAreUnique(model);
 		checkOrWithAndAncestorGroupElementWitnesses(model);
 		checkHasProof(model);
+
+		checkFunctionNamesAreUnique(model.getFunctions());
+		checkWitnessNamesAreUnique(model.getWitnesses());
+		checkPublicParameterNamesAreUnique(model.getPublicParameters());
+		checkConstantNamesAreUnique(model.getConstants());
 	}
 	
 	def dispatch void checkNode(FunctionDefinition function, BranchState state) {
@@ -138,18 +140,11 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		checkFunctionIsCalled(function);
 		checkFunctionParametersAreUsed(function);
 		checkFunctionHasNoDisjunction(function);
-	}
-
-	def dispatch void checkNode(ParameterList parameterList, BranchState state) {
-		checkFunctionParameterNamesAreUnique(parameterList);
+		checkFunctionParameterNamesAreUnique(function.getParameters());
 	}
 	
 	def dispatch void checkNode(Parameter parameter, BranchState state) {
 		checkParameterNameFormat(parameter);
-	}
-	
-	def dispatch void checkNode(PublicParameterList publicParameterList, BranchState state) {
-		checkPublicParameterNamesAreUnique(publicParameterList);
 	}
 	
 	def dispatch void checkNode(PublicParameter publicParameter, BranchState state) {
@@ -157,18 +152,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		checkPublicParameterIsUsed(publicParameter);
 	}
 	
-	def dispatch void checkNode(WitnessList witnessList, BranchState state) {
-		checkWitnessListIsNonempty(witnessList);
-		checkWitnessNamesAreUnique(witnessList);
-	}
-	
 	def dispatch void checkNode(Witness witness, BranchState state) {
 		checkWitnessNameFormat(witness);
 		checkWitnessIsUsed(witness);
-	}
-	
-	def dispatch void checkNode(ConstantList constantList, BranchState state) {
-		checkConstantNamesAreUnique(constantList);
 	}
 	
 	def dispatch void checkNode(Constant constant, BranchState state) {
@@ -349,14 +335,16 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 */
 	 
 	// User defined function names must be unique
-	def private void checkFunctionNamesAreUnique(Model model) {
-		val Set<String> functions = new HashSet<String>();
-		for (FunctionDefinition function : model.getFunctions()) {
+	def private void checkFunctionNamesAreUnique(EList<FunctionDefinition> functions) {
+		val Set<String> functionNames = new HashSet<String>();
+
+		for (FunctionDefinition function : functions) {
 			val String name = function.getName();
-			if (functions.contains(name)) {
+
+			if (functionNames.contains(name)) {
 				error("Function names must be unique", function, getDefaultFeature(function));
 			} else {
-				functions.add(name);
+				functionNames.add(name);
 			}
 		}
 	}
@@ -384,9 +372,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	// Public parameter names must be unique
-	def private void checkPublicParameterNamesAreUnique(PublicParameterList publicParameterList) {
+	def private void checkPublicParameterNamesAreUnique(EList<PublicParameter> publicParameterList) {
 		val Set<String> publicParameters = new HashSet<String>();
-		for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
+		for (PublicParameter publicParameter : publicParameterList) {
 			val String name = publicParameter.getName();
 			if (publicParameters.contains(name)) {
 				error("Public parameter name conflicts with another public parameter name", publicParameter, getDefaultFeature(publicParameter));
@@ -403,9 +391,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 
 	// Witness names must be unique
-	def private void checkWitnessNamesAreUnique(WitnessList witnessList) {
+	def private void checkWitnessNamesAreUnique(EList<Witness> witnessList) {
 		val Set<String> witnesses = new HashSet<String>();
-		for (Witness witness : witnessList.getWitnesses()) {
+		for (Witness witness : witnessList) {
 			val String name = witness.getName();
 			if (witnesses.contains(name)) {
 				error("Witness name conflicts with another witness name", witness, getDefaultFeature(witness));
@@ -422,9 +410,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	// Constant names must be unique
-	def private void checkConstantNamesAreUnique(ConstantList constantList) {
+	def private void checkConstantNamesAreUnique(EList<Constant> constantList) {
 		val Set<String> constants = new HashSet<String>();
-		for (Constant constant : constantList.getConstants()) {
+		for (Constant constant : constantList) {
 			val String name = constant.getName();
 			if (constants.contains(name)) {
 				error("Constant name conflicts with another constant name", constant, getDefaultFeature(constant));
@@ -441,9 +429,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 
 	// Function parameter names must be unique within a function signature
-	def private void checkFunctionParameterNamesAreUnique(ParameterList parameterList) {
+	def private void checkFunctionParameterNamesAreUnique(EList<Parameter> parameterList) {
 		val Set<String> parameters = new HashSet<String>();
-		for (Parameter parameter : parameterList.getParameters()) {
+		for (Parameter parameter : parameterList) {
 			val String name = parameter.getName();
 			if (parameters.contains(name)) {
 				error("Function parameters must be unique within a function's signature", parameter, getDefaultFeature(parameter));
@@ -468,7 +456,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	def private void checkFunctionParametersAreUsed(FunctionDefinition function) {
 		val Map<String, List<LocalVariable>> functionLocalVariables = localVariables.get(function.getName());
 				
-		for (Parameter parameter: function.getParameterList().getParameters()) {
+		for (Parameter parameter: function.getParameters()) {
 			if (functionLocalVariables.get(parameter.getName()).size() === 0) {
 				warning('''Parameter '«parameter.getName()»' should be used within the function definition''', parameter, getDefaultFeature(parameter));
 			}
@@ -507,14 +495,14 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 
 	/*
-	 * Validate the witness list
+	 * Validate witnesses
 	 */
 	 
-	// The witness list must contain at least one witness
-	def private void checkWitnessListIsNonempty(WitnessList witnessList) {
-		if (witnessList.getWitnesses().size() === 0) {
-			error("The witness list must include at least one witness", witnessList,
-				getDefaultFeature(witnessList));
+	// The protocol must declare at least one witness
+	def private void checkModelHasWitness(Model model) {
+		if (model.getWitnesses().size() === 0) {
+			error("The protocol must declare at least one witness", model,
+				Literals.MODEL__WITNESSES);
 		}
 	}
 	
@@ -527,7 +515,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	/*
-	 * Validate the public parameter list
+	 * Validate public parameters
 	 */
 	
 	// Each public parameter should be referenced at least once
@@ -539,7 +527,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	/*
-	 * Validate the constant list
+	 * Validate constants
 	 */
 	
 	// Each witness should be referenced at least once
@@ -1096,13 +1084,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		switch object {
 			Model:				return Literals.MODEL__PROOF
 			FunctionDefinition:	return Literals.FUNCTION_DEFINITION__NAME
-			ParameterList:		return Literals.PARAMETER_LIST__PARAMETERS
 			Parameter:			return Literals.PARAMETER__NAME
-			WitnessList:		return Literals.WITNESS_LIST__WITNESSES
 			Witness:			return Literals.WITNESS__NAME
-			PublicParameterList:return Literals.PUBLIC_PARAMETER_LIST__PUBLIC_PARAMETERS
 			PublicParameter:    return Literals.PUBLIC_PARAMETER__NAME
-			ConstantList:		return Literals.CONSTANT_LIST__CONSTANTS
 			Constant:			return Literals.CONSTANT__NAME
 			Disjunction: 		return Literals.DISJUNCTION__OPERATION
 			Conjunction: 		return Literals.CONJUNCTION__OPERATION

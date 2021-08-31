@@ -33,7 +33,6 @@ import org.eclipse.emf.ecore.EObject
 import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.cryptimeleon.subzero.subzero.ConstantVariable
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import java.util.Map.Entry
 
 /**
@@ -271,7 +270,7 @@ package class TypeInference {
 						val String functionName = ModelHelper.getArgumentFunction(node);
 						
 						if (userFunctionsMap.containsKey(functionName)) {
-							val EList<Parameter> parameters = userFunctionsMap.get(functionName).getParameterList().getParameters();
+							val EList<Parameter> parameters = userFunctionsMap.get(functionName).getParameters();
 							val int index = ModelHelper.getArgumentIndex(node);
 							
 							if (index < parameters.size()) {
@@ -492,7 +491,7 @@ package class TypeInference {
 					val int index = parent.getArguments().indexOf(node);
 					val FunctionDefinition function = userFunctionsMap.get(parent.getName());
 					
-					val EList<Parameter> parameters = function.getParameterList().getParameters();
+					val EList<Parameter> parameters = function.getParameters();
 					if (parameters.size() > index) {
 						fillExponent(parameters.get(index));
 					}
@@ -555,7 +554,7 @@ package class TypeInference {
 		for (FunctionDefinition function : model.getFunctions()) {
 			setGroupElement(function);
 			
-			for (Parameter parameter : function.getParameterList().getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				setGroupElement(parameter);
 			}
 			
@@ -564,15 +563,12 @@ package class TypeInference {
 			]);
 		}
 		
-		for (Witness witness : model.getWitnessList().getWitnesses()) {
+		for (Witness witness : model.getWitnesses()) {
 			setGroupElement(witness);
 		}
 		
-		val PublicParameterList publicParameterList = model.getPublicParameterList();
-		if (publicParameterList !== null) {
-			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
-				setGroupElement(publicParameter);
-			}
+		for (PublicParameter publicParameter : model.getPublicParameters()) {
+			setGroupElement(publicParameter);
 		}
 		
 		ModelMap.preorder(model.getProof(), [EObject node |

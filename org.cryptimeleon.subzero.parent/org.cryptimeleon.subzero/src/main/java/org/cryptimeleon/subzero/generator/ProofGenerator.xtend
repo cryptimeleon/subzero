@@ -366,7 +366,7 @@ class ProofGenerator {
 				inlineFunctionsCode.put(name, functionCode);
 			}
 			
-			val List<Parameter> parameters = function.getParameterList().getParameters();
+			val List<Parameter> parameters = function.getParameters();
 			val EList<Expression> arguments = call.getArguments();
 			var inlineCode = functionCode;
 			

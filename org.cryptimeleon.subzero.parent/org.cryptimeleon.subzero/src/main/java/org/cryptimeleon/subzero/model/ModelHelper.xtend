@@ -60,7 +60,7 @@ class ModelHelper {
 		val FunctionDefinition definition = EcoreUtil.copy(functions.get(call.getName()));
 		val Map<String, Expression> mapping = new HashMap<String, Expression>();
 		val Iterator<Expression> argumentIterator = call.getArguments().iterator();
-		val Iterator<Parameter> parameterIterator = functions.get(call.getName()).getParameterList().getParameters().
+		val Iterator<Parameter> parameterIterator = functions.get(call.getName()).getParameters().
 			iterator();
 
 		while (argumentIterator.hasNext() && parameterIterator.hasNext()) {

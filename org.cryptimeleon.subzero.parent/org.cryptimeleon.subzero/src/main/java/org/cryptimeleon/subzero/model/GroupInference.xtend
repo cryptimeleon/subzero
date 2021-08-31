@@ -14,7 +14,6 @@ import org.cryptimeleon.subzero.subzero.Expression
 import org.cryptimeleon.subzero.subzero.FunctionDefinition
 import org.cryptimeleon.subzero.subzero.LocalVariable
 import org.cryptimeleon.subzero.subzero.Witness
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
@@ -121,15 +120,12 @@ class GroupInference {
 			}
 		]);
 		
-		for (Witness witness : model.getWitnessList().getWitnesses()) {
+		for (Witness witness : model.getWitnesses()) {
 			setG1(witness);
 		}
 		
-		val PublicParameterList publicParameterList = model.getPublicParameterList();
-		if (publicParameterList !== null) {
-			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
-				setG1(publicParameter);
-			}
+		for (PublicParameter publicParameter : model.getPublicParameters()) {
+			setG1(publicParameter);
 		}
 	}
 	

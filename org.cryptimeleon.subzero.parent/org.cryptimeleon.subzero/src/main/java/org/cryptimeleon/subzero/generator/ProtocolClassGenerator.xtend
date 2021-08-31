@@ -756,7 +756,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 				}
 				
 				// Add all user defined parameters for the function
-				for (Parameter parameter : function.getParameterList().getParameters()) {
+				for (Parameter parameter : function.getParameters()) {
 					val Class<?> parameterTypeClass = nodeTypes.get(parameter).getTypeExprClass();
 					method.addParameter(parameterTypeClass, parameter.getName());
 				}

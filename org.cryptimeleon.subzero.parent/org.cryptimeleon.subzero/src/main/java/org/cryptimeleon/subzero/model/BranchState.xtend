@@ -11,19 +11,15 @@ import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.subzero.Negative
 import org.cryptimeleon.subzero.subzero.NumberLiteral
 import org.cryptimeleon.subzero.subzero.Parameter
-import org.cryptimeleon.subzero.subzero.ParameterList
 import org.cryptimeleon.subzero.subzero.Power
 import org.cryptimeleon.subzero.subzero.Product
 import org.cryptimeleon.subzero.subzero.PublicParameter
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import org.cryptimeleon.subzero.subzero.StringLiteral
 import org.cryptimeleon.subzero.subzero.Sum
 import org.cryptimeleon.subzero.subzero.Tuple
 import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
-import org.cryptimeleon.subzero.subzero.WitnessList
 import org.eclipse.emf.ecore.EObject
-import org.cryptimeleon.subzero.subzero.ConstantList
 import org.cryptimeleon.subzero.subzero.Constant
 
 /**
@@ -141,32 +137,16 @@ class BranchState {
 		setFunctionDefinitionAncestor(true);
 	}
 	
-	def dispatch void updateState(ParameterList parameterList) {
-		updateGeneral(parameterList);
-	}
-	
 	def dispatch void updateState(Parameter parameter) {
 		updateGeneral(parameter);
-	}
-	
-	def dispatch void updateState(PublicParameterList publicParameterList) {
-		updateGeneral(publicParameterList);
 	}
 	
 	def dispatch void updateState(PublicParameter publicParameter) {
 		updateGeneral(publicParameter);
 	}
 	
-	def dispatch void updateState(ConstantList constantList) {
-		updateGeneral(constantList);
-	}
-	
 	def dispatch void updateState(Constant constant) {
 		updateGeneral(constant);
-	}
-	
-	def dispatch void updateState(WitnessList witnessList) {
-		updateGeneral(witnessList);
 	}
 	
 	def dispatch void updateState(Witness witness) {

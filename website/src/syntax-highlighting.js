@@ -18,14 +18,10 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 		const inline = {token: "keyword", regex: "(inline)", next: "inlineFunctionName"};
 		const functionName = {token: ["support.function", "lparen"], regex: identifier + leftParen, next: "parameterList"};
 		
-		const witnessList = {token: ["keyword", "colon"], regex: "(witness)(:?)"};
-		const ppList = {token: ["keyword", "colon"], regex: "(pp)(:?)"};
-		const constantList = {token: ["keyword", "colon"], regex: "(common)(:?)"};
+		const witnessList = {token: ["keyword", "colon"], regex: "(witness)(:?)", next: 'declarationList'};
+		const ppList = {token: ["keyword", "colon"], regex: "(pp)(:?)", next: 'declarationList'};
+		const constantList = {token: ["keyword", "colon"], regex: "(common)(:?)", next: 'declarationList'};
 
-		const initialWitnessList = {...witnessList, next: 'initialWitnessList'};
-		const initialPPList = {...ppList, next: 'initialPPList'};
-		const initialConstantList = {...constantList, next: 'initialConstantList'};
-		
 		const functionCallStart = {token: ["support.function", "lparen"], regex: identifier + leftParen, push: "argumentList"};
 		const preFunctionCallStart = {token: ["support.function", "lparen"], regex: identifier + leftParen, next: "preArgumentList"};
 		
@@ -35,30 +31,14 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 		const operation = {token: "operator", regex: operator};
 		const separator = {token: "comma", regex: ","};
 
-		// Partial reused state definitions
-		const preBodyState = [
-			preFunctionCallStart,
-			{...variable, next: 'mainBody'},
-			{...operation, next: 'mainBody'},
-			{...constant, next: 'mainBody'}
-		];
-
-		// Generate state definitions
-		const createDeclarationListState = (nextState) => {
-			return [
-				{token: ["variable", "comma"], regex: identifier + "(,)"},
-				{token: ["variable", "end"], regex: identifier + "(;?)", next: nextState},
-			]
-		}
-
 		const highlightingRules = {
 			"start": [
 				protocolNameStart,
 				inline,
 				functionName,
-				initialWitnessList,
-				initialPPList,
-				initialConstantList,
+				witnessList,
+				ppList,
+				constantList,
 			],
 
 			"protocolName": [
@@ -69,9 +49,9 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 			"afterProtocolName": [
 				inline,
 				functionName,
-				initialWitnessList,
-				initialPPList,
-				initialConstantList,
+				witnessList,
+				ppList,
+				constantList,
 			],
 
 			"inlineFunctionName": [
@@ -93,62 +73,20 @@ define(["ace/lib/oop", "ace/mode/text", "ace/mode/text_highlight_rules"], functi
 				{token: "rbrace", regex: "\\}", next: "afterProtocolName"},
 			],
 
-			'initialWitnessList': createDeclarationListState('afterWitness'),
-
-			'initialPPList': createDeclarationListState('afterPP'),
-
-			'initialConstantList': createDeclarationListState('afterConstant'),
-
-			'afterWitness': [
-				{...ppList, next: 'ppListAfterWitness'},
-				{...constantList, next: 'constantListAfterWitness'},
-				...preBodyState
+			'declarationList': [
+				{token: ["variable", "comma"], regex: identifier + "(,)"},
+				{token: ["variable", "end"], regex: identifier + "(;?)", next: 'variableDeclarations'},
 			],
 
-			'afterPP': [
-				{...witnessList, next: 'witnessListAfterPP'},
-				{...constantList, next: 'constantListAfterPP'},
-				...preBodyState
+			'variableDeclarations': [
+				witnessList,
+				ppList,
+				constantList,
+				preFunctionCallStart,
+				{...variable, next: 'mainBody'},
+				{...operation, next: 'mainBody'},
+				{...constant, next: 'mainBody'}
 			],
-
-			'afterConstant': [
-				{...witnessList, next: 'witnessListAfterConstant'},
-				{...ppList, next: 'ppListAfterConstant'},
-				...preBodyState
-			],
-			
-			'ppListAfterWitness': createDeclarationListState('afterWitnessAndPP'),
-
-			'constantListAfterWitness': createDeclarationListState('afterWitnessAndConstant'),
-
-			'witnessListAfterPP': createDeclarationListState('afterWitnessAndPP'),
-
-			'constantListAfterPP': createDeclarationListState('afterPPAndConstant'),
-
-			'witnessListAfterConstant': createDeclarationListState('afterWitnessAndConstant'),
-
-			'ppListAfterConstant': createDeclarationListState('afterPPAndConstant'),
-
-			'afterWitnessAndPP': [
-				{...constantList, next: 'endingConstantList'},
-				...preBodyState,
-			],
-
-			'afterWitnessAndConstant': [
-				{...ppList, next: 'endingPPList'},
-				...preBodyState,
-			],
-
-			'afterPPAndConstant': [
-				{...witnessList, next: 'endingWitnessList'},
-				...preBodyState,
-			],
-
-			'endingWitnessList': createDeclarationListState('mainBody'),
-
-			'endingPPList': createDeclarationListState('mainBody'),
-			
-			'endingConstantList': createDeclarationListState('mainBody'),
 
 			"preArgumentList": [
 				functionCallStart,
