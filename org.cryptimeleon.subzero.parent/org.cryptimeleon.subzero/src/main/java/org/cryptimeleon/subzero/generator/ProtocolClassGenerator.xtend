@@ -30,6 +30,7 @@ import org.cryptimeleon.subzero.builder.FieldBuilder
 import org.cryptimeleon.subzero.builder.MethodBuilder
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
+import org.cryptimeleon.subzero.model.ModelMap
 import org.cryptimeleon.subzero.model.Type
 import org.cryptimeleon.subzero.subzero.Comparison
 import org.cryptimeleon.subzero.subzero.Conjunction
@@ -604,7 +605,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 	}
 	
 	// Returns true if the current subtree contains a disjunction
-	def boolean createProtocolTreeHelper(EObject node, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
+	def void createProtocolTreeHelper(EObject node, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
 	
 		if (node instanceof Disjunction) {
 			builder.append("or");
@@ -618,19 +619,29 @@ class ProtocolClassGenerator extends ClassGenerator {
 			builder.outdent();
 			builder.newLine();
 			builder.closeParen();
-			return true;
 			
 		} else if (node instanceof Conjunction) {
-			val leftBuilder = new CodeBuilder(builder);
-			val rightBuilder = new CodeBuilder(builder);
-			leftBuilder.indent();
-			rightBuilder.indent();
+			val EObject leftNode = node.getLeft();
+			val EObject rightNode = node.getRight();
 			
-			val boolean leftBranch = createProtocolTreeHelper(node.getLeft(), leftBuilder, subtreeRootNodes, subprotocolNames);
-			val boolean rightBranch = createProtocolTreeHelper(node.getRight(), rightBuilder, subtreeRootNodes, subprotocolNames);
-			val boolean containsOr = leftBranch || rightBranch;
-			
-			if (containsOr) {
+			val boolean leftContainsOr = ModelMap.preorderAny(leftNode, [EObject child |
+				return child instanceof Disjunction;
+			]);
+
+			val boolean rightContainsOr = ModelMap.preorderAny(rightNode, [EObject child |
+				return child instanceof Disjunction;
+			]);
+
+
+			if (leftContainsOr || rightContainsOr) {
+				val leftBuilder = new CodeBuilder(builder);
+				val rightBuilder = new CodeBuilder(builder);
+				leftBuilder.indent();
+				rightBuilder.indent();
+
+				createProtocolTreeHelper(leftNode, leftBuilder, subtreeRootNodes, subprotocolNames);
+				createProtocolTreeHelper(rightNode, rightBuilder, subtreeRootNodes, subprotocolNames);
+
 				builder.append("and");
 				builder.openParen();
 				builder.newLine();
@@ -642,21 +653,18 @@ class ProtocolClassGenerator extends ClassGenerator {
 				builder.newLine();
 				builder.outdent();
 				builder.closeParen();
-				return true;
 			} else {
 				val String subprotocolName = createProtocolLeaf(node, builder, subtreeRootNodes.size());
 				subtreeRootNodes.add(node);
 				subprotocolNames.add(subprotocolName);
-				return false;				
 			}
 			
 		} else if (node instanceof Brackets) {
-			return createProtocolTreeHelper(node.getContent(), builder, subtreeRootNodes, subprotocolNames);
+			createProtocolTreeHelper(node.getContent(), builder, subtreeRootNodes, subprotocolNames);
 		} else {
 			val String subprotocolName = createProtocolLeaf(node, builder, subtreeRootNodes.size());
 			subtreeRootNodes.add(node);
 			subprotocolNames.add(subprotocolName);
-			return false;
 		}
 	}
 	
@@ -748,7 +756,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 				}
 				
 				// Add all user defined parameters for the function
-				for (Parameter parameter : function.getParameterList().getParameters()) {
+				for (Parameter parameter : function.getParameters()) {
 					val Class<?> parameterTypeClass = nodeTypes.get(parameter).getTypeExprClass();
 					method.addParameter(parameterTypeClass, parameter.getName());
 				}

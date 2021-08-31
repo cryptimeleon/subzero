@@ -28,8 +28,6 @@ import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
-import org.cryptimeleon.subzero.subzero.WitnessList
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import org.cryptimeleon.subzero.subzero.PublicParameter
 import java.util.Map.Entry
 import org.cryptimeleon.subzero.subzero.PPVariable
@@ -96,12 +94,12 @@ class SizeInference {
 		
 		sizes.put(node, size);
 		
-		// Stop backpropagating when root, conjunction, or disjunction is reached
+		// Stop backpropagating when root, disjunction, or conjunction is reached
 		val EObject parent = node.eContainer();
 		if (
 			parent instanceof Model ||
-			parent instanceof Conjunction ||
-			parent instanceof Disjunction
+			parent instanceof Disjunction ||
+			parent instanceof Conjunction
 		) return;
 		
 		switch parent {
@@ -150,7 +148,7 @@ class SizeInference {
 				
 				val FunctionDefinition function = userFunctionsMap.get(functionName);
 				if (function !== null) {
-					val EList<Parameter> parameters = function.getParameterList().getParameters();
+					val EList<Parameter> parameters = function.getParameters();
 					val int index = ModelHelper.getArgumentIndex(parent);
 					
 					if (index < parameters.size()) {
@@ -271,23 +269,17 @@ class SizeInference {
 				sizes.putIfAbsent(node, 1);
 			]);
 			
-			for (Parameter parameter : function.getParameterList().getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				sizes.putIfAbsent(parameter, 1);
 			}
 		}
 		
-		val WitnessList witnessList = model.getWitnessList();
-		if (witnessList !== null) {
-			for (Witness witness : witnessList.getWitnesses()) {
-				sizes.putIfAbsent(witness, 1);
-			}
+		for (Witness witness : model.getWitnesses()) {
+			sizes.putIfAbsent(witness, 1);
 		}
 		
-		val PublicParameterList publicParameterList = model.getPublicParameterList();
-		if (publicParameterList !== null) {
-			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
-				sizes.putIfAbsent(publicParameter, 1);
-			}
+		for (PublicParameter publicParameter : model.getPublicParameters()) {
+			sizes.putIfAbsent(publicParameter, 1);
 		}
 	}
 	

@@ -5,7 +5,7 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 generate subzero "http://www.cryptimeleon.org/subzero/Subzero"
 
 /*
- * This file specifies the syntax and grammar of the 0K language, and is written using
+ * This file specifies the syntax and grammar of the Subzero language, and is written using
  * the Xtend grammar language
  * 
  * See https://www.eclipse.org/Xtext/documentation/301_grammarlanguage.html
@@ -14,51 +14,41 @@ generate subzero "http://www.cryptimeleon.org/subzero/Subzero"
 Model returns Model:
   (protocolName=PROTOCOL_NAME)?
   functions+=(FunctionDefinition)*
+
   (
-  ( (witnessList=WitnessList ';'?) (publicParameterList=PublicParameterList ';'?)? (constantList=ConstantList ';'?)? ) |
-  ( (witnessList=WitnessList ';'?) (constantList=ConstantList ';'?) (publicParameterList=PublicParameterList ';'?) ) |
-  ( (publicParameterList=PublicParameterList ';'?) (witnessList=WitnessList ';'?) (constantList=ConstantList ';'?)? ) | 
-  ( (publicParameterList=PublicParameterList ';'?) (constantList=ConstantList ';'?) (witnessList=WitnessList ';'?) ) |
-  ( (constantList=ConstantList ';'?) (witnessList=WitnessList ';'?) (publicParameterList=PublicParameterList ';'?)? ) |
-  ( (constantList=ConstantList ';'?) (publicParameterList=PublicParameterList ';'?) (witnessList=WitnessList ';'?) )
-  )
+  ('witness' ':'? (witnesses+=Witness (',' witnesses+=Witness)*) ';'?) |
+  ('common' ':'? (constants+=Constant (',' constants+=Constant)*) ';'?) |
+  ('pp' ':'? (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*) ';'?)
+  )*
+
   ('statement' ':')? (proof=Expression) test=';'?;
 
 FunctionDefinition returns FunctionDefinition:
-  inline?='inline'? name=IDENTIFIER parameterList=ParameterList '{' body=Expression ';'? '}' ';'?;
-
-ParameterList returns ParameterList:
-  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')';
+  inline?='inline'?
+  name=IDENTIFIER
+  '(' (parameters+=Parameter (',' parameters+=Parameter)*)? symbol=')'
+  '{' body=Expression ';'? '}' ';'?;
 
 Parameter returns Parameter:
   name=IDENTIFIER;
   
-WitnessList returns WitnessList:
-  'witness' symbol=':'? (witnesses+=Witness (',' witnesses+=Witness)*);
-
 Witness returns Witness:
   name=IDENTIFIER;
   
-ConstantList returns ConstantList:
-  'common' symbol=':'? (constants+=Constant (',' constants+=Constant)*);
-
 Constant returns Constant:
   name=IDENTIFIER;
-  
-PublicParameterList returns PublicParameterList:
-  'pp' symbol=':'? (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*);
   
 PublicParameter returns PublicParameter:
   name=IDENTIFIER;
 
 Expression:
-  Conjunction;
-
-Conjunction returns Expression:
-  Disjunction ({Conjunction.left=current} operation='&' right=Disjunction)*;
+  Disjunction;
 
 Disjunction returns Expression:
-  Comparison ({Disjunction.left=current} operation='|' right=Comparison)*;
+  Conjunction ({Disjunction.left=current} operation='|' right=Conjunction)*;
+
+Conjunction returns Expression:
+  Comparison ({Conjunction.left=current} operation='&' right=Comparison)*;
 
 Comparison returns Expression:
   Sum ({Comparison.left=current} operation=COMPARISON_OPERATOR center=Sum (operation2=COMPARISON_OPERATOR right=Sum)? (subprotocolName=PROTOCOL_NAME)? )?;
@@ -79,7 +69,7 @@ StringLiteral returns StringLiteral:
   value=STRING_LITERAL;
 
 Tuple returns Expression:
-  =>({Tuple} '(' elements+=Conjunction ',') elements+=Conjunction (',' elements+=Conjunction)* ')';
+  =>({Tuple} '(' elements+=Disjunction ',') elements+=Disjunction (',' elements+=Disjunction)* ')';
 
 Negative returns Expression:
   {Negative} operation='-' term=Value | Value;
@@ -91,7 +81,7 @@ FunctionCall returns Expression:
   {FunctionCall} (->(name=IDENTIFIER '(') (arguments+=Argument (',' arguments+=Argument)*)? ')');
 
 Argument returns Expression:
-  {Argument} expression=Conjunction;
+  {Argument} expression=Disjunction;
 
 Variable returns Variable:
   name=IDENTIFIER;

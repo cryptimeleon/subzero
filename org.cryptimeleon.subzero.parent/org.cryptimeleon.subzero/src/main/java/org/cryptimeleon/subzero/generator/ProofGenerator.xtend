@@ -113,15 +113,15 @@ class ProofGenerator {
 		return generateCode(function.getBody());
 	}
 	
+	def private dispatch String generateCode(Disjunction disjunction) {
+		throw new UnsupportedOperationException("Disjunctions should not be generated in the proof expression");
+	}
+
 	def private dispatch String generateCode(Conjunction conjunction) {
 		val String left = generateCode(conjunction.getLeft());
 		val String right = generateCode(conjunction.getRight());
 		
 		return left + right;
-	}
-	
-	def private dispatch String generateCode(Disjunction disjunction) {
-		throw new UnsupportedOperationException("Disjunctions should not be generated in the proof expression");
 	}
 	
 	def private dispatch String generateCode(Comparison comparison) {
@@ -366,7 +366,7 @@ class ProofGenerator {
 				inlineFunctionsCode.put(name, functionCode);
 			}
 			
-			val List<Parameter> parameters = function.getParameterList().getParameters();
+			val List<Parameter> parameters = function.getParameters();
 			val EList<Expression> arguments = call.getArguments();
 			var inlineCode = functionCode;
 			

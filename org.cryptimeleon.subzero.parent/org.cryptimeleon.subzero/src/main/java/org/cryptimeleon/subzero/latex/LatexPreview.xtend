@@ -12,17 +12,14 @@ import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.subzero.Negative
 import org.cryptimeleon.subzero.subzero.NumberLiteral
 import org.cryptimeleon.subzero.subzero.Parameter
-import org.cryptimeleon.subzero.subzero.ParameterList
 import org.cryptimeleon.subzero.subzero.Power
 import org.cryptimeleon.subzero.subzero.Product
 import org.cryptimeleon.subzero.subzero.PublicParameter
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import org.cryptimeleon.subzero.subzero.StringLiteral
 import org.cryptimeleon.subzero.subzero.Sum
 import org.cryptimeleon.subzero.subzero.Tuple
 import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
-import org.cryptimeleon.subzero.subzero.WitnessList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import java.util.Map
@@ -174,7 +171,7 @@ class LatexPreview {
 		var String primeString = "";
 		if (varIdentifier.hasPrimes()) {
 			val int primes = varIdentifier.getPrimes();
-			for (var int i = 0; i < primes; i++) primeString += '\'';
+			for (var int i = 0; i < primes; i++) primeString += "'";
 		}
 		
 		return name + subscript + primeString;
@@ -216,15 +213,21 @@ class LatexPreview {
 			builder.append(NEWLINE);
 		}
 
-		if (model.getPublicParameterList() !== null) {
-			generateLatex(model.getPublicParameterList());
+		val EList<PublicParameter> publicParameterList = model.getPublicParameters();
+		if (publicParameterList.size() > 0) {
+			builder.append("pp & = ");
+			builder.append(LEFTPAREN);
+			generateList(publicParameterList);
+			builder.append(RIGHTPAREN);
 			builder.append(SEMICOLON);
 			builder.append(NEWLINE);
 			builder.append(NEWLINE);
 		}
 		
 		builder.append("\\mathrm{ZK} & \\{");
-		generateLatex(model.getWitnessList());
+		builder.append(LEFTPAREN);
+		generateList(model.getWitnesses());
+		builder.append(RIGHTPAREN);
 		builder.append(COLON);
 		builder.append(SPACE);
 		builder.append(NEWLINE);
@@ -244,55 +247,38 @@ class LatexPreview {
 		builder.append(function.getName());
 		builder.append(AND);
 		builder.append(SPACE);
-		generateLatex(function.getParameterList());
+		builder.append(LEFTPAREN);
+		generateList(function.getParameters());
+		builder.append(RIGHTPAREN);
 		builder.append(COLON);
 		builder.append(NEWLINE);
 		builder.append(AND);
 		builder.append(SPACE);
 		generateLatex(function.getBody());
 	}
-	
-	def dispatch private void generateLatex(ParameterList parameterList) {
-		builder.append(LEFTPAREN);
-		generateList(parameterList.getParameters());
-		builder.append(RIGHTPAREN);
-	}
 
 	def dispatch private void generateLatex(Parameter parameter) {
 		builder.append(parameter.getName());
 	}
 	
-	def dispatch private void generateLatex(PublicParameterList publicParameterList) {
-		builder.append("pp & = ");
-		builder.append(LEFTPAREN);
-		generateList(publicParameterList.getPublicParameters());
-		builder.append(RIGHTPAREN);
-	}
-	
 	def dispatch private void generateLatex(PublicParameter publicParameter) {
 		builder.append(formatIdentifier(publicParameter.getName()));
-	}
-	
-	def dispatch private void generateLatex(WitnessList witnessList) {
-		builder.append(LEFTPAREN);
-		generateList(witnessList.getWitnesses());
-		builder.append(RIGHTPAREN);
 	}
 
 	def dispatch private void generateLatex(Witness witness) {
 		builder.append(formatIdentifier(witness.getName()));
 	}
 
-	def dispatch private void generateLatex(Conjunction conjunction) {
-		generateLatex(conjunction.getLeft());
-		generateOperator(CONJUNCTION);
-		generateLatex(conjunction.getRight());
-	}
-
 	def dispatch private void generateLatex(Disjunction disjunction) {
 		generateLatex(disjunction.getLeft());
 		generateOperator(DISJUNCTION);
 		generateLatex(disjunction.getRight());
+	}
+
+	def dispatch private void generateLatex(Conjunction conjunction) {
+		generateLatex(conjunction.getLeft());
+		generateOperator(CONJUNCTION);
+		generateLatex(conjunction.getRight());
 	}
 
 	def dispatch private void generateLatex(Comparison comparison) {

@@ -146,7 +146,7 @@
             <div class='editor-tab-container'>
                 <Tab label='Subzero'/>
             </div>
-            {#each classNames as className (className)}
+            {#each classNames as className (className + $javaClasses[className])}
                 <div class='editor-tab-container java-editor-tab-container'>
                     <EditorTab
                         className={className}
@@ -164,7 +164,7 @@
                     defaultFontSize={currentFontSize}
                 />
             </TabContent>
-            {#each classNames as className, index (className)}
+            {#each classNames as className, index (className + $javaClasses[className])}
                 <TabContent>
                     <JavaEditor
                         bind:this={editors[index]}

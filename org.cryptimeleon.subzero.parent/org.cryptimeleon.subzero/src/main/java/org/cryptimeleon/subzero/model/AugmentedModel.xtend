@@ -21,7 +21,6 @@ import org.cryptimeleon.subzero.subzero.NumberLiteral
 import org.cryptimeleon.subzero.subzero.Parameter
 import org.cryptimeleon.subzero.subzero.Power
 import org.cryptimeleon.subzero.subzero.PublicParameter
-import org.cryptimeleon.subzero.subzero.PublicParameterList
 import org.cryptimeleon.subzero.subzero.Tuple
 import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
@@ -37,10 +36,8 @@ import org.cryptimeleon.math.structures.groups.Group
 import org.eclipse.xtext.resource.XtextResource
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.cryptimeleon.subzero.subzero.ConstantVariable
-import org.cryptimeleon.subzero.subzero.WitnessList
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic
-import org.cryptimeleon.subzero.subzero.ConstantList
 import org.cryptimeleon.subzero.subzero.Constant
 import java.util.LinkedHashSet
 import java.util.LinkedHashMap
@@ -241,7 +238,7 @@ class AugmentedModel {
 	 * Methods for getting high-level model structure information
 	 */
 	def boolean hasExplicitConstants() {
-		return model.getConstantList() !== null;
+		return model.getConstants().size() > 0;
 	}
 	
 	def boolean requiresPublicParametersClass() {
@@ -356,7 +353,7 @@ class AugmentedModel {
 
 		for (FunctionDefinition function : model.getFunctions()) {
 			val Set<String> parameters = new HashSet<String>;
-			for (Parameter parameter : function.getParameterList().getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				parameters.add(parameter.getName());
 			}
 
@@ -412,11 +409,8 @@ class AugmentedModel {
 		
 		witnessNodes = new LinkedHashMap<String, Witness>(); // Uses insertion order for iteration order
 
-		val WitnessList witnessList = model.getWitnessList();
-		if (witnessList !== null) {
-			for (Witness witness : witnessList.getWitnesses()) {
-				witnessNodes.put(witness.getName(), witness);
-			}
+		for (Witness witness : model.getWitnesses()) {
+			witnessNodes.put(witness.getName(), witness);
 		}
 
 		return witnessNodes;
@@ -433,11 +427,8 @@ class AugmentedModel {
 			
 		witnessNames = new LinkedHashSet<String>(); // Uses insertion order for iteration order
 
-		val WitnessList witnessList = model.getWitnessList();
-		if (witnessList !== null) {
-			for (Witness witness : witnessList.getWitnesses()) {
-				witnessNames.add(witness.getName());
-			}
+		for (Witness witness : model.getWitnesses()) {
+			witnessNames.add(witness.getName());
 		}
 		
 		return witnessNames;	
@@ -458,11 +449,8 @@ class AugmentedModel {
 //		Collections.sort(sortedWitnessNames);
 		
 		sortedWitnessNames = new ArrayList<String>();
-		val WitnessList witnessList = model.getWitnessList();
-		if (witnessList !== null) {
-			for (Witness witness : witnessList.getWitnesses()) {
-				sortedWitnessNames.add(witness.getName());
-			}
+		for (Witness witness : model.getWitnesses()) {
+			sortedWitnessNames.add(witness.getName());
 		}
 		
 		return sortedWitnessNames;
@@ -540,10 +528,8 @@ class AugmentedModel {
 		
 		publicParameters = new LinkedHashMap<String, PublicParameter>(); // Uses insertion order for iteration order
 
-		if (model.getPublicParameterList() !== null) {
-			for (PublicParameter publicParameter : model.getPublicParameterList().getPublicParameters()) {
-				publicParameters.put(publicParameter.getName(), publicParameter);
-			}
+		for (PublicParameter publicParameter : model.getPublicParameters()) {
+			publicParameters.put(publicParameter.getName(), publicParameter);
 		}
 
 		return publicParameters;
@@ -560,12 +546,8 @@ class AugmentedModel {
 		
 		publicParameterNames = new LinkedHashSet<String>(); // Uses insertion order for iteration order
 		
-		val PublicParameterList publicParameterList = model.getPublicParameterList();
-		
-		if (publicParameterList !== null) {
-			for (PublicParameter publicParameter : publicParameterList.getPublicParameters()) {
-				publicParameterNames.add(publicParameter.getName());
-			}
+		for (PublicParameter publicParameter : model.getPublicParameters()) {
+			publicParameterNames.add(publicParameter.getName());
 		}
 		
 		return publicParameterNames;
@@ -623,12 +605,8 @@ class AugmentedModel {
 		
 		declaredConstantNames = new HashSet<String>();
 		
-		val ConstantList constantList = model.getConstantList();
-		
-		if (constantList !== null) {
-			for (Constant constant : constantList.getConstants()) {
-				declaredConstantNames.add(constant.getName());
-			}
+		for (Constant constant : model.getConstants()) {
+			declaredConstantNames.add(constant.getName());
 		}
 		
 		return declaredConstantNames;		
@@ -804,7 +782,7 @@ class AugmentedModel {
 			val List<Type> parameterTypes = new ArrayList<Type>();
 			val List<Integer> parameterSizes = new ArrayList<Integer>();
 
-			for (Parameter parameter : function.getParameterList().getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				parameterNames.add(parameter.getName());
 				parameterTypes.add(types.get(parameter));
 				parameterSizes.add(sizes.get(parameter));
@@ -830,7 +808,7 @@ class AugmentedModel {
 		for (FunctionDefinition function : model.getFunctions()) {
 			val Map<String, List<LocalVariable>> functionVariables = new HashMap<String, List<LocalVariable>>();
 
-			for (Parameter parameter : function.getParameterList().getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				functionVariables.put(parameter.getName(), new ArrayList<LocalVariable>());
 			}
 
@@ -958,7 +936,7 @@ class AugmentedModel {
 		for (FunctionDefinition function : model.getFunctions()) {
 			val Map<String, Parameter> parameters = new HashMap<String, Parameter>();
 
-			for (Parameter parameter : function.getParameterList().getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				parameters.put(parameter.getName(), parameter);
 			}
 
@@ -982,7 +960,7 @@ class AugmentedModel {
 			val Map<String, List<Argument>> local = new HashMap<String, List<Argument>>();
 			val List<String> parameters = new ArrayList<String>();
 
-			for (Parameter parameter : function.getParameterList.getParameters()) {
+			for (Parameter parameter : function.getParameters()) {
 				val List<Argument> list = new ArrayList<Argument>;
 				local.put(parameter.getName(), list);
 				parameters.add(parameter.getName());
