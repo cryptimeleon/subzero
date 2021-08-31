@@ -132,7 +132,7 @@
                             $javaClasses = {
                                 [protocolFilename]: protocolCode,
                                 [testFilename]: testCode,
-                                ...(ppCode.length > 0 && {[ppFilename]: ppCode})
+                                ...(ppCode && {[ppFilename]: ppCode})
                             };
                         }
 
