@@ -37,8 +37,8 @@ class BranchState {
 	
 	boolean inProof;
 	boolean inFunctionDefinition;
-	boolean inConjunction;
 	boolean inDisjunction;
+	boolean inConjunction;
 	boolean inComparison;
 	boolean inSum;
 	boolean inProduct;
@@ -56,8 +56,8 @@ class BranchState {
 		
 		this.inProof = false;
 		this.inFunctionDefinition = false;
-		this.inConjunction = false;
 		this.inDisjunction = false;
+		this.inConjunction = false;
 		this.inComparison = false;
 		this.inSum = false;
 		this.inProduct = false;
@@ -77,8 +77,8 @@ class BranchState {
 		
 		this.inProof = state.inProof
 		this.inFunctionDefinition = state.inFunctionDefinition;
-		this.inConjunction = state.inConjunction;
 		this.inDisjunction = state.inDisjunction;
+		this.inConjunction = state.inConjunction;
 		this.inComparison = state.inComparison;
 		this.inSum = state.inSum;
 		this.inProduct = state.inProduct;
@@ -99,8 +99,8 @@ class BranchState {
 	
 	def boolean hasProofAncestor() {return this.inProof;}
 	def boolean hasFunctionDefinitionAncestor() {return this.inFunctionDefinition;}
-	def boolean hasConjunctionAncestor() {return this.inConjunction;}
 	def boolean hasDisjunctionAncestor() {return this.inDisjunction;}
+	def boolean hasConjunctionAncestor() {return this.inConjunction;}
 	def boolean hasComparisonAncestor() {return this.inComparison;}
 	def boolean hasSumAncestor() {return this.inSum;}
 	def boolean hasProductAncestor() {return this.inProduct;}
@@ -114,8 +114,8 @@ class BranchState {
 	
 	def void setProofAncestor(boolean inProof) {this.inProof = inProof;}
 	def void setFunctionDefinitionAncestor(boolean inFunctionDefinition) {this.inFunctionDefinition = inFunctionDefinition;}
-	def void setConjunctionAncestor(boolean inConjunction) {this.inConjunction = inConjunction;}
 	def void setDisjunctionAncestor(boolean inDisjunction) {this.inDisjunction = inDisjunction;}
+	def void setConjunctionAncestor(boolean inConjunction) {this.inConjunction = inConjunction;}
 	def void setComparisonAncestor(boolean inComparison) {this.inComparison = inComparison;}
 	def void setSumAncestor(boolean inSum) {this.inSum = inSum;}
 	def void setProductAncestor(boolean inProduct) {this.inProduct = inProduct;}
@@ -173,17 +173,17 @@ class BranchState {
 		updateGeneral(witness);
 	}
 	
+	def dispatch void updateState(Disjunction disjunction) {
+		updateGeneral(disjunction);
+		setDisjunctionAncestor(true);
+		setLogicalBeforeComparison(true);
+	}
+
 	def dispatch void updateState(Conjunction conjunction) {
 		updateGeneral(conjunction);
 		setConjunctionAncestor(true);
 		setLogicalBeforeComparison(true);
 		
-	}
-	
-	def dispatch void updateState(Disjunction disjunction) {
-		updateGeneral(disjunction);
-		setDisjunctionAncestor(true);
-		setLogicalBeforeComparison(true);
 	}
 	
 	def dispatch void updateState(Comparison comparison) {

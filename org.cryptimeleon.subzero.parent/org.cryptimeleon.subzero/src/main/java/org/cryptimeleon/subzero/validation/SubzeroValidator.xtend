@@ -176,18 +176,18 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		checkConstantIsUsed(constant);
 	}
 	
-	def dispatch void checkNode(Conjunction conjunction, BranchState state) {
-		checkConjunctionPositionIsValid(conjunction, state);
-		checkIsBoolean(conjunction);
-		checkConjunctionOperands(conjunction);
-		checkIsScalar(conjunction);
-	}
-	
 	def dispatch void checkNode(Disjunction disjunction, BranchState state) {
 		checkDisjunctionPositionIsValid(disjunction, state);
 		checkIsBoolean(disjunction);
 		checkDisjunctionOperands(disjunction);
 		checkIsScalar(disjunction);
+	}
+
+	def dispatch void checkNode(Conjunction conjunction, BranchState state) {
+		checkConjunctionPositionIsValid(conjunction, state);
+		checkIsBoolean(conjunction);
+		checkConjunctionOperands(conjunction);
+		checkIsScalar(conjunction);
 	}
 	
 	def dispatch void checkNode(Comparison comparison, BranchState state) {
@@ -623,19 +623,19 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		
 	}
 
-	// Conjunctions cannot be nested within algebraic expressions or comparison expressions
-	def private void checkConjunctionPositionIsValid(Conjunction conjunction, BranchState state) {
-		if (!isValidBooleanPosition(conjunction, state)) {
-			error("Conjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", conjunction,
-				getDefaultFeature(conjunction));
-		}
-	}
-
 	// Disjunctions cannot be nested within algebraic expressions or comparison expressions
 	def private void checkDisjunctionPositionIsValid(Disjunction disjunction, BranchState state) {
 		if (!isValidBooleanPosition(disjunction, state)) {
 			error("Disjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", disjunction,
 				getDefaultFeature(disjunction));
+		}
+	}
+
+	// Conjunctions cannot be nested within algebraic expressions or comparison expressions
+	def private void checkConjunctionPositionIsValid(Conjunction conjunction, BranchState state) {
+		if (!isValidBooleanPosition(conjunction, state)) {
+			error("Conjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", conjunction,
+				getDefaultFeature(conjunction));
 		}
 	}
 
@@ -668,10 +668,10 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 	}
 	
-	// Helper function for checkValidConjunctionPosition, checkValidDisjunctionPosition, and checkValidComparisonPosition
+	// Helper function for checkValidDisjunctionPosition, checkValidConjunctionPosition, and checkValidComparisonPosition
 	def private boolean isValidBooleanPosition(EObject node, BranchState state) {
 		val EObject parent = state.getParent();
-		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Conjunction || parent instanceof Disjunction || parent instanceof Brackets) {
+		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Disjunction || parent instanceof Conjunction || parent instanceof Brackets) {
 			return true;
 		}
 		return false;
@@ -745,23 +745,22 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	/*
 	 * Validate that the operands of a binary operation are of compatible type
-	 */
-	 
-	def private void checkConjunctionOperands(Conjunction conjunction) {
-		val Type leftType = types.get(conjunction.getLeft());
-		val Type rightType = types.get(conjunction.getRight());
-		
-		if (types.get(conjunction.getLeft()) !== Type.BOOLEAN || types.get(conjunction.getRight()) !== Type.BOOLEAN) {
-			error('''Conjunction operands must both have type boolean. The left operand is of type «leftType» and the right operand is of type «rightType»''', conjunction, getDefaultFeature(conjunction));
-		}
-	} 
-	
+	 */ 
 	def private void checkDisjunctionOperands(Disjunction disjunction) {
 		val Type leftType = types.get(disjunction.getLeft());
 		val Type rightType = types.get(disjunction.getRight());
 		
 		if (types.get(disjunction.getLeft()) !== Type.BOOLEAN || types.get(disjunction.getRight()) !== Type.BOOLEAN) {
 			error('''Disjunction operands must both have type boolean. The left operand is of type «leftType» and the right operand is of type «rightType»''', disjunction, getDefaultFeature(disjunction));
+		}
+	}
+
+	def private void checkConjunctionOperands(Conjunction conjunction) {
+		val Type leftType = types.get(conjunction.getLeft());
+		val Type rightType = types.get(conjunction.getRight());
+		
+		if (types.get(conjunction.getLeft()) !== Type.BOOLEAN || types.get(conjunction.getRight()) !== Type.BOOLEAN) {
+			error('''Conjunction operands must both have type boolean. The left operand is of type «leftType» and the right operand is of type «rightType»''', conjunction, getDefaultFeature(conjunction));
 		}
 	}
 	
@@ -1105,8 +1104,8 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 			PublicParameter:    return Literals.PUBLIC_PARAMETER__NAME
 			ConstantList:		return Literals.CONSTANT_LIST__CONSTANTS
 			Constant:			return Literals.CONSTANT__NAME
-			Conjunction: 		return Literals.CONJUNCTION__OPERATION
 			Disjunction: 		return Literals.DISJUNCTION__OPERATION
+			Conjunction: 		return Literals.CONJUNCTION__OPERATION
 			Comparison: 		return Literals.COMPARISON__OPERATION
 			Sum: 				return Literals.SUM__OPERATION
 			Product: 			return Literals.PRODUCT__OPERATION

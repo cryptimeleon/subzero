@@ -283,16 +283,16 @@ class LatexPreview {
 		builder.append(formatIdentifier(witness.getName()));
 	}
 
-	def dispatch private void generateLatex(Conjunction conjunction) {
-		generateLatex(conjunction.getLeft());
-		generateOperator(CONJUNCTION);
-		generateLatex(conjunction.getRight());
-	}
-
 	def dispatch private void generateLatex(Disjunction disjunction) {
 		generateLatex(disjunction.getLeft());
 		generateOperator(DISJUNCTION);
 		generateLatex(disjunction.getRight());
+	}
+
+	def dispatch private void generateLatex(Conjunction conjunction) {
+		generateLatex(conjunction.getLeft());
+		generateOperator(CONJUNCTION);
+		generateLatex(conjunction.getRight());
 	}
 
 	def dispatch private void generateLatex(Comparison comparison) {

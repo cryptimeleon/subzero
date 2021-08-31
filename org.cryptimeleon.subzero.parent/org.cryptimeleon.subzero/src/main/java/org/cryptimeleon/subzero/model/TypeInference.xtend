@@ -47,7 +47,7 @@ import java.util.Map.Entry
  * nodes after this are then labeled as GROUP_ELEMENT.
  * 
  * The following inference rules are used:
- * - All Conjunction, Disjunction, and Comparison nodes are labeled as BOOLEAN.
+ * - All Disjunction, Conjunction, and Comparison nodes are labeled as BOOLEAN.
  * 
  * - All StringLiteral nodes are labeled as STRING.
 
@@ -148,8 +148,8 @@ package class TypeInference {
 			Model: {
 				label = topdownInference(node.getProof());
 			}
-			
-			Conjunction: {
+
+			Disjunction: {
 				label = Type.BOOLEAN;
 				types.put(node, label);
 				
@@ -157,7 +157,7 @@ package class TypeInference {
 				topdownInference(node.getRight());
 			}
 			
-			Disjunction: {
+			Conjunction: {
 				label = Type.BOOLEAN;
 				types.put(node, label);
 				
@@ -446,7 +446,7 @@ package class TypeInference {
 		if (!visited.contains(parent)) return;
 		
 		switch parent {
-			// The parent cannot be a Conjunction or Disjunction, as the parent will first
+			// The parent cannot be a Disjunction or Conjunction, as the parent will first
 			// be a Comparison, which does not backpropagate further
 			// The parent cannot be a Sum or Negative, as this will already be labeled as exponent
 			

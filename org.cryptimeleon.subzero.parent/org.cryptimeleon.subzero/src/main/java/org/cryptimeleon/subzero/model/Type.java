@@ -9,7 +9,7 @@ import org.cryptimeleon.math.structures.groups.GroupElement;
 import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
 
 /**
- * An enum to represent the 0K type of a variable or return value
+ * An enum to represent the Subzero type of a variable or return value
  */
 public enum Type {
 	BOOLEAN,

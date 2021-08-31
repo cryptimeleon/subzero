@@ -96,12 +96,12 @@ class SizeInference {
 		
 		sizes.put(node, size);
 		
-		// Stop backpropagating when root, conjunction, or disjunction is reached
+		// Stop backpropagating when root, disjunction, or conjunction is reached
 		val EObject parent = node.eContainer();
 		if (
 			parent instanceof Model ||
-			parent instanceof Conjunction ||
-			parent instanceof Disjunction
+			parent instanceof Disjunction ||
+			parent instanceof Conjunction
 		) return;
 		
 		switch parent {
