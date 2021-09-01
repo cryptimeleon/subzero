@@ -4,13 +4,16 @@ import java.util.HashMap
 import java.util.Iterator
 import java.util.Map
 import org.cryptimeleon.subzero.subzero.Argument
+import org.cryptimeleon.subzero.subzero.Constant
 import org.cryptimeleon.subzero.subzero.Comparison
 import org.cryptimeleon.subzero.subzero.Expression
 import org.cryptimeleon.subzero.subzero.FunctionCall
 import org.cryptimeleon.subzero.subzero.FunctionDefinition
 import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.subzero.Parameter
+import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.Variable
+import org.cryptimeleon.subzero.subzero.Witness
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
@@ -105,6 +108,19 @@ class ModelHelper {
 				controller.breakMap();
 			}
 		]);
+	}
+
+	def static String getNodeName(EObject node) {
+		switch node {
+			Variable: return node.getName()
+			PublicParameter: return node.getName()
+			Witness: return node.getName()
+			Constant: return node.getName()
+			Parameter: return node.getName()
+			FunctionCall: return node.getName()
+			FunctionDefinition: return node.getName()
+			default: return ""
+		}
 	}
 	
 	def static boolean isEqualityComparison(EObject node) {

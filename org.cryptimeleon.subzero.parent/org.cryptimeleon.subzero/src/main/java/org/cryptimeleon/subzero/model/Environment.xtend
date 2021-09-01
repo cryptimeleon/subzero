@@ -38,7 +38,7 @@ class Environment {
 		
 		var Map<String, GroupType> variableGroups = null;
 		if (augmentedModel.hasPairing()) {
-			variableGroups = augmentedModel.getGroupsByName();
+			variableGroups = augmentedModel.getGroups();
 		}
 
 		buildFunctions(builder, predefinedFunctions, userFunctionCalls, localVariableNodes, "built-in");

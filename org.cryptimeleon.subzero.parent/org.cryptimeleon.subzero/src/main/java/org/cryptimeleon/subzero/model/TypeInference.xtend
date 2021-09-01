@@ -406,8 +406,11 @@ package class TypeInference {
 			
 			FunctionDefinition: {
 				// For every function call to this function, perform backpropagation
-				for (FunctionCall call : userFunctionCallsMap.get(node.getName())) {
-					backpropagateExponent(call);
+				val List<FunctionCall> functionCalls = userFunctionCallsMap.get(node.getName());
+				if (functionCalls !== null) {
+					for (FunctionCall call : functionCalls) {
+						backpropagateExponent(call);
+					}
 				}
 				
 				fillExponent(node.getBody());
@@ -481,8 +484,11 @@ package class TypeInference {
 			}
 			
 			FunctionDefinition: {
-				for (FunctionCall call : userFunctionCallsMap.get(parent.getName())) {
-					backpropagateExponent(call);
+				val List<FunctionCall> functionCalls = userFunctionCallsMap.get(parent.getName());
+				if (functionCalls !== null) {
+					for (FunctionCall call : functionCalls) {
+						backpropagateExponent(call);
+					}
 				}
 			}
 			

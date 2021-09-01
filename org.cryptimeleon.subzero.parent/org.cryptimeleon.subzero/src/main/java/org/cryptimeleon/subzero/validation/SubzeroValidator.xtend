@@ -65,7 +65,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	var Map<EObject, Type> types;
 	var Map<EObject, Integer> sizes;
-	var Map<String, GroupType> groupsByName;
+	var Map<String, GroupType> groups;
 	var Map<String, FunctionSignature> userFunctions;
 	var Map<String, List<FunctionCall>> userFunctionCalls;
 	var Map<String, List<WitnessVariable>> userFunctionWitnessNodes;
@@ -99,7 +99,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		// Get all data needed for validation
 		types = augmentedModel.getTypes();
 		sizes = augmentedModel.getSizes();
-		groupsByName = augmentedModel.getGroupsByName();
+		groups = augmentedModel.getGroups();
 		userFunctions = augmentedModel.getUserFunctionSignatures();
 		userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
 		userFunctionWitnessNodes = augmentedModel.getUserFunctionWitnessNodes();
@@ -968,9 +968,9 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def private void checkIsExponentOrGroupElement(EObject node) {
 		if (!types.containsKey(node)) {
-			error('''«capitalize(getNodeName(node))» must be of type exponent or group element''', node, getDefaultFeature(node));
+			error('''«capitalize(getNodeString(node))» must be of type exponent or group element''', node, getDefaultFeature(node));
 		} else {
-			error('''«capitalize(getNodeName(node))» must be of type exponent or group element, not type «types.get(node)»''', node, getDefaultFeature(node));
+			error('''«capitalize(getNodeString(node))» must be of type exponent or group element, not type «types.get(node)»''', node, getDefaultFeature(node));
 		}
 	}
 	
@@ -980,25 +980,25 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	
 	def private void checkIsType(EObject node, Type type) {
 		if (!types.containsKey(node)) {
-			error('''«capitalize(getNodeName(node))» must be of type «type»''', node, getDefaultFeature(node));
+			error('''«capitalize(getNodeString(node))» must be of type «type»''', node, getDefaultFeature(node));
 		} else if (types.get(node) !== type) {
-			error('''«capitalize(getNodeName(node))» must be of type «type», not type «types.get(node)»''', node, getDefaultFeature(node));
+			error('''«capitalize(getNodeString(node))» must be of type «type», not type «types.get(node)»''', node, getDefaultFeature(node));
 		}
 	}
 	
 	def private void checkIsScalar(EObject node) {
 		if (!sizes.containsKey(node)) {
-			error('''«capitalize(getNodeName(node))» must be a scalar''', node, getDefaultFeature(node));	
+			error('''«capitalize(getNodeString(node))» must be a scalar''', node, getDefaultFeature(node));	
 		} else if (sizes.get(node) !== 1) {
-			error('''«capitalize(getNodeName(node))» must be a scalar, not a tuple of size «sizes.get(node)»''', node, getDefaultFeature(node));
+			error('''«capitalize(getNodeString(node))» must be a scalar, not a tuple of size «sizes.get(node)»''', node, getDefaultFeature(node));
 		}
 	}
 	
 	def private void checkIsTuple(EObject node) {
 		if (!sizes.containsKey(node)) {
-			error('''«capitalize(getNodeName(node))» must be a tuple''', node, getDefaultFeature(node));		
+			error('''«capitalize(getNodeString(node))» must be a tuple''', node, getDefaultFeature(node));		
 		} else if (sizes.get(node) <= 1) {
-			error('''«capitalize(getNodeName(node))» must be a tuple, not a scalar''', node, getDefaultFeature(node));
+			error('''«capitalize(getNodeString(node))» must be a tuple, not a scalar''', node, getDefaultFeature(node));
 		}
 	}
 	
@@ -1027,7 +1027,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	 * 
 	 */
 	 def private void checkGroupType(Variable variable) {
-	 	if (groupsByName.get(variable.getName()) === GroupType.UNKNOWN) {
+	 	if (groups.get(variable.getName()) === GroupType.UNKNOWN) {
 	 		error("Variable is used in conflicting group element contexts", variable, getDefaultFeature(variable));
 	 	}
 	 }
@@ -1058,7 +1058,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 	}
 	
 	// Returns the name of the type of node
-	def private String getNodeName(EObject node) {
+	def private String getNodeString(EObject node) {
 		var String className = node.class.getSimpleName();
 		var String nodeName = "";
 		nodeName += Character.toLowerCase(className.charAt(0));

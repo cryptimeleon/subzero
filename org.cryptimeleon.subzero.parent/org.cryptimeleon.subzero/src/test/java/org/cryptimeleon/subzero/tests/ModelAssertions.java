@@ -5,6 +5,7 @@ import java.util.Map;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.GroupType;
 import org.cryptimeleon.subzero.model.Type;
+import org.cryptimeleon.subzero.model.ModelHelper;
 import org.cryptimeleon.subzero.subzero.Model;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +14,7 @@ public class ModelAssertions {
 	
 	private AugmentedModel augmentedModel;
 	private Map<EObject, Type> types;
-	private Map<EObject, GroupType> groups;
+	private Map<String, GroupType> groups;
 	
 	ModelAssertions(Model model) {
 		augmentedModel = new AugmentedModel(model);
@@ -54,7 +55,7 @@ public class ModelAssertions {
 	}
 	
 	public void assertNodeGroupType(EObject node, GroupType groupType) {
-		GroupType trueGroupType = groups.get(node);
+		GroupType trueGroupType = groups.get(ModelHelper.getNodeName(node));
 		Assertions.assertTrue(
 			trueGroupType == groupType,
 			"Expected node type is " + groupType + ", actual group type is " + trueGroupType

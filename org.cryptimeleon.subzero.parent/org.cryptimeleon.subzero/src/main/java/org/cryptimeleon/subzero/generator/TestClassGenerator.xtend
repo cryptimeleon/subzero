@@ -51,17 +51,17 @@ class TestClassGenerator extends ClassGenerator {
 		val String secretInputClassName = GenerationHelper.createSecretInputClassName(protocolClassName);
 		val String publicParametersClassName = GenerationHelper.createPublicParametersClassName(protocolClassName);
 		
+		val Map<String, GroupType> groups = augmentedModel.getGroups();
+
 		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 		val Set<String> constrainedWitnessNames = augmentedModel.getConstrainedWitnessNames();
 		
 		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
-		val Map<String, GroupType> publicParameterGroups = augmentedModel.getPublicParameterGroups();
 		
 		val List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
 		val Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
-		val Map<String, GroupType> constantGroups = augmentedModel.getConstantVariableGroups();
 		
 		// Code generation
 		val ClassBuilder testClass = new ClassBuilder(PUBLIC, "LibraryTest");
@@ -103,12 +103,12 @@ class TestClassGenerator extends ClassGenerator {
 		
 		// Build initialization statements for all public parameters
 		for (String publicParameterName : publicParameterNames) {
-			createVariableInitialization(publicParameterName, publicParameterTypes, publicParameterGroups, defaultGroup, publicParametersBuilder);
+			createVariableInitialization(publicParameterName, publicParameterTypes, groups, defaultGroup, publicParametersBuilder);
 		}
 		
 		// Build initialization statements for all constants
 		for (String constantName : constantNames) {
-			createVariableInitialization(constantName, constantTypes, constantGroups, defaultGroup, constantsBuilder);
+			createVariableInitialization(constantName, constantTypes, groups, defaultGroup, constantsBuilder);
 		}
 		
 		val String witnesses = witnessesBuilder.toString();

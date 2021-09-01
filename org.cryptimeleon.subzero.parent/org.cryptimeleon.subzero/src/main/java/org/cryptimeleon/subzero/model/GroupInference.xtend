@@ -17,6 +17,8 @@ import org.cryptimeleon.subzero.subzero.Witness
 import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
+import org.cryptimeleon.subzero.model.ModelHelper
+
 
 /*
  * Determines what group each group element is from
@@ -25,15 +27,13 @@ import org.cryptimeleon.subzero.subzero.PPVariable
 class GroupInference {
 	
 	val Map<EObject, Type> types;
-	val Map<EObject, GroupType> groups;
-	val Map<String, GroupType> groupsByName;
+	val Map<String, GroupType> groups;
 	val Map<String, FunctionDefinition> userFunctions;
 	val Map<String, Witness> witnessNodes;
 	val Map<String, PublicParameter> publicParameterNodes;
 	
 	new(AugmentedModel augmentedModel) {
-		groups = new HashMap<EObject, GroupType>();
-		groupsByName = new HashMap<String, GroupType>();
+		groups = new HashMap<String, GroupType>();
 		
 		types = augmentedModel.getTypes();
 		userFunctions = augmentedModel.getUserFunctionNodes();
@@ -44,41 +44,32 @@ class GroupInference {
 		inferGroups(augmentedModel);
 	}
 
-	def Map<EObject, GroupType> getGroups() {
+	def Map<String, GroupType> getGroups() {
 		return groups;
 	}
 	
-	def GroupType getNodeGroup(EObject node) {
-		return groups.get(node);
+	def GroupType getGroup(String name) {
+		return groups.get(name);
 	}
 	
-	def Map<String, GroupType> getGroupsByName() {
-		return groupsByName;
-	}
+	def private void setGroup(EObject node, GroupType type) {
+		if (types.get(node) !== Type.GROUP_ELEMENT) return;
 
-	def private dispatch void setGroup(WitnessVariable witnessVariable, GroupType type) {
-		groups.put(witnessVariable, type);
-		groups.put(witnessNodes.get(witnessVariable.getName()), type);
-	}
-	
-	def private dispatch void setGroup(PPVariable ppVariable, GroupType type) {
-		groups.put(ppVariable, type);
-		groups.put(publicParameterNodes.get(ppVariable.getName()), type);
-	}
-	
-	def private dispatch void setGroup(EObject node, GroupType type) {
-		groups.put(node, type);
+		val String name = ModelHelper.getNodeName(node);
+		val GroupType existingType = groups.get(name);
+
+		if (existingType !== null && existingType !== type) {
+			groups.put(name, GroupType.UNKNOWN);
+		} else {
+			groups.put(name, type);
+		}
 	}
 
 	// Label all group elements within the second argument of an e call as G2 elements
 	def private void fillG2(EObject node) {
 		ModelMap.postorder(node, [EObject childNode |
 			if (childNode instanceof Variable && !(childNode instanceof LocalVariable) && types.get(childNode) === Type.GROUP_ELEMENT) {
-				if (groups.get(childNode) === GroupType.GT) {
-					setGroup(childNode, GroupType.UNKNOWN);
-				} else {
-					setGroup(childNode, GroupType.G2);
-				}
+				setGroup(childNode, GroupType.G2);
 			} else if (childNode instanceof FunctionCall) {
 				val FunctionDefinition function = userFunctions.get(childNode.getName());
 				if (function !== null) {
@@ -93,14 +84,10 @@ class GroupInference {
 	def private void fillGT(EObject node) {
 		ModelMap.preorderWithControl(node, [EObject childNode, ModelMap.Controller controller |
 			if (childNode instanceof Variable && !(childNode instanceof LocalVariable) && types.get(childNode) === Type.GROUP_ELEMENT) {
-				if (groups.get(childNode) === GroupType.G2) {
-					setGroup(childNode, GroupType.UNKNOWN)
-				} else {
-					setGroup(childNode, GroupType.GT);
-				}
+				setGroup(childNode, GroupType.GT);
 			} else if (childNode instanceof FunctionCall) {
 				val String functionName = childNode.getName();
-				if (childNode.getName() == "e") {
+				if (functionName == "e") {
 					controller.continueTraversal();
 				} else if (userFunctions.containsKey(functionName)) {
 					fillGT(userFunctions.get(functionName).getBody());
@@ -130,10 +117,14 @@ class GroupInference {
 	}
 	
 	def private void setG1(EObject node) {
-		if (types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(node)) {
-			setGroup(node, GroupType.G1);
+		val String name = ModelHelper.getNodeName(node);
+
+		if (types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(name)) {
+			groups.put(name, GroupType.G1);
 		}
 	}
+
+	
 	
 	
 	def private void inferGroups(AugmentedModel augmentedModel) {
@@ -168,25 +159,5 @@ class GroupInference {
 		]);
 		
 		fillG1(model);
-		
-		for (Entry<EObject, GroupType> entry : groups.entrySet()) {
-			val EObject node = entry.getKey();
-			val GroupType groupType = entry.getValue();
-			var String variableName = '';
-			
-			if (node instanceof Variable) {
-				variableName = (node as Variable).getName();	
-			} else if (node instanceof PublicParameter) {
-				variableName = (node as PublicParameter).getName();
-			} else if (node instanceof Witness) {
-				variableName = (node as Witness).getName();
-			}
-			
-			if (groupsByName.containsKey(variableName) && groupsByName.get(variableName) !== groupType) {
-				groupsByName.put(variableName, GroupType.UNKNOWN);
-			} else {
-				groupsByName.put(variableName, groupType);
-			}
-		}
 	}
 }

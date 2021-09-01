@@ -218,20 +218,12 @@ class AugmentedModel {
 		return sizeInference.getSizes();		
 	}
 	
-	def Map<EObject, GroupType> getGroups() {
+	def Map<String, GroupType> getGroups() {
 		if (groupInference !== null) return groupInference.getGroups();
 		
 		groupInference = new GroupInference(this);
 		
 		return groupInference.getGroups();
-	}
-	
-	def Map<String, GroupType> getGroupsByName() {
-		if (groupInference !== null) return groupInference.getGroupsByName();
-		
-		groupInference = new GroupInference(this);
-		
-		return groupInference.getGroupsByName();
 	}
 	
 	/*
@@ -580,19 +572,6 @@ class AugmentedModel {
 		return publicParameterTypes;
 	}
 	
-	def Map<String, GroupType> getPublicParameterGroups() {
-		if (publicParameterGroups !== null) return publicParameterGroups;
-		
-		publicParameterGroups = new HashMap<String, GroupType>();
-		val Map<String, GroupType> groupsByName = getGroupsByName();
-		
-		for (String publicParameterName : getPublicParameterNames()) {
-			publicParameterGroups.put(publicParameterName, groupsByName.get(publicParameterName));
-		}
-		
-		return publicParameterGroups;
-	}
-	
 	def Type getPublicParameterType(String ppName) {
 		return getPublicParameterTypes().get(ppName);
 	}
@@ -638,24 +617,12 @@ class AugmentedModel {
 		return getConstantVariableType(constantName);
 	}
 	
-	def Map<String, GroupType> getConstantVariableGroups() {
-		if (constantVariableGroups !== null) return constantVariableGroups;
-		getConstantVariablesHelper();
-		return constantVariableGroups;
-	}
-	
-	def GroupType getConstantVariableGroup(String constantName) {
-		return getConstantVariableGroups().get(constantName);
-	}
-	
 	private def getConstantVariablesHelper() {
 		constantVariableNames = new HashSet<String>();
 		sortedConstantVariableNames = new ArrayList<String>();
 		constantVariableTypes = new HashMap<String, Type>();
-		constantVariableGroups = new HashMap<String, GroupType>();
 		
 		val Map<EObject, Type> types = getTypes();
-		val Map<EObject, GroupType> groups = getGroups();
 		
 		for (Entry<String, List<Variable>> entry : getVariableNodes().entrySet()) {
 			val Variable variable = entry.getValue().get(0);
@@ -665,7 +632,6 @@ class AugmentedModel {
 				constantVariableNames.add(variableName);
 				sortedConstantVariableNames.add(variableName);
 				constantVariableTypes.put(variableName, types.get(variable));
-				if (groups.containsKey(variable)) constantVariableGroups.put(variableName, groups.get(variable));
 			}
 		}
 		
@@ -742,6 +708,7 @@ class AugmentedModel {
 	}
 
 	// Returns a map from user function names to user function call nodes
+	// Unused function definitions will not be stored
 	def Map<String, List<FunctionCall>> getUserFunctionCallNodes() {
 		if (userFunctionCalls !== null) return userFunctionCalls;
 		
@@ -1035,7 +1002,7 @@ class AugmentedModel {
 		
 		val Map<EObject, Type> types = getTypes();
 		val Map<EObject, Integer> sizes = getSizes();
-		val Map<EObject, GroupType> groups = getGroups();
+		val Map<String, GroupType> groups = getGroups();
 		
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
 			for (var int i = 0; i < state.getDepth(); i++) {
@@ -1063,8 +1030,9 @@ class AugmentedModel {
 				builder.append(" (" + sizes.get(node).toString() + ")");
 			}
 			
-			if (groups !== null && groups.containsKey(node)) {
-				builder.append(" (" + groups.get(node).toString() + ")");
+			val String name = ModelHelper.getNodeName(node);
+			if (groups !== null && groups.containsKey(name)) {
+				builder.append(" (" + groups.get(name).toString() + ")");
 			}
 			
 			builder.append("\n");

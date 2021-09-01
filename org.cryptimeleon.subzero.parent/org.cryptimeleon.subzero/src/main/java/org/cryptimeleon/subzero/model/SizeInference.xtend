@@ -136,8 +136,12 @@ class SizeInference {
 			
 			FunctionDefinition: {
 				sizes.put(parent, size);
-				for (FunctionCall call : userFunctionCallsMap.get(parent.getName())) {
-					backpropagateSize(call, size);
+				
+				val List<FunctionCall> functionCalls = userFunctionCallsMap.get(parent.getName());
+				if (functionCalls !== null) {
+					for (FunctionCall call : functionCalls) {
+						backpropagateSize(call, size);
+					}
 				}
 			}
 			
@@ -215,8 +219,11 @@ class SizeInference {
 			
 			FunctionDefinition: {
 				// For every function call to this function, perform backpropagation
-				for (FunctionCall call : userFunctionCallsMap.get(node.getName())) {
-					backpropagateSize(call, size);
+				val List<FunctionCall> functionCalls = userFunctionCallsMap.get(node.getName());
+				if (functionCalls !== null) {
+					for (FunctionCall call : functionCalls) {
+						backpropagateSize(call, size);
+					}
 				}
 
 				fillSize(node.getBody(), size);
