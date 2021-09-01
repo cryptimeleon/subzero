@@ -83,7 +83,7 @@ class ModelHelper {
 
 	// For a parameter in a function definition, get the function name
 	def static String getParameterFunction(Parameter parameter) {
-		return (parameter.eContainer().eContainer() as FunctionDefinition).getName();
+		return (parameter.eContainer() as FunctionDefinition).getName();
 	}
 	
 	// For an argument in a function call, get the function name
