@@ -16,6 +16,6 @@ RUN mvn install
 WORKDIR /app/org.cryptimeleon.subzero.web
 RUN mvn compile war:war
 
-FROM tomcat:jdk11-openjdk
+FROM tomcat:9-jdk11-openjdk
 EXPOSE 8080
 COPY --from=builder2 /app/org.cryptimeleon.subzero.web/target/subzero.war /usr/local/tomcat/webapps/
