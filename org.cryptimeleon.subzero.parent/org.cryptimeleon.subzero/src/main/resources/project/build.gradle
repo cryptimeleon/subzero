@@ -8,6 +8,6 @@ repositories {
 
 dependencies {
   testImplementation 'junit:junit:4.12'
-  implementation 'org.cryptimeleon:math:2.1.0'
-  implementation 'org.cryptimeleon:craco:2.1.0'
+  implementation 'org.cryptimeleon:math:3.+'
+  implementation 'org.cryptimeleon:craco:3.+'
 }

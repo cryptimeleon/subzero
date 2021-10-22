@@ -170,12 +170,12 @@
 	<dependency>
 		<groupId>org.cryptimeleon</groupId>
 		<artifactId>craco</artifactId>
-		<version>2.1.0</version>
+		<version>[3.0,)</version>
 	</dependency>
 	<dependency>
 		<groupId>org.cryptimeleon</groupId>
 		<artifactId>math</artifactId>
-		<version>2.1.0</version>
+		<version>[3.0,)</version>
 	</dependency>
 	</dependencies>
 </project>
