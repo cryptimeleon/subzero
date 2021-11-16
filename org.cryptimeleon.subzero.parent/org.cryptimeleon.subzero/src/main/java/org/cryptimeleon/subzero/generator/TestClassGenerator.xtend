@@ -78,7 +78,7 @@ class TestClassGenerator extends ClassGenerator {
 			groupInstance = "new BarretoNaehrigBilinearGroup(80)";
 			defaultGroup = "groupG1";
 		} else {
-			groupInstance = "new LazyGroup(new Secp256k1())";
+			groupInstance = "new Secp256k1()";
 			defaultGroup = groupVariableName;
 		}
 		

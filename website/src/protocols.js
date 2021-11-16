@@ -33,7 +33,7 @@ g^x * h^r = C_1 & h^r = C_2
 pp : h_1, h_2, g
 witness : m_1, m_2 ,r
 
-C_1 = h_1^m_1 * h_2^m_2 * g^r & 20 <= m_1 + m_2 <= 100
+C_1 = h_1^m_1 * h_2^m_2 * g^r & 0 <= m_1 + m_2 <= 100
 `,
 
 'Basic proof of partial knowledge':
