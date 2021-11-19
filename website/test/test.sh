@@ -60,13 +60,13 @@ for protocolName in "${protocolNames[@]}"; do
     cd prototype/
     chmod u+x gradlew
     ./gradlew test
-    echo ""
     
     # Check if its protocol test failed
     if [ $? -ne 0 ]; then
         ((testsFailed++))
     fi
     
+    echo ""
     cd ../
 
     # Clean up
