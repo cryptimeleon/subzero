@@ -45,7 +45,7 @@ class SubzeroGenerator extends AbstractGenerator {
 		if (resourceId.endsWith(LATEX_RESOURCE)) {
 			// Generate LaTeX preview code
 			val LatexPreview latexPreview = new LatexPreview(augmentedModel);
-			generationOutput = latexPreview.getRawLatex();
+			generationOutput = latexPreview.getLatex();
 			
 		} else if (resourceId.endsWith(CODE_RESOURCE)) {
 			// Generate Java project

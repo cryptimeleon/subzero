@@ -44,7 +44,7 @@ class CodeGenerator {
 		val String rawCode = augmentedModel.getCode();
 		
 		// Fetch the LaTeX text
-		val String latexText = new LatexPreview(augmentedModel).getRawLatex();
+		val String latexText = new LatexPreview(augmentedModel).getLatex();
 		
 		val ProjectDirectory root = new ProjectDirectory(packageName);
 		
