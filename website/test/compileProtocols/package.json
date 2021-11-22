@@ -1,0 +1,19 @@
+{
+  "name": "testing",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "compileProtocols.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "jquery": "^3.6.0",
+    "jszip": "^3.7.1",
+    "request": "^2.88.2"
+  }
+}

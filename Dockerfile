@@ -2,10 +2,11 @@
 
 FROM node:lts-alpine as builder1
 WORKDIR /app
-COPY ["org.cryptimeleon.subzero.parent/", "*.md", "website/package*.json", "website/*.config.js", "website/*.html", "website/*.css", "website/*.sh", "./"]
+COPY ["org.cryptimeleon.subzero.parent/", "*.md", "website/package*.json", "website/*.config.js", "website/*.html", "website/*.css", "./"]
 RUN npm install
 COPY website/src ./src/
-RUN ./preprocessing.sh
+COPY website/scripts ./scripts/
+RUN ./scripts/preprocessing.sh
 RUN npm run build
 
 FROM maven:3.8.1-jdk-11 as builder2

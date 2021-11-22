@@ -21,7 +21,7 @@ Model returns Model:
   ('pp' ':'? (publicParameters+=PublicParameter (',' publicParameters+=PublicParameter)*) ';'?)
   )*
 
-  ('statement' ':')? (proof=Expression) test=';'?;
+  ('statement' ':')? (proof=Expression) ';'?;
 
 FunctionDefinition returns FunctionDefinition:
   inline?='inline'?
