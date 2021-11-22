@@ -60,7 +60,7 @@ Product returns Expression:
   Power ({Product.left=current} operation=('*' | '/') right=Power)*;
  
 Power returns Expression:
-	Construct ({Power.left = current} operation='^' right=Power)?;
+  Construct ({Power.left = current} operation='^' right=Power)?;
 
 Construct returns Expression:
   StringLiteral | Tuple | Negative;
@@ -90,7 +90,7 @@ NumberLiteral returns NumberLiteral:
   value=INT;
 
 Brackets returns Expression:
-	{Brackets} content=Expression;
+  {Brackets} content=Expression;
 	
 /*
  * Postprocessing nodes
@@ -126,10 +126,10 @@ terminal WHITESPACE:
   (' '|'\t'|'\r'|'\n')+;
 
 terminal IDENTIFIER:
-	('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'~'|'\'')*;
+  ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'~'|'\'')*;
 
 terminal STRING_LITERAL:
- '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
+  '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
   
 terminal COMPARISON_OPERATOR:
   '!=' | '=' | '<' | '<=' | '>' | '>=';
