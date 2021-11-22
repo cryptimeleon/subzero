@@ -47,6 +47,9 @@ import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
 import org.cryptimeleon.subzero.subzero.FunctionCall
 import org.cryptimeleon.subzero.subzero.Brackets
+import org.cryptimeleon.craco.protocols.arguments.sigma.ZnChallengeSpace
+import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge
+import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -59,10 +62,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 	boolean hasOrProof;
 	boolean hasOrDescendantOfAnd;
 	
-	// TODO: remove these temp classes
-	private static class ZnChallengeSpace {}
-	private static class ChallengeSpace {}
-	private static class ProofOfPartialKnowledge {}
+	// ProtocolTree is a protected inner class of ProofOfPartialKnowledge so it cannot be imported here
+	// Uses a placeholder class instead for code generation purposes
 	private static class ProtocolTree {}
 	
 	new(AugmentedModel augmentedModel) {
