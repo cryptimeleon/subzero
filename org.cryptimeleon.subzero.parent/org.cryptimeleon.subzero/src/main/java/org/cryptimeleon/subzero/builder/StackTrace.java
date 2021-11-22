@@ -3,13 +3,16 @@ package org.cryptimeleon.subzero.builder;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ErrorBuilder {
-	private String stackTrace;
+/**
+ * Represents the serialized JSON object of a Java error stack trace thrown during code generation
+ */
+public class StackTrace {
+	private String trace;
 	
-	public ErrorBuilder(Throwable e) {
+	public StackTrace(Throwable e) {
 		StringWriter stringWriter = new StringWriter();
 		e.printStackTrace(new PrintWriter(stringWriter));
-		stackTrace = "{\"error\": \"" + stringWriter.toString()
+		trace = "{\"error\": \"" + stringWriter.toString()
 				.replace("\\", "\\\\")
 				.replace("\t", "\\t")
 				.replace("\n", "\\n")
@@ -19,6 +22,6 @@ public class ErrorBuilder {
 	
 	@Override
 	public String toString() {
-		return stackTrace;
+		return trace;
 	}
 }
