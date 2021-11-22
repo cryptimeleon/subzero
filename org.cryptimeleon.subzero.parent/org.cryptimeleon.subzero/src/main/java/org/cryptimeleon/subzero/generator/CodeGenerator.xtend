@@ -2,11 +2,11 @@ package org.cryptimeleon.subzero.generator
 
 import org.cryptimeleon.subzero.builder.ProjectBuilder
 import org.cryptimeleon.subzero.builder.ProjectFile
-import org.cryptimeleon.subzero.builder.ProjectFolder
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.latex.LatexPreview
+import org.cryptimeleon.subzero.builder.ProjectDirectory
 
 /**
  * Generates the Java code for a protocol
@@ -46,7 +46,7 @@ class CodeGenerator {
 		// Fetch the LaTeX text
 		val String latexText = new LatexPreview(augmentedModel).getRawLatex();
 		
-		val ProjectFolder root = new ProjectFolder(packageName);
+		val ProjectDirectory root = new ProjectDirectory(packageName);
 		
 		val ProjectFile code = new ProjectFile(protocolName + '.sub0', rawCode);
 		val ProjectFile latex = new ProjectFile(protocolName + '.tex', latexText);
@@ -66,22 +66,22 @@ class CodeGenerator {
 		root.addFile(dotProject);
 		root.addFile(dotClasspath);
 		
-		val ProjectFolder gradle = new ProjectFolder("gradle");
-		val ProjectFolder wrapper = new ProjectFolder("wrapper");
+		val ProjectDirectory gradle = new ProjectDirectory("gradle");
+		val ProjectDirectory wrapper = new ProjectDirectory("wrapper");
 		val ProjectFile gradleWrapperJar = new ProjectFile("gradle-wrapper.jar", "project", true);
 		val ProjectFile gradleWrapperSettings = new ProjectFile("gradle-wrapper.properties", "project", false);
 		
 		wrapper.addFile(gradleWrapperJar);
 		wrapper.addFile(gradleWrapperSettings);
 		
-		gradle.addFolder(wrapper);
-		root.addFolder(gradle);
+		gradle.addDirectory(wrapper);
+		root.addDirectory(gradle);
 		
-		val ProjectFolder src = new ProjectFolder("src");
+		val ProjectDirectory src = new ProjectDirectory("src");
 		
-		val ProjectFolder main = new ProjectFolder("main");
-		val ProjectFolder mainJava = new ProjectFolder("java");
-		val ProjectFolder mainPrototype = new ProjectFolder("prototype");
+		val ProjectDirectory main = new ProjectDirectory("main");
+		val ProjectDirectory mainJava = new ProjectDirectory("java");
+		val ProjectDirectory mainPrototype = new ProjectDirectory("prototype");
 		
 		val ProjectFile mainProtocol = new ProjectFile(protocolName + '.java', protocolCode);
 		
@@ -92,23 +92,23 @@ class CodeGenerator {
 			mainPrototype.addFile(publicParameters);
 		}
 		
-		mainJava.addFolder(mainPrototype);
-		main.addFolder(mainJava);
+		mainJava.addDirectory(mainPrototype);
+		main.addDirectory(mainJava);
 		
-		val ProjectFolder test = new ProjectFolder("test");
-		val ProjectFolder testJava = new ProjectFolder("java");
-		val ProjectFolder testPrototype = new ProjectFolder("prototype");
+		val ProjectDirectory test = new ProjectDirectory("test");
+		val ProjectDirectory testJava = new ProjectDirectory("java");
+		val ProjectDirectory testPrototype = new ProjectDirectory("prototype");
 		
 		val ProjectFile testLibrary = new ProjectFile("LibraryTest.java", testCode);
 		testPrototype.addFile(testLibrary);
 
-		testJava.addFolder(testPrototype);
-		test.addFolder(testJava);
+		testJava.addDirectory(testPrototype);
+		test.addDirectory(testJava);
 		
-		src.addFolder(main);
-		src.addFolder(test);
+		src.addDirectory(main);
+		src.addDirectory(test);
 		
-		root.addFolder(src);
+		root.addDirectory(src);
 		
 		return new ProjectBuilder(root);
 	}

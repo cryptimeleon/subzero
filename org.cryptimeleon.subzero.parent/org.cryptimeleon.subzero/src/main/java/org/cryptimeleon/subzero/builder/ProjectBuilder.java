@@ -4,35 +4,38 @@ import java.util.List;
 
 /**
  * Represents a generated project.
- * Generates a JSON object string representing the folder structure of the generated project
+ * Generates a serialized JSON object representing the directory structure of the generated project
  * and containing each generated file's contents
  */
 public class ProjectBuilder {
 	
-	private String generatedProject;
+	private ProjectDirectory root;
 
-	public ProjectBuilder(ProjectFolder root) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("{");
-		generateProjectHelper(root, builder);
-		builder.append("}");
-		generatedProject = builder.toString();
+	public ProjectBuilder(ProjectDirectory root) {
+		this.root = root;
+		
 	}
 	
 	public String getProject() {
-		return generatedProject;
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("{");
+		generateProjectHelper(root, builder);
+		builder.append("}");
+		
+		return builder.toString();
 	}
 	
-	private void generateProjectHelper(ProjectFolder currentFolder, StringBuilder builder) {
+	private void generateProjectHelper(ProjectDirectory currentDirectory, StringBuilder builder) {
 		builder.append("\"");
-		builder.append(currentFolder.getName());
+		builder.append(currentDirectory.getName());
 		builder.append("\":{");
 		
-		List<ProjectFile> files = currentFolder.getFiles();
+		List<ProjectFile> files = currentDirectory.getFiles();
 		int numFiles = files.size();
 		
-		List<ProjectFolder> subFolders = currentFolder.getFolders();
-		int numSubFolders = subFolders.size();
+		List<ProjectDirectory> subDirectories = currentDirectory.getDirectories();
+		int numSubDirectories = subDirectories.size();
 		
 		for (int i = 0; i < numFiles; i++) {
 			ProjectFile file = files.get(i);
@@ -47,13 +50,13 @@ public class ProjectBuilder {
 					.replace("\"", "\\\"");
 			builder.append(contents);
 			builder.append("\"");
-			if (i != numFiles-1 || numSubFolders > 0) builder.append(",");
+			if (i != numFiles-1 || numSubDirectories > 0) builder.append(",");
 		}
 		
-		for (int i = 0; i < numSubFolders; i++) {
-			ProjectFolder subFolder = subFolders.get(i);
-			generateProjectHelper(subFolder, builder);
-			if (i != numSubFolders-1) builder.append(",");
+		for (int i = 0; i < numSubDirectories; i++) {
+			ProjectDirectory subDirectory = subDirectories.get(i);
+			generateProjectHelper(subDirectory, builder);
+			if (i != numSubDirectories-1) builder.append(",");
 		}
 		
 		builder.append("}");

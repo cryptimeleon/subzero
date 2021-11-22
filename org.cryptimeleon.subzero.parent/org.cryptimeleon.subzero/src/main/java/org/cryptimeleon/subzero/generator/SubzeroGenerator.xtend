@@ -3,7 +3,6 @@
  */
 package org.cryptimeleon.subzero.generator
 
-import org.cryptimeleon.subzero.builder.ErrorBuilder
 import org.cryptimeleon.subzero.builder.ProjectBuilder
 import org.cryptimeleon.subzero.latex.LatexPreview
 import org.cryptimeleon.subzero.model.AugmentedModel
@@ -12,6 +11,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.cryptimeleon.subzero.builder.StackTrace
 
 /**
  * Generates code from your model files on save.
@@ -28,6 +28,7 @@ class SubzeroGenerator extends AbstractGenerator {
 	static val LATEX_RESOURCE = 'latex.sub0';
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		// For debugging purposes
 		val String resourceId = resource.getURI().toString();
 		System.out.println("Generating resource: " + resourceId);
 		
@@ -40,21 +41,21 @@ class SubzeroGenerator extends AbstractGenerator {
 		// Create the augmented model to provide additional functionality
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
-		var String contents;
+		var String generationOutput;
 		if (resourceId.endsWith(LATEX_RESOURCE)) {
 			// Generate LaTeX preview code
 			val LatexPreview latexPreview = new LatexPreview(augmentedModel);
-			contents = latexPreview.getRawLatex();
+			generationOutput = latexPreview.getRawLatex();
 			
 		} else if (resourceId.endsWith(CODE_RESOURCE)) {
 			// Generate Java project
 			try {
 				val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
 				val ProjectBuilder project = codeGeneration.generate();
-				contents = project.getProject();
+				generationOutput = project.getProject();
 			} catch (Throwable e) {
-				val ErrorBuilder error = new ErrorBuilder(e);
-				contents = error.toString();
+				val StackTrace error = new StackTrace(e);
+				generationOutput = error.toString();
 			}
 		} else {
 			System.out.println("Error: invalid resource ID");
@@ -62,7 +63,7 @@ class SubzeroGenerator extends AbstractGenerator {
 		}
 		
 		// Generate the final file
-		fsa.generateFile(OUTPUT_FILE, contents);
+		fsa.generateFile(OUTPUT_FILE, generationOutput);
 	}
 	
 	
