@@ -53,7 +53,7 @@ public class LatexGreekAlphabet {
 			);
 		}
 		
-		return "\\" + alphabet.get(letter);
+		String command = alphabet.get(letter);
+		return command == null ? null : "\\" + command;
 	}
-	
 }
