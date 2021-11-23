@@ -168,9 +168,15 @@ class AugmentedModel {
 		return model;
 	}
 	
+	
+	
 	// Returns the model errors
 	def EList<Diagnostic> getErrors() {
 		return model.eResource.errors;
+	}
+	
+	def boolean hasErrors() {
+		return getErrors().size() > 0;
 	}
 	
 	// Returns the protocol name, if specified, or the default protocol name

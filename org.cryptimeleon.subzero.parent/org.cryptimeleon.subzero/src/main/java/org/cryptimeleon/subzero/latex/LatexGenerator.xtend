@@ -22,9 +22,6 @@ import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import java.util.Map
-import java.lang.Math
-import org.cryptimeleon.subzero.model.VariableIdentifier
 
 /**
  * Converts a syntax tree to valid LaTeX output
@@ -32,7 +29,7 @@ import org.cryptimeleon.subzero.model.VariableIdentifier
  * Precondition: the Model object used to create the LatexPreview object
  * must be free of validation errors
  */
-class LatexPreview {
+class LatexGenerator {
 
 	// Token constants
 	static val String NEWLINE = "\\\\";
@@ -40,7 +37,6 @@ class LatexPreview {
 	static val String COMMA = ",";
 	static val String COLON = ":";
 	static val String SEMICOLON = ";";
-	static val String QUOTE = "'";
 	static val String LEFTPAREN = "(";
 	static val String RIGHTPAREN = ")";
 	static val String LEFTBRACE = "{";
@@ -85,6 +81,10 @@ class LatexPreview {
 	var int openBraces;
 
 	new(AugmentedModel augmentedModel) {
+		if (augmentedModel.hasErrors()) {
+			throw new IllegalArgumentException("Cannot generate LaTeX preview for model with validation errors");
+		}
+		
 		openBraces = 0;
 		builder = new StringBuilder();
 		builder.append(START);
@@ -94,40 +94,8 @@ class LatexPreview {
 		latexText = builder.toString();
 	}
 	
-	def String getLatex() {
+	def String generate() {
 		return latexText;
-	}
-	
-	// Formats identifiers into a nicer format for LaTeX
-	def private String formatIdentifier(String identifier) {
-		val VariableIdentifier varIdentifier = new VariableIdentifier(identifier);
-		var String name = varIdentifier.getName();
-		
-		var String greekLetter = LatexGreekAlphabet.getCommand(name);
-		if (greekLetter !== null) {
-			name = greekLetter;
-		}
-		
-		if (varIdentifier.hasTilde()) {
-			name = "\\tilde{" + name + "}";
-		} else if (varIdentifier.hasBar()) {
-			name = "\\bar{" + name + "}"; 
-		} else if (varIdentifier.hasHat()) {
-			name = "\\hat{" + name + "}";
-		}
-		
-		var String subscript = "";
-		if (varIdentifier.hasSubscript()) {
-			subscript = "_{" + varIdentifier.getSubscript() + "}";
-		}
-		
-		var String primeString = "";
-		if (varIdentifier.hasPrimes()) {
-			val int primes = varIdentifier.getPrimes();
-			for (var int i = 0; i < primes; i++) primeString += "'";
-		}
-		
-		return name + subscript + primeString;
 	}
 
 	def private void generateBraces(EObject node) {
@@ -211,15 +179,15 @@ class LatexPreview {
 	}
 
 	def dispatch private void generateLatex(Parameter parameter) {
-		builder.append(parameter.getName());
+		builder.append(new LatexIdentifier(parameter.getName()));
 	}
 	
 	def dispatch private void generateLatex(PublicParameter publicParameter) {
-		builder.append(formatIdentifier(publicParameter.getName()));
+		builder.append(new LatexIdentifier(publicParameter.getName()));
 	}
 
 	def dispatch private void generateLatex(Witness witness) {
-		builder.append(formatIdentifier(witness.getName()));
+		builder.append(new LatexIdentifier(witness.getName()));
 	}
 
 	def dispatch private void generateLatex(Disjunction disjunction) {
@@ -300,11 +268,7 @@ class LatexPreview {
 	}
 
 	def dispatch private void generateLatex(StringLiteral literal) {
-		// Uncomment if getValue() is changed
-		// Change quote to use some Latex notation
-		// builder.append(QUOTE);
 		builder.append(literal.getValue());
-		// builder.append(QUOTE);
 	}
 
 	def dispatch private void generateLatex(Tuple tuple) {
@@ -331,7 +295,7 @@ class LatexPreview {
 	}
 
 	def dispatch private void generateLatex(Variable variable) {
-		builder.append(formatIdentifier(variable.getName()));
+		builder.append(new LatexIdentifier(variable.getName()));
 	}
 
 	def dispatch private void generateLatex(NumberLiteral literal) {

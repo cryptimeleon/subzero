@@ -5,8 +5,8 @@ import org.cryptimeleon.subzero.builder.ProjectFile
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.subzero.Model
-import org.cryptimeleon.subzero.latex.LatexPreview
 import org.cryptimeleon.subzero.builder.ProjectDirectory
+import org.cryptimeleon.subzero.latex.LatexGenerator
 
 /**
  * Generates the Java code for a protocol
@@ -44,7 +44,7 @@ class CodeGenerator {
 		val String rawCode = augmentedModel.getCode();
 		
 		// Fetch the LaTeX text
-		val String latexText = new LatexPreview(augmentedModel).getLatex();
+		val String latexText = new LatexGenerator(augmentedModel).generate();
 		
 		val ProjectDirectory root = new ProjectDirectory(packageName);
 		
