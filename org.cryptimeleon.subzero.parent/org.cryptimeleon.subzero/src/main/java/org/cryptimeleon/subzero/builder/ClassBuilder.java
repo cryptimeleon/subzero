@@ -6,14 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Represents a single class (possibly an inner class) in generated code
+ * Represents a single class (possibly an nested class) in generated code
  */
 public class ClassBuilder {
 	
 	private Deque<FieldBuilder> fields;
 	private Deque<ConstructorBuilder> constructors;
 	private Deque<MethodBuilder> methods;
-	private Deque<ClassBuilder> innerClasses;
+	private Deque<ClassBuilder> nestedClasses;
 	
 	private String name;
 	
@@ -26,36 +26,62 @@ public class ClassBuilder {
 	boolean hasBasicConstructor;
 	Modifier basicConstructorModifier;
 	
-	public ClassBuilder(Modifier accessModifier, String name, Class<?> ... classes) {
-		this(accessModifier, false, false, name, classes);
+	public ClassBuilder(Modifier accessModifier, String name) {
+		this(accessModifier, false, false, name);
 	}
 	
-	public ClassBuilder(Modifier accessModifier, Modifier extraModifier, String name, Class<?> ... classes) {
+	public ClassBuilder(Modifier accessModifier, Modifier extraModifier, String name) {
 		this(
 			accessModifier,
 			extraModifier == Modifier.STATIC,
 			extraModifier == Modifier.FINAL,
-			name,
-			classes
+			name
 		);
 	}
 	
-	public ClassBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, String name, Class<?> ... classes) {
+	public ClassBuilder(Modifier accessModifier, Modifier extraModifier1, Modifier extraModifier2, String name) {
 		this(
 			accessModifier, 
 			extraModifier1 == Modifier.STATIC || extraModifier2 == Modifier.STATIC,
 			extraModifier2 == Modifier.FINAL || extraModifier2 == Modifier.FINAL,
-			name,
-			classes
+			name
 		);
 		
 	}
 	
-	private ClassBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, String name, Class<?> ... classes) {
+	public ClassBuilder extend(String baseClassName) {
+		this.baseClassName = baseClassName;
+		
+		return this;
+	}
+	
+	public ClassBuilder extend(Class<?> baseClass) {
+		this.baseClassName = baseClass.getSimpleName();
+		
+		return this;
+	}
+	
+	public ClassBuilder implement(String ... interfaceNames) {
+		for (String interfaceName: interfaceNames) {
+			this.interfaceNames.add(interfaceName);
+		}
+		
+		return this;
+	}
+	
+	public ClassBuilder implement(Class<?> ... interfaces) {
+		for (Class<?> interfaze : interfaces) {
+			this.interfaceNames.add(interfaze.getSimpleName());
+		}
+		
+		return this;
+	}
+	
+	private ClassBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, String name) {
 		fields = new LinkedList<FieldBuilder>();
 		constructors = new LinkedList<ConstructorBuilder>();
 		methods = new LinkedList<MethodBuilder>();
-		innerClasses = new LinkedList<ClassBuilder>();
+		nestedClasses = new LinkedList<ClassBuilder>();
 		
 		this.accessModifier = accessModifier;
 		this.isStatic = isStatic;
@@ -66,16 +92,6 @@ public class ClassBuilder {
 		
 		interfaceNames = new ArrayList<String>();
 		baseClassName = null;
-		
-		for (Class<?> clazz : classes) {
-			if (clazz.isInterface()) {
-				interfaceNames.add(clazz.getSimpleName());
-			} else if (baseClassName == null) {
-				baseClassName = clazz.getSimpleName();
-			} else {
-				throw new IllegalArgumentException("Cannot have multiple base classes");
-			}
-		}
 	}
 	
 	public void addField(FieldBuilder fieldBuilder) {
@@ -105,7 +121,7 @@ public class ClassBuilder {
 	}
 	
 	public void addInnerClass(ClassBuilder classBuilder) {
-		innerClasses.add(classBuilder);
+		nestedClasses.add(classBuilder);
 	}
 	
 	public void prependField(FieldBuilder fieldBuilder) {
@@ -122,7 +138,7 @@ public class ClassBuilder {
 	}
 	
 	public void prependInnerClass(ClassBuilder classBuilder) {
-		innerClasses.addFirst(classBuilder);
+		nestedClasses.addFirst(classBuilder);
 	}
 	
 	@Override
@@ -211,15 +227,15 @@ public class ClassBuilder {
 		}
 		addNewline = addNewline || methods.size() > 0;
 		
-		// Build all inner classes
-		if (addNewline && innerClasses.size() > 0) {
+		// Build all nested classes
+		if (addNewline && nestedClasses.size() > 0) {
 			addNewline = false;
 			builder.newLine();
 		}
 		i = 0;
-		for (ClassBuilder innerClass : innerClasses) {
-			builder.append(innerClass);
-			if (i != innerClasses.size()-1) builder.newLine();
+		for (ClassBuilder nestedClass : nestedClasses) {
+			builder.append(nestedClass);
+			if (i != nestedClasses.size()-1) builder.newLine();
 			i++;
 		}
 		
