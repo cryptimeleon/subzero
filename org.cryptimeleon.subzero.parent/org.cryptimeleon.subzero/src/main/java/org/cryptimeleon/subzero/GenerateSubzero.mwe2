@@ -43,6 +43,9 @@ Workflow {
 			generator = {
 				generateXtendStub = true
 			}
+			scopeProvider = {
+				generateStub = false
+			}
 			junitSupport = {
 				junitVersion = "5"
 			}
