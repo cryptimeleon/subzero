@@ -11,15 +11,21 @@ import org.cryptimeleon.subzero.subzero.LocalVariable
 import java.util.Set
 import java.util.HashSet
 import java.util.Collection
+import org.cryptimeleon.subzero.builder.JsonBuilder
 
 class Environment {
 	
-	val String representation;	
+	var AugmentedModel augmentedModel;
+	var JsonBuilder builder;
+	var String jsonRepresentation;
 	
 	new(AugmentedModel augmentedModel) {
-		val StringBuilder builder = new StringBuilder();
-		builder.append("[");
-		
+		this.augmentedModel = augmentedModel;
+		this.builder = new JsonBuilder(true);
+		buildEnvironment();	
+	}
+	
+	def private buildEnvironment() {
 		val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
 		val Map<String, FunctionSignature> userFunctions = augmentedModel.getUserFunctionSignatures();
 		
@@ -41,33 +47,26 @@ class Environment {
 			variableGroups = augmentedModel.getGroups();
 		}
 
-		buildFunctions(builder, predefinedFunctions, userFunctionCalls, localVariableNodes, "built-in");
-		buildFunctions(builder, userFunctions, userFunctionCalls, localVariableNodes, "user");
-		buildVariables(builder, publicParameterNames, publicParameterTypes, variableGroups, variableNodes, "public parameter");
-		buildVariables(builder, witnessNames, witnessTypes, variableGroups, variableNodes, "witness");
+		buildFunctions(predefinedFunctions, userFunctionCalls, localVariableNodes, "built-in");
+		buildFunctions(userFunctions, userFunctionCalls, localVariableNodes, "user");
+		buildVariables(publicParameterNames, publicParameterTypes, variableGroups, variableNodes, "public parameter");
+		buildVariables(witnessNames, witnessTypes, variableGroups, variableNodes, "witness");
 		
 		if (augmentedModel.hasExplicitConstants()) {
 			val Set<String> declaredConstantNames = augmentedModel.getDeclaredConstantNames();
 			val Set<String> undeclaredConstantNames = new HashSet(constantNames);
 			undeclaredConstantNames.removeAll(declaredConstantNames);
-			buildVariables(builder, declaredConstantNames, constantTypes, variableGroups, variableNodes, "common input");
-			buildVariables(builder, undeclaredConstantNames, constantTypes, variableGroups, variableNodes, "unknown");
+			buildVariables(declaredConstantNames, constantTypes, variableGroups, variableNodes, "common input");
+			buildVariables(undeclaredConstantNames, constantTypes, variableGroups, variableNodes, "unknown");
 		} else {
-			buildVariables(builder, constantNames, constantTypes, variableGroups, variableNodes, "common input");
+			buildVariables(constantNames, constantTypes, variableGroups, variableNodes, "common input");
 		}
 
-		// Trim the trailing comma
-		if (builder.length() > 1) {
-			builder.setLength(builder.length() - 1);
-		}
-		
-		builder.append("]");
-		representation = builder.toString();
+		jsonRepresentation = builder.toString();
 	}
 	
 	
-	def void buildFunctions(
-		StringBuilder builder,
+	def private void buildFunctions(
 		Map<String, FunctionSignature> signatures,
 		Map<String, List<FunctionCall>> userFunctionCalls,
 		Map<String, Map<String, List<LocalVariable>>> localVariableNodes,
@@ -102,19 +101,20 @@ class Environment {
 				}
 			}
 			
-			builder.append("{");
-			builder.append('''"construct":"function",''');
-			builder.append('''"name":"«functionName»",''');
-			builder.append('''"returnType":"«returnType»",''');
-			builder.append('''"parameterNames":[«FOR String parameterName : parameterNames SEPARATOR ','»"«parameterName»"«ENDFOR»],''');
-			builder.append('''"parameterTypes":[«FOR String parameterType : formattedParameterTypes SEPARATOR ','»"«parameterType»"«ENDFOR»],''');
-			builder.append('''"origin":"«functionOrigin»"''');
-			builder.append("},");
+			val JsonBuilder objectBuilder = new JsonBuilder();
+			
+			objectBuilder.addStringProperty("construct", "function");
+			objectBuilder.addStringProperty("name", functionName);
+			objectBuilder.addStringProperty("returnType", returnType.toString());
+			objectBuilder.addArrayProperty("parameterNames", parameterNames);
+			objectBuilder.addArrayProperty("parameterTypes", formattedParameterTypes);
+			objectBuilder.addStringProperty("origin", functionOrigin);
+			
+			builder.addObjectValue(objectBuilder);
 		}
 	}
 	
-	def void buildVariables(
-		StringBuilder builder,
+	def private void buildVariables(
 		Collection<String> variableNames,
 		Map<String, Type> variableTypes,
 		Map<String, GroupType> variableGroups,
@@ -129,22 +129,25 @@ class Environment {
 				variableType = Type.UNKNOWN;
 			}
 			
-			builder.append("{");
-			builder.append('''"construct":"variable",''');
-			builder.append('''"name":"«variableName»",''');
+			
+			val JsonBuilder objectBuilder = new JsonBuilder();
+			
+			objectBuilder.addStringProperty("construct", "variable");
+			objectBuilder.addStringProperty("name", variableName);
+			objectBuilder.addStringProperty("type", variableType.toString());	
+			objectBuilder.addStringProperty("role", variableRole);
+			
 			if (variableGroups !== null && variableType !== Type.UNKNOWN && variableGroups.containsKey(variableName)) {
 				val GroupType variableGroup = variableGroups.get(variableName);
-				builder.append('''"group":"«variableGroup»",''');
+				objectBuilder.addStringProperty("group", variableGroup.toString());	
 			}
-			builder.append('''"type":"«variableType»",''');
-			builder.append('''"role":"«variableRole»"''');
-			builder.append("},");
+			
+			builder.addObjectValue(objectBuilder);
 		}
 	}
 	
-	
 	override String toString() {
-		return representation;
+		return jsonRepresentation;
 	}
 	
 }
