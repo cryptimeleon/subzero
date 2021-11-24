@@ -12,12 +12,11 @@ public class StackTrace {
 	public StackTrace(Throwable e) {
 		StringWriter stringWriter = new StringWriter();
 		e.printStackTrace(new PrintWriter(stringWriter));
-		trace = "{\"error\": \"" + stringWriter.toString()
-				.replace("\\", "\\\\")
-				.replace("\t", "\\t")
-				.replace("\n", "\\n")
-				.replace("\r", "\\r")
-				.replace("\"", "\\\"") + "\"}";
+		
+		JsonBuilder builder = new JsonBuilder();
+		builder.addStringProperty("error", stringWriter.toString());
+		
+		trace = builder.toString();
 	}
 	
 	@Override
