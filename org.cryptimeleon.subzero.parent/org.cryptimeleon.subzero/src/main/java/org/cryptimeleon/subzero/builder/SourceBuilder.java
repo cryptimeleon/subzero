@@ -13,17 +13,16 @@ public class SourceBuilder {
 	
 	private String packageName;
 	private ClassBuilder classBuilder;
-	private String imports;
+	private ImportBuilder importBuilder;
 	
 	public SourceBuilder(String packageName, ClassBuilder classBuilder) {
-		this.packageName = packageName;
-		this.classBuilder = classBuilder;
-		this.imports = "";
+		this(packageName, classBuilder, new ImportBuilder());
 	}
 	
-	// TODO: better way of handling imports
-	public void setImports(String imports) {
-		this.imports = imports;
+	public SourceBuilder(String packageName, ClassBuilder classBuilder, ImportBuilder importBuilder) {
+		this.packageName = packageName;
+		this.classBuilder = classBuilder;
+		this.importBuilder = importBuilder;
 	}
 	
 	@Override
@@ -36,7 +35,7 @@ public class SourceBuilder {
 		builder.newLine();
 		builder.newLine();
 		
-		builder.append(imports);
+		builder.append(importBuilder);
 		builder.newLine();
 		
 		builder.append(classBuilder);

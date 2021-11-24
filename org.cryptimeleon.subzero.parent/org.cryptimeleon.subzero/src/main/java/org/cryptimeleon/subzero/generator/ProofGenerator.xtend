@@ -3,8 +3,6 @@ package org.cryptimeleon.subzero.generator
 import java.util.Map
 import java.util.Set
 import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.model.BranchState
-import org.cryptimeleon.subzero.model.GroupType
 import org.cryptimeleon.subzero.model.ModelHelper
 import org.cryptimeleon.subzero.model.Type
 import org.cryptimeleon.subzero.subzero.Argument
@@ -35,8 +33,10 @@ import org.cryptimeleon.subzero.subzero.ConstantVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.cryptimeleon.subzero.subzero.Parameter
 import org.eclipse.emf.common.util.EList
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
-import java.util.HashSet
+import org.cryptimeleon.subzero.builder.ImportBuilder
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
 
 /**
  * Generates proof expressions
@@ -75,6 +75,10 @@ class ProofGenerator {
 	// with the passed arguments when generating a function call
 	Map<String, String> inlineFunctionsCode; 
 	
+	// Declared as an extension variable to allow classObject.use() to be
+	// written instead of importBuilder.use(classObject);
+	extension ImportBuilder importBuilder;
+	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 		subprotocolCount = 0;
@@ -83,11 +87,16 @@ class ProofGenerator {
 		functions = augmentedModel.getUserFunctionNodes();
 		inFunctionBody = false;
 		inlineFunctionsCode = new HashMap<String, String>();
+		importBuilder = new ImportBuilder();
 	}
 	
 	// If no node is provided, generate from the root
 	def String generate() {
 		return generateCode(augmentedModel.getModel());
+	}
+	
+	def ImportBuilder getImports() {
+		return importBuilder;
 	}
 	
 	// Generates the body expression of a user defined function
@@ -155,20 +164,20 @@ class ProofGenerator {
 			var String left = generateCode(leftNode);
 			var String right = generateCode(rightNode);	
 			val String method = (operator == OPERATOR_EQUAL) ? "isEqualTo" : "isNotEqualTo"
-			var String fragmentClass;
+			var Class<?> fragmentClass;
 			
 			var String extraParameter;
 			if (types.get(leftNode) === Type.EXPONENT) {
-				fragmentClass = "LinearExponentStatementFragment";
+				fragmentClass = LinearExponentStatementFragment;
 				extraParameter = ", zp";
 			} else {
-				fragmentClass = "LinearStatementFragment";
+				fragmentClass = LinearStatementFragment;
 				extraParameter = "";
 			}
 			
 			return '''
 				subprotocolSpecBuilder.addSubprotocol(«subprotocolParameter»,
-					new «fragmentClass»(«left».«method»(«right»)«extraParameter»)
+					new «fragmentClass.use()»(«left».«method»(«right»)«extraParameter»)
 				);
 			''';
 		}
@@ -275,7 +284,7 @@ class ProofGenerator {
 		
 		return '''
 			subprotocolSpecBuilder.addSubprotocol(«subprotocolParameter»,
-				new TwoSidedRangeProof(«memberCode», «lowerBoundCode», «upperBoundCode», pp.rangeProofpp)
+				new «TwoSidedRangeProof.use()»(«memberCode», «lowerBoundCode», «upperBoundCode», pp.rangeProofpp)
 			);
 		''';
 	}

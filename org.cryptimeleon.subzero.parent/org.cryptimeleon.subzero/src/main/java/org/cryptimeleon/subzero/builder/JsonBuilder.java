@@ -2,6 +2,9 @@ package org.cryptimeleon.subzero.builder;
 
 import java.util.List;
 
+/**
+ * Represents a serialized JSON object
+ */
 public class JsonBuilder {
 
 	private StringBuilder builder;

@@ -17,6 +17,9 @@ import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.model.Type
 
 import static org.cryptimeleon.subzero.builder.Modifier.*
+import org.cryptimeleon.subzero.builder.ImportBuilder
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof
+import org.cryptimeleon.math.serialization.ObjectRepresentation
 
 /**
  * Generates the public parameters class
@@ -29,26 +32,30 @@ class PublicParametersClassGenerator {
 	boolean hasPairing;
 	boolean hasOrDescendantOfAnd;
 	
+	// Declared as an extension variable to allow classObject.use() to be
+	// written instead of importBuilder.use(classObject);
+	extension ImportBuilder importBuilder;
+	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		this.protocolName = augmentedModel.getProtocolName();
-		this.hasRangeProof = augmentedModel.hasRangeProof();
-		this.hasPairing = augmentedModel.hasPairing();
-		this.hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
+		protocolName = augmentedModel.getProtocolName();
+		hasRangeProof = augmentedModel.hasRangeProof();
+		hasPairing = augmentedModel.hasPairing();
+		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
+		importBuilder = new ImportBuilder();
 	}
 	
 	def SourceBuilder generate() {
 		val String packageName = augmentedModel.getPackageName();
 		val ClassBuilder publicParametersClass = buildClass();
-		val SourceBuilder publicParametersSource = new SourceBuilder(packageName, publicParametersClass);
-		publicParametersSource.setImports(buildImports());
+		val SourceBuilder publicParametersSource = new SourceBuilder(packageName, publicParametersClass, importBuilder);
 	
 		return publicParametersSource;
 	}
 
-	def buildClass() {
+	def private buildClass() {
 		val String className = GenerationHelper.createPublicParametersClassName(protocolName);
-		val ClassBuilder publicParametersClass = new ClassBuilder(PUBLIC, className, StandaloneRepresentable);
+		val ClassBuilder publicParametersClass = new ClassBuilder(PUBLIC, className).implement(StandaloneRepresentable.use());
 		
 		var Class<?> groupClass;
 		var String groupName;
@@ -67,12 +74,12 @@ class PublicParametersClassGenerator {
 		publicParametersClass.addField(groupField);
 		
 		if (hasRangeProof) {
-			val FieldBuilder ppField = new FieldBuilder(PUBLIC, FINAL, SetMembershipPublicParameters, "rangeProofpp");
+			val FieldBuilder ppField = new FieldBuilder(PUBLIC, FINAL, SetMembershipPublicParameters.use(), "rangeProofpp");
 			publicParametersClass.addField(ppField);
 		}
 		
 		if (hasOrDescendantOfAnd) {
-			val FieldBuilder commitmentField = new FieldBuilder(PUBLIC, FINAL, GroupElementVector, "crossOrCommitmentBases");
+			val FieldBuilder commitmentField = new FieldBuilder(PUBLIC, FINAL, GroupElementVector.use(), "crossOrCommitmentBases");
 			publicParametersClass.addField(commitmentField);
 		}
 		
@@ -89,14 +96,14 @@ class PublicParametersClassGenerator {
 	}
 	
 	
-	def ConstructorBuilder buildConstructor(Class<?> groupClass, String groupName, String groupUsed) {
+	def private ConstructorBuilder buildConstructor(Class<?> groupClass, String groupName, String groupUsed) {
 		val ConstructorBuilder constructor = new ConstructorBuilder(PUBLIC);
-		constructor.addParameter(Representation, "repr");
+		constructor.addParameter(Representation.use(), "repr");
 		
 		val String body = '''
-			«groupName» = («groupClass.getSimpleName()») repr.obj().get("«groupName»").repr().recreateRepresentable();
+			«groupName» = («groupClass.use()») repr.obj().get("«groupName»").repr().recreateRepresentable();
 			«IF hasRangeProof»
-			rangeProofpp = new SetMembershipPublicParameters(«groupName», repr.obj().get("setMembershipPp"));
+			rangeProofpp = new «SetMembershipPublicParameters.use()»(«groupName», repr.obj().get("setMembershipPp"));
 			«ENDIF»
 			«IF hasOrDescendantOfAnd»
 			crossOrCommitmentBases = «groupUsed».restoreVector(repr.obj().get("commitmentBases"));
@@ -107,10 +114,10 @@ class PublicParametersClassGenerator {
 		return constructor;
 	}
 	
-	def MethodBuilder buildGenerateNewParametersMethod(String className, Class<?> groupClass, String groupName, String groupUsed) {
+	def private MethodBuilder buildGenerateNewParametersMethod(String className, Class<?> groupClass, String groupName, String groupUsed) {
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 		val MethodBuilder method = new MethodBuilder(PUBLIC, STATIC, className, "generateNewParameters");
-		method.addParameter(groupClass, groupName);
+		method.addParameter(groupClass.use(), groupName);
 		
 		var int numberOfZnWitnesses = 0;
 		for (Entry<String, Type> entry : witnessTypes.entrySet()) {
@@ -119,11 +126,11 @@ class PublicParametersClassGenerator {
 		
 		val String body = '''
 			«IF hasRangeProof»
-			SetMembershipPublicParameters rangeProof1pp = TwoSidedRangeProof.generatePublicParameters(«groupName», 100);
+			«SetMembershipPublicParameters.use()» rangeProof1pp = «TwoSidedRangeProof.use()».generatePublicParameters(«groupName», 100);
 			«ENDIF»
 			«IF hasOrDescendantOfAnd»
 			int numberOfZnWitnesses = «numberOfZnWitnesses»;
-			GroupElementVector crossOrCommitmentBases = «groupUsed».getUniformlyRandomNonNeutrals(numberOfZnWitnesses + 1);
+			«GroupElementVector.use()» crossOrCommitmentBases = «groupUsed».getUniformlyRandomNonNeutrals(numberOfZnWitnesses + 1);
 			«ENDIF»
 			return new «className»(«groupName»«IF hasRangeProof», rangeProof1pp«ENDIF»«IF hasOrDescendantOfAnd», crossOrCommitmentBases«ENDIF»);
 		''';
@@ -132,12 +139,12 @@ class PublicParametersClassGenerator {
 		return method;
 	}
 	
-	def MethodBuilder buildGetRepresentationMethod(Class<?> groupClass, String groupName) {
-		val MethodBuilder method = new MethodBuilder(PUBLIC, Representation, "getRepresentation");
+	def private MethodBuilder buildGetRepresentationMethod(Class<?> groupClass, String groupName) {
+		val MethodBuilder method = new MethodBuilder(PUBLIC, Representation.use(), "getRepresentation");
 		method.setOverride();
 		
 		val String body = '''
-			ObjectRepresentation repr = new ObjectRepresentation();
+			«ObjectRepresentation.use()» repr = new ObjectRepresentation();
 			repr.put("«groupName»", «groupName».getRepresentation());
 			«IF hasRangeProof»
 			repr.put("rangeProofpp", rangeProofpp.getRepresentation());
@@ -152,26 +159,4 @@ class PublicParametersClassGenerator {
 		return method 
 	}
 	
-	def String buildImports() {
-		val String imports = '''
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.SetMembershipPublicParameters;
-			import org.cryptimeleon.math.serialization.ObjectRepresentation;
-			import org.cryptimeleon.math.serialization.Representation;
-			import org.cryptimeleon.math.serialization.StandaloneRepresentable;
-			«IF hasRangeProof»
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
-			«ENDIF»
-			«IF hasRangeProof || hasPairing»
-			import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
-			import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup;
-			«ELSE»
-			import org.cryptimeleon.math.structures.groups.Group;
-			«ENDIF»
-			«IF hasOrDescendantOfAnd»
-			import org.cryptimeleon.math.structures.groups.cartesian.GroupElementVector;
-			«ENDIF»
-		''';
-		
-		return GenerationHelper.organizeImports(imports);
-	}
 }

@@ -1,6 +1,5 @@
 package org.cryptimeleon.subzero.generator
 
-import java.math.BigInteger
 import java.util.ArrayList
 import java.util.Deque
 import java.util.LinkedList
@@ -11,8 +10,7 @@ import java.util.stream.Collectors
 import org.cryptimeleon.craco.protocols.CommonInput
 import org.cryptimeleon.craco.protocols.SecretInput
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpecBuilder
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder
@@ -22,7 +20,6 @@ import org.cryptimeleon.math.structures.groups.GroupElement
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap
 import org.cryptimeleon.math.structures.rings.zn.Zn.ZnElement
 import org.cryptimeleon.math.structures.rings.zn.Zp
-import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement
 import org.cryptimeleon.subzero.builder.ClassBuilder
 import org.cryptimeleon.subzero.builder.CodeBuilder
 import org.cryptimeleon.subzero.builder.ConstructorBuilder
@@ -50,6 +47,13 @@ import org.cryptimeleon.subzero.subzero.Brackets
 import org.cryptimeleon.craco.protocols.arguments.sigma.ZnChallengeSpace
 import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge
 import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace
+import org.cryptimeleon.subzero.builder.ImportBuilder
+import org.cryptimeleon.math.structures.rings.cartesian.RingElementVector
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
+import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector
+import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpec
+import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpecBuilder
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -57,10 +61,13 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace
 class ProtocolClassGenerator extends ClassGenerator {
 	
 	AugmentedModel augmentedModel;
-	boolean hasRangeProof;
 	boolean hasPairing;
 	boolean hasOrProof;
 	boolean hasOrDescendantOfAnd;
+	
+	// Declared as an extension variable to allow classObject.use() to be
+	// written instead of importBuilder.use(classObject);
+	extension ImportBuilder importBuilder;
 	
 	// ProtocolTree is a protected inner class of ProofOfPartialKnowledge so it cannot be imported here
 	// Uses a placeholder class instead for code generation purposes
@@ -68,21 +75,28 @@ class ProtocolClassGenerator extends ClassGenerator {
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		this.hasRangeProof = augmentedModel.hasRangeProof();
-		this.hasPairing = augmentedModel.hasPairing();
-		this.hasOrProof = augmentedModel.hasOrProof();
-		this.hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
+		hasPairing = augmentedModel.hasPairing();
+		hasOrProof = augmentedModel.hasOrProof();
+		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
+		importBuilder = new ImportBuilder();
 	}
 	
 	override SourceBuilder generate() {
-		val ClassBuilder protocolClass = buildClass();
+		val ProofGenerator proofGenerator = new ProofGenerator(augmentedModel);
+		if (hasOrProof) {
+			ProverSpec.prioritize();
+			ProverSpecBuilder.prioritize();	
+		}
+		val ClassBuilder protocolClass = buildClass(proofGenerator);
 		val String packageName = augmentedModel.getPackageName();
-		val SourceBuilder protocolSource = new SourceBuilder(packageName, protocolClass);
-		protocolSource.setImports(buildProtocolImports());
+		
+		importBuilder.merge(proofGenerator.getImports());
+		val SourceBuilder protocolSource = new SourceBuilder(packageName, protocolClass, importBuilder);
+
 		return protocolSource;
 	}
 	
-	def ClassBuilder buildClass() {
+	def private ClassBuilder buildClass(ProofGenerator proofGenerator) {
 		val String protocolClassName = augmentedModel.getProtocolName();
 		val String commonInputClassName = GenerationHelper.createCommonInputClassName(protocolClassName);
 		val String secretInputClassName = GenerationHelper.createSecretInputClassName(protocolClassName);
@@ -108,11 +122,9 @@ class ProtocolClassGenerator extends ClassGenerator {
 		val Class<?> groupClass = augmentedModel.getGroupClass();
 		val groupName = GenerationHelper.convertClassToVariableName(groupClass);
 		
-		val ProofGenerator proofGenerator = new ProofGenerator(augmentedModel);
-		
 		var ClassBuilder protocolClass;
 		if (hasOrProof) {
-			protocolClass = new ClassBuilder(PUBLIC, protocolClassName, ProofOfPartialKnowledge);
+			protocolClass = new ClassBuilder(PUBLIC, protocolClassName).extend(ProofOfPartialKnowledge.use());
 		} else {
 			protocolClass = buildSubprotocolClass(
 				protocolClassName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, proofGenerator, rootNode
@@ -125,20 +137,22 @@ class ProtocolClassGenerator extends ClassGenerator {
 			protocolClass.addField(ppClassField);
 		}
 		
-		val FieldBuilder groupField = new FieldBuilder(PROTECTED, groupClass, groupName);
+		val FieldBuilder groupField = new FieldBuilder(PROTECTED, groupClass.use(), groupName);
 		protocolClass.addField(groupField);
 		
-		val FieldBuilder zpField = new FieldBuilder(PROTECTED, Zp, "zp");
+		val FieldBuilder zpField = new FieldBuilder(PROTECTED, Zp.use(), "zp");
 		protocolClass.addField(zpField);
 		
 		if (hasPairing) {
-			val FieldBuilder eField = new FieldBuilder(PROTECTED, BilinearMap, "e");
+			val FieldBuilder eField = new FieldBuilder(PROTECTED, BilinearMap.use(), "e");
 			protocolClass.addField(eField);
 		}
 		
 		for (String publicParameterName : sortedPublicParameterNames) {
+			val Class<?> publicParameterTypeClass = publicParameterTypes.get(publicParameterName).getTypeClass();
+			
 			val FieldBuilder ppField = new FieldBuilder(
-				PROTECTED, FINAL, publicParameterTypes.get(publicParameterName).getTypeClass(),
+				PROTECTED, FINAL, publicParameterTypeClass.use(),
 				GenerationHelper.convertToJavaName(publicParameterName)
 			);
 			protocolClass.addField(ppField);
@@ -146,11 +160,12 @@ class ProtocolClassGenerator extends ClassGenerator {
 		
 		// Build constructor
 		val ConstructorBuilder constructor = new ConstructorBuilder(PUBLIC);
-		constructor.addParameter(groupClass, groupName);
+		constructor.addParameter(groupClass.use(), groupName);
 		if (requiresPublicParameterClass) constructor.addParameter(publicParametersClassName, "pp");
 		for (String publicParameterName : sortedPublicParameterNames) {
 			val String javaPublicParameterName = GenerationHelper.convertToJavaName(publicParameterName);
-			constructor.addParameter(publicParameterTypes.get(publicParameterName).getTypeClass(), javaPublicParameterName);
+			val Class<?> publicParameterTypeClass = publicParameterTypes.get(publicParameterName).getTypeClass();
+			constructor.addParameter(publicParameterTypeClass.use(), javaPublicParameterName);
 		}
 		
 		val String constructorBody = '''
@@ -233,7 +248,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return protocolClass;
 	}
 	
-	def ClassBuilder buildSubprotocolClass(
+	def private ClassBuilder buildSubprotocolClass(
 		String subprotocolClassName,
 		String commonInputClassName,
 		String secretInputClassName,
@@ -243,7 +258,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		ProofGenerator proofGenerator,
 		EObject protocolRoot
 	) {
-		val ClassBuilder subprotocolClass = new ClassBuilder(PUBLIC, subprotocolClassName, DelegateProtocol);
+		val ClassBuilder subprotocolClass = new ClassBuilder(PUBLIC, subprotocolClassName).extend(DelegateProtocol.use());
 		
 		// Build proof expression		
 		val String proof = proofGenerator.generate(protocolRoot);
@@ -264,13 +279,13 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return subprotocolClass;
 	}
 	
-	def MethodBuilder buildProvideProverSpecMethod(String secretInputClassName, List<String> subprotocolNames, List<String> witnessNames, Map<String, Type> witnessTypes) {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, ProverSpec, "provideProverSpec");
+	def private MethodBuilder buildProvideProverSpecMethod(String secretInputClassName, List<String> subprotocolNames, List<String> witnessNames, Map<String, Type> witnessTypes) {
+		val MethodBuilder method = new MethodBuilder(PROTECTED, ProverSpec.use(), "provideProverSpec");
 		method.setOverride();
 		
-		method.addParameter(CommonInput, "commonInput");
-		method.addParameter(SecretInput, "secretInput");
-		method.addParameter(ProverSpecBuilder, "builder");
+		method.addParameter(CommonInput.use(), "commonInput");
+		method.addParameter(SecretInput.use(), "secretInput");
+		method.addParameter(ProverSpecBuilder.use(), "builder");
 		
 		val List<String> exponentWitnessNames = witnessNames.stream()
 			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
@@ -289,8 +304,8 @@ class ProtocolClassGenerator extends ClassGenerator {
 			
 			«IF hasOrDescendantOfAnd»
 			// Commit to all Zn variables
-			ZnElement crossOrCommitmentRandomness = zp.getUniformlyRandomElement();
-			GroupElement crossOrCommitment = pp.crossOrCommitmentBases.innerProduct(RingElementVector.of(«exponentWitnessArguments»crossOrCommitmentRandomness));
+			«ZnElement.use()» crossOrCommitmentRandomness = zp.getUniformlyRandomElement();
+			«GroupElement.use()» crossOrCommitment = pp.crossOrCommitmentBases.innerProduct(«RingElementVector.use()».of(«exponentWitnessArguments»crossOrCommitmentRandomness));
 			
 			// Send this commitment
 			builder.setSendFirstValue(new SendFirstValue.AlgebraicSendFirstValue(crossOrCommitment));
@@ -315,11 +330,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return method;
 	}
 	
-	def MethodBuilder buildProvideSubprotocolSpecMethod(String commonInputClassName, Class<?> groupClass, List<String> witnessNames, Map<String, Type> witnessTypes, String proof) {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, SubprotocolSpec, "provideSubprotocolSpec");
+	def private MethodBuilder buildProvideSubprotocolSpecMethod(String commonInputClassName, Class<?> groupClass, List<String> witnessNames, Map<String, Type> witnessTypes, String proof) {
+		val MethodBuilder method = new MethodBuilder(PROTECTED, SubprotocolSpec.use(), "provideSubprotocolSpec");
 		method.setOverride();
-		method.addParameter(CommonInput, "commonInput");
-		method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
+		method.addParameter(CommonInput.use(), "commonInput");
+		method.addParameter(SubprotocolSpecBuilder.use(), "subprotocolSpecBuilder");
 
 		val String groupUsed = (groupClass == Group) ? "group" : "bilinearGroup.getG1()";
 		
@@ -343,9 +358,9 @@ class ProtocolClassGenerator extends ClassGenerator {
 			//Add variables (witnesses)
 			«FOR String witnessName : witnessNames»
 			«IF witnessTypes.get(witnessName) == Type.EXPONENT»
-			SchnorrZnVariable «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
+			«SchnorrZnVariable.use()» «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
 			«ELSE»
-			SchnorrGroupElemVariable «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
+			«SchnorrGroupElemVariable.use()» «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
 			«ENDIF»
 			«ENDFOR»
 			
@@ -354,10 +369,10 @@ class ProtocolClassGenerator extends ClassGenerator {
 			
 			«IF hasOrDescendantOfAnd»
 			// Add proof that the same values are used in this subprotocol as in the others
-			SchnorrZnVariable crossOrCommitmentRandomness = subprotocolSpecBuilder.addZnVariable("crossOrCommitmentRandomness", zp);
+			«SchnorrZnVariable.use()» crossOrCommitmentRandomness = subprotocolSpecBuilder.addZnVariable("crossOrCommitmentRandomness", zp);
 			subprotocolSpecBuilder.addSubprotocol("orProofConsistency",
-				new LinearStatementFragment(
-					pp.crossOrCommitmentBases.expr().innerProduct(ExponentExpressionVector.of(«exponentWitnessArguments»crossOrCommitmentRandomness))
+				new «LinearStatementFragment.use()»(
+					pp.crossOrCommitmentBases.expr().innerProduct(«ExponentExpressionVector.use()».of(«exponentWitnessArguments»crossOrCommitmentRandomness))
 						.isEqualTo(((SubprotocolCommonInput) commonInput).crossOrCommitment)
 				)
 			);
@@ -370,23 +385,13 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return method;
 	}
 	
-	def MethodBuilder buildProvideProverSpecWithNoSendFirstMethod(String secretInputClassName, List<String> witnessNames) {
+	def private MethodBuilder buildProvideProverSpecWithNoSendFirstMethod(String secretInputClassName, List<String> witnessNames) {
 		var MethodBuilder method;
-		if (hasOrProof) {
-			method = new MethodBuilder(PROTECTED, "SendThenDelegateFragment.ProverSpec", "provideProverSpecWithNoSendFirst");
-		} else {
-			method = new MethodBuilder(PROTECTED, ProverSpec, "provideProverSpecWithNoSendFirst");
-		}
-		
+		method = new MethodBuilder(PROTECTED, SendThenDelegateFragment.ProverSpec.use(), "provideProverSpecWithNoSendFirst");		
 		method.setOverride();
 		method.addParameter(CommonInput, "commonInput");
 		method.addParameter(SecretInput, "secretInput");
-		if (hasOrProof) {
-			method.addParameter("SendThenDelegateFragment.ProverSpecBuilder", "proverSpecBuilder");
-		} else {
-			method.addParameter(ProverSpecBuilder, "proverSpecBuilder");
-		}
-		
+		method.addParameter(SendThenDelegateFragment.ProverSpecBuilder.use(), "proverSpecBuilder");
 		
 		val String methodBody = '''
 			«IF hasOrDescendantOfAnd»
@@ -410,35 +415,26 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return method;
 	}
 	
-	// TODO: not needed
-	def MethodBuilder buildGetChallengeSpaceSizeMethod() {
-		val MethodBuilder method = new MethodBuilder(PUBLIC, BigInteger, "getChallengeSpaceSize");
-		method.setOverride();
-		
-		method.addStatement("return zp.size();");
-		
-		return method;
-	}
-	
-	def MethodBuilder buildGetChallengeSpaceMethod(boolean znChallengeSpace) {
+	def private MethodBuilder buildGetChallengeSpaceMethod(boolean znChallengeSpace) {
 		val Class<?> returnType = znChallengeSpace ? ZnChallengeSpace : ChallengeSpace;
-		val MethodBuilder method = new MethodBuilder(PUBLIC, returnType, "getChallengeSpace");
+		val MethodBuilder method = new MethodBuilder(PUBLIC, returnType.use(), "getChallengeSpace");
 		method.setOverride();
 		
-		method.addParameter(CommonInput, "commonInput");
+		method.addParameter(CommonInput.use(), "commonInput");
 		
-		method.addStatement("return new ZnChallengeSpace(zp);");
+		method.addStatement('''return new «ZnChallengeSpace.use()»(zp);''');
 		
 		return method;
 	}
 	
-	def ClassBuilder buildCommonInputClass(String commonInputClassName, Set<String> publicParameterNames, List<String> variableNames, Map<String, Type> variableTypes) {
-		val ClassBuilder commonInputClass = new ClassBuilder(PUBLIC, STATIC, commonInputClassName, CommonInput);
+	def private ClassBuilder buildCommonInputClass(String commonInputClassName, Set<String> publicParameterNames, List<String> variableNames, Map<String, Type> variableTypes) {
+		val ClassBuilder commonInputClass = new ClassBuilder(PUBLIC, STATIC, commonInputClassName).implement(CommonInput.use());
 		commonInputClass.addBasicConstructor(PUBLIC);
 		
 		for (String variableName : variableNames) {
 			val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
-			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypes.get(variableName).getTypeClass(), javaVariableName);
+			val variableTypeClass = variableTypes.get(variableName).getTypeClass();
+			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypeClass.use(), javaVariableName);
 			commonInputClass.addField(variableField);
 		}
 
@@ -446,11 +442,12 @@ class ProtocolClassGenerator extends ClassGenerator {
 	}
 	
 	def ClassBuilder buildSecretInputClass(String secretInputClassName, List<String> witnessNames, Map<String, Type> witnessTypes) {
-		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName, SecretInput);
+		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName).implement(SecretInput.use());
 		
 		for (String witnessName : witnessNames) {
 			val String javaWitnessName = GenerationHelper.convertToJavaName(witnessName);
-			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, witnessTypes.get(witnessName).getTypeClass(), javaWitnessName);
+			val Class<?> witnessTypeClass = witnessTypes.get(witnessName).getTypeClass();
+			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, witnessTypeClass.use(), javaWitnessName);
 			secretInputClass.addField(field);
 		}
 		
@@ -459,11 +456,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return secretInputClass;
 	}
 	
-	def ClassBuilder buildSubprotocolCommonInputClass(String commonInputClassName) {
-		val ClassBuilder subprotocolCommonInputClass = new ClassBuilder(PRIVATE, STATIC, "SubprotocolCommonInput", CommonInput);
+	def private ClassBuilder buildSubprotocolCommonInputClass(String commonInputClassName) {
+		val ClassBuilder subprotocolCommonInputClass = new ClassBuilder(PRIVATE, STATIC, "SubprotocolCommonInput").implement(CommonInput.use());
 		
 		val FieldBuilder commonInputField = new FieldBuilder(PUBLIC, FINAL, commonInputClassName, "commonInput");
-		val FieldBuilder crossOrCommitmentField = new FieldBuilder(PUBLIC, FINAL, GroupElement, "crossOrCommitment");
+		val FieldBuilder crossOrCommitmentField = new FieldBuilder(PUBLIC, FINAL, GroupElement.use(), "crossOrCommitment");
 		
 		subprotocolCommonInputClass.addField(commonInputField);
 		subprotocolCommonInputClass.addField(crossOrCommitmentField);
@@ -473,11 +470,11 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return subprotocolCommonInputClass;
 	}
 	
-	def ClassBuilder buildSubprotocolSecretInputClass(String secretInputClassName) {
-		val ClassBuilder subprotocolSecretInputClass = new ClassBuilder(PRIVATE, STATIC, "SubprotocolSecretInput", SecretInput);
+	def private ClassBuilder buildSubprotocolSecretInputClass(String secretInputClassName) {
+		val ClassBuilder subprotocolSecretInputClass = new ClassBuilder(PRIVATE, STATIC, "SubprotocolSecretInput").implement(SecretInput.use());
 		
 		val FieldBuilder secretInputField = new FieldBuilder(PUBLIC, FINAL, secretInputClassName, "secretInput");
-		val FieldBuilder randomnessField = new FieldBuilder(PUBLIC, FINAL, ZnElement, "crossOrCommitmentRandomness");
+		val FieldBuilder randomnessField = new FieldBuilder(PUBLIC, FINAL, ZnElement.use(), "crossOrCommitmentRandomness");
 		
 		subprotocolSecretInputClass.addField(secretInputField);
 		subprotocolSecretInputClass.addField(randomnessField);
@@ -487,111 +484,60 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return subprotocolSecretInputClass;
 	}
 	
-	def String buildProtocolImports() {
-		val String imports = '''
-			import org.cryptimeleon.craco.protocols.CommonInput;
-			import org.cryptimeleon.craco.protocols.SecretInput;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.ZnChallengeSpace;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable;
-			import org.cryptimeleon.math.serialization.Representation;
-			import org.cryptimeleon.math.structures.groups.Group;
-			import org.cryptimeleon.math.structures.groups.GroupElement;
-			import org.cryptimeleon.math.structures.rings.zn.Zn.ZnElement;
-			import org.cryptimeleon.math.structures.rings.zn.Zp;
-			import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment;
-			«IF hasRangeProof»
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
-			«ENDIF»
-			«IF hasPairing»
-			import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap;
-			«ENDIF»
-			«IF hasRangeProof || hasPairing»
-			import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
-			«ENDIF»
-			«IF hasOrProof»
-			import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment;
-			import org.cryptimeleon.math.expressions.bool.BooleanExpression;
-			«ELSE»
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpec;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.ProverSpecBuilder;
-			«ENDIF»
-			«IF hasOrDescendantOfAnd»
-			import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector;
-			import org.cryptimeleon.math.structures.rings.cartesian.RingElementVector;
-			«ENDIF»
-			«IF !augmentedModel.getModel().getFunctions().isEmpty()»
-			import org.cryptimeleon.math.expressions.exponent.ExponentExpr;
-			import org.cryptimeleon.math.expressions.group.GroupElementExpression;
-			«ENDIF»
-		''';
-		
-		return GenerationHelper.organizeImports(imports); 
-	}
-	
-	def MethodBuilder buildRestoreSendFirstValueMethod(Class<?> groupClass) {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, SendFirstValue, "restoreSendFirstValue");
+	def private MethodBuilder buildRestoreSendFirstValueMethod(Class<?> groupClass) {
+		val MethodBuilder method = new MethodBuilder(PROTECTED, SendFirstValue.use(), "restoreSendFirstValue");
 		method.setOverride();
 		
-		method.addParameter(CommonInput, "commonInput");
-		method.addParameter(Representation, "repr");
+		method.addParameter(CommonInput.use(), "commonInput");
+		method.addParameter(Representation.use(), "repr");
 		
 		val String groupUsed = (groupClass == Group) ? "group" : "bilinearGroup.getG1()";
 		
 		if (hasOrDescendantOfAnd) {
 			method.addStatement('''return new SendFirstValue.AlgebraicSendFirstValue(repr, «groupUsed»);''');
 		} else {
-			method.addStatement("return SendFirstValue.EMPTY;");
+			method.addStatement('''return «SendFirstValue.use()».EMPTY;''');
 		}
 
 		return method; 
 	}
 	
-	def MethodBuilder buildSimulateSendFirstValueMethod(Class<?> groupClass) {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, SendFirstValue, "simulateSendFirstValue");
+	def private MethodBuilder buildSimulateSendFirstValueMethod(Class<?> groupClass) {
+		val MethodBuilder method = new MethodBuilder(PROTECTED, SendFirstValue.use(), "simulateSendFirstValue");
 		method.setOverride();
 		
-		method.addParameter(CommonInput, "commonInput");
+		method.addParameter(CommonInput.use(), "commonInput");
 		
 		val String groupUsed = (groupClass == Group) ? "group" : "bilinearGroup.getG1()";
 		
 		if (hasOrDescendantOfAnd) {
 			method.addStatement('''return new SendFirstValue.AlgebraicSendFirstValue(«groupUsed».getUniformlyRandomElement());''');
 		} else {
-			method.addStatement("return SendFirstValue.EMPTY;");
+			method.addStatement('''return «SendFirstValue.use()».EMPTY;''');
 		}
 		
 		
 		return method;
 	}
 	
-	def MethodBuilder buildProvideAdditionalCheckMethod() {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, BooleanExpression, "provideAdditionalCheck");
+	def private MethodBuilder buildProvideAdditionalCheckMethod() {
+		val MethodBuilder method = new MethodBuilder(PROTECTED, BooleanExpression.use(), "provideAdditionalCheck");
 		method.setOverride();
 		
-		method.addParameter(CommonInput, "commonInput");
-		method.addParameter(SendFirstValue, "sendFirstValue");
+		method.addParameter(CommonInput.use(), "commonInput");
+		method.addParameter(SendFirstValue.use(), "sendFirstValue");
 		
-		method.addStatement("return BooleanExpression.TRUE;");
+		method.addStatement('''return «BooleanExpression.use()».TRUE;''');
 		
 		return method;
 	}
 	
-	def MethodBuilder buildProvideProtocolTreeMethod(String commonInputClassName, String protocolTree) {
-		val MethodBuilder method = new MethodBuilder(PROTECTED, ProtocolTree, "provideProtocolTree");
+	def private MethodBuilder buildProvideProtocolTreeMethod(String commonInputClassName, String protocolTree) {
+		val MethodBuilder method = new MethodBuilder(PROTECTED, ProtocolTree, "provideProtocolTree"); // ProtocolTree does not need to be imported
 		method.setOverride();
 		
-		method.addParameter(CommonInput, "commonInput");
-		method.addParameter(SendFirstValue, "sendFirstValue");
+		method.addParameter(CommonInput.use(), "commonInput");
+		method.addParameter(SendFirstValue.use(), "sendFirstValue");
 		
 		if (hasOrDescendantOfAnd) {
 			method.addStatement('''SubprotocolCommonInput subprotocolCommonInput = new SubprotocolCommonInput((«commonInputClassName») commonInput, ((SendFirstValue.AlgebraicSendFirstValue) sendFirstValue).getGroupElement(0));''');
@@ -601,12 +547,12 @@ class ProtocolClassGenerator extends ClassGenerator {
 		return method;
 	}
 	
-	def void createProtocolTree(EObject root, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
+	def private void createProtocolTree(EObject root, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
 		createProtocolTreeHelper(root, builder, subtreeRootNodes, subprotocolNames);
 	}
 	
 	// Returns true if the current subtree contains a disjunction
-	def void createProtocolTreeHelper(EObject node, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
+	def private void createProtocolTreeHelper(EObject node, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
 	
 		if (node instanceof Disjunction) {
 			builder.append("or");
@@ -669,7 +615,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 		}
 	}
 	
-	def String createProtocolLeaf(EObject node, CodeBuilder builder, int subprotocolCount) {
+	def private String createProtocolLeaf(EObject node, CodeBuilder builder, int subprotocolCount) {
 		var String subprotocolName = null;
 		
 		if (node instanceof Comparison) {
@@ -690,7 +636,7 @@ class ProtocolClassGenerator extends ClassGenerator {
 	}
 	
 	// Generates the Java equivalent of all user defined functions
-	def List<MethodBuilder> buildUserFunctions(
+	def private List<MethodBuilder> buildUserFunctions(
 		Map<EObject, Type> nodeTypes,
 		Map<String, Type> witnessTypes,
 		Map<String, List<FunctionCall>> userFunctionCalls,

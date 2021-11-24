@@ -14,6 +14,17 @@ import org.cryptimeleon.subzero.model.Type
 
 import static org.cryptimeleon.subzero.builder.Modifier.*
 import org.cryptimeleon.math.structures.groups.Group
+import org.cryptimeleon.subzero.builder.ImportBuilder
+import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup
+import org.cryptimeleon.math.structures.groups.elliptic.nopairing.Secp256k1
+import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement
+import org.cryptimeleon.math.structures.groups.GroupElement
+import org.cryptimeleon.math.structures.rings.zn.Zp
+import org.cryptimeleon.craco.protocols.CommonInput
+import org.cryptimeleon.craco.protocols.SecretInput
+import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolVerifierInstance
+import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolProverInstance
+
 
 /**
  * Generates the LibraryTest class that will run the protocol
@@ -26,25 +37,33 @@ class TestClassGenerator extends ClassGenerator {
 	boolean hasOrDescendantOfAnd;
 	Class<?> groupClass;
 	
+	// Declared as an extension variable to allow classObject.use() to be
+	// written instead of importBuilder.use(classObject);
+	extension ImportBuilder importBuilder;
+	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		this.hasRangeProof = augmentedModel.hasRangeProof();
-		this.hasPairing = augmentedModel.hasPairing();
-		this.hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
-		this.groupClass = augmentedModel.getGroupClass();
+		hasRangeProof = augmentedModel.hasRangeProof();
+		hasPairing = augmentedModel.hasPairing();
+		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
+		groupClass = augmentedModel.getGroupClass();
+		importBuilder = new ImportBuilder();
 	}
 	
 	override SourceBuilder generate() {
 		val String packageName = augmentedModel.getPackageName();
-		
 		val ClassBuilder testClass = buildClass();
-		val SourceBuilder testSource = new SourceBuilder(packageName, testClass);
-		testSource.setImports(buildImports());
+		
+		// These classes cannot be imported in this class, so add them as a manually (by string) instead
+		"org.junit.Test".use();
+		"org.junit.Assert.assertTrue".useStatic();
+		
+		val SourceBuilder testSource = new SourceBuilder(packageName, testClass, importBuilder);
 
 		return testSource;
 	}
 	
-	private def ClassBuilder buildClass() {
+	def private ClassBuilder buildClass() {
 		// Fetch all model info needed for generation
 		val String protocolClassName = augmentedModel.getProtocolName();
 		val String commonInputClassName = GenerationHelper.createCommonInputClassName(protocolClassName);
@@ -69,16 +88,15 @@ class TestClassGenerator extends ClassGenerator {
 		val MethodBuilder testMethod = new MethodBuilder(PUBLIC, void, "protocolTest");		
 		testMethod.setTest();
 		
-		val groupClassName = groupClass.getSimpleName();
 		val groupVariableName = GenerationHelper.convertClassToVariableName(groupClass);
 		var String groupInstance;
 		var String defaultGroup;
 		
 		if (groupClass == BilinearGroup) {
-			groupInstance = "new BarretoNaehrigBilinearGroup(80)";
+			groupInstance = '''new «BarretoNaehrigBilinearGroup.use()»(80)''';
 			defaultGroup = "groupG1";
 		} else {
-			groupInstance = "new Secp256k1()";
+			groupInstance = '''new «Secp256k1.use()»()''';
 			defaultGroup = groupVariableName;
 		}
 		
@@ -91,12 +109,12 @@ class TestClassGenerator extends ClassGenerator {
 			val String javaWitnessName = GenerationHelper.createWitnessName(witnessName);
 			if (witnessTypes.get(witnessName) == Type.EXPONENT) {
 				if (constrainedWitnessNames.contains(witnessName)) {
-					witnessesBuilder.append('''ZpElement «javaWitnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness''')
+					witnessesBuilder.append('''«ZpElement.use()» «javaWitnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness''')
 				} else {
-					witnessesBuilder.append('''ZpElement «javaWitnessName» = zp.getUniformlyRandomElement();''');
+					witnessesBuilder.append('''«ZpElement.use()» «javaWitnessName» = zp.getUniformlyRandomElement();''');
 				}
 			} else {
-				witnessesBuilder.append('''GroupElement «javaWitnessName» = «defaultGroup».getUniformlyRandomElement();''');
+				witnessesBuilder.append('''«GroupElement.use()» «javaWitnessName» = «defaultGroup».getUniformlyRandomElement();''');
 			}
 			witnessesBuilder.append('\n');
 		}
@@ -139,18 +157,18 @@ class TestClassGenerator extends ClassGenerator {
 		);
 		
 		val String methodBody = '''
-			«groupClassName» «groupVariableName» = «groupInstance»;
+			«groupClass.use()» «groupVariableName» = «groupInstance»;
 			«IF hasRangeProof || hasOrDescendantOfAnd»
 			«publicParametersClassName» pp = «publicParametersClassName».generateNewParameters(«groupVariableName»);
 			«ENDIF»
 			«IF hasRangeProof || hasPairing»
-			Group groupG1 = bilinearGroup.getG1();
+			«Group.use()» groupG1 = bilinearGroup.getG1();
 			«ENDIF»
 			«IF hasPairing»
-			Group groupG2 = bilinearGroup.getG2();
-			Group groupGT = bilinearGroup.getGT();
+			«Group.use()» groupG2 = bilinearGroup.getG2();
+			«Group.use()» groupGT = bilinearGroup.getGT();
 			«ENDIF»
-			Zp zp = (Zp) «defaultGroup».getZn();
+			«Zp.use()» zp = (Zp) «defaultGroup».getZn();
 			
 			«IF !publicParameters.isEmpty()»
 			// Set public parameters
@@ -168,11 +186,11 @@ class TestClassGenerator extends ClassGenerator {
 			// Instantiate protocol and input
 			«protocolClassName» protocol = new «protocolClassName»(«groupVariableName»«IF hasRangeProof || hasOrDescendantOfAnd», pp«ENDIF»«publicParameterArguments»);
 			
-			CommonInput commonInput = new «protocolClassName».«commonInputClassName»(«commonInputArguments»);
-			SecretInput secretInput = new «protocolClassName».«secretInputClassName»(«secretInputArguments»);
+			«CommonInput.use()» commonInput = new «protocolClassName».«commonInputClassName»(«commonInputArguments»);
+			«SecretInput.use()» secretInput = new «protocolClassName».«secretInputClassName»(«secretInputArguments»);
 			
-			SigmaProtocolProverInstance prover = protocol.getProverInstance(commonInput, secretInput);
-			SigmaProtocolVerifierInstance verifier = protocol.getVerifierInstance(commonInput);
+			«SigmaProtocolProverInstance.use()» prover = protocol.getProverInstance(commonInput, secretInput);
+			«SigmaProtocolVerifierInstance.use()» verifier = protocol.getVerifierInstance(commonInput);
 			
 			protocol.runProtocolLocally(prover, verifier);
 			assertTrue(verifier.hasTerminated());
@@ -187,14 +205,14 @@ class TestClassGenerator extends ClassGenerator {
 	}
 	
 	// Helper class for building initialization statements for variables
-	private def void createVariableInitialization(String variableName, Map<String, Type> variableTypes, Map<String, GroupType> variableGroups, String defaultGroup, StringBuilder builder) {
+	def private void createVariableInitialization(String variableName, Map<String, Type> variableTypes, Map<String, GroupType> variableGroups, String defaultGroup, StringBuilder builder) {
 		val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
 		val Type variableType = variableTypes.get(variableName);
-		val String variableTypeClassName = variableType.getTypeClass().getSimpleName();
+		val Class<?> variableTypeClass = variableType.getTypeClass();
 		
 		if (variableType === Type.EXPONENT) {
 			// Exponent variable
-			builder.append('''«variableTypeClassName» «javaVariableName» = zp.getZeroElement();''');
+			builder.append('''«variableTypeClass.use()» «javaVariableName» = zp.getZeroElement();''');
 		} else {
 			// Group element variable
 			var String variableGroup;
@@ -204,33 +222,9 @@ class TestClassGenerator extends ClassGenerator {
 				variableGroup = defaultGroup;
 			}
 			
-			builder.append('''«variableTypeClassName» «javaVariableName» = «variableGroup».getNeutralElement();''');
+			builder.append('''«variableTypeClass.use()» «javaVariableName» = «variableGroup».getNeutralElement();''');
 		}
 		builder.append('\n');
-	}
-	
-	private def String buildImports() {
-		val String imports = '''
-			import org.cryptimeleon.craco.protocols.CommonInput;
-			import org.cryptimeleon.craco.protocols.SecretInput;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolProverInstance;
-			import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolVerifierInstance;
-			import org.cryptimeleon.math.structures.groups.Group;
-			import org.cryptimeleon.math.structures.groups.GroupElement;
-			import org.cryptimeleon.math.structures.rings.zn.Zp;
-			import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
-			import org.junit.Test;
-			import static org.junit.Assert.assertTrue;
-			«IF groupClass == BilinearGroup»
-			import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
-			import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup;
-			«ELSE»
-			import org.cryptimeleon.math.structures.groups.elliptic.nopairing.Secp256k1;
-			import org.cryptimeleon.math.structures.groups.lazy.LazyGroup;
-			«ENDIF»
-		''';
-		
-		return GenerationHelper.organizeImports(imports);
 	}
 	
 }

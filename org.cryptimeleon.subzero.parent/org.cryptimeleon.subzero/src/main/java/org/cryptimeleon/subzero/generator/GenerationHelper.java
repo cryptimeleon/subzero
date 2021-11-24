@@ -1,7 +1,6 @@
 package org.cryptimeleon.subzero.generator;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.cryptimeleon.craco.protocols.CommonInput;
@@ -109,13 +108,6 @@ public class GenerationHelper {
 		}
 		
 		return builder.toString();
-	}
-	
-	// Takes a string of import statements and organizes them by lexicographical order
-	public static String organizeImports(String imports) {
-		String[] importList = imports.split("\n");
-		Arrays.sort(importList);
-		return String.join("\n", importList) + '\n';
 	}
 	
 }
