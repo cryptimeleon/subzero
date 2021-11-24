@@ -13,7 +13,6 @@ public class CodeBuilder {
 	private int indentLevel;
 	private String indent;
 	private StringBuilder builder;
-	private boolean isStartOfLine;
 	
 	public CodeBuilder() {
 		this(0);
@@ -25,7 +24,6 @@ public class CodeBuilder {
 	
 	public CodeBuilder(int indentLevel) {
 		this.builder = new StringBuilder();
-		this.isStartOfLine = true;
 		this.indentLevel = indentLevel;
 		indent = "";
 		for (int i = 0; i < INDENT_SIZE; i++) {
@@ -114,7 +112,6 @@ public class CodeBuilder {
 	
 	public void newLine() {
 		append('\n');
-		isStartOfLine = true;
 	}
 	
 	public void openParen() {
