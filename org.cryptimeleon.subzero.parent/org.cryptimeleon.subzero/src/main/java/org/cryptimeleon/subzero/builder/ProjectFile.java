@@ -12,6 +12,7 @@ import java.util.Base64;
  * the file can be loaded (from text or binary)
  */
 public class ProjectFile {
+	
 	private String name;
 	private String contents;
 	

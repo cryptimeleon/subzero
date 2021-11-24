@@ -3,7 +3,6 @@
  */
 package org.cryptimeleon.subzero.generator
 
-import org.cryptimeleon.subzero.builder.ProjectBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.subzero.Model
 import org.eclipse.emf.ecore.resource.Resource
@@ -12,6 +11,7 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.cryptimeleon.subzero.builder.StackTrace
 import org.cryptimeleon.subzero.latex.LatexGenerator
+import org.cryptimeleon.subzero.builder.Project
 
 /**
  * Generates code from your model files on save.
@@ -51,8 +51,8 @@ class SubzeroGenerator extends AbstractGenerator {
 			// Generate Java project
 			try {
 				val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
-				val ProjectBuilder project = codeGeneration.generate();
-				generationOutput = project.getProject();
+				val Project project = codeGeneration.generate();
+				generationOutput = project.toString();
 			} catch (Throwable e) {
 				val StackTrace error = new StackTrace(e);
 				generationOutput = error.toString();

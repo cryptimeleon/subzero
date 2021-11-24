@@ -1,12 +1,12 @@
 package org.cryptimeleon.subzero.generator
 
-import org.cryptimeleon.subzero.builder.ProjectBuilder
 import org.cryptimeleon.subzero.builder.ProjectFile
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
 import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.builder.ProjectDirectory
 import org.cryptimeleon.subzero.latex.LatexGenerator
+import org.cryptimeleon.subzero.builder.Project
 
 /**
  * Generates the Java code for a protocol
@@ -18,7 +18,7 @@ class CodeGenerator {
 		this.augmentedModel = augmentedModel;
 	}
 
-	def ProjectBuilder generate() {
+	def Project generate() {
 		System.out.println(augmentedModel);
 
 		val String protocolName = augmentedModel.getProtocolName();
@@ -110,6 +110,6 @@ class CodeGenerator {
 		
 		root.addDirectory(src);
 		
-		return new ProjectBuilder(root);
+		return new Project(root);
 	}
 }
