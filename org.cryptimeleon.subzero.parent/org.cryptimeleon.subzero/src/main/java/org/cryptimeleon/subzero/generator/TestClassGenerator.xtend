@@ -29,7 +29,7 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolPr
 /**
  * Generates the LibraryTest class that will run the protocol
  */
-class TestClassGenerator extends ClassGenerator {
+class TestClassGenerator implements ClassGenerator {
 	
 	AugmentedModel augmentedModel;
 	boolean hasRangeProof;

@@ -18,7 +18,6 @@ import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.StringLiteral
 import org.cryptimeleon.subzero.subzero.Sum
 import org.cryptimeleon.subzero.subzero.Tuple
-import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
@@ -32,6 +31,7 @@ import org.cryptimeleon.subzero.subzero.LocalVariable
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.cryptimeleon.subzero.subzero.ConstantVariable
+import org.cryptimeleon.subzero.generator.CodeGenerator
 
 /**
  * Converts a syntax tree to valid LaTeX output
@@ -39,7 +39,7 @@ import org.cryptimeleon.subzero.subzero.ConstantVariable
  * Precondition: the Model object used to create the LatexPreview object
  * must be free of validation errors
  */
-class LatexGenerator {
+class LatexGenerator implements CodeGenerator {
 
 	// Token constants
 	static val String NEWLINE = "\\\\";
@@ -100,11 +100,11 @@ class LatexGenerator {
 		openBraces = 0;
 	}
 	
-	def String generate() {
+	override String generate() {
 		return generate(augmentedModel.getModel());
 	}
 	
-	def String generate(EObject node) {
+	def private String generate(EObject node) {
 		builder = new StringBuilder();
 		generateLatex(node);
 		return builder.toString();

@@ -3,22 +3,33 @@ package org.cryptimeleon.subzero.generator
 import org.cryptimeleon.subzero.builder.ProjectFile
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.subzero.Model
 import org.cryptimeleon.subzero.builder.ProjectDirectory
 import org.cryptimeleon.subzero.latex.LatexGenerator
 import org.cryptimeleon.subzero.builder.Project
+import org.cryptimeleon.subzero.builder.StackTrace
 
 /**
  * Generates the Java code for a protocol
  */
-class CodeGenerator {
+class JavaGenerator implements CodeGenerator {
 	AugmentedModel augmentedModel;
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 	}
 
-	def Project generate() {
+	override String generate() {
+		try {
+			val Project project = buildJavaProject();
+			return project.toString();
+		} catch (Throwable e) {
+			val StackTrace error = new StackTrace(e);
+			return error.toString();
+		}
+	}
+	
+	def private Project buildJavaProject() {
+		// For debugging purposes
 		System.out.println(augmentedModel);
 
 		val String protocolName = augmentedModel.getProtocolName();

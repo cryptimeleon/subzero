@@ -24,7 +24,7 @@ import org.cryptimeleon.math.serialization.ObjectRepresentation
 /**
  * Generates the public parameters class
  */
-class PublicParametersClassGenerator {
+class PublicParametersClassGenerator implements ClassGenerator {
 	
 	AugmentedModel augmentedModel;
 	boolean hasRangeProof;
@@ -43,7 +43,7 @@ class PublicParametersClassGenerator {
 		importBuilder = new ImportBuilder();
 	}
 	
-	def SourceBuilder generate() {
+	override SourceBuilder generate() {
 		val String packageName = augmentedModel.getPackageName();
 		val ClassBuilder publicParametersClass = buildClass();
 		val SourceBuilder publicParametersSource = new SourceBuilder(packageName, publicParametersClass, importBuilder);

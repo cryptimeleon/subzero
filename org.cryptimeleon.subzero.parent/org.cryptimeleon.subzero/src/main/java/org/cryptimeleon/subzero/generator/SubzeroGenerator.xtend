@@ -9,9 +9,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.cryptimeleon.subzero.builder.StackTrace
 import org.cryptimeleon.subzero.latex.LatexGenerator
-import org.cryptimeleon.subzero.builder.Project
 
 /**
  * Generates code from your model files on save.
@@ -28,7 +26,6 @@ class SubzeroGenerator extends AbstractGenerator {
 	static val LATEX_RESOURCE = 'latex.sub0';
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		// For debugging purposes
 		val String resourceId = resource.getURI().toString();
 		System.out.println("Generating resource: " + resourceId);
 		
@@ -41,31 +38,19 @@ class SubzeroGenerator extends AbstractGenerator {
 		// Create the augmented model to provide additional functionality
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
 		
-		var String generationOutput;
+		var CodeGenerator generator;		
 		if (resourceId.endsWith(LATEX_RESOURCE)) {
 			// Generate LaTeX preview code
-			val LatexGenerator latexPreview = new LatexGenerator(augmentedModel);
-			generationOutput = latexPreview.generate();
-			
+			generator = new LatexGenerator(augmentedModel);
 		} else if (resourceId.endsWith(CODE_RESOURCE)) {
 			// Generate Java project
-			try {
-				val CodeGenerator codeGeneration = new CodeGenerator(augmentedModel);
-				val Project project = codeGeneration.generate();
-				generationOutput = project.toString();
-			} catch (Throwable e) {
-				val StackTrace error = new StackTrace(e);
-				generationOutput = error.toString();
-			}
+			generator = new JavaGenerator(augmentedModel);
 		} else {
 			System.out.println("Error: invalid resource ID");
 			return;
 		}
 		
 		// Generate the final file
-		fsa.generateFile(OUTPUT_FILE, generationOutput);
+		fsa.generateFile(OUTPUT_FILE, generator.generate());
 	}
-	
-	
-	
 }

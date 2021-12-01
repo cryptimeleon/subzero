@@ -58,7 +58,7 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKn
 /**
  * Generates the protocol class that specifies the protocol
  */
-class ProtocolClassGenerator extends ClassGenerator {
+class ProtocolClassGenerator implements ClassGenerator {
 	
 	AugmentedModel augmentedModel;
 	boolean hasPairing;
