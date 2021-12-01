@@ -1,12 +1,11 @@
 package org.cryptimeleon.subzero.java
 
-import org.cryptimeleon.subzero.builder.ProjectFile
+import org.cryptimeleon.subzero.project.ProjectFile
 import org.cryptimeleon.subzero.builder.SourceBuilder
 import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.builder.ProjectDirectory
+import org.cryptimeleon.subzero.project.ProjectDirectory
 import org.cryptimeleon.subzero.latex.LatexGenerator
-import org.cryptimeleon.subzero.builder.Project
-import org.cryptimeleon.subzero.builder.StackTrace
+import org.cryptimeleon.subzero.project.Project
 import org.cryptimeleon.subzero.generator.CodeGenerator
 import org.cryptimeleon.subzero.generator.GenerationHelper
 

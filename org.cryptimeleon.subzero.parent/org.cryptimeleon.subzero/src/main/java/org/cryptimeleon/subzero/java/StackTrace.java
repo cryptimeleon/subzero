@@ -1,7 +1,9 @@
-package org.cryptimeleon.subzero.builder;
+package org.cryptimeleon.subzero.java;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import org.cryptimeleon.subzero.builder.JsonBuilder;
 
 /**
  * Represents the serialized JSON object of a Java error stack trace thrown during code generation

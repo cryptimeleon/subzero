@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.builder;
+package org.cryptimeleon.subzero.project;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

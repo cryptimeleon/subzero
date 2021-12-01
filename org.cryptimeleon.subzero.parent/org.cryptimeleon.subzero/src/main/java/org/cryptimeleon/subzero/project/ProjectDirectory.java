@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.builder;
+package org.cryptimeleon.subzero.project;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,6 @@
-package org.cryptimeleon.subzero.builder;
+package org.cryptimeleon.subzero.project;
+
+import org.cryptimeleon.subzero.builder.JsonBuilder;
 
 /**
  * Represents a generated project, which is a serialized JSON object representing
