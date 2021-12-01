@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.generator
+package org.cryptimeleon.subzero.java
 
 import java.util.Map
 import java.util.Set
@@ -38,6 +38,7 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.Tw
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
 import static org.cryptimeleon.subzero.model.LanguageConstants.*
+import org.cryptimeleon.subzero.generator.GenerationHelper
 
 /**
  * Generates proof expressions

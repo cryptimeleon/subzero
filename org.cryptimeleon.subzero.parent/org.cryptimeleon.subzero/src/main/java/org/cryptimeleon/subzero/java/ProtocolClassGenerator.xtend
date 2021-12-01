@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.generator
+package org.cryptimeleon.subzero.java
 
 import java.util.ArrayList
 import java.util.Deque
@@ -54,6 +54,8 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementF
 import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector
 import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpec
 import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpecBuilder
+import org.cryptimeleon.subzero.generator.ClassGenerator
+import org.cryptimeleon.subzero.generator.GenerationHelper
 
 /**
  * Generates the protocol class that specifies the protocol

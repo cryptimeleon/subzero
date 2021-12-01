@@ -45,12 +45,12 @@ import org.eclipse.xtext.validation.Check
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import java.util.HashMap
 import java.util.Map.Entry
-import org.cryptimeleon.subzero.model.Environment
 import org.cryptimeleon.subzero.model.VariableIdentifier
 import org.cryptimeleon.subzero.subzero.Constant
 import org.cryptimeleon.subzero.subzero.ConstantVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
 import org.eclipse.emf.common.util.EList
+import org.cryptimeleon.subzero.environment.EnvironmentGenerator
 
 /**
  * This class contains custom validation rules for validating the syntax tree
@@ -113,8 +113,8 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		
 		System.out.println("Validating the model");
 		
-		val Environment environment = new Environment(augmentedModel);
-		info(environment.toString(), null, null);
+		val EnvironmentGenerator generator= new EnvironmentGenerator(augmentedModel);
+		info(generator.generate(), null, null);
 
 		// Iterate over the tree in a preorder traversal and perform validation on each node
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |

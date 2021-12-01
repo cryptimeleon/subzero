@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.model
+package org.cryptimeleon.subzero.environment
 
 import java.util.List
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper
@@ -12,8 +12,13 @@ import java.util.Set
 import java.util.HashSet
 import java.util.Collection
 import org.cryptimeleon.subzero.builder.JsonBuilder
+import org.cryptimeleon.subzero.model.AugmentedModel
+import org.cryptimeleon.subzero.model.FunctionSignature
+import org.cryptimeleon.subzero.model.Type
+import org.cryptimeleon.subzero.model.GroupType
+import org.cryptimeleon.subzero.generator.CodeGenerator
 
-class Environment {
+class EnvironmentGenerator implements CodeGenerator {
 	
 	var AugmentedModel augmentedModel;
 	var JsonBuilder builder;
@@ -21,8 +26,13 @@ class Environment {
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		this.builder = new JsonBuilder(true);
-		buildEnvironment();	
+		
+	}
+	
+	override String generate() {
+		builder = new JsonBuilder(true);
+		buildEnvironment();
+		return builder.toString();
 	}
 	
 	def private buildEnvironment() {
@@ -145,9 +155,4 @@ class Environment {
 			builder.addObjectValue(objectBuilder);
 		}
 	}
-	
-	override String toString() {
-		return jsonRepresentation;
-	}
-	
 }

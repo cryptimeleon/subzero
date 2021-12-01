@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.generator
+package org.cryptimeleon.subzero.java
 
 import java.util.List
 import java.util.Map
@@ -24,7 +24,8 @@ import org.cryptimeleon.craco.protocols.CommonInput
 import org.cryptimeleon.craco.protocols.SecretInput
 import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolVerifierInstance
 import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolProverInstance
-
+import org.cryptimeleon.subzero.generator.ClassGenerator
+import org.cryptimeleon.subzero.generator.GenerationHelper
 
 /**
  * Generates the LibraryTest class that will run the protocol

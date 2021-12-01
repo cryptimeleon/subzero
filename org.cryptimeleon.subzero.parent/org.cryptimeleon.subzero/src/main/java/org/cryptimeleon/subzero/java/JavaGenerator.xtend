@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.generator
+package org.cryptimeleon.subzero.java
 
 import org.cryptimeleon.subzero.builder.ProjectFile
 import org.cryptimeleon.subzero.builder.SourceBuilder
@@ -7,6 +7,8 @@ import org.cryptimeleon.subzero.builder.ProjectDirectory
 import org.cryptimeleon.subzero.latex.LatexGenerator
 import org.cryptimeleon.subzero.builder.Project
 import org.cryptimeleon.subzero.builder.StackTrace
+import org.cryptimeleon.subzero.generator.CodeGenerator
+import org.cryptimeleon.subzero.generator.GenerationHelper
 
 /**
  * Generates the Java code for a protocol

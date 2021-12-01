@@ -10,6 +10,7 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.cryptimeleon.subzero.latex.LatexGenerator
+import org.cryptimeleon.subzero.java.JavaGenerator
 
 /**
  * Generates code from your model files on save.
