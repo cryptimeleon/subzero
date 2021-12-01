@@ -22,6 +22,16 @@ import org.cryptimeleon.subzero.subzero.Variable
 import org.cryptimeleon.subzero.subzero.Witness
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
+import static org.cryptimeleon.subzero.model.LanguageConstants.*
+import java.util.Map
+import java.util.HashMap
+import java.util.List
+import org.cryptimeleon.subzero.generator.GenerationHelper
+import org.cryptimeleon.subzero.subzero.Expression
+import org.cryptimeleon.subzero.subzero.LocalVariable
+import org.cryptimeleon.subzero.subzero.WitnessVariable
+import org.cryptimeleon.subzero.subzero.PPVariable
+import org.cryptimeleon.subzero.subzero.ConstantVariable
 
 /**
  * Converts a syntax tree to valid LaTeX output
@@ -60,42 +70,44 @@ class LatexGenerator {
 	static val String EXPONENTIATION = "^";
 	static val String NEGATION = "-";
 	
-	static val String OPERATOR_ADDITION = "+";
-	static val String OPERATOR_SUBTRACTION = "-";
-	static val String OPERATOR_MULTIPLICATION = "*";
-	static val String OPERATOR_DIVISION = "/";
-	static val String OPERATOR_EXPONENTIATION = "^";
-	static val String OPERATOR_EQUAL = "=";
-	static val String OPERATOR_INEQUAL = "!=";
-	static val String OPERATOR_LESS = "<";
-	static val String OPERATOR_GREATER = ">";
-	static val String OPERATOR_LESSEQUAL = "<=";
-	static val String OPERATOR_GREATEREQUAL = ">=";
-	
-	// Contains the final generated LaTeX output
-	var String latexText;
-	
 	var StringBuilder builder;
 
 	// Counts the number of open curly braces, used for formatting exponents
 	var int openBraces;
+	
+	// Contains the expressions for all inline functions that are called at least once
+	// The expression has placeholders for the local variables, which are then replaced
+	// with the passed arguments when generating a function call
+	var Map<String, String> inlineFunctionsCode;
+	
+	var AugmentedModel augmentedModel;
+	var Map<String, FunctionDefinition> functions;
+	var boolean inInlineFunction;
 
 	new(AugmentedModel augmentedModel) {
+		this(augmentedModel, false);
+	}
+	
+	private new(AugmentedModel augmentedModel, boolean inInlineFunction) {
 		if (augmentedModel.hasErrors()) {
 			throw new IllegalArgumentException("Cannot generate LaTeX preview for model with validation errors");
 		}
 		
+		this.augmentedModel = augmentedModel;
+		this.inInlineFunction = inInlineFunction;
+		functions = augmentedModel.getUserFunctionNodes();		
+		inlineFunctionsCode = new HashMap<String, String>();
 		openBraces = 0;
-		builder = new StringBuilder();
-		builder.append(START);
-		generateLatex(augmentedModel.getModel());
-		builder.append(END);
-		
-		latexText = builder.toString();
 	}
 	
 	def String generate() {
-		return latexText;
+		return generate(augmentedModel.getModel());
+	}
+	
+	def String generate(EObject node) {
+		builder = new StringBuilder();
+		generateLatex(node);
+		return builder.toString();
 	}
 
 	def private void generateBraces(EObject node) {
@@ -128,10 +140,10 @@ class LatexGenerator {
 	}
 
 	def dispatch private void generateLatex(Model model) {
+		builder.append(START);
+		
 		for (FunctionDefinition function : model.getFunctions()) {
 			generateLatex(function);
-			builder.append(NEWLINE);
-			builder.append(NEWLINE);
 		}
 
 		val EList<PublicParameter> publicParameterList = model.getPublicParameters();
@@ -162,12 +174,17 @@ class LatexGenerator {
 		builder.append(AND);
 		builder.append(SPACE);
 		builder.append("\\}");
+		
+		builder.append(END);
 	}
 
 	def dispatch private void generateLatex(FunctionDefinition function) {
+		if (function.isInline()) return;
+		
 		builder.append(function.getName());
 		builder.append(AND);
 		builder.append(SPACE);
+		
 		builder.append(LEFTPAREN);
 		generateList(function.getParameters());
 		builder.append(RIGHTPAREN);
@@ -175,7 +192,11 @@ class LatexGenerator {
 		builder.append(NEWLINE);
 		builder.append(AND);
 		builder.append(SPACE);
+		
 		generateLatex(function.getBody());
+		
+		builder.append(NEWLINE);
+		builder.append(NEWLINE);
 	}
 
 	def dispatch private void generateLatex(Parameter parameter) {
@@ -284,18 +305,62 @@ class LatexGenerator {
 	}
 
 	def dispatch private void generateLatex(FunctionCall call) {
-		builder.append(call.getName());
-		builder.append(LEFTPAREN);
-		generateList(call.getArguments());
-		builder.append(RIGHTPAREN);
+		val String name = call.getName();
+		val boolean isInlineFunction = augmentedModel.isInlineFunctionName(name);
+		
+		if (isInlineFunction) {
+			// Handle calls to inline user defined functions
+			var String functionCode = inlineFunctionsCode.get(name);
+			val FunctionDefinition function = functions.get(name);
+			
+			if (functionCode === null) {
+				val LatexGenerator generator = new LatexGenerator(augmentedModel, true);
+				functionCode = generator.generate(function.getBody());
+				inlineFunctionsCode.put(name, functionCode);
+			}
+			
+			val List<Parameter> parameters = function.getParameters();
+			val EList<Expression> arguments = call.getArguments();
+			var inlineCode = functionCode;
+			
+			for (var int i = 0; i < parameters.size(); i++) {
+				val String parameterName = parameters.get(i).getName();
+				val LatexGenerator generator = new LatexGenerator(augmentedModel, false);
+				val String argumentCode = generator.generate(arguments.get(i));
+				inlineCode = inlineCode.replace(GenerationHelper.createLocalName(parameterName), argumentCode);			
+			}
+			
+			builder.append(inlineCode);
+			
+		} else {
+			builder.append(name);
+			builder.append(LEFTPAREN);
+			generateList(call.getArguments());
+			builder.append(RIGHTPAREN);
+		}
 	}
 	
 	def dispatch private void generateLatex(Argument argument) {
 		generateLatex(argument.getExpression());
 	}
 
-	def dispatch private void generateLatex(Variable variable) {
+	def dispatch private void generateLatex(WitnessVariable variable) {
 		builder.append(new LatexIdentifier(variable.getName()));
+	}
+	
+	def dispatch private void generateLatex(PPVariable variable) {
+		builder.append(new LatexIdentifier(variable.getName()));
+	}
+	
+	def dispatch private void generateLatex(ConstantVariable variable) {
+		builder.append(new LatexIdentifier(variable.getName()));
+	}
+	
+	def dispatch private void generateLatex(LocalVariable variable) {
+		val String identifier = inInlineFunction
+			? GenerationHelper.createLocalName(variable.getName())
+			: new LatexIdentifier(variable.getName()).toString();
+		builder.append(identifier);
 	}
 
 	def dispatch private void generateLatex(NumberLiteral literal) {
