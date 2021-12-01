@@ -37,22 +37,12 @@ import org.cryptimeleon.subzero.builder.ImportBuilder
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
+import static org.cryptimeleon.subzero.model.LanguageConstants.*
 
 /**
  * Generates proof expressions
  */
 class ProofGenerator {
-	static String OPERATOR_ADDITION = "+";
-	static String OPERATOR_SUBTRACTION = "-";
-	static String OPERATOR_MULTIPLICATION = "*";
-	static String OPERATOR_DIVISION = "/";
-	static String OPERATOR_EQUAL = "=";
-	static String OPERATOR_INEQUAL = "!=";
-	static String OPERATOR_LESS = "<";
-	static String OPERATOR_GREATER = ">";
-	static String OPERATOR_LESSEQUAL = "<=";
-	static String OPERATOR_GREATEREQUAL = ">=";
-	
 	static String STATEMENT = "statement";
 	
 	AugmentedModel augmentedModel;
@@ -90,13 +80,13 @@ class ProofGenerator {
 		importBuilder = new ImportBuilder();
 	}
 	
+	def ImportBuilder getImports() {
+		return importBuilder;
+	}
+	
 	// If no node is provided, generate from the root
 	def String generate() {
 		return generateCode(augmentedModel.getModel());
-	}
-	
-	def ImportBuilder getImports() {
-		return importBuilder;
 	}
 	
 	// Generates the body expression of a user defined function
@@ -156,8 +146,6 @@ class ProofGenerator {
 			
 			subprotocolParameter = '''"«subprotocolName»"''';
 		}
-		
-		
 		
 		// Handle = and != cases
 		if (operator == OPERATOR_EQUAL || operator == OPERATOR_INEQUAL) {
@@ -245,7 +233,6 @@ class ProofGenerator {
 			upperBound = rightNode;
 		}
 		
-		
 		// Shift the lower bound up by 1 if the first inequality is strict
 		if (ModelHelper.isStrictComparison(operator)) {
 			if (lowerBound instanceof NumberLiteral) {
@@ -332,7 +319,8 @@ class ProofGenerator {
 	}
 	
 	def private dispatch String generateCode(StringLiteral string) {
-		val String value = string.getValue(); // Value includes double quotes
+		// Value includes double quotes
+		val String value = string.getValue();
 		return value;
 	}
 	

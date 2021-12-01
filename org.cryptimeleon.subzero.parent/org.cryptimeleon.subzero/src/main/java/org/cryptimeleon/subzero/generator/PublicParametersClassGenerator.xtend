@@ -27,7 +27,6 @@ import org.cryptimeleon.math.serialization.ObjectRepresentation
 class PublicParametersClassGenerator {
 	
 	AugmentedModel augmentedModel;
-	String protocolName;
 	boolean hasRangeProof;
 	boolean hasPairing;
 	boolean hasOrDescendantOfAnd;
@@ -38,7 +37,6 @@ class PublicParametersClassGenerator {
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		protocolName = augmentedModel.getProtocolName();
 		hasRangeProof = augmentedModel.hasRangeProof();
 		hasPairing = augmentedModel.hasPairing();
 		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
@@ -54,6 +52,7 @@ class PublicParametersClassGenerator {
 	}
 
 	def private buildClass() {
+		val String protocolName = augmentedModel.getProtocolName();
 		val String className = GenerationHelper.createPublicParametersClassName(protocolName);
 		val ClassBuilder publicParametersClass = new ClassBuilder(PUBLIC, className).implement(StandaloneRepresentable.use());
 		
