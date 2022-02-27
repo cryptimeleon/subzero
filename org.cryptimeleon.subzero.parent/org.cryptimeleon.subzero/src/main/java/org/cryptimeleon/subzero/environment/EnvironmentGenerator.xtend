@@ -22,11 +22,9 @@ class EnvironmentGenerator implements CodeGenerator {
 	
 	var AugmentedModel augmentedModel;
 	var JsonBuilder builder;
-	var String jsonRepresentation;
 	
 	new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		
 	}
 	
 	override String generate() {
@@ -36,45 +34,75 @@ class EnvironmentGenerator implements CodeGenerator {
 	}
 	
 	def private buildEnvironment() {
-		val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-		val Map<String, FunctionSignature> userFunctions = augmentedModel.getUserFunctionSignatures();
+		val Map<String, List<FunctionCall>> functionCalls = augmentedModel.getUserFunctionCallNodes();
+		val Map<String, Map<String, List<LocalVariable>>> localVariables = augmentedModel.getLocalVariableNodes();
+		buildPredefinedFunctions(functionCalls, localVariables);
+		buildUserFunctions(functionCalls, localVariables);
 		
-		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
-		val Map<String, List<Variable>> variableNodes = augmentedModel.getVariableNodes();
-		val Map<String, Map<String, List<LocalVariable>>> localVariableNodes = augmentedModel.getLocalVariableNodes();
 		
-		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
-		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
-		
-		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
-		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
-		
-		val List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
-		val Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
-		
+		val Map<String, List<Variable>> variables = augmentedModel.getVariableNodes();
 		var Map<String, GroupType> variableGroups = null;
 		if (augmentedModel.hasPairing()) {
 			variableGroups = augmentedModel.getGroups();
 		}
-
-		buildFunctions(predefinedFunctions, userFunctionCalls, localVariableNodes, "built-in");
-		buildFunctions(userFunctions, userFunctionCalls, localVariableNodes, "user");
-		buildVariables(publicParameterNames, publicParameterTypes, variableGroups, variableNodes, "public parameter");
-		buildVariables(witnessNames, witnessTypes, variableGroups, variableNodes, "witness");
+		
+		buildWitnessVariables(variables, variableGroups);
+		buildPublicParameterVariables(variables, variableGroups);
+		buildConstantVariables(variables, variableGroups);
+	}
+	
+	def private buildPredefinedFunctions(
+		Map<String, List<FunctionCall>> functionCalls,
+		Map<String, Map<String, List<LocalVariable>>> localVariables
+	) {
+		val Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+		buildFunctions(predefinedFunctions, functionCalls, localVariables, "built-in");
+	}
+	
+	def private buildUserFunctions(
+		Map<String, List<FunctionCall>> functionCalls,
+		Map<String, Map<String, List<LocalVariable>>> localVariables
+	) {
+		val Map<String, FunctionSignature> userFunctions = augmentedModel.getUserFunctionSignatures();
+		buildFunctions(userFunctions, functionCalls, localVariables, "user");
+	}
+	
+	def private buildWitnessVariables(
+		Map<String, List<Variable>> variables,
+		Map<String, GroupType> variableGroups
+	) {
+		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
+		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
+		buildVariables(witnessNames, witnessTypes, variableGroups, variables, "witness");
+	}
+	
+	def private buildPublicParameterVariables(
+		Map<String, List<Variable>> variables,
+		Map<String, GroupType> variableGroups
+	) {
+		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
+		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
+		buildVariables(publicParameterNames, publicParameterTypes, variableGroups, variables, "public parameter");
+	}
+	
+	def private buildConstantVariables(
+		Map<String, List<Variable>> variables,
+		Map<String, GroupType> variableGroups
+	) {
+		val List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
+		val Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
 		
 		if (augmentedModel.hasExplicitConstants()) {
 			val Set<String> declaredConstantNames = augmentedModel.getDeclaredConstantNames();
 			val Set<String> undeclaredConstantNames = new HashSet(constantNames);
 			undeclaredConstantNames.removeAll(declaredConstantNames);
-			buildVariables(declaredConstantNames, constantTypes, variableGroups, variableNodes, "common input");
-			buildVariables(undeclaredConstantNames, constantTypes, variableGroups, variableNodes, "unknown");
+			
+			buildVariables(declaredConstantNames, constantTypes, variableGroups, variables, "common input");
+			buildVariables(undeclaredConstantNames, constantTypes, variableGroups, variables, "unknown");
 		} else {
-			buildVariables(constantNames, constantTypes, variableGroups, variableNodes, "common input");
+			buildVariables(constantNames, constantTypes, variableGroups, variables, "common input");
 		}
-
-		jsonRepresentation = builder.toString();
 	}
-	
 	
 	def private void buildFunctions(
 		Map<String, FunctionSignature> signatures,
