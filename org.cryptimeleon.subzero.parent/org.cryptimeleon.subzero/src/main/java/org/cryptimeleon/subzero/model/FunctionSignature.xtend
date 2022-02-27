@@ -45,7 +45,7 @@ class FunctionSignature {
 		if (returnType == void || returnType == SchnorrFragment) {
 			this.returnType = Type.BOOLEAN;
 		} else {
-			this.returnType = Type.toType(method.getReturnType().getSimpleName());
+			this.returnType = Type.toType(method.getReturnType());
 		}
 		
 		
@@ -73,7 +73,7 @@ class FunctionSignature {
 		}
 
 		for (Class<?> classObject : method.getParameterTypes()) {
-			this.parameterTypes.add(Type.toType(classObject.getSimpleName()));			
+			this.parameterTypes.add(Type.toType(classObject));			
 		}
 	}
 	

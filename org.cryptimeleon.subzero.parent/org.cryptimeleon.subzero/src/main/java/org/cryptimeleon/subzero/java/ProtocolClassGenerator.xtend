@@ -699,7 +699,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames(name);
 				if (functionWitnesses !== null) {
 					for (String witnessName : functionWitnesses) {
-						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getWitnessTypeClass();
+						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getTypeWitnessClass();
 						method.addParameter(parameterTypeClass, GenerationHelper.createWitnessName(witnessName));
 					}
 				}

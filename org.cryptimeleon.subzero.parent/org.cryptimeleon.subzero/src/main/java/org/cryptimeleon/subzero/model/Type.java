@@ -1,5 +1,9 @@
 package org.cryptimeleon.subzero.model;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
 import org.cryptimeleon.math.expressions.bool.BooleanExpression;
@@ -12,58 +16,81 @@ import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
  * An enum to represent the Subzero type of a variable or return value
  */
 public enum Type {
-	BOOLEAN,
-	GROUP_ELEMENT,
-	EXPONENT,
-	STRING,
-	UNKNOWN;
+	BOOLEAN(
+		"boolean",
+		Boolean.class,
+		Boolean.class,
+		null
+	),
 	
-	public static Type toType(String type) {
-		switch(type) {
-			case "boolean": return Type.BOOLEAN;
-			case "GroupElementExpression": return Type.GROUP_ELEMENT;
-			case "ExponentExpr": return Type.EXPONENT;
-			case "String" : return Type.STRING;
-			default: return Type.UNKNOWN;
+	GROUP_ELEMENT(
+		"group element",
+		GroupElement.class,
+		GroupElementExpression.class,
+		SchnorrGroupElemVariable.class
+	),
+	
+	EXPONENT(
+		"exponent",
+		ZpElement.class,
+		ExponentExpr.class,
+		SchnorrZnVariable.class
+	),
+	
+	// TODO: remove STRING
+	STRING(
+		"string",
+		String.class,
+		String.class,
+		null
+	),
+	
+	UNKNOWN(
+		"unknown",
+		void.class,
+		void.class,
+		null
+	);
+	
+	private static final Map<Class<?>, Type> typesByClass = new HashMap<>();
+	static {
+		for (Type type : Type.values()) {
+			typesByClass.put(type.typeExprClass, type);
 		}
+	}
+	
+	private final String typeName;
+	private final Class<?> typeClass;
+	private final Class<?> typeExprClass;
+	private final Class<?> typeWitnessClass;
+	
+	private Type(String typeName, Class<?> typeClass, Class<?> typeExprClass, Class<?> typeWitnessClass) {
+		this.typeName = typeName;
+		this.typeClass = typeClass;
+		this.typeExprClass = typeExprClass;
+		this.typeWitnessClass = typeWitnessClass;
+	}
+	
+	public static Type toType(Class<?> clazz) {
+		Type classType = typesByClass.get(clazz);
+		return classType == null ? Type.UNKNOWN : classType;
+	}
+	
+	public Class<?> getTypeClass() {
+		return typeClass;
+	}
+	
+	public Class<?> getTypeExprClass() {
+		return typeExprClass;
+	}
+	
+	public Class<?> getTypeWitnessClass() {
+		return typeWitnessClass;
 	}
 	
 	@Override
 	public String toString() {
-		switch(this) {
-			case BOOLEAN: return "boolean";
-			case GROUP_ELEMENT: return "group element";
-			case EXPONENT: return "exponent";
-			case STRING: return "string";
-			case UNKNOWN: return "unknown";
-			default: return "";
-		}
-	}
-	
-	public Class<?> getTypeClass() {
-		switch (this) {
-			case BOOLEAN: return Boolean.class;
-			case GROUP_ELEMENT: return GroupElement.class;
-			case EXPONENT: return ZpElement.class;
-			case STRING: return String.class;
-			default: return void.class;
-		}
-	}
-	
-	public Class<?> getTypeExprClass() {
-		switch (this) {
-			case GROUP_ELEMENT: return GroupElementExpression.class;
-			case EXPONENT: return ExponentExpr.class;
-			default: return null;
-		}
-	}
-	
-	public Class<?> getWitnessTypeClass() {
-		switch (this) {
-			case GROUP_ELEMENT: return SchnorrGroupElemVariable.class;
-			case EXPONENT: return SchnorrZnVariable.class;
-			default: return null;
-		}
+		return typeName;
 	}
 }
 
