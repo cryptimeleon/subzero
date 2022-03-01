@@ -1,6 +1,5 @@
 package org.cryptimeleon.subzero.generator;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.cryptimeleon.craco.protocols.CommonInput;
@@ -10,7 +9,7 @@ import org.cryptimeleon.subzero.model.VariableIdentifier;
 /**
  * A general helper class to assist with code generation
  */
-public class GenerationHelper {
+public class GenerationUtils {
 	
 	public final static String DEFAULT_PROTOCOL_NAME = "MySigmaProtocol";
 	public final static String DEFAULT_PACKAGE_NAME = "prototype";

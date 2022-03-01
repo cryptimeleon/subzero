@@ -38,7 +38,7 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.Tw
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
 import static org.cryptimeleon.subzero.model.LanguageConstants.*
-import org.cryptimeleon.subzero.generator.GenerationHelper
+import org.cryptimeleon.subzero.generator.GenerationUtils
 
 /**
  * Generates proof expressions
@@ -134,7 +134,7 @@ class ProofGenerator {
 		var String subprotocolParameter;
 		if (inFunctionBody) {
 			functionSubprotocolCount++;
-			subprotocolParameter = '''«GenerationHelper.SUBPROTOCOL_VARIABLE» + "_«functionSubprotocolCount»"''';
+			subprotocolParameter = '''«GenerationUtils.SUBPROTOCOL_VARIABLE» + "_«functionSubprotocolCount»"''';
 		} else {
 			subprotocolCount++;
 			var String subprotocolName = comparison.getSubprotocolName();
@@ -349,7 +349,7 @@ class ProofGenerator {
 				arguments.add(argumentCode);
 			}
 			
-			return '''e.applyExpr(«GenerationHelper.createCommaList(arguments)»)''';
+			return '''e.applyExpr(«GenerationUtils.createCommaList(arguments)»)''';
 						
 		} else if (isInlineFunction) {
 			// Handle calls to inline user defined functions
@@ -371,7 +371,7 @@ class ProofGenerator {
 			for (var int i = 0; i < parameters.size(); i++) {
 				val String parameterName = parameters.get(i).getName();
 				val String argumentCode = generateCode(arguments.get(i));
-				inlineCode = inlineCode.replace(GenerationHelper.createLocalName(parameterName), argumentCode);
+				inlineCode = inlineCode.replace(GenerationUtils.createLocalName(parameterName), argumentCode);
 			}
 			
 			return inlineCode;
@@ -383,7 +383,7 @@ class ProofGenerator {
 
 			// Default when functionType == Type.GROUP_ELEMENT || functionType == Type.EXPONENT
 			var callStatement = [String functionName, List<String> args |
-				return '''«functionName»(«GenerationHelper.createCommaList(args)»)''';
+				return '''«functionName»(«GenerationUtils.createCommaList(args)»)''';
 			];
 			
 			val List<String> arguments = new ArrayList<String>();
@@ -397,20 +397,20 @@ class ProofGenerator {
 					var String subprotocolName = STATEMENT + subprotocolCount;
 					arguments.add('''"«subprotocolName»"''');
 					callStatement = [String functionName, List<String> args |
-						return '''«functionName»(«GenerationHelper.createCommaList(args)»);''' + '\n';
+						return '''«functionName»(«GenerationUtils.createCommaList(args)»);''' + '\n';
 					];
 				} else if (body instanceof Comparison) {
 					subprotocolCount++;
 					val String subprotocolName = STATEMENT + subprotocolCount;
 					callStatement = [String functionName, List<String> args |
-						return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationHelper.createCommaList(args)»));''' + '\n';
+						return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationUtils.createCommaList(args)»));''' + '\n';
 					];
 				}
 			}
 			
 			// If the function has a constant variable anywhere, add the CommonInput variable as an argument
 			if (augmentedModel.userFunctionHasConstant(name)) {
-				arguments.add(GenerationHelper.INPUT_VARIABLE);
+				arguments.add(GenerationUtils.INPUT_VARIABLE);
 			}
 			
 			// If the function has witness variables anywhere, add each witness variable as an argument
@@ -452,23 +452,23 @@ class ProofGenerator {
 	}
 	
 	def private dispatch String generateCode(PPVariable variable) {
-		val String name = GenerationHelper.convertToJavaName(variable.getName());
-		return GenerationHelper.createPPName(name);
+		val String name = GenerationUtils.convertToJavaName(variable.getName());
+		return GenerationUtils.createPPName(name);
 	}
 	
 	def private dispatch String generateCode(ConstantVariable variable) {
-		val String name = GenerationHelper.convertToJavaName(variable.getName());
-		return GenerationHelper.createConstantName(name);
+		val String name = GenerationUtils.convertToJavaName(variable.getName());
+		return GenerationUtils.createConstantName(name);
 	}
 	
 	def private dispatch String generateCode(LocalVariable variable) {
-		val String name = GenerationHelper.convertToJavaName(variable.getName());
-		return inInlineFunction ? GenerationHelper.createLocalName(name) : name;
+		val String name = GenerationUtils.convertToJavaName(variable.getName());
+		return inInlineFunction ? GenerationUtils.createLocalName(name) : name;
 	}
 	
 	def private dispatch String generateCode(WitnessVariable witness) {
-		val String name = GenerationHelper.convertToJavaName(witness.getName());
-		return GenerationHelper.createWitnessName(name);
+		val String name = GenerationUtils.convertToJavaName(witness.getName());
+		return GenerationUtils.createWitnessName(name);
 	}
 	
 	def private dispatch String generateCode(NumberLiteral number) {

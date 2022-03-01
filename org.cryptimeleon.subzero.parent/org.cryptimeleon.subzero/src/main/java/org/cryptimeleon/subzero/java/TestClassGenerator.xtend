@@ -25,7 +25,7 @@ import org.cryptimeleon.craco.protocols.SecretInput
 import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolVerifierInstance
 import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolProverInstance
 import org.cryptimeleon.subzero.generator.ClassGenerator
-import org.cryptimeleon.subzero.generator.GenerationHelper
+import org.cryptimeleon.subzero.generator.GenerationUtils
 
 /**
  * Generates the LibraryTest class that will run the protocol
@@ -67,9 +67,9 @@ class TestClassGenerator implements ClassGenerator {
 	def private ClassBuilder buildClass() {
 		// Fetch all model info needed for generation
 		val String protocolClassName = augmentedModel.getProtocolName();
-		val String commonInputClassName = GenerationHelper.createCommonInputClassName(protocolClassName);
-		val String secretInputClassName = GenerationHelper.createSecretInputClassName(protocolClassName);
-		val String publicParametersClassName = GenerationHelper.createPublicParametersClassName(protocolClassName);
+		val String commonInputClassName = GenerationUtils.createCommonInputClassName(protocolClassName);
+		val String secretInputClassName = GenerationUtils.createSecretInputClassName(protocolClassName);
+		val String publicParametersClassName = GenerationUtils.createPublicParametersClassName(protocolClassName);
 		
 		val Map<String, GroupType> groups = augmentedModel.getGroups();
 
@@ -89,7 +89,7 @@ class TestClassGenerator implements ClassGenerator {
 		val MethodBuilder testMethod = new MethodBuilder(PUBLIC, void, "protocolTest");		
 		testMethod.setTest();
 		
-		val groupVariableName = GenerationHelper.convertClassToVariableName(groupClass);
+		val groupVariableName = GenerationUtils.convertClassToVariableName(groupClass);
 		var String groupInstance;
 		var String defaultGroup;
 		
@@ -107,7 +107,7 @@ class TestClassGenerator implements ClassGenerator {
 		
 		// Build initialization statements for all witnesses
 		for (String witnessName : witnessNames) {
-			val String javaWitnessName = GenerationHelper.createWitnessName(witnessName);
+			val String javaWitnessName = GenerationUtils.createWitnessName(witnessName);
 			if (witnessTypes.get(witnessName) == Type.EXPONENT) {
 				if (constrainedWitnessNames.contains(witnessName)) {
 					witnessesBuilder.append('''«ZpElement.use()» «javaWitnessName» = zp.valueOf(0); // Change this value so that it satisfies all constraints on the witness''')
@@ -137,23 +137,23 @@ class TestClassGenerator implements ClassGenerator {
 		// Create a comma-delimited list of all public parameter variables
 		var String publicParameterArguments = "";
 		if (!publicParameterNames.isEmpty()) {
-			publicParameterArguments = ", " + GenerationHelper.createCommaList(
+			publicParameterArguments = ", " + GenerationUtils.createCommaList(
 				publicParameterNames.stream()
-				.map(name | GenerationHelper.convertToJavaName(name))
+				.map(name | GenerationUtils.convertToJavaName(name))
 				.collect(Collectors.toList())
 			);
 		}
 		
 		// Create a comma-delimited list of all common input variables
-		val String commonInputArguments = GenerationHelper.createCommaList(
+		val String commonInputArguments = GenerationUtils.createCommaList(
 			constantNames.stream()
-			.map(name | GenerationHelper.convertToJavaName(name))
+			.map(name | GenerationUtils.convertToJavaName(name))
 			.collect(Collectors.toList())
 		);
 		// Create a comma-delimited list of all witnesses
-		val String secretInputArguments = GenerationHelper.createCommaList(
+		val String secretInputArguments = GenerationUtils.createCommaList(
 			witnessNames.stream()
-			.map(name | GenerationHelper.convertToJavaName(name))
+			.map(name | GenerationUtils.convertToJavaName(name))
 			.collect(Collectors.toList())
 		);
 		
@@ -207,7 +207,7 @@ class TestClassGenerator implements ClassGenerator {
 	
 	// Helper class for building initialization statements for variables
 	def private void createVariableInitialization(String variableName, Map<String, Type> variableTypes, Map<String, GroupType> variableGroups, String defaultGroup, StringBuilder builder) {
-		val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
+		val String javaVariableName = GenerationUtils.convertToJavaName(variableName);
 		val Type variableType = variableTypes.get(variableName);
 		val Class<?> variableTypeClass = variableType.getTypeClass();
 		

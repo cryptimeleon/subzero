@@ -25,7 +25,7 @@ import static org.cryptimeleon.subzero.model.LanguageConstants.*
 import java.util.Map
 import java.util.HashMap
 import java.util.List
-import org.cryptimeleon.subzero.generator.GenerationHelper
+import org.cryptimeleon.subzero.generator.GenerationUtils
 import org.cryptimeleon.subzero.subzero.Expression
 import org.cryptimeleon.subzero.subzero.LocalVariable
 import org.cryptimeleon.subzero.subzero.WitnessVariable
@@ -327,7 +327,7 @@ class LatexGenerator implements CodeGenerator {
 				val String parameterName = parameters.get(i).getName();
 				val LatexGenerator generator = new LatexGenerator(augmentedModel, false);
 				val String argumentCode = generator.generate(arguments.get(i));
-				inlineCode = inlineCode.replace(GenerationHelper.createLocalName(parameterName), argumentCode);			
+				inlineCode = inlineCode.replace(GenerationUtils.createLocalName(parameterName), argumentCode);			
 			}
 			
 			builder.append(inlineCode);
@@ -358,7 +358,7 @@ class LatexGenerator implements CodeGenerator {
 	
 	def dispatch private void generateLatex(LocalVariable variable) {
 		val String identifier = inInlineFunction
-			? GenerationHelper.createLocalName(variable.getName())
+			? GenerationUtils.createLocalName(variable.getName())
 			: new LatexIdentifier(variable.getName()).toString();
 		builder.append(identifier);
 	}

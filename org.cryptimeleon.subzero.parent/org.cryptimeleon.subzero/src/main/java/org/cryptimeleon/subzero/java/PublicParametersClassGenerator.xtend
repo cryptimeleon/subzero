@@ -21,7 +21,7 @@ import org.cryptimeleon.subzero.builder.ImportBuilder
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof
 import org.cryptimeleon.math.serialization.ObjectRepresentation
 import org.cryptimeleon.subzero.generator.ClassGenerator
-import org.cryptimeleon.subzero.generator.GenerationHelper
+import org.cryptimeleon.subzero.generator.GenerationUtils
 
 /**
  * Generates the public parameters class
@@ -55,7 +55,7 @@ class PublicParametersClassGenerator implements ClassGenerator {
 
 	def private buildClass() {
 		val String protocolName = augmentedModel.getProtocolName();
-		val String className = GenerationHelper.createPublicParametersClassName(protocolName);
+		val String className = GenerationUtils.createPublicParametersClassName(protocolName);
 		val ClassBuilder publicParametersClass = new ClassBuilder(PUBLIC, className).implement(StandaloneRepresentable.use());
 		
 		var Class<?> groupClass;

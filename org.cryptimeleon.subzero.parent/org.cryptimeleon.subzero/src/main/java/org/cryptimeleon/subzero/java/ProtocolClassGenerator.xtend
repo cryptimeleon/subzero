@@ -55,7 +55,7 @@ import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector
 import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpec
 import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpecBuilder
 import org.cryptimeleon.subzero.generator.ClassGenerator
-import org.cryptimeleon.subzero.generator.GenerationHelper
+import org.cryptimeleon.subzero.generator.GenerationUtils
 
 /**
  * Generates the protocol class that specifies the protocol
@@ -100,9 +100,9 @@ class ProtocolClassGenerator implements ClassGenerator {
 	
 	def private ClassBuilder buildClass(ProofGenerator proofGenerator) {
 		val String protocolClassName = augmentedModel.getProtocolName();
-		val String commonInputClassName = GenerationHelper.createCommonInputClassName(protocolClassName);
-		val String secretInputClassName = GenerationHelper.createSecretInputClassName(protocolClassName);
-		val String publicParametersClassName = GenerationHelper.createPublicParametersClassName(protocolClassName);
+		val String commonInputClassName = GenerationUtils.createCommonInputClassName(protocolClassName);
+		val String secretInputClassName = GenerationUtils.createSecretInputClassName(protocolClassName);
+		val String publicParametersClassName = GenerationUtils.createPublicParametersClassName(protocolClassName);
 		
 		val EObject rootNode = augmentedModel.getModel().getProof();
 		val boolean requiresPublicParameterClass = augmentedModel.requiresPublicParametersClass()
@@ -122,7 +122,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
 		
 		val Class<?> groupClass = augmentedModel.getGroupClass();
-		val groupName = GenerationHelper.convertClassToVariableName(groupClass);
+		val groupName = GenerationUtils.convertClassToVariableName(groupClass);
 		
 		var ClassBuilder protocolClass;
 		if (hasOrProof) {
@@ -155,7 +155,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 			
 			val FieldBuilder ppField = new FieldBuilder(
 				PROTECTED, FINAL, publicParameterTypeClass.use(),
-				GenerationHelper.convertToJavaName(publicParameterName)
+				GenerationUtils.convertToJavaName(publicParameterName)
 			);
 			protocolClass.addField(ppField);
 		}
@@ -165,7 +165,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 		constructor.addParameter(groupClass.use(), groupName);
 		if (requiresPublicParameterClass) constructor.addParameter(publicParametersClassName, "pp");
 		for (String publicParameterName : sortedPublicParameterNames) {
-			val String javaPublicParameterName = GenerationHelper.convertToJavaName(publicParameterName);
+			val String javaPublicParameterName = GenerationUtils.convertToJavaName(publicParameterName);
 			val Class<?> publicParameterTypeClass = publicParameterTypes.get(publicParameterName).getTypeClass();
 			constructor.addParameter(publicParameterTypeClass.use(), javaPublicParameterName);
 		}
@@ -180,7 +180,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 			this.e = «groupName».getBilinearMap();
 			«ENDIF»
 			«FOR String publicParameterName : sortedPublicParameterNames»
-			this.«GenerationHelper.convertToJavaName(publicParameterName)» = «GenerationHelper.convertToJavaName(publicParameterName)»;
+			this.«GenerationUtils.convertToJavaName(publicParameterName)» = «GenerationUtils.convertToJavaName(publicParameterName)»;
 			«ENDFOR»
 		''';
 		constructor.addBody(constructorBody);
@@ -291,12 +291,12 @@ class ProtocolClassGenerator implements ClassGenerator {
 		
 		val List<String> exponentWitnessNames = witnessNames.stream()
 			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
-			.map([witnessName | "overallSecretInput." + GenerationHelper.convertToJavaName(witnessName)])
+			.map([witnessName | "overallSecretInput." + GenerationUtils.convertToJavaName(witnessName)])
 			.collect(Collectors.toList());
 			
 		var String exponentWitnessArguments = "";
 		if (!exponentWitnessNames.isEmpty()) {
-			exponentWitnessArguments = GenerationHelper.createCommaList(exponentWitnessNames) + ", ";
+			exponentWitnessArguments = GenerationUtils.createCommaList(exponentWitnessNames) + ", ";
 		}
 			
 		val String secretInput = hasOrDescendantOfAnd ? "subprotocolSecret" : "secretInput"
@@ -342,27 +342,27 @@ class ProtocolClassGenerator implements ClassGenerator {
 		
 		val List<String> exponentWitnessNames = witnessNames.stream()
 			.filter([witnessName |  witnessTypes.get(witnessName) == Type.EXPONENT])
-			.map([witnessName | GenerationHelper.createWitnessName(witnessName)])
+			.map([witnessName | GenerationUtils.createWitnessName(witnessName)])
 			.collect(Collectors.toList());
 		
 		var String exponentWitnessArguments = "";
 		if (!exponentWitnessNames.isEmpty()) {
-			exponentWitnessArguments = GenerationHelper.createCommaList(exponentWitnessNames) + ", ";
+			exponentWitnessArguments = GenerationUtils.createCommaList(exponentWitnessNames) + ", ";
 		}
 		
 		val String methodBody = '''
 			«IF hasOrDescendantOfAnd»
-			«commonInputClassName» «GenerationHelper.INPUT_VARIABLE» = ((SubprotocolCommonInput) commonInput).commonInput;
+			«commonInputClassName» «GenerationUtils.INPUT_VARIABLE» = ((SubprotocolCommonInput) commonInput).commonInput;
 			«ELSE»
-			«commonInputClassName» «GenerationHelper.INPUT_VARIABLE» = («commonInputClassName») commonInput;
+			«commonInputClassName» «GenerationUtils.INPUT_VARIABLE» = («commonInputClassName») commonInput;
 			«ENDIF»
 			
 			//Add variables (witnesses)
 			«FOR String witnessName : witnessNames»
 			«IF witnessTypes.get(witnessName) == Type.EXPONENT»
-			«SchnorrZnVariable.use()» «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
+			«SchnorrZnVariable.use()» «GenerationUtils.createWitnessName(witnessName)» = subprotocolSpecBuilder.addZnVariable("«witnessName»", zp);
 			«ELSE»
-			«SchnorrGroupElemVariable.use()» «GenerationHelper.createWitnessName(witnessName)» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
+			«SchnorrGroupElemVariable.use()» «GenerationUtils.createWitnessName(witnessName)» = subprotocolSpecBuilder.addGroupElemVariable("«witnessName»", «groupUsed»);
 			«ENDIF»
 			«ENDFOR»
 			
@@ -403,7 +403,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 			«ENDIF»
 
 			«FOR String witnessName : witnessNames»
-			proverSpecBuilder.putWitnessValue("«witnessName»", witness.«GenerationHelper.convertToJavaName(witnessName)»);
+			proverSpecBuilder.putWitnessValue("«witnessName»", witness.«GenerationUtils.convertToJavaName(witnessName)»);
 	        «ENDFOR»
 			
 			«IF hasOrDescendantOfAnd»
@@ -434,7 +434,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 		commonInputClass.addBasicConstructor(PUBLIC);
 		
 		for (String variableName : variableNames) {
-			val String javaVariableName = GenerationHelper.convertToJavaName(variableName);
+			val String javaVariableName = GenerationUtils.convertToJavaName(variableName);
 			val variableTypeClass = variableTypes.get(variableName).getTypeClass();
 			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypeClass.use(), javaVariableName);
 			commonInputClass.addField(variableField);
@@ -447,7 +447,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName).implement(SecretInput.use());
 		
 		for (String witnessName : witnessNames) {
-			val String javaWitnessName = GenerationHelper.convertToJavaName(witnessName);
+			val String javaWitnessName = GenerationUtils.convertToJavaName(witnessName);
 			val Class<?> witnessTypeClass = witnessTypes.get(witnessName).getTypeClass();
 			val FieldBuilder field = new FieldBuilder(PUBLIC, FINAL, witnessTypeClass.use(), javaWitnessName);
 			secretInputClass.addField(field);
@@ -630,7 +630,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 			subprotocolName = subprotocolName.substring(1, subprotocolName.length()-1);
 		}
 		
-		val String subprotocolClassName = GenerationHelper.convertToClassName(subprotocolName);
+		val String subprotocolClassName = GenerationUtils.convertToClassName(subprotocolName);
 		val String commonInput = hasOrDescendantOfAnd ? "subprotocolCommonInput" : "commonInput";
 		builder.append('''leaf("«subprotocolClassName»", new «subprotocolClassName»(), «commonInput»)''');
 		
@@ -680,7 +680,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 					if (body instanceof Conjunction) {
 						method = new MethodBuilder(PRIVATE, void, name);
 						method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
-						method.addParameter(String, GenerationHelper.SUBPROTOCOL_VARIABLE);
+						method.addParameter(String, GenerationUtils.SUBPROTOCOL_VARIABLE);
 						
 						method.addBody(statement);
 					} else if (body instanceof Comparison) {
@@ -692,7 +692,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 				
 				// If the function has a constant variable anywhere, add the CommonInput variable as a parameter
 				if (augmentedModel.userFunctionHasConstant(name)) {
-					method.addParameter(commonInputClassName, GenerationHelper.INPUT_VARIABLE);
+					method.addParameter(commonInputClassName, GenerationUtils.INPUT_VARIABLE);
 				}
 				
 				// If the function has witness variables anywhere, add each witness variable as a parameter
@@ -700,7 +700,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 				if (functionWitnesses !== null) {
 					for (String witnessName : functionWitnesses) {
 						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getTypeWitnessClass();
-						method.addParameter(parameterTypeClass, GenerationHelper.createWitnessName(witnessName));
+						method.addParameter(parameterTypeClass, GenerationUtils.createWitnessName(witnessName));
 					}
 				}
 				

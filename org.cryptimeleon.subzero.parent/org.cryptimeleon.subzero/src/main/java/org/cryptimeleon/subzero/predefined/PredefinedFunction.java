@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.cryptimeleon.subzero.builder.CodeBuilder;
-import org.cryptimeleon.subzero.generator.GenerationHelper;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.model.Type;
 
 public abstract class PredefinedFunction {
@@ -26,7 +26,7 @@ public abstract class PredefinedFunction {
 		builder.space();
 		builder.append(getName());
 		builder.openParen();
-		builder.append(GenerationHelper.createCommaList(getParameters().stream().map(parameter -> parameter.getName()).collect(Collectors.toList())));
+		builder.append(GenerationUtils.createCommaList(getParameters().stream().map(parameter -> parameter.getName()).collect(Collectors.toList())));
 		builder.closeParen();
 
 		return builder.toString();
@@ -54,7 +54,7 @@ public abstract class PredefinedFunction {
 		
 		builder.append(getName());
 		builder.openParen();
-		builder.append(GenerationHelper.createCommaList(argumentNames));
+		builder.append(GenerationUtils.createCommaList(argumentNames));
 		builder.closeParen();
 		
 		return builder.toString();

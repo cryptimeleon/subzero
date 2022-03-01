@@ -28,7 +28,7 @@ import org.cryptimeleon.subzero.subzero.WitnessVariable;
 import org.cryptimeleon.subzero.subzero.SubzeroFactory;
 import org.eclipse.emf.ecore.EObject;
 import java.util.Collections;
-import org.cryptimeleon.subzero.generator.GenerationHelper;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
 import java.util.Map.Entry;
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
 import org.cryptimeleon.math.structures.groups.Group;
@@ -134,16 +134,16 @@ public class AugmentedModel {
 
         String rawProtocolName = model.getProtocolName();
         if (rawProtocolName == null) {
-            protocolName = GenerationHelper.DEFAULT_PROTOCOL_NAME;
+            protocolName = GenerationUtils.DEFAULT_PROTOCOL_NAME;
         } else {
-            protocolName = GenerationHelper.convertToClassName(rawProtocolName.substring(1, rawProtocolName.length()-1));
+            protocolName = GenerationUtils.convertToClassName(rawProtocolName.substring(1, rawProtocolName.length()-1));
         }
         return protocolName;
     }
 
     // Returns the default package name for now
     public String getPackageName() {
-        return GenerationHelper.DEFAULT_PACKAGE_NAME;
+        return GenerationUtils.DEFAULT_PACKAGE_NAME;
     }
 
     // Returns the raw DSL code that produced the model
