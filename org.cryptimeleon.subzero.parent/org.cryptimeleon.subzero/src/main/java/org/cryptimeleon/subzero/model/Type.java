@@ -1,16 +1,14 @@
 package org.cryptimeleon.subzero.model;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
-import org.cryptimeleon.math.expressions.bool.BooleanExpression;
 import org.cryptimeleon.math.expressions.exponent.ExponentExpr;
 import org.cryptimeleon.math.expressions.group.GroupElementExpression;
 import org.cryptimeleon.math.structures.groups.GroupElement;
 import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An enum to represent the Subzero type of a variable or return value
@@ -64,7 +62,7 @@ public enum Type {
 	private final Class<?> typeExprClass;
 	private final Class<?> typeWitnessClass;
 	
-	private Type(String typeName, Class<?> typeClass, Class<?> typeExprClass, Class<?> typeWitnessClass) {
+	Type(String typeName, Class<?> typeClass, Class<?> typeExprClass, Class<?> typeWitnessClass) {
 		this.typeName = typeName;
 		this.typeClass = typeClass;
 		this.typeExprClass = typeExprClass;

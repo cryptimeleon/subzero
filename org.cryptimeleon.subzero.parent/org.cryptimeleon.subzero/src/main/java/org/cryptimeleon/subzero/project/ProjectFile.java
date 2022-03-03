@@ -2,8 +2,6 @@ package org.cryptimeleon.subzero.project;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Base64;
 
 /**
@@ -13,7 +11,7 @@ import java.util.Base64;
  */
 public class ProjectFile {
 	
-	private String name;
+	private final String name;
 	private String contents;
 	
 	public ProjectFile(String name, String contents) {
@@ -32,8 +30,8 @@ public class ProjectFile {
 			} else {
 				contents = new String(fileContent, StandardCharsets.UTF_8);
 			}
-		} catch (IOException e) {
-			System.out.println("Cannot read project file: " + path);
+		} catch (NullPointerException | IOException e) {
+			System.err.println("Cannot read project file: " + path);
 		}
 	}
 

@@ -3,9 +3,9 @@ package org.cryptimeleon.subzero.predefined;
 import org.cryptimeleon.subzero.model.Type;
 
 public class FunctionParameter {
-	private String name;
-	private Type type;
-	private int size;
+	private final String name;
+	private final Type type;
+	private final int size;
 	
 	public FunctionParameter(String name, Type type) {
 		this(name, type, 1);

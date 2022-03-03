@@ -86,6 +86,11 @@ class BranchState {
 		this.logicalBeforeComparison = state.logicalBeforeComparison;
 		this.tupleBeforeFunctionCall = state.tupleBeforeFunctionCall;
 	}
+
+    new(BranchState state, EObject node) {
+            this(state);
+            this.updateGeneral(node);
+    }
 	
 	def int getDepth() {return depth;}
 	def void setDepth(int depth) {this.depth = depth;}

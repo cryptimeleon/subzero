@@ -6,7 +6,7 @@ package org.cryptimeleon.subzero.model;
 public class VariableIdentifier {
     private static final String UNDERSCORE = "_";
     private static final String TILDE = "~";
-    private static final String QUOTE = "\'";
+    private static final String QUOTE = "'";
     private static final String SUBSCRIPT_KEYWORD = "Sub";
     private static final String PRIME_KEYWORD = "Prime";
     private static final String TILDE_KEYWORD = "Tilde";

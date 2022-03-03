@@ -1,10 +1,10 @@
 package org.cryptimeleon.subzero.generator;
 
-import java.util.List;
-
 import org.cryptimeleon.craco.protocols.CommonInput;
 import org.cryptimeleon.craco.protocols.SecretInput;
 import org.cryptimeleon.subzero.model.VariableIdentifier;
+
+import java.util.List;
 
 /**
  * A general helper class to assist with code generation

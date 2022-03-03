@@ -1,11 +1,11 @@
 package org.cryptimeleon.subzero.predefined;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.cryptimeleon.subzero.builder.CodeBuilder;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.model.Type;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class PredefinedFunction {
 	public abstract String getName();

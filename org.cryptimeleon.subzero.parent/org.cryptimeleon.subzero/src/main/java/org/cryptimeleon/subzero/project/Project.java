@@ -9,7 +9,7 @@ import org.cryptimeleon.subzero.builder.JsonBuilder;
  */
 public class Project {
 	
-	private ProjectDirectory root;
+	private final ProjectDirectory root;
 
 	public Project(ProjectDirectory root) {
 		this.root = root;

@@ -3,14 +3,14 @@
  */
 package org.cryptimeleon.subzero.generator;
 
+import org.cryptimeleon.subzero.java.JavaGenerator;
+import org.cryptimeleon.subzero.latex.LatexGenerator;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.subzero.Model;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
-import org.cryptimeleon.subzero.latex.LatexGenerator;
-import org.cryptimeleon.subzero.java.JavaGenerator;
 
 /**
  * Generates code from your model files on save.
@@ -21,10 +21,10 @@ import org.cryptimeleon.subzero.java.JavaGenerator;
  */
 public class SubzeroGenerator extends AbstractGenerator {
     // The compiled code file when using the web editor
-    private static String OUTPUT_FILE = "/DEFAULT_ARTIFACT";
+    private static final String OUTPUT_FILE = "/DEFAULT_ARTIFACT";
 
-    private static String CODE_RESOURCE = "code.sub0";
-    private static String LATEX_RESOURCE = "latex.sub0";
+    private static final String CODE_RESOURCE = "code.sub0";
+    private static final String LATEX_RESOURCE = "latex.sub0";
 
 
     public void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {

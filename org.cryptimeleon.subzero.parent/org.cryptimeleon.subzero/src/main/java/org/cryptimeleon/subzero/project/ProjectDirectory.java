@@ -8,14 +8,14 @@ import java.util.List;
  */
 public class ProjectDirectory {
 	
-	private String name;
-	private List<ProjectDirectory> subDirectories;
-	private List<ProjectFile> files;
+	private final String name;
+	private final List<ProjectDirectory> subDirectories;
+	private final List<ProjectFile> files;
 	
 	public ProjectDirectory(String name) {
 		this.name = name;
-		files = new ArrayList<ProjectFile>();
-		subDirectories = new ArrayList<ProjectDirectory>();
+		files = new ArrayList<>();
+		subDirectories = new ArrayList<>();
 	}
 	
 	public void addDirectory(ProjectDirectory directory) {

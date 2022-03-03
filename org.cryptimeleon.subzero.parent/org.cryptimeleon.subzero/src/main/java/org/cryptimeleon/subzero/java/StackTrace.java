@@ -1,15 +1,15 @@
 package org.cryptimeleon.subzero.java;
 
+import org.cryptimeleon.subzero.builder.JsonBuilder;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import org.cryptimeleon.subzero.builder.JsonBuilder;
 
 /**
  * Represents the serialized JSON object of a Java error stack trace thrown during code generation
  */
 public class StackTrace {
-	private String trace;
+	private final String trace;
 	
 	public StackTrace(Throwable e) {
 		StringWriter stringWriter = new StringWriter();

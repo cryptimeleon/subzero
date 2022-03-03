@@ -1,12 +1,12 @@
 package org.cryptimeleon.subzero.model;
 
-import java.util.ArrayList;
-import java.lang.reflect.Method;
-import java.util.Collections;
-
-import org.cryptimeleon.subzero.predefined.TupleParameters;
-import org.cryptimeleon.subzero.predefined.ReturnsTuple;
 import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment;
+import org.cryptimeleon.subzero.predefined.ReturnsTuple;
+import org.cryptimeleon.subzero.predefined.TupleParameters;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**

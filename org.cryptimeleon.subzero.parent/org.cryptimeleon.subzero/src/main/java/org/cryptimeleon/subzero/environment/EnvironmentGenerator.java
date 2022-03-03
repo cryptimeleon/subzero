@@ -1,22 +1,23 @@
 package org.cryptimeleon.subzero.environment;
 
-import java.util.List;
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
-import java.util.Map.Entry;
-import java.util.Map;
-import org.cryptimeleon.subzero.subzero.FunctionCall;
-import org.cryptimeleon.subzero.subzero.Variable;
-import java.util.ArrayList;
-import org.cryptimeleon.subzero.subzero.LocalVariable;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collection;
 import org.cryptimeleon.subzero.builder.JsonBuilder;
+import org.cryptimeleon.subzero.generator.CodeGenerator;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
-import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.model.GroupType;
-import org.cryptimeleon.subzero.generator.CodeGenerator;
+import org.cryptimeleon.subzero.model.Type;
+import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.subzero.FunctionCall;
+import org.cryptimeleon.subzero.subzero.LocalVariable;
+import org.cryptimeleon.subzero.subzero.Variable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class EnvironmentGenerator implements CodeGenerator {
     private final AugmentedModel augmentedModel;

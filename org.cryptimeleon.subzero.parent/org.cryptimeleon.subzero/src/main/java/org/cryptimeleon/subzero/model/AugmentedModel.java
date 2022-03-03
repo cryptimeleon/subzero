@@ -1,16 +1,14 @@
 package org.cryptimeleon.subzero.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.cryptimeleon.math.structures.groups.Group;
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Comparison;
 import org.cryptimeleon.subzero.subzero.Conjunction;
+import org.cryptimeleon.subzero.subzero.Constant;
+import org.cryptimeleon.subzero.subzero.ConstantVariable;
 import org.cryptimeleon.subzero.subzero.Disjunction;
 import org.cryptimeleon.subzero.subzero.Expression;
 import org.cryptimeleon.subzero.subzero.FunctionCall;
@@ -18,28 +16,31 @@ import org.cryptimeleon.subzero.subzero.FunctionDefinition;
 import org.cryptimeleon.subzero.subzero.LocalVariable;
 import org.cryptimeleon.subzero.subzero.Model;
 import org.cryptimeleon.subzero.subzero.NumberLiteral;
+import org.cryptimeleon.subzero.subzero.PPVariable;
 import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
+import org.cryptimeleon.subzero.subzero.SubzeroFactory;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.Variable;
 import org.cryptimeleon.subzero.subzero.Witness;
 import org.cryptimeleon.subzero.subzero.WitnessVariable;
-import org.cryptimeleon.subzero.subzero.SubzeroFactory;
-import org.eclipse.emf.ecore.EObject;
-import java.util.Collections;
-import org.cryptimeleon.subzero.generator.GenerationUtils;
-import java.util.Map.Entry;
-import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
-import org.cryptimeleon.math.structures.groups.Group;
-import org.eclipse.xtext.resource.XtextResource;
-import org.cryptimeleon.subzero.subzero.PPVariable;
-import org.cryptimeleon.subzero.subzero.ConstantVariable;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
-import org.cryptimeleon.subzero.subzero.Constant;
-import java.util.LinkedHashSet;
+import org.eclipse.xtext.resource.XtextResource;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -101,7 +102,7 @@ public class AugmentedModel {
     private Set<String> userFunctionWithConstant = null;
     private Map<String, Set<String>> userFunctionWitnesses = null;
     private Set<String> inlineFunctionNames = null;
-	
+
 	public AugmentedModel(Model model) {
         this.model = model;
 
@@ -711,7 +712,7 @@ public class AugmentedModel {
         return getUserFunctionSignatures().get(functionName);
     }
 
-    // Returns a map from user function names and local variable names to a list of local variable objects	
+    // Returns a map from user function names and local variable names to a list of local variable objects
     public Map<String, Map<String, List<LocalVariable>>> getLocalVariableNodes() {
         if (localVariables != null) return localVariables;
 

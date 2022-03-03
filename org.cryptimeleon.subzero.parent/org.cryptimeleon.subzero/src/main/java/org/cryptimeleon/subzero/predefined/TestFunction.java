@@ -1,9 +1,9 @@
 package org.cryptimeleon.subzero.predefined;
 
+import org.cryptimeleon.subzero.model.Type;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.cryptimeleon.subzero.model.Type;
 
 public class TestFunction extends PredefinedFunction {
 
