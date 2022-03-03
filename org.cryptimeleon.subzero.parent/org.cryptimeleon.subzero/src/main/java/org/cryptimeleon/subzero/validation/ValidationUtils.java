@@ -34,33 +34,30 @@ import java.util.stream.Collectors;
 
 public class ValidationUtils {
     
-    public static final Set<Class<?>> NODE_CLASSES;
-    static {
-        NODE_CLASSES = Set.of(
-            Model.class,
-            FunctionDefinition.class,
-            Parameter.class,
-            Witness.class,
-            PublicParameter.class,
-            Constant.class,
-            Disjunction.class,
-            Conjunction.class,
-            Comparison.class,
-            Sum.class,
-            Product.class,
-            Power.class,
-            StringLiteral.class,
-            Tuple.class,
-            Negative.class,
-            FunctionCall.class,
-            LocalVariable.class,
-            ConstantVariable.class,
-            PPVariable.class,
-            WitnessVariable.class,
-            Variable.class,
-            NumberLiteral.class
-        );
-    }
+    public static final Set<Class<?>> NODE_CLASSES = Set.of(
+        Model.class,
+        FunctionDefinition.class,
+        Parameter.class,
+        Witness.class,
+        PublicParameter.class,
+        Constant.class,
+        Disjunction.class,
+        Conjunction.class,
+        Comparison.class,
+        Sum.class,
+        Product.class,
+        Power.class,
+        StringLiteral.class,
+        Tuple.class,
+        Negative.class,
+        FunctionCall.class,
+        LocalVariable.class,
+        ConstantVariable.class,
+        PPVariable.class,
+        WitnessVariable.class,
+        Variable.class,
+        NumberLiteral.class
+    );
 
     // Capitalizes the first letter of the string
     public static String capitalize(String string) {
@@ -83,10 +80,14 @@ public class ValidationUtils {
     }
 
     // Helper map for getNodeName
-    private static final Map<Class<?>, String> nodeNames;
-    static {
-       nodeNames = NODE_CLASSES.stream().collect(Collectors.toMap(Function.identity(), ValidationUtils::generateNodeName));
-    }
+    private static final Map<Class<?>, String> nodeNames = NODE_CLASSES.stream()
+        .collect(
+            Collectors.toMap(
+                Function.identity(),
+                ValidationUtils::generateNodeName
+            )
+        );
+
     private static String generateNodeName(Class<?> nodeClass) {
         String className = nodeClass.getSimpleName();
         StringBuilder nameBuilder = new StringBuilder();
@@ -116,17 +117,13 @@ public class ValidationUtils {
 
 
     // Helper map for getCapitalizedNodeName
-    private static final Map<Class<?>, String> capitalizedNodeNames;
-    static {
-        capitalizedNodeNames = nodeNames.entrySet()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    e -> capitalize(e.getValue())
-                )
-            );
-    }
+    private static final Map<Class<?>, String> capitalizedNodeNames = nodeNames.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                e -> capitalize(e.getValue())
+            )
+        );
 
     // Returns the name of the type of node, with the first letter capitalized
     public static String getCapitalizedNodeName(EObject node) {
@@ -134,33 +131,30 @@ public class ValidationUtils {
     }
 
     // Helper map for getDefaultFeature
-    private static final Map<Class<?>, EStructuralFeature> nodeDefaultFeatures;
-    static {
-        nodeDefaultFeatures = Map.ofEntries(
-            Map.entry(Model.class, Literals.MODEL__PROOF),
-            Map.entry(FunctionDefinition.class, Literals.FUNCTION_DEFINITION__NAME),
-            Map.entry(Parameter.class, Literals.PARAMETER__NAME),
-            Map.entry(Witness.class, Literals.WITNESS__NAME),
-            Map.entry(PublicParameter.class, Literals.PUBLIC_PARAMETER__NAME),
-            Map.entry(Constant.class, Literals.CONSTANT__NAME),
-            Map.entry(Disjunction.class, Literals.DISJUNCTION__OPERATION),
-            Map.entry(Conjunction.class, Literals.CONJUNCTION__OPERATION),
-            Map.entry(Comparison.class, Literals.COMPARISON__OPERATION),
-            Map.entry(Sum.class, Literals.SUM__OPERATION),
-            Map.entry(Product.class, Literals.PRODUCT__OPERATION),
-            Map.entry(Power.class, Literals.POWER__OPERATION),
-            Map.entry(StringLiteral.class, Literals.STRING_LITERAL__VALUE),
-            Map.entry(Tuple.class, Literals.TUPLE__ELEMENTS),
-            Map.entry(Negative.class, Literals.NEGATIVE__OPERATION),
-            Map.entry(FunctionCall.class, Literals.FUNCTION_CALL__NAME),
-            Map.entry(LocalVariable.class, Literals.VARIABLE__NAME),
-            Map.entry(ConstantVariable.class, Literals.VARIABLE__NAME),
-            Map.entry(PPVariable.class, Literals.VARIABLE__NAME),
-            Map.entry(WitnessVariable.class, Literals.VARIABLE__NAME),
-            Map.entry(Variable.class, Literals.VARIABLE__NAME),
-            Map.entry(NumberLiteral.class, Literals.NUMBER_LITERAL__VALUE)
-        );
-    }
+    private static final Map<Class<?>, EStructuralFeature> nodeDefaultFeatures = Map.ofEntries(
+        Map.entry(Model.class, Literals.MODEL__PROOF),
+        Map.entry(FunctionDefinition.class, Literals.FUNCTION_DEFINITION__NAME),
+        Map.entry(Parameter.class, Literals.PARAMETER__NAME),
+        Map.entry(Witness.class, Literals.WITNESS__NAME),
+        Map.entry(PublicParameter.class, Literals.PUBLIC_PARAMETER__NAME),
+        Map.entry(Constant.class, Literals.CONSTANT__NAME),
+        Map.entry(Disjunction.class, Literals.DISJUNCTION__OPERATION),
+        Map.entry(Conjunction.class, Literals.CONJUNCTION__OPERATION),
+        Map.entry(Comparison.class, Literals.COMPARISON__OPERATION),
+        Map.entry(Sum.class, Literals.SUM__OPERATION),
+        Map.entry(Product.class, Literals.PRODUCT__OPERATION),
+        Map.entry(Power.class, Literals.POWER__OPERATION),
+        Map.entry(StringLiteral.class, Literals.STRING_LITERAL__VALUE),
+        Map.entry(Tuple.class, Literals.TUPLE__ELEMENTS),
+        Map.entry(Negative.class, Literals.NEGATIVE__OPERATION),
+        Map.entry(FunctionCall.class, Literals.FUNCTION_CALL__NAME),
+        Map.entry(LocalVariable.class, Literals.VARIABLE__NAME),
+        Map.entry(ConstantVariable.class, Literals.VARIABLE__NAME),
+        Map.entry(PPVariable.class, Literals.VARIABLE__NAME),
+        Map.entry(WitnessVariable.class, Literals.VARIABLE__NAME),
+        Map.entry(Variable.class, Literals.VARIABLE__NAME),
+        Map.entry(NumberLiteral.class, Literals.NUMBER_LITERAL__VALUE)
+    );
 
     // Returns the default structural feature for a node
     public static EStructuralFeature getDefaultFeature(EObject object) {
