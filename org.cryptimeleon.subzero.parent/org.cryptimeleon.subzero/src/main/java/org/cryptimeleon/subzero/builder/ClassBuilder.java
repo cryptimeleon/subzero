@@ -1,6 +1,7 @@
 package org.cryptimeleon.subzero.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,19 +11,19 @@ import java.util.List;
  */
 public class ClassBuilder {
 	
-	private Deque<FieldBuilder> fields;
-	private Deque<ConstructorBuilder> constructors;
-	private Deque<MethodBuilder> methods;
-	private Deque<ClassBuilder> nestedClasses;
+	private final Deque<FieldBuilder> fields;
+	private final Deque<ConstructorBuilder> constructors;
+	private final Deque<MethodBuilder> methods;
+	private final Deque<ClassBuilder> nestedClasses;
 	
-	private String name;
+	private final String name;
 	
-	private Modifier accessModifier;
-	private boolean isStatic;
-	private boolean isFinal;
+	private final Modifier accessModifier;
+	private final boolean isStatic;
+	private final boolean isFinal;
+	private final List<String> interfaceNames;
 	private String baseClassName;
-	private List<String> interfaceNames;
-	
+
 	boolean hasBasicConstructor;
 	Modifier basicConstructorModifier;
 	
@@ -43,7 +44,7 @@ public class ClassBuilder {
 		this(
 			accessModifier, 
 			extraModifier1 == Modifier.STATIC || extraModifier2 == Modifier.STATIC,
-			extraModifier2 == Modifier.FINAL || extraModifier2 == Modifier.FINAL,
+			extraModifier1 == Modifier.FINAL || extraModifier2 == Modifier.FINAL,
 			name
 		);
 		
@@ -62,10 +63,7 @@ public class ClassBuilder {
 	}
 	
 	public ClassBuilder implement(String ... interfaceNames) {
-		for (String interfaceName: interfaceNames) {
-			this.interfaceNames.add(interfaceName);
-		}
-		
+		Collections.addAll(this.interfaceNames, interfaceNames);
 		return this;
 	}
 	
@@ -78,10 +76,10 @@ public class ClassBuilder {
 	}
 	
 	private ClassBuilder(Modifier accessModifier, boolean isStatic, boolean isFinal, String name) {
-		fields = new LinkedList<FieldBuilder>();
-		constructors = new LinkedList<ConstructorBuilder>();
-		methods = new LinkedList<MethodBuilder>();
-		nestedClasses = new LinkedList<ClassBuilder>();
+		fields = new LinkedList<>();
+		constructors = new LinkedList<>();
+		methods = new LinkedList<>();
+		nestedClasses = new LinkedList<>();
 		
 		this.accessModifier = accessModifier;
 		this.isStatic = isStatic;
@@ -90,7 +88,7 @@ public class ClassBuilder {
 		
 		hasBasicConstructor = false;
 		
-		interfaceNames = new ArrayList<String>();
+		interfaceNames = new ArrayList<>();
 		baseClassName = null;
 	}
 	
@@ -165,7 +163,7 @@ public class ClassBuilder {
 			builder.append("extends ");
 			builder.append(baseClassName);
 			builder.append(" ");
-		};
+		}
 		
 		if (interfaceNames.size() > 0) {
 			builder.append("implements ");

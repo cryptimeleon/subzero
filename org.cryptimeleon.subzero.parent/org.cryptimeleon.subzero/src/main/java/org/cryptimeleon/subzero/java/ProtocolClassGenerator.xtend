@@ -583,8 +583,8 @@ class ProtocolClassGenerator implements ClassGenerator {
 
 
 			if (leftContainsOr || rightContainsOr) {
-				val leftBuilder = new CodeBuilder(builder);
-				val rightBuilder = new CodeBuilder(builder);
+				val leftBuilder = CodeBuilder.createWithSameIndent(builder);
+				val rightBuilder = CodeBuilder.createWithSameIndent(builder);
 				leftBuilder.indent();
 				rightBuilder.indent();
 

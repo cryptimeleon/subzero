@@ -7,9 +7,10 @@ import java.util.List;
  */
 public class JsonBuilder {
 
-	private StringBuilder builder;
+	private final StringBuilder builder;
+	private final boolean isArray;
+
 	private boolean commaNeeded;
-	private boolean isArray;
 	private boolean inArrayValue;
 	
 	public JsonBuilder() {

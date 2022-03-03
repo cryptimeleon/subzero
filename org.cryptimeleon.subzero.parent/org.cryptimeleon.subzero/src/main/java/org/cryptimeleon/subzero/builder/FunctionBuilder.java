@@ -1,30 +1,29 @@
 package org.cryptimeleon.subzero.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Represents a single class function (method or constructor) in generated code
  */
 public abstract class FunctionBuilder {
+
+	private final String returnTypeName;
+	private final List<String> parameterNames;
+	private final List<String> parameterTypeNames;
+	private final List<String> statements;
 	
-	private List<String> statements;
-	
-	private boolean isConstructor;
-	private Modifier accessModifier;
-	private boolean isStatic;
-	private boolean isFinal;
-	private String returnTypeName;
-	
+	private final boolean isConstructor;
+	private final Modifier accessModifier;
+	private final boolean isStatic;
+	private final boolean isFinal;
+
 	private boolean isTest;
 	private boolean isOverride;
 	
 	protected String methodName;
-	
-	private List<String> parameterNames;
-	private List<String> parameterTypeNames;
-	private List<String> annotations;
-	
+
 	protected FunctionBuilder() {
 		this(Modifier.PACKAGE, false, false, true, null, null);
 	}
@@ -85,11 +84,10 @@ public abstract class FunctionBuilder {
 			throw new IllegalArgumentException("Invalid acccess modifier");
 		}
 		
-		statements = new ArrayList<String>();
-		parameterNames = new ArrayList<String>();
-		parameterTypeNames = new ArrayList<String>();
-		annotations = new ArrayList<String>();
-		
+		statements = new ArrayList<>();
+		parameterNames = new ArrayList<>();
+		parameterTypeNames = new ArrayList<>();
+
 		this.isConstructor = isConstructor;
 		this.accessModifier = accessModifier;
 		this.isStatic = isStatic;
@@ -118,9 +116,7 @@ public abstract class FunctionBuilder {
 	}
 	
 	public void addBody(String body) {
-		for (String statement : body.split("\n")) {
-			statements.add(statement);
-		}
+		Collections.addAll(statements, body.split("\n"));
 	}
 	
 	public void addStatementNewline() {
@@ -142,12 +138,7 @@ public abstract class FunctionBuilder {
 
 	public String toString(int indentLevel) {
 		CodeBuilder builder = new CodeBuilder(indentLevel);
-		
-		for (String annotation : annotations) {
-			builder.append('@' + annotation);
-			builder.newLine();
-		}
-		
+
 		if (isTest) {
 			builder.append("@Test");
 			builder.newLine();

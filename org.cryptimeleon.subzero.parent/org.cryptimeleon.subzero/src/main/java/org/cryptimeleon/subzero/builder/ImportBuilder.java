@@ -11,14 +11,14 @@ import java.util.Set;
  */
 public class ImportBuilder {
 
-	private Set<String> priorityClasses;
-	private Set<String> fullyQualifiedPriorityClasses;
-	private Set<String> importedClasses;
+	private final Set<String> priorityClasses;
+	private final Set<String> fullyQualifiedPriorityClasses;
+	private final Set<String> importedClasses;
 	
 	public ImportBuilder() {
-		priorityClasses = new HashSet<String>();
-		fullyQualifiedPriorityClasses = new HashSet<String>();
-		importedClasses = new HashSet<String>();
+		priorityClasses = new HashSet<>();
+		fullyQualifiedPriorityClasses = new HashSet<>();
+		importedClasses = new HashSet<>();
 	}
 	
 	// Prioritizes a class so that if multiple classes with the same
@@ -69,11 +69,11 @@ public class ImportBuilder {
 	// Generates all import statements, in sorted order of full class name
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		List<String> imports = new ArrayList<String>(importedClasses);
+		List<String> imports = new ArrayList<>(importedClasses);
 		Collections.sort(imports);
 		
 		for (String importClass : imports) {
-			builder.append("import " + importClass.replace('$', '.') + ";\n");
+			builder.append("import ").append(importClass.replace('$', '.')).append(";\n");
 		}
 		
 		return builder.toString();

@@ -7,28 +7,26 @@ package org.cryptimeleon.subzero.builder;
  */
 public class CodeBuilder {
 
-	public static final char INDENT_CHAR = '\t';
+	public static final String INDENT_CHAR = "\t";
 	public static final char INDENT_SIZE = 1;
-	
+
+	private final StringBuilder builder;
+	private final String indent;
+
 	private int indentLevel;
-	private String indent;
-	private StringBuilder builder;
-	
+
 	public CodeBuilder() {
 		this(0);
-	}
-	
-	public CodeBuilder(CodeBuilder codeBuilder) {
-		this(codeBuilder.indentLevel);
 	}
 	
 	public CodeBuilder(int indentLevel) {
 		this.builder = new StringBuilder();
 		this.indentLevel = indentLevel;
-		indent = "";
-		for (int i = 0; i < INDENT_SIZE; i++) {
-			indent += INDENT_CHAR;
-		}
+		indent = INDENT_CHAR.repeat(INDENT_SIZE);
+	}
+
+	public static CodeBuilder createWithSameIndent(CodeBuilder codeBuilder) {
+		return new CodeBuilder(codeBuilder.indentLevel);
 	}
 	
 	private void handleIndent() {
@@ -36,10 +34,7 @@ public class CodeBuilder {
 		boolean isStartOfLine = length == 0 || builder.charAt(length-1) == '\n';
 		
 		if (isStartOfLine) {
-			for (int i = 0; i < indentLevel; i++) {
-				builder.append(indent);
-			}
-			isStartOfLine = false;
+			builder.append(indent.repeat(indentLevel));
 		}
 	}
 	
