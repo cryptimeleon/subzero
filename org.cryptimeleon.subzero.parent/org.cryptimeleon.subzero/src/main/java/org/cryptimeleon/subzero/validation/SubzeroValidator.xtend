@@ -62,21 +62,17 @@ import org.cryptimeleon.subzero.environment.EnvironmentGenerator
  * the editor, as opposed to generating less descriptive syntax errors
  */
 class SubzeroValidator extends AbstractSubzeroValidator {
-	
-	var Map<EObject, Type> types;
-	var Map<EObject, Integer> sizes;
-	var Map<String, GroupType> groups;
-	var Map<String, FunctionSignature> userFunctions;
-	var Map<String, List<FunctionCall>> userFunctionCalls;
-	var Map<String, List<WitnessVariable>> userFunctionWitnessNodes;
-	var Map<String, FunctionSignature> predefinedFunctions;
-	var Set<String> witnessNames;
-	var Set<String> publicParameterNames;
-	var Set<String> declaredConstantNames;
-	var Map<String, List<Variable>> variables;
-	var Map<String, Map<String, List<LocalVariable>>> localVariables;
-	var boolean hasExplicitConstants;
-	
+
+	var FormatValidation validateFormat;
+	var FunctionCallValidation validateCall;
+	var FunctionDefinitionValidation validateFunction;
+	var GrammarValidation validateGrammar;
+	var GroupTypeValidation validateGroup;
+	var SizeValidation validateSize;
+	var TypeValidation validateType;
+	var UniquenessValidation validateUnique;
+	var VariableValidation validateVar;
+
 	/*
 	 * Validation proceeds in a topdown, preorder traversal of the syntax tree,
 	 * starting at the root Model node.
@@ -95,1015 +91,208 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		}
 
 		val AugmentedModel augmentedModel = new AugmentedModel(model);
-		
-		// Get all data needed for validation
-		types = augmentedModel.getTypes();
-		sizes = augmentedModel.getSizes();
-		groups = augmentedModel.getGroups();
-		userFunctions = augmentedModel.getUserFunctionSignatures();
-		userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
-		userFunctionWitnessNodes = augmentedModel.getUserFunctionWitnessNodes();
-		predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
-		witnessNames = augmentedModel.getWitnessNames();
-		publicParameterNames = augmentedModel.getPublicParameterNames();
-		declaredConstantNames = augmentedModel.getDeclaredConstantNames();
-		variables = augmentedModel.getVariableNodes();
-		localVariables = augmentedModel.getLocalVariableNodes();
-		hasExplicitConstants = augmentedModel.hasExplicitConstants();
-		
+        val ValidationLogger logger = new ValidationLogger(
+			[e1, e2, e3 | error(e1, e2, e3)],
+			[e1, e2, e3 | warning(e1, e2, e3)],
+			[e1, e2, e3 | info(e1, e2, e3)]
+		);
+
+        validateFormat = new FormatValidation(augmentedModel, logger);
+        validateCall = new FunctionCallValidation(augmentedModel, logger);
+        validateFunction = new FunctionDefinitionValidation(augmentedModel, logger);
+        validateGrammar = new GrammarValidation(augmentedModel, logger);
+        validateGroup = new GroupTypeValidation(augmentedModel, logger);
+		validateSize = new SizeValidation(augmentedModel, logger);
+        validateType = new TypeValidation(augmentedModel, logger);
+        validateUnique = new UniquenessValidation(augmentedModel, logger);
+        validateVar = new VariableValidation(augmentedModel, logger);
+
 		System.out.println("Validating the model");
-		
-		val EnvironmentGenerator generator= new EnvironmentGenerator(augmentedModel);
-		info(generator.generate(), null, null);
+
+		val EnvironmentGenerator envGenerator = new EnvironmentGenerator(augmentedModel);
+		info(envGenerator.generate(), null, null);
 
 		// Iterate over the tree in a preorder traversal and perform validation on each node
 		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
 			checkNode(node, state);
 		]);
 	}
-	
-	def dispatch void checkNode(Model model, BranchState state) {
-		checkModelHasWitness(model);
-		checkSubprotocolNamesAreUnique(model);
-		checkOrWithAndAncestorGroupElementWitnesses(model);
-		checkHasProof(model);
 
-		checkFunctionNamesAreUnique(model.getFunctions());
-		checkWitnessNamesAreUnique(model.getWitnesses());
-		checkPublicParameterNamesAreUnique(model.getPublicParameters());
-		checkConstantNamesAreUnique(model.getConstants());
-	}
-	
-	def dispatch void checkNode(FunctionDefinition function, BranchState state) {
-		checkFunctionNameFormat(function);
-		checkFunctionNameIsNotPredefined(function);
-		checkFunctionIsCalled(function);
-		checkFunctionParametersAreUsed(function);
-		checkFunctionHasNoDisjunction(function);
-		checkFunctionParameterNamesAreUnique(function.getParameters());
-	}
-	
-	def dispatch void checkNode(Parameter parameter, BranchState state) {
-		checkParameterNameFormat(parameter);
-	}
-	
-	def dispatch void checkNode(PublicParameter publicParameter, BranchState state) {
-		checkPublicParameterNameFormat(publicParameter);
-		checkPublicParameterIsUsed(publicParameter);
-	}
-	
-	def dispatch void checkNode(Witness witness, BranchState state) {
-		checkWitnessNameFormat(witness);
-		checkWitnessIsUsed(witness);
-	}
-	
-	def dispatch void checkNode(Constant constant, BranchState state) {
-		checkConstantNameFormat(constant);
-		checkConstantIsUsed(constant);
-	}
-	
-	def dispatch void checkNode(Disjunction disjunction, BranchState state) {
-		checkDisjunctionPositionIsValid(disjunction, state);
-		checkIsBoolean(disjunction);
-		checkDisjunctionOperands(disjunction);
-		checkIsScalar(disjunction);
+	def private dispatch void checkNode(Model model, BranchState state) {
+		validateGrammar.checkOrWithAndAncestorGroupElementWitnesses(model);
+		validateGrammar.checkHasProof(model);
+
+		validateUnique.checkSubprotocolNamesAreUnique(model);
+		validateUnique.checkFunctionNamesAreUnique(model.getFunctions());
+		validateUnique.checkWitnessNamesAreUnique(model.getWitnesses());
+		validateUnique.checkPublicParameterNamesAreUnique(model.getPublicParameters());
+		validateUnique.checkConstantNamesAreUnique(model.getConstants());
+
+		validateVar.checkModelHasWitness(model);
 	}
 
-	def dispatch void checkNode(Conjunction conjunction, BranchState state) {
-		checkConjunctionPositionIsValid(conjunction, state);
-		checkIsBoolean(conjunction);
-		checkConjunctionOperands(conjunction);
-		checkIsScalar(conjunction);
+	def private dispatch void checkNode(FunctionDefinition function, BranchState state) {
+		validateFormat.checkFunctionNameFormat(function);
+		
+		validateFunction.checkFunctionIsCalled(function);
+		validateFunction.checkFunctionParametersAreUsed(function);
+		validateFunction.checkFunctionHasNoDisjunction(function);
+		
+		validateUnique.checkFunctionNameIsNotPredefined(function);
+		validateUnique.checkFunctionParameterNamesAreUnique(function.getParameters());
 	}
-	
-	def dispatch void checkNode(Comparison comparison, BranchState state) {
-		checkComparisonOperations(comparison);
-		checkValidComparisonPosition(comparison, state);
-		checkIsBoolean(comparison);
-		checkComparisonOperands(comparison);
-		checkIsScalar(comparison);
+
+	def private dispatch void checkNode(Parameter parameter, BranchState state) {
+		validateFormat.checkParameterNameFormat(parameter);
 	}
-	
-	def dispatch void checkNode(Sum sum, BranchState state) {
-		checkProofAlgebraicPosition(sum, state);
-		checkValidAlgebraicPosition(sum, state);
-		checkIsExponent(sum);
-		checkSumOperands(sum);
+
+	def private dispatch void checkNode(PublicParameter publicParameter, BranchState state) {
+		validateFormat.checkPublicParameterNameFormat(publicParameter);
+		
+		validateVar.checkPublicParameterIsUsed(publicParameter);
 	}
-	
-	def dispatch void checkNode(Product product, BranchState state) {
-		checkProofAlgebraicPosition(product, state);
-		checkValidAlgebraicPosition(product, state);
-		checkProductOperands(product);
+
+	def private dispatch void checkNode(Witness witness, BranchState state) {
+		validateFormat.checkWitnessNameFormat(witness);
+		
+		validateVar.checkWitnessIsUsed(witness);
 	}
-	
-	def dispatch void checkNode(Power power, BranchState state) {
-		checkWitnessIsNotInExponentOfWitness(power);
-		checkProofAlgebraicPosition(power, state);
-		checkValidAlgebraicPosition(power, state);
-		checkIsExponent(power.getRight());
-		checkPowerOperands(power);
+
+	def private dispatch void checkNode(Constant constant, BranchState state) {
+		validateFormat.checkConstantNameFormat(constant);
+		
+		validateVar.checkConstantIsUsed(constant);
 	}
-	
-	def dispatch void checkNode(StringLiteral stringLiteral, BranchState state) {
-		checkStringLiteralPositionIsValid(stringLiteral, state);
-		checkIsString(stringLiteral);
-		checkIsScalar(stringLiteral);
+
+	def private dispatch void checkNode(Disjunction disjunction, BranchState state) {
+		validateGrammar.checkDisjunctionPositionIsValid(disjunction, state);
+		
+		validateSize.checkIsScalar(disjunction);
+
+		validateType.checkIsBoolean(disjunction);
+		validateType.checkDisjunctionOperandTypes(disjunction);
 	}
-	
-	def dispatch void checkNode(Tuple tuple, BranchState state) {
-		checkProofAlgebraicPosition(tuple, state);
-		checkTupleElementsAreSameType(tuple);
-		checkTuplePositionIsValid(tuple, state);
-		checkTupleSize(tuple);
-		checkIsTuple(tuple);
+
+	def private dispatch void checkNode(Conjunction conjunction, BranchState state) {
+		validateGrammar.checkConjunctionPositionIsValid(conjunction, state);
+		
+		validateSize.checkIsScalar(conjunction);
+
+		validateType.checkIsBoolean(conjunction);
+		validateType.checkConjunctionOperandTypes(conjunction);
 	}
-	
-	def dispatch void checkNode(Negative negative, BranchState state) {
-		checkProofAlgebraicPosition(negative, state);
-		checkIsExponent(negative);
+
+	def private dispatch void checkNode(Comparison comparison, BranchState state) {
+		validateGrammar.checkComparisonOperations(comparison);
+		validateGrammar.checkComparisonOperandWitnesses(comparison);
+		validateGrammar.checkValidComparisonPosition(comparison, state);
+		
+		validateSize.checkIsScalar(comparison);
+		validateSize.checkComparisonOperandSizes(comparison);
+
+		validateType.checkIsBoolean(comparison);
+		validateType.checkComparisonOperandTypes(comparison);
 	}
-	
-	def dispatch void checkNode(FunctionCall call, BranchState state) {
-		checkFunctionCallIsValid(call);
-		checkFunctionHasNoFunctionCalls(call, state);
-		checkFunctionCallPositionIsValid(call, state);
-		checkPredefinedFunctionCallType(call);
+
+	def private dispatch void checkNode(Sum sum, BranchState state) {
+		validateGrammar.checkProofAlgebraicPosition(sum, state);
+		validateGrammar.checkValidAlgebraicPosition(sum, state);
+
+		validateSize.checkSumOperandSizes(sum);
+		
+		validateType.checkIsExponent(sum);
+		validateType.checkSumOperandTypes(sum);
 	}
-	
-	def dispatch void checkNode(Argument argument, BranchState state) {
+
+	def private dispatch void checkNode(Product product, BranchState state) {
+		validateGrammar.checkProofAlgebraicPosition(product, state);
+		validateGrammar.checkValidAlgebraicPosition(product, state);
+
+		validateSize.checkProductOperandSizes(product);
+		
+		validateType.checkProductOperandTypes(product);
 	}
-	
-	def dispatch void checkNode(Variable variable, BranchState state) {
-		checkVariableNameFormat(variable);
-		checkVariableIsDeclared(variable);
-		checkProofAlgebraicPosition(variable, state);
-		checkGroupType(variable);
+
+	def private dispatch void checkNode(Power power, BranchState state) {
+		validateGrammar.checkWitnessIsNotInExponentOfWitness(power);
+		validateGrammar.checkProofAlgebraicPosition(power, state);
+		validateGrammar.checkValidAlgebraicPosition(power, state);
+
+		validateSize.checkPowerOperandSizes(power);
+		
+		validateType.checkIsExponent(power.getRight());
+		validateType.checkPowerOperandTypes(power);
 	}
-	
-	def dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
-		checkProofAlgebraicPosition(numberLiteral, state);
-		checkIsExponent(numberLiteral);
-		checkIsScalar(numberLiteral);
+
+	def private dispatch void checkNode(StringLiteral stringLiteral, BranchState state) {
+		validateGrammar.checkStringLiteralPositionIsValid(stringLiteral, state);
+		
+		validateSize.checkIsScalar(stringLiteral);
+
+		validateType.checkIsString(stringLiteral);
 	}
-	
-	def dispatch void checkNode(Brackets brackets, BranchState state) {
-		if (types.get(brackets) === Type.BOOLEAN) {
-			if (!isValidBooleanPosition(brackets, state)) {
-				error("Boolean expressions cannot be nested within algebraic expressions, comparison expressions, or function calls", brackets, getDefaultFeature(brackets));
-			}
-		} else {
-			checkProofAlgebraicPosition(brackets, state);
-		}
+
+	def private dispatch void checkNode(Tuple tuple, BranchState state) {
+		validateGrammar.checkProofAlgebraicPosition(tuple, state);
+		validateGrammar.checkTuplePositionIsValid(tuple, state);
+		
+		validateSize.checkTupleElementsAreSameType(tuple);
+		validateSize.checkTupleSize(tuple);
+		validateSize.checkIsTuple(tuple);
 	}
-	
-	def dispatch void checkNode(EObject node, BranchState state) {
+
+	def private dispatch void checkNode(Negative negative, BranchState state) {
+		validateGrammar.checkProofAlgebraicPosition(negative, state);
+		
+		validateType.checkIsExponent(negative);
+	}
+
+	def private dispatch void checkNode(FunctionCall call, BranchState state) {
+		validateCall.checkFunctionCallIsValid(call);
+
+		validateFunction.checkFunctionHasNoFunctionCalls(call, state);
+
+		validateGrammar.checkFunctionCallPositionIsValid(call, state);
+
+		validateType.checkPredefinedFunctionCallType(call);
+	}
+
+	def private dispatch void checkNode(Argument argument, BranchState state) {
+		// Intentionally blank
+	}
+
+	def private dispatch void checkNode(Variable variable, BranchState state) {
+		validateFormat.checkVariableNameFormat(variable);
+		
+		validateGrammar.checkProofAlgebraicPosition(variable, state);
+		
+		validateGroup.checkGroupType(variable);
+		
+		validateVar.checkVariableIsDeclared(variable);
+	}
+
+	def private dispatch void checkNode(NumberLiteral numberLiteral, BranchState state) {
+		validateGrammar.checkProofAlgebraicPosition(numberLiteral, state);
+		
+		validateSize.checkIsScalar(numberLiteral);
+
+		validateType.checkIsExponent(numberLiteral);
+	}
+
+	def private dispatch void checkNode(Brackets brackets, BranchState state) {
+		// TODO
+		// if (types.get(brackets) === Type.BOOLEAN) {
+		// 	if (!isValidBooleanPosition(brackets, state)) {
+		// 		error("Boolean expressions cannot be nested within algebraic expressions, comparison expressions, or function calls", brackets, getDefaultFeature(brackets));
+		// 	}
+		// } else {
+		// 	validateGrammar.checkProofAlgebraicPosition(brackets, state);
+		// }
+	}
+
+	def private dispatch void checkNode(EObject node, BranchState state) {
 		System.err.println("Error: unhandled node type in validator");
 	}
-	
-	/*
-	 * Validate the format of identifier names
-	 */
-	 
-	// User defined function names must start with a letter, and contain only letters and numbers
-	def private void checkFunctionNameFormat(FunctionDefinition function) {
-		val String name = function.getName();
-		
-		if (name.contains("_")) {
-			error("Function names cannot contain underscores", function,
-				getDefaultFeature(function));
-		}
-		
-		if (name.contains("'")) {
-			error("Function names cannot contain single quotes", function,
-				getDefaultFeature(function));
-		}
-		
-		if (name.contains("~")) {
-			error("Function names cannot contain tildes", function,
-				getDefaultFeature(function));
-		}
-	}
-	
-	def private void checkPublicParameterNameFormat(PublicParameter publicParameter) {
-		nameFormatErrors(publicParameter, publicParameter.getName(), "Public parameter");
-	}
 
-	def private void checkWitnessNameFormat(Witness witness) {
-		nameFormatErrors(witness, witness.getName(), "Witness");
-	}
 
-	def private void checkVariableNameFormat(Variable variable) {
-		nameFormatErrors(variable, variable.getName(), "Variable");
-	}
-
-	def private void checkParameterNameFormat(Parameter parameter) {
-		nameFormatErrors(parameter, parameter.getName(), "Parameter");
-	}
-	
-	def private void checkConstantNameFormat(Constant constant) {
-		nameFormatErrors(constant, constant.getName(), "Constant");
-	}
-
-	// Helper function for checking the name format of identifiers
-	def private void nameFormatErrors(EObject node, String identifier, String type) {
-		var List<String> nameErrors = new ArrayList<String>();
-		
-		val VariableIdentifier variableIdentifier = new VariableIdentifier(identifier);
-		
-		if (!variableIdentifier.isValid()) {
-			if (variableIdentifier.hasInvalidUnderscore()) {
-				nameErrors.add(type + " name has an invalid underscore");
-			}
-			
-			if (variableIdentifier.hasInvalidTilde()) {
-				nameErrors.add(type + " name has an invalid tilde")
-			}
-			
-			if (variableIdentifier.hasInvalidQuote()) {
-				nameErrors.add(type + " name can only contain single quotes at the end of the name");
-			}
-		}
-		
-		for (String errorMessage : nameErrors) {
-			error(errorMessage, node, getDefaultFeature(node));
-		}
-	}
-
-	/*
-	 * Validate the uniqueness of identifiers
-	 */
-	 
-	// User defined function names must be unique
-	def private void checkFunctionNamesAreUnique(EList<FunctionDefinition> functions) {
-		val Set<String> functionNames = new HashSet<String>();
-
-		for (FunctionDefinition function : functions) {
-			val String name = function.getName();
-
-			if (functionNames.contains(name)) {
-				error("Function names must be unique", function, getDefaultFeature(function));
-			} else {
-				functionNames.add(name);
-			}
-		}
-	}
-	
-	// Subprotocol names must be unique
-	def private void checkSubprotocolNamesAreUnique(Model model) {
-		val Set<String> subprotocolNames = new HashSet<String>();
-		ModelMap.preorder(model.getProof(), [EObject node |
-			if (node instanceof Comparison) {
-				val String subprotocolName = node.getSubprotocolName();
-				if (subprotocolNames.contains(subprotocolName)) {
-					error("Subprotocol names must be unique", node, getDefaultFeature(node));
-				} else if (subprotocolName !== null && !subprotocolName.isEmpty()) {
-					subprotocolNames.add(subprotocolName);
-				}
-			}
-		]);
-	}
-
-	// User defined functions cannot have the same name as a predefined function
-	def private void checkFunctionNameIsNotPredefined(FunctionDefinition function) {
-		if (predefinedFunctions.containsKey(function.getName())) {
-			error("Function name is already used by a predefined function", function, getDefaultFeature(function));
-		}
-	}
-	
-	// Public parameter names must be unique
-	def private void checkPublicParameterNamesAreUnique(EList<PublicParameter> publicParameterList) {
-		val Set<String> publicParameters = new HashSet<String>();
-		for (PublicParameter publicParameter : publicParameterList) {
-			val String name = publicParameter.getName();
-			if (publicParameters.contains(name)) {
-				error("Public parameter name conflicts with another public parameter name", publicParameter, getDefaultFeature(publicParameter));
-			}
-			if (witnessNames.contains(name)) {
-				error("Public parameter name conflicts with a witness name", publicParameter, getDefaultFeature(publicParameter));
-			}
-			if (declaredConstantNames.contains(name)) {
-				error("Public parameter name conflicts with a constant name", publicParameter, getDefaultFeature(publicParameter));
-			}
-			
-			publicParameters.add(name);				
-		}
-	}
-
-	// Witness names must be unique
-	def private void checkWitnessNamesAreUnique(EList<Witness> witnessList) {
-		val Set<String> witnesses = new HashSet<String>();
-		for (Witness witness : witnessList) {
-			val String name = witness.getName();
-			if (witnesses.contains(name)) {
-				error("Witness name conflicts with another witness name", witness, getDefaultFeature(witness));
-			}
-			if (publicParameterNames.contains(name)) {
-				error("Witness name conflicts with a public parameter name", witness, getDefaultFeature(witness));
-			}
-			if (declaredConstantNames.contains(name)) {
-				error("Witness name conflicts with a constant name", witness, getDefaultFeature(witness));
-			}
-			
-			witnesses.add(name);				
-		}
-	}
-	
-	// Constant names must be unique
-	def private void checkConstantNamesAreUnique(EList<Constant> constantList) {
-		val Set<String> constants = new HashSet<String>();
-		for (Constant constant : constantList) {
-			val String name = constant.getName();
-			if (constants.contains(name)) {
-				error("Constant name conflicts with another constant name", constant, getDefaultFeature(constant));
-			}
-			if (witnessNames.contains(name)) {
-				error("Constant name conflicts with a witness name", constant, getDefaultFeature(constant));
-			}
-			if (publicParameterNames.contains(name)) {
-				error("Constant name conflicts with a public parameter name", constant, getDefaultFeature(constant));
-			}
-		
-			constants.add(name);
-		}
-	}
-
-	// Function parameter names must be unique within a function signature
-	def private void checkFunctionParameterNamesAreUnique(EList<Parameter> parameterList) {
-		val Set<String> parameters = new HashSet<String>();
-		for (Parameter parameter : parameterList) {
-			val String name = parameter.getName();
-			if (parameters.contains(name)) {
-				error("Function parameters must be unique within a function's signature", parameter, getDefaultFeature(parameter));
-			} else {
-				parameters.add(name);
-			}
-		}
-	}
-
-	/*
-	 * Validate user function definitions
-	 */
-	 
-	// Function definitions cannot contain function calls to other user functions
-	def private void checkFunctionHasNoFunctionCalls(FunctionCall call, BranchState state) {
-		if (state.hasFunctionDefinitionAncestor()) {
-			error("Cannot call functions from within a user function", call, getDefaultFeature(call));
-		}
-	}
-
-	// Every function parameter should be used at least once in the function definition
-	def private void checkFunctionParametersAreUsed(FunctionDefinition function) {
-		val Map<String, List<LocalVariable>> functionLocalVariables = localVariables.get(function.getName());
-				
-		for (Parameter parameter: function.getParameters()) {
-			if (functionLocalVariables.get(parameter.getName()).size() === 0) {
-				warning('''Parameter '«parameter.getName()»' should be used within the function definition''', parameter, getDefaultFeature(parameter));
-			}
-		}
-	}
-
-	// User defined functions should be called at least once in the proof expression
-	def private void checkFunctionIsCalled(FunctionDefinition function) {
-		val String functionName = function.getName();
-		
-		if (!userFunctionCalls.containsKey(functionName)) {
-			warning(
-				"Function is never used in the proof expression, and will not be included in the generated Java code", function,
-				getDefaultFeature(function));
-		}
-	}
-	
-	// User defined functions cannot currently contain a disjunction
-	def private void checkFunctionHasNoDisjunction(FunctionDefinition function) {
-		val boolean hasDisjunction = ModelMap.postorderAny(function.getBody(), [EObject node |
-			return node instanceof Disjunction;
-		]);
-		
-		if (hasDisjunction) {
-			error("Disjunctions are currently not supported in user functions", function, getDefaultFeature(function));
-		}
-	}
-	
-	/*
-	 * Validate the proof expression
-	 */
-	def private void checkHasProof(Model model) {
-		if (model.getProof() === null) {
-			error("Must have a proof statement", model, getDefaultFeature(model));
-		}
-	}
-
-	/*
-	 * Validate witnesses
-	 */
-	 
-	// The protocol must declare at least one witness
-	def private void checkModelHasWitness(Model model) {
-		if (model.getWitnesses().size() === 0) {
-			error("The protocol must declare at least one witness", model,
-				Literals.MODEL__WITNESSES);
-		}
-	}
-	
-	// Each witness should be referenced at least once
-	def private void checkWitnessIsUsed(Witness witness) {
-		val name = witness.getName();
-		if (!variables.containsKey(name)) {
-			warning('''The witness '«name»' is not used in the proof expression or any function definition''', witness, getDefaultFeature(witness));
-		}
-	}
-	
-	/*
-	 * Validate public parameters
-	 */
-	
-	// Each public parameter should be referenced at least once
-	def private void checkPublicParameterIsUsed(PublicParameter publicParameter) {
-		val name = publicParameter.getName();
-		if (!variables.containsKey(name)) {
-			warning('''The public parameter '«name»' is not used in the proof expression or any function definition''', publicParameter, getDefaultFeature(publicParameter));
-		}
-	}
-	
-	/*
-	 * Validate constants
-	 */
-	
-	// Each witness should be referenced at least once
-	def private void checkConstantIsUsed(Constant constant) {
-		val name = constant.getName();
-		if (!variables.containsKey(name)) {
-			warning('''The common input '«name»' is not used in the proof expression or any function definition''', constant, getDefaultFeature(constant));
-		}
-	}
-
-	/*
-	 * Validate function calls
-	 */
-	 
-	// Function calls must reference either a user defined function or a predefined function
-	// The number of arguments in a function call must match the number of parameters in the function definition
-	def private void checkFunctionCallIsValid(FunctionCall call) {
-		val String name = call.getName();
-
-		if (userFunctions.containsKey(name)) {
-			val FunctionSignature signature = userFunctions.get(name);
-			functionCallIsValidHelper(call, signature);
-			return;
-		}
-
-		if (predefinedFunctions.containsKey(name)) {
-			val FunctionSignature signature = predefinedFunctions.get(name);
-			functionCallIsValidHelper(call, signature);
-			return;
-		}
-		
-		error("Function call references a function that does not exist", call,
-			getDefaultFeature(call));
-	}
-	
-	def private void functionCallIsValidHelper(FunctionCall call, FunctionSignature signature) {
-		if (signature.getParameterCount() !== call.getArguments().size()) {
-			error(
-				'''The number of arguments in the function call («call.getArguments().size()») must match the number of parameters in the function definition («signature.getParameterCount()»)''', call,
-				getDefaultFeature(call));
-			return;
-		}
-		
-		val Iterator<Type> parameterTypesIterator = signature.getParameterTypes.iterator();
-		val Iterator<Integer> parameterSizesIterator = signature.getParameterSizes.iterator();
-		val Iterator<Expression> argumentsIterator = call.getArguments().iterator();
-		
-		while (parameterTypesIterator.hasNext() && parameterSizesIterator.hasNext() && argumentsIterator.hasNext()) {
-			val Type parameterType = parameterTypesIterator.next();
-			val int parameterSize = parameterSizesIterator.next();
-			val EObject argument = argumentsIterator.next();
-			
-			if (types.get(argument) !== parameterType) {
-				error('''The argument type («types.get(argument)») does not match the function parameter type («parameterType»)''', argument, getDefaultFeature(argument));
-			}
-			
-			if (sizes.get(argument) !== parameterSize) {
-				error('''The argument size («sizes.get(argument)») does not match the function parameter size («parameterSize»)''', argument, getDefaultFeature(argument));
-			}
-		}
-	}
-	
-	/*
-	 * Validate grammar structure
-	 */
-	 
-	// If any constant variables are explicitly declared, then all variables must be explicitly declared
-	def private void checkVariableIsDeclared(Variable variable) {
-		if (hasExplicitConstants && variable instanceof ConstantVariable && !declaredConstantNames.contains(variable.getName())) {
-			error("If any common input variable is explicitly declared, then no common input variable can be implicitly declared", variable, getDefaultFeature(variable));
-		}
-	}
-	
-	// String literals must be directly nested within a tuple, a comparison, or a function call
-	def private void checkStringLiteralPositionIsValid(StringLiteral stringLiteral, BranchState state) {
-		val EObject parent = state.getParent();
-		
-		if (!(parent instanceof FunctionCall)) {
-			error("String literals can only be used as arguments in calls to predefined functions", stringLiteral, getDefaultFeature(stringLiteral));
-		}
-		
-	}
-
-	// Disjunctions cannot be nested within algebraic expressions or comparison expressions
-	def private void checkDisjunctionPositionIsValid(Disjunction disjunction, BranchState state) {
-		if (!isValidBooleanPosition(disjunction, state)) {
-			error("Disjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", disjunction,
-				getDefaultFeature(disjunction));
-		}
-	}
-
-	// Conjunctions cannot be nested within algebraic expressions or comparison expressions
-	def private void checkConjunctionPositionIsValid(Conjunction conjunction, BranchState state) {
-		if (!isValidBooleanPosition(conjunction, state)) {
-			error("Conjunctions cannot be nested within algebraic expressions, comparison expressions, or function calls", conjunction,
-				getDefaultFeature(conjunction));
-		}
-	}
-
-	// Comparisons cannot be nested within algebraic expressions or comparison expressions
-	def private void checkValidComparisonPosition(Comparison comparison, BranchState state) {
-		if (!isValidBooleanPosition(comparison, state)) {
-			error("Comparisons cannot be nested within algebraic expressions, other comparison expressions, or function calls", comparison,
-				getDefaultFeature(comparison));
-		}
-	}
-	
-	// Double comparisons cannot use equals or not equals, and inequality operators must be the same direction
-	def private void checkComparisonOperations(Comparison comparison) {
-		val String operation1 = comparison.getOperation();
-		val String operation2 = comparison.getOperation2();
-		
-		// Check if the comparison is not equals (not yet supported)
-		if (operation1 == "!=") {
-			error("The != operator is currently not supported", comparison, getDefaultFeature(comparison));
-		}
-		
-		// Check if the comparison is a double comparison
-		if (operation2 !== null) {
-			
-			if (operation1 == "=" || operation1 == "!=" || operation2 == "=" || operation2 == "!=") {
-				error("Cannot use = or != in a double comparison", comparison, getDefaultFeature(comparison));
-			} else if (operation1.charAt(0) != operation2.charAt(0)) {
-				error("Comparison operators in a double comparison must be in the same direction", comparison, getDefaultFeature(comparison));
-			}
-		}
-	}
-	
-	// Helper function for checkValidDisjunctionPosition, checkValidConjunctionPosition, and checkValidComparisonPosition
-	def private boolean isValidBooleanPosition(EObject node, BranchState state) {
-		val EObject parent = state.getParent();
-		if (parent instanceof Model || parent instanceof FunctionDefinition || parent instanceof Disjunction || parent instanceof Conjunction || parent instanceof Brackets) {
-			return true;
-		}
-		return false;
-	}
-
-	// Algebraic expressions must be nested within a comparison expression before being nested within a logical expression
-	def private void checkValidAlgebraicPosition(EObject node, BranchState state) {
-		if (state.hasFunctionDefinitionAncestor() || state.hasFunctionCallAncestor()) return;
-
-		if (state.hasLogicalBeforeComparison()) {
-			error("Algebraic expression must be nested within a comparison expression before being nested within a logical expression", node, getDefaultFeature(node))
-		}
-	}
-
-	// Algebraic expressions in the proof expression must be nested within a comparison expression or function call
-	def private void checkProofAlgebraicPosition(EObject object, BranchState state) {
-		if (state.hasFunctionDefinitionAncestor()) return;
-		
-		if (!(state.hasComparisonAncestor() || state.hasFunctionCallAncestor())) {
-			error("Algebraic expressions in the proof expression must be nested within a comparison expression or function call", object, getDefaultFeature(object));
-		}
-	}
-	
-	// Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls
-	def private void checkFunctionCallPositionIsValid(FunctionCall call, BranchState state) {
-		if (types.get(call) === Type.BOOLEAN) {
-			if (!isValidBooleanPosition(call, state)) {
-				error("Function calls to boolean functions cannot be nested within algebraic expressions, comparison expressions, or other function calls", call, getDefaultFeature(call));
-			};
-		} else {			
-			checkProofAlgebraicPosition(call, state);
-		}
-	}
-	
-	def private void checkPredefinedFunctionCallType(FunctionCall call) {
-		if (predefinedFunctions.containsKey(call.getName())) {
-			val Type currentType = types.get(call);
-			val Type correctType = predefinedFunctions.get(call.getName()).getReturnType();
-			
-			if (currentType !== correctType) {
-				error('''Predefined function call should have type «correctType», not type «currentType»''', call, getDefaultFeature(call));
-			}
-		}
-	}
-	
-	def private void checkWitnessIsNotInExponentOfWitness(Power power) {
-		val EObject left = power.getLeft();
-		val EObject right = power.getRight();
-		
-		if (left instanceof WitnessVariable) {
-			ModelMap.preorder(right, [EObject node |
-				if (node instanceof WitnessVariable) {
-					createWitnessIsNotInExponentOfWitnessError(node);
-				} else if (node instanceof FunctionCall) {
-					val String functionName = node.getName();
-					if (userFunctionWitnessNodes.containsKey(functionName)) {
-						val List<WitnessVariable> witnessNodes = userFunctionWitnessNodes.get(functionName);
-						for (WitnessVariable witnessNode : witnessNodes) {
-							createWitnessIsNotInExponentOfWitnessError(witnessNode);
-						}
-					}
-				}
-			]);
-		}
-	}
-	
-	def private void createWitnessIsNotInExponentOfWitnessError(WitnessVariable witness) {
-		error("A witness cannot be in the exponent of another witness", witness, getDefaultFeature(witness));
-	}
-	
-	
-	/*
-	 * Validate that the operands of a binary operation are of compatible type
-	 */ 
-	def private void checkDisjunctionOperands(Disjunction disjunction) {
-		val Type leftType = types.get(disjunction.getLeft());
-		val Type rightType = types.get(disjunction.getRight());
-		
-		if (types.get(disjunction.getLeft()) !== Type.BOOLEAN || types.get(disjunction.getRight()) !== Type.BOOLEAN) {
-			error('''Disjunction operands must both have type boolean. The left operand is of type «leftType» and the right operand is of type «rightType»''', disjunction, getDefaultFeature(disjunction));
-		}
-	}
-
-	def private void checkConjunctionOperands(Conjunction conjunction) {
-		val Type leftType = types.get(conjunction.getLeft());
-		val Type rightType = types.get(conjunction.getRight());
-		
-		if (types.get(conjunction.getLeft()) !== Type.BOOLEAN || types.get(conjunction.getRight()) !== Type.BOOLEAN) {
-			error('''Conjunction operands must both have type boolean. The left operand is of type «leftType» and the right operand is of type «rightType»''', conjunction, getDefaultFeature(conjunction));
-		}
-	}
-	
-	def private void checkComparisonOperands(Comparison comparison) {
-		val EObject left = comparison.getLeft();
-		val EObject right = comparison.getRight();
-		val Type leftType = types.get(left);
-		val Type rightType = types.get(right);
-		val int leftSize = sizes.get(left);
-		val int rightSize = sizes.get(right);
-		
-		val boolean leftHasWitness = ModelHelper.containsWitnessVariable(left);
-		val boolean rightHasWitness = ModelHelper.containsWitnessVariable(right);
-		
-		if (comparison.getOperation2() === null) {
-			if (leftType !== rightType) {
-				error('''The operands of a comparison expression must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', comparison, getDefaultFeature(comparison));
-			}
-			
-			if (leftSize !== rightSize) {
-				error('''The operands of a comparison expression must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', comparison, getDefaultFeature(comparison));
-			}
-			
-			if (ModelHelper.isInequalityComparison(comparison)) {
-				if (!leftHasWitness && !rightHasWitness) {
-					error("One side of a comparison must be dependent on a witness variable", comparison, getDefaultFeature(comparison));
-				}
-				
-				if (leftHasWitness && rightHasWitness) {
-					error("Only one side of a comparison can be dependent on a witness variable", comparison, getDefaultFeature(comparison));
-				}
-			}
-				
-		} else {
-			val EObject center = comparison.getCenter();
-			val Type centerType = types.get(center);
-			val int centerSize = sizes.get(center);
-			
-			val boolean centerHasWitness = ModelHelper.containsWitnessVariable(center);
-			
-			if (leftType !== centerType || centerType !== rightType) {
-				error('''The operands of a comparison expression must be the same type. The left operand is of type «leftType», the middle operand is of type «centerType», and the right operand is of type«rightType»''', comparison, getDefaultFeature(comparison));
-			}
-			
-			if (leftSize !== centerSize || centerSize !== rightSize) {
-				error('''The operands of a comparison expression must be the same size. The left operand is of size «leftSize», the middle operand is of size «centerSize», and the right operand is of size«rightSize»''', comparison, getDefaultFeature(comparison));
-			}
-			
-			if (!centerHasWitness) {
-				error("The middle of a double comparison must be dependent on a witness variable", comparison, getDefaultFeature(comparison));
-			}
-			
-			if (leftHasWitness || rightHasWitness) {
-				error("Only the middle of a double comparison can be dependent on a witness variable", comparison, getDefaultFeature(comparison));
-			}
-		}
-		
-	}
-	
-	def private void checkSumOperands(Sum sum) {
-		val Type leftType = types.get(sum.getLeft());
-		val Type rightType = types.get(sum.getRight());
-		val int leftSize = sizes.get(sum.getLeft());
-		val int rightSize = sizes.get(sum.getRight());
-		
-		if (leftType !== Type.EXPONENT || rightType !== Type.EXPONENT) {
-			error('''Sum operands must both have type exponent. The left operand is of type «leftType» and the right operand is of type «rightType»''', sum, getDefaultFeature(sum));
-		}
-		
-		if (leftSize !== rightSize) {
-			error('''The operands of a sum expression must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', sum, getDefaultFeature(sum));
-		}
-	}
-	
-	def private void checkProductOperands(Product product) {
-		val Type leftType = types.get(product.getLeft());
-		val Type rightType = types.get(product.getRight());
-		val int leftSize = sizes.get(product.getLeft());
-		val int rightSize = sizes.get(product.getRight());
-		
-		if (leftType !== rightType) {
-			error('''The operands of a product expression must be the same type. The left operand is of type «leftType» but the right operand is of type «rightType»''', product, getDefaultFeature(product));
-		}
-		
-		if (leftType === Type.GROUP_ELEMENT && rightType === Type.GROUP_ELEMENT && leftSize !== rightSize) {
-			error('''The operands of a group element product expression must be the same size. The left operand is of size «leftSize» but the right operand is of size «rightSize»''', product, getDefaultFeature(product));
-		}		
-	}
-	
-	def private void checkPowerOperands(Power power) {
-		val Type type = types.get(power);
-		val Type leftType = types.get(power.getLeft());
-		val Type rightType = types.get(power.getRight());
-		val int rightTuple = sizes.get(power.getRight());
-
-		if (!(leftType === Type.EXPONENT || leftType === Type.GROUP_ELEMENT)) {
-			error('''The left operand of an exponentiation expression must be of type exponent or group element, not type «leftType»''', power, getDefaultFeature(power));
-		}
-		
-		if (rightType !== Type.EXPONENT) {
-			error('''The right operand of an exponentiation expression must be of type exponent, not type «rightType»''', power, getDefaultFeature(power));
-		}
-		
-		if (type !== leftType) {
-			error('''The type of an exponentiation expression must be the same as the type of the left operand. The exponentiation expression is of type «type» but the left operand is of type «leftType»''', power, getDefaultFeature(power));
-		}
-		
-		if (rightTuple > 1) {
-			error('''The right operand of an exponentiation expression cannot be a tuple''', power, getDefaultFeature(power));
-		}
-	}
-	
-	def private void checkTupleElementsAreSameType(Tuple tuple) {
-		val Type tupleType = types.get(tuple);
-		
-		for (EObject element : tuple.getElements()) {
-			val Type elementType = types.get(element);
-			
-			if (tupleType !== elementType) {
-				error('''Tuple elements must be the same type as the tuple. The tuple has type «tupleType», but the element has type «elementType»''', element, getDefaultFeature(element));
-			}
-		}
-	}
-	
-	// A group element witness cannot be in both subtrees of a disjunction
-	// that has a conjunction ancestor
-	def private void checkOrWithAndAncestorGroupElementWitnesses(Model model) {
-		ModelMap.preorderWithStateAndControl(model.getProof(), new BranchState(), [EObject node, BranchState state, ModelMap.Controller controller |
-			if (node instanceof Disjunction && state.hasConjunctionAncestor()) {
-				controller.continueTraversal();
-				
-				val Map<String, List<WitnessVariable>> witnessNodes = new HashMap<String, List<WitnessVariable>>();
-				orTreeHelper(node, witnessNodes);
-			}
-		]);
-	}
-	
-	def private void orTreeHelper(EObject node, Map<String, List<WitnessVariable>> witnessNodes) {
-		if (node instanceof WitnessVariable) {
-			orTreeWitnessNodeHelper(node, witnessNodes);
-			
-		} else if (node instanceof FunctionCall) {
-			val String functionName = node.getName();
-			if (userFunctionWitnessNodes.containsKey(functionName)) {
-				val List<WitnessVariable> functionWitnessNodes = userFunctionWitnessNodes.get(functionName);
-				for (WitnessVariable witnessNode : functionWitnessNodes) {
-					orTreeWitnessNodeHelper(witnessNode, witnessNodes);
-				}
-			}
-			for (Expression argument : node.getArguments()) {
-				orTreeHelper(argument, witnessNodes);
-			}
-			
-		} else if (node instanceof Disjunction) {
-			var Map<String, List<WitnessVariable>> leftWitnessNodes = new HashMap<String, List<WitnessVariable>>();
-			var Map<String, List<WitnessVariable>> rightWitnessNodes = new HashMap<String, List<WitnessVariable>>();
-			orTreeHelper(node.getLeft(), leftWitnessNodes);
-			orTreeHelper(node.getRight(), rightWitnessNodes);
-			
-			val Set<String> sharedNames = new HashSet<String>(leftWitnessNodes.keySet());
-			sharedNames.retainAll(rightWitnessNodes.keySet());
-			
-			for (String name : sharedNames) {
-				createOrErrors(leftWitnessNodes.get(name));
-				createOrErrors(rightWitnessNodes.get(name));
-			}
-			
-			mergeMapsOfLists(witnessNodes, leftWitnessNodes);
-			mergeMapsOfLists(witnessNodes, rightWitnessNodes);
-			
-		} else {
-			for (EObject child : node.eContents()) {
-				orTreeHelper(child, witnessNodes);
-			}
-		}
-	}
-	
-	def private void orTreeWitnessNodeHelper(WitnessVariable witness, Map<String, List<WitnessVariable>> witnessNodes) {
-		if (types.get(witness) === Type.GROUP_ELEMENT) {
-			val String name = witness.getName();
-			
-			if (witnessNodes.containsKey(name)) {
-				witnessNodes.get(name).add(witness);
-			} else {
-				val List<WitnessVariable> variables = new ArrayList<WitnessVariable>();
-				variables.add(witness);
-				witnessNodes.put(name, variables);
-			}
-		}
-	}
-	
-	def private void createOrErrors(List<WitnessVariable> witnessVariables) {
-		for (WitnessVariable variable : witnessVariables) {
-			error(
-				"A group element witness cannot be in both operands of a disjunction that is within a conjunction",
-				variable,
-				getDefaultFeature(variable)
-			);
-		}
-	}
-	
-	/*
-	 * Validate that nodes with a predetermined type are actually this type
-	 */	
-	 
-	def private void checkIsBoolean(EObject node) {
-		checkIsType(node, Type.BOOLEAN);
-	}
-	
-	def private void checkIsExponent(EObject node) {
-		checkIsType(node, Type.EXPONENT);
-	}
-	
-	def private void checkIsGroupElement(EObject node) {
-		checkIsType(node, Type.GROUP_ELEMENT);
-	}
-	
-	def private void checkIsExponentOrGroupElement(EObject node) {
-		if (!types.containsKey(node)) {
-			error('''«capitalize(getNodeString(node))» must be of type exponent or group element''', node, getDefaultFeature(node));
-		} else {
-			error('''«capitalize(getNodeString(node))» must be of type exponent or group element, not type «types.get(node)»''', node, getDefaultFeature(node));
-		}
-	}
-	
-	def private void checkIsString(EObject node) {
-		checkIsType(node, Type.STRING);
-	}
-	
-	def private void checkIsType(EObject node, Type type) {
-		if (!types.containsKey(node)) {
-			error('''«capitalize(getNodeString(node))» must be of type «type»''', node, getDefaultFeature(node));
-		} else if (types.get(node) !== type) {
-			error('''«capitalize(getNodeString(node))» must be of type «type», not type «types.get(node)»''', node, getDefaultFeature(node));
-		}
-	}
-	
-	def private void checkIsScalar(EObject node) {
-		if (!sizes.containsKey(node)) {
-			error('''«capitalize(getNodeString(node))» must be a scalar''', node, getDefaultFeature(node));	
-		} else if (sizes.get(node) !== 1) {
-			error('''«capitalize(getNodeString(node))» must be a scalar, not a tuple of size «sizes.get(node)»''', node, getDefaultFeature(node));
-		}
-	}
-	
-	def private void checkIsTuple(EObject node) {
-		if (!sizes.containsKey(node)) {
-			error('''«capitalize(getNodeString(node))» must be a tuple''', node, getDefaultFeature(node));		
-		} else if (sizes.get(node) <= 1) {
-			error('''«capitalize(getNodeString(node))» must be a tuple, not a scalar''', node, getDefaultFeature(node));
-		}
-	}
-	
-	/*
-	 * Validate tuples
-	 */
-	
-	// Tuples must be nested within a function call before being nested within another tuple
-	def private void checkTuplePositionIsValid(Tuple tuple, BranchState state) {
-		if (state.hasTupleBeforeFunctionCall()) {
-			error('''Tuples must be nested within a function call before being nested within another tuple''', tuple, getDefaultFeature(tuple));
-		}
-	}
-	
-	def private void checkTupleSize(Tuple tuple) {
-		val int currentSize = sizes.get(tuple);
-		val int correctSize = tuple.getElements().size();
-		
-		if (currentSize !== correctSize) {
-			error('''The operands of operations between tuples must have the same size. This tuple of size «correctSize» is in an operation with a tuple of size «currentSize»''', tuple ,getDefaultFeature(tuple));
-		}
-	}
-	
-	/*
-	 * Validate group types
-	 * 
-	 */
-	 def private void checkGroupType(Variable variable) {
-	 	if (groups.get(variable.getName()) === GroupType.UNKNOWN) {
-	 		error("Variable is used in conflicting group element contexts", variable, getDefaultFeature(variable));
-	 	}
-	 }
-	 
-	
-	/*
-	 * Additional helper functions
-	 */	
-	
-	// Capitalizes the first letter of the string
-	def private String capitalize(String string) {
-		if (string.isEmpty()) return "";
-		return string.substring(0, 1).toUpperCase() + string.substring(1);
-	}
-	
-	// Merges two maps of lists into the first map of lists
-	def private <K, T> void mergeMapsOfLists(Map<K, List<T>> finalMap, Map<K, List<T>> mergedMap) {
-		for (Entry<K, List<T>> entry : mergedMap.entrySet()) {
-			val K name = entry.getKey();
-			val List<T> list = entry.getValue();
-			
-			if (finalMap.containsKey(name)) {
-				finalMap.get(name).addAll(list);
-			} else {
-				finalMap.put(name, list);
-			}
-		}
-	}
-	
-	// Returns the name of the type of node
-	def private String getNodeString(EObject node) {
-		var String className = node.class.getSimpleName();
-		var String nodeName = "";
-		nodeName += Character.toLowerCase(className.charAt(0));
-		
-		if (className.endsWith("Impl")) {
-			className = className.substring(0, className.length - 4);
-		}
-		
-		for (var int i = 1; i < className.length(); i++) {
-			val char letter = className.charAt(i);
-			if (Character.isUpperCase(letter)) {
-				nodeName += " " + Character.toLowerCase(letter);
-			} else {
-				nodeName += letter;
-			}
-		}
-	
-		return nodeName;		
-	}
-	
-	// Returns the default structural feature for a node
-	def private EStructuralFeature getDefaultFeature(EObject object) {
-		switch object {
-			Model:				return Literals.MODEL__PROOF
-			FunctionDefinition:	return Literals.FUNCTION_DEFINITION__NAME
-			Parameter:			return Literals.PARAMETER__NAME
-			Witness:			return Literals.WITNESS__NAME
-			PublicParameter:    return Literals.PUBLIC_PARAMETER__NAME
-			Constant:			return Literals.CONSTANT__NAME
-			Disjunction: 		return Literals.DISJUNCTION__OPERATION
-			Conjunction: 		return Literals.CONJUNCTION__OPERATION
-			Comparison: 		return Literals.COMPARISON__OPERATION
-			Sum: 				return Literals.SUM__OPERATION
-			Product: 			return Literals.PRODUCT__OPERATION
-			Power: 				return Literals.POWER__OPERATION
-			StringLiteral: 		return Literals.STRING_LITERAL__VALUE
-			Tuple: 				return Literals.TUPLE__ELEMENTS
-			Negative: 			return Literals.NEGATIVE__OPERATION
-			FunctionCall: 		return Literals.FUNCTION_CALL__NAME
-			LocalVariable: 		return Literals.VARIABLE__NAME
-			ConstantVariable:	return Literals.VARIABLE__NAME
-			PPVariable:			return Literals.VARIABLE__NAME
-			WitnessVariable:	return Literals.VARIABLE__NAME
-			Variable: 			return Literals.VARIABLE__NAME
-			NumberLiteral: 		return Literals.NUMBER_LITERAL__VALUE
-		}
-	}
 }
