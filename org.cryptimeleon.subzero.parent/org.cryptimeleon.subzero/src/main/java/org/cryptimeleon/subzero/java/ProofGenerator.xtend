@@ -1,44 +1,52 @@
-package org.cryptimeleon.subzero.java
+package org.cryptimeleon.subzero.java;
 
-import java.util.Map
-import java.util.Set
-import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.model.ModelHelper
-import org.cryptimeleon.subzero.model.Type
-import org.cryptimeleon.subzero.subzero.Argument
-import org.cryptimeleon.subzero.subzero.Brackets
-import org.cryptimeleon.subzero.subzero.Comparison
-import org.cryptimeleon.subzero.subzero.Conjunction
-import org.cryptimeleon.subzero.subzero.Disjunction
-import org.cryptimeleon.subzero.subzero.Expression
-import org.cryptimeleon.subzero.subzero.FunctionCall
-import org.cryptimeleon.subzero.subzero.LocalVariable
-import org.cryptimeleon.subzero.subzero.Model
-import org.cryptimeleon.subzero.subzero.Negative
-import org.cryptimeleon.subzero.subzero.NumberLiteral
-import org.cryptimeleon.subzero.subzero.Power
-import org.cryptimeleon.subzero.subzero.Product
-import org.cryptimeleon.subzero.subzero.StringLiteral
-import org.cryptimeleon.subzero.subzero.Sum
-import org.cryptimeleon.subzero.subzero.Tuple
-import org.cryptimeleon.subzero.subzero.Variable
-import org.cryptimeleon.subzero.subzero.WitnessVariable
-import org.cryptimeleon.subzero.subzero.SubzeroFactory
-import org.eclipse.emf.ecore.EObject
-import java.util.List
-import java.util.ArrayList
-import org.cryptimeleon.subzero.subzero.FunctionDefinition
-import java.util.HashMap
-import org.cryptimeleon.subzero.subzero.ConstantVariable
-import org.cryptimeleon.subzero.subzero.PPVariable
-import org.cryptimeleon.subzero.subzero.Parameter
-import org.eclipse.emf.common.util.EList
-import org.cryptimeleon.subzero.builder.ImportBuilder
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
-import static org.cryptimeleon.subzero.model.LanguageConstants.*
-import org.cryptimeleon.subzero.generator.GenerationUtils
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearExponentStatementFragment;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
+import org.cryptimeleon.subzero.builder.ImportBuilder;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
+import org.cryptimeleon.subzero.model.AugmentedModel;
+import org.cryptimeleon.subzero.model.ModelHelper;
+import org.cryptimeleon.subzero.model.Type;
+import org.cryptimeleon.subzero.subzero.Argument;
+import org.cryptimeleon.subzero.subzero.Brackets;
+import org.cryptimeleon.subzero.subzero.Comparison;
+import org.cryptimeleon.subzero.subzero.Conjunction;
+import org.cryptimeleon.subzero.subzero.ConstantVariable;
+import org.cryptimeleon.subzero.subzero.Disjunction;
+import org.cryptimeleon.subzero.subzero.Expression;
+import org.cryptimeleon.subzero.subzero.FunctionCall;
+import org.cryptimeleon.subzero.subzero.FunctionDefinition;
+import org.cryptimeleon.subzero.subzero.LocalVariable;
+import org.cryptimeleon.subzero.subzero.Model;
+import org.cryptimeleon.subzero.subzero.Negative;
+import org.cryptimeleon.subzero.subzero.NumberLiteral;
+import org.cryptimeleon.subzero.subzero.PPVariable;
+import org.cryptimeleon.subzero.subzero.Parameter;
+import org.cryptimeleon.subzero.subzero.Power;
+import org.cryptimeleon.subzero.subzero.Product;
+import org.cryptimeleon.subzero.subzero.StringLiteral;
+import org.cryptimeleon.subzero.subzero.SubzeroFactory;
+import org.cryptimeleon.subzero.subzero.Sum;
+import org.cryptimeleon.subzero.subzero.Tuple;
+import org.cryptimeleon.subzero.subzero.Variable;
+import org.cryptimeleon.subzero.subzero.WitnessVariable;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_ADDITION;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_DIVISION;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_INEQUAL;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_LESSEQUAL;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_MULTIPLICATION;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_SUBTRACTION;
 
 /**
  * Generates proof expressions

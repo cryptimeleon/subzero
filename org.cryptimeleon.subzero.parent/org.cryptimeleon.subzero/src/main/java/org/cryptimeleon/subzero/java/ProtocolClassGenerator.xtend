@@ -1,61 +1,66 @@
-package org.cryptimeleon.subzero.java
+package org.cryptimeleon.subzero.java;
 
-import java.util.ArrayList
-import java.util.Deque
-import java.util.LinkedList
-import java.util.List
-import java.util.Map
-import java.util.Set
-import java.util.stream.Collectors
-import org.cryptimeleon.craco.protocols.CommonInput
-import org.cryptimeleon.craco.protocols.SecretInput
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder
-import org.cryptimeleon.math.expressions.bool.BooleanExpression
-import org.cryptimeleon.math.serialization.Representation
-import org.cryptimeleon.math.structures.groups.GroupElement
-import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap
-import org.cryptimeleon.math.structures.rings.zn.Zn.ZnElement
-import org.cryptimeleon.math.structures.rings.zn.Zp
-import org.cryptimeleon.subzero.builder.ClassBuilder
-import org.cryptimeleon.subzero.builder.CodeBuilder
-import org.cryptimeleon.subzero.builder.ConstructorBuilder
-import org.cryptimeleon.subzero.builder.FieldBuilder
-import org.cryptimeleon.subzero.builder.MethodBuilder
-import org.cryptimeleon.subzero.builder.SourceBuilder
-import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.model.ModelMap
-import org.cryptimeleon.subzero.model.Type
-import org.cryptimeleon.subzero.subzero.Comparison
-import org.cryptimeleon.subzero.subzero.Conjunction
-import org.cryptimeleon.subzero.subzero.Disjunction
-import org.eclipse.emf.ecore.EObject
+import org.cryptimeleon.craco.protocols.CommonInput;
+import org.cryptimeleon.craco.protocols.SecretInput;
+import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace;
+import org.cryptimeleon.craco.protocols.arguments.sigma.ZnChallengeSpace;
+import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge;
+import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpec;
+import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpecBuilder;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.DelegateProtocol;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendFirstValue;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpec;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SendThenDelegateFragment.SubprotocolSpecBuilder;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable;
+import org.cryptimeleon.math.expressions.bool.BooleanExpression;
+import org.cryptimeleon.math.serialization.Representation;
+import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector;
+import org.cryptimeleon.math.structures.groups.Group;
+import org.cryptimeleon.math.structures.groups.GroupElement;
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearMap;
+import org.cryptimeleon.math.structures.rings.cartesian.RingElementVector;
+import org.cryptimeleon.math.structures.rings.zn.Zn.ZnElement;
+import org.cryptimeleon.math.structures.rings.zn.Zp;
+import org.cryptimeleon.subzero.builder.ClassBuilder;
+import org.cryptimeleon.subzero.builder.CodeBuilder;
+import org.cryptimeleon.subzero.builder.ConstructorBuilder;
+import org.cryptimeleon.subzero.builder.FieldBuilder;
+import org.cryptimeleon.subzero.builder.ImportBuilder;
+import org.cryptimeleon.subzero.builder.MethodBuilder;
+import org.cryptimeleon.subzero.builder.SourceBuilder;
+import org.cryptimeleon.subzero.generator.ClassGenerator;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
+import org.cryptimeleon.subzero.model.AugmentedModel;
+import org.cryptimeleon.subzero.model.ModelMap;
+import org.cryptimeleon.subzero.model.Type;
+import org.cryptimeleon.subzero.subzero.Brackets;
+import org.cryptimeleon.subzero.subzero.Comparison;
+import org.cryptimeleon.subzero.subzero.Conjunction;
+import org.cryptimeleon.subzero.subzero.Disjunction;
+import org.cryptimeleon.subzero.subzero.FunctionCall;
+import org.cryptimeleon.subzero.subzero.FunctionDefinition;
+import org.cryptimeleon.subzero.subzero.Parameter;
+import org.cryptimeleon.subzero.subzero.Variable;
+import org.cryptimeleon.subzero.subzero.WitnessVariable;
+import org.eclipse.emf.ecore.EObject;
 
-import static org.cryptimeleon.subzero.builder.Modifier.*
-import org.cryptimeleon.math.structures.groups.Group
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrGroupElemVariable
-import org.cryptimeleon.subzero.subzero.FunctionDefinition
-import org.cryptimeleon.subzero.subzero.Parameter
-import org.cryptimeleon.subzero.subzero.Variable
-import org.cryptimeleon.subzero.subzero.WitnessVariable
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.SchnorrFragment
-import org.cryptimeleon.subzero.subzero.FunctionCall
-import org.cryptimeleon.subzero.subzero.Brackets
-import org.cryptimeleon.craco.protocols.arguments.sigma.ZnChallengeSpace
-import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge
-import org.cryptimeleon.craco.protocols.arguments.sigma.ChallengeSpace
-import org.cryptimeleon.subzero.builder.ImportBuilder
-import org.cryptimeleon.math.structures.rings.cartesian.RingElementVector
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.variables.SchnorrZnVariable
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.LinearStatementFragment
-import org.cryptimeleon.math.structures.cartesian.ExponentExpressionVector
-import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpec
-import org.cryptimeleon.craco.protocols.arguments.sigma.partial.ProofOfPartialKnowledge.ProverSpecBuilder
-import org.cryptimeleon.subzero.generator.ClassGenerator
-import org.cryptimeleon.subzero.generator.GenerationUtils
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.cryptimeleon.subzero.builder.Modifier.FINAL;
+import static org.cryptimeleon.subzero.builder.Modifier.PRIVATE;
+import static org.cryptimeleon.subzero.builder.Modifier.PROTECTED;
+import static org.cryptimeleon.subzero.builder.Modifier.PUBLIC;
+import static org.cryptimeleon.subzero.builder.Modifier.STATIC;
 
 /**
  * Generates the protocol class that specifies the protocol

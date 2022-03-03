@@ -1,26 +1,26 @@
-package org.cryptimeleon.subzero.model
+package org.cryptimeleon.subzero.model;
 
-import org.cryptimeleon.subzero.subzero.Argument
-import org.cryptimeleon.subzero.subzero.Brackets
-import org.cryptimeleon.subzero.subzero.Comparison
-import org.cryptimeleon.subzero.subzero.Conjunction
-import org.cryptimeleon.subzero.subzero.Disjunction
-import org.cryptimeleon.subzero.subzero.FunctionCall
-import org.cryptimeleon.subzero.subzero.FunctionDefinition
-import org.cryptimeleon.subzero.subzero.Model
-import org.cryptimeleon.subzero.subzero.Negative
-import org.cryptimeleon.subzero.subzero.NumberLiteral
-import org.cryptimeleon.subzero.subzero.Parameter
-import org.cryptimeleon.subzero.subzero.Power
-import org.cryptimeleon.subzero.subzero.Product
-import org.cryptimeleon.subzero.subzero.PublicParameter
-import org.cryptimeleon.subzero.subzero.StringLiteral
-import org.cryptimeleon.subzero.subzero.Sum
-import org.cryptimeleon.subzero.subzero.Tuple
-import org.cryptimeleon.subzero.subzero.Variable
-import org.cryptimeleon.subzero.subzero.Witness
-import org.eclipse.emf.ecore.EObject
-import org.cryptimeleon.subzero.subzero.Constant
+import org.cryptimeleon.subzero.subzero.Argument;
+import org.cryptimeleon.subzero.subzero.Brackets;
+import org.cryptimeleon.subzero.subzero.Comparison;
+import org.cryptimeleon.subzero.subzero.Constant;
+import org.cryptimeleon.subzero.subzero.Conjunction;
+import org.cryptimeleon.subzero.subzero.Disjunction;
+import org.cryptimeleon.subzero.subzero.FunctionCall;
+import org.cryptimeleon.subzero.subzero.FunctionDefinition;
+import org.cryptimeleon.subzero.subzero.Model;
+import org.cryptimeleon.subzero.subzero.Negative;
+import org.cryptimeleon.subzero.subzero.NumberLiteral;
+import org.cryptimeleon.subzero.subzero.Parameter;
+import org.cryptimeleon.subzero.subzero.Power;
+import org.cryptimeleon.subzero.subzero.Product;
+import org.cryptimeleon.subzero.subzero.PublicParameter;
+import org.cryptimeleon.subzero.subzero.StringLiteral;
+import org.cryptimeleon.subzero.subzero.Sum;
+import org.cryptimeleon.subzero.subzero.Tuple;
+import org.cryptimeleon.subzero.subzero.Variable;
+import org.cryptimeleon.subzero.subzero.Witness;
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * Contains information about the current branch of the abstract syntax tree

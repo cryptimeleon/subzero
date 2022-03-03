@@ -1,31 +1,32 @@
-package org.cryptimeleon.subzero.java
+package org.cryptimeleon.subzero.java;
 
-import java.util.List
-import java.util.Map
-import java.util.Set
-import java.util.stream.Collectors
-import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup
-import org.cryptimeleon.subzero.builder.ClassBuilder
-import org.cryptimeleon.subzero.builder.MethodBuilder
-import org.cryptimeleon.subzero.builder.SourceBuilder
-import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.model.GroupType
-import org.cryptimeleon.subzero.model.Type
+import org.cryptimeleon.craco.protocols.CommonInput;
+import org.cryptimeleon.craco.protocols.SecretInput;
+import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolProverInstance;
+import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolVerifierInstance;
+import org.cryptimeleon.math.structures.groups.Group;
+import org.cryptimeleon.math.structures.groups.GroupElement;
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
+import org.cryptimeleon.math.structures.groups.elliptic.nopairing.Secp256k1;
+import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup;
+import org.cryptimeleon.math.structures.rings.zn.Zp;
+import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement;
+import org.cryptimeleon.subzero.builder.ClassBuilder;
+import org.cryptimeleon.subzero.builder.ImportBuilder;
+import org.cryptimeleon.subzero.builder.MethodBuilder;
+import org.cryptimeleon.subzero.builder.SourceBuilder;
+import org.cryptimeleon.subzero.generator.ClassGenerator;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
+import org.cryptimeleon.subzero.model.AugmentedModel;
+import org.cryptimeleon.subzero.model.GroupType;
+import org.cryptimeleon.subzero.model.Type;
 
-import static org.cryptimeleon.subzero.builder.Modifier.*
-import org.cryptimeleon.math.structures.groups.Group
-import org.cryptimeleon.subzero.builder.ImportBuilder
-import org.cryptimeleon.math.structures.groups.elliptic.type3.bn.BarretoNaehrigBilinearGroup
-import org.cryptimeleon.math.structures.groups.elliptic.nopairing.Secp256k1
-import org.cryptimeleon.math.structures.rings.zn.Zp.ZpElement
-import org.cryptimeleon.math.structures.groups.GroupElement
-import org.cryptimeleon.math.structures.rings.zn.Zp
-import org.cryptimeleon.craco.protocols.CommonInput
-import org.cryptimeleon.craco.protocols.SecretInput
-import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolVerifierInstance
-import org.cryptimeleon.craco.protocols.arguments.sigma.instance.SigmaProtocolProverInstance
-import org.cryptimeleon.subzero.generator.ClassGenerator
-import org.cryptimeleon.subzero.generator.GenerationUtils
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.cryptimeleon.subzero.builder.Modifier.PUBLIC;
 
 /**
  * Generates the LibraryTest class that will run the protocol

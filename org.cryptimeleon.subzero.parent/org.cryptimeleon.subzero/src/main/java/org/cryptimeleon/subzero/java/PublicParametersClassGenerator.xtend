@@ -1,27 +1,30 @@
-package org.cryptimeleon.subzero.java
+package org.cryptimeleon.subzero.java;
 
-import java.util.Map
-import java.util.Map.Entry
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.SetMembershipPublicParameters
-import org.cryptimeleon.math.serialization.Representation
-import org.cryptimeleon.math.serialization.StandaloneRepresentable
-import org.cryptimeleon.math.structures.groups.Group
-import org.cryptimeleon.math.structures.groups.cartesian.GroupElementVector
-import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup
-import org.cryptimeleon.subzero.builder.ClassBuilder
-import org.cryptimeleon.subzero.builder.ConstructorBuilder
-import org.cryptimeleon.subzero.builder.FieldBuilder
-import org.cryptimeleon.subzero.builder.MethodBuilder
-import org.cryptimeleon.subzero.builder.SourceBuilder
-import org.cryptimeleon.subzero.model.AugmentedModel
-import org.cryptimeleon.subzero.model.Type
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.SetMembershipPublicParameters;
+import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof;
+import org.cryptimeleon.math.serialization.ObjectRepresentation;
+import org.cryptimeleon.math.serialization.Representation;
+import org.cryptimeleon.math.serialization.StandaloneRepresentable;
+import org.cryptimeleon.math.structures.groups.Group;
+import org.cryptimeleon.math.structures.groups.cartesian.GroupElementVector;
+import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
+import org.cryptimeleon.subzero.builder.ClassBuilder;
+import org.cryptimeleon.subzero.builder.ConstructorBuilder;
+import org.cryptimeleon.subzero.builder.FieldBuilder;
+import org.cryptimeleon.subzero.builder.ImportBuilder;
+import org.cryptimeleon.subzero.builder.MethodBuilder;
+import org.cryptimeleon.subzero.builder.SourceBuilder;
+import org.cryptimeleon.subzero.generator.ClassGenerator;
+import org.cryptimeleon.subzero.generator.GenerationUtils;
+import org.cryptimeleon.subzero.model.AugmentedModel;
+import org.cryptimeleon.subzero.model.Type;
 
-import static org.cryptimeleon.subzero.builder.Modifier.*
-import org.cryptimeleon.subzero.builder.ImportBuilder
-import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.TwoSidedRangeProof
-import org.cryptimeleon.math.serialization.ObjectRepresentation
-import org.cryptimeleon.subzero.generator.ClassGenerator
-import org.cryptimeleon.subzero.generator.GenerationUtils
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.cryptimeleon.subzero.builder.Modifier.FINAL;
+import static org.cryptimeleon.subzero.builder.Modifier.PUBLIC;
+import static org.cryptimeleon.subzero.builder.Modifier.STATIC;
 
 /**
  * Generates the public parameters class
