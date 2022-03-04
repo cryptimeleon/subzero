@@ -2,7 +2,7 @@ package org.cryptimeleon.subzero.validation;
 
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
-import org.cryptimeleon.subzero.model.ModelHelper;
+import org.cryptimeleon.subzero.model.ModelUtils;
 import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
 import org.cryptimeleon.subzero.subzero.Comparison;

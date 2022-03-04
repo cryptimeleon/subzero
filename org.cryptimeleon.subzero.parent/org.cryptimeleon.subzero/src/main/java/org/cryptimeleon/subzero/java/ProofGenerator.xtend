@@ -6,7 +6,7 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.Tw
 import org.cryptimeleon.subzero.builder.ImportBuilder;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.model.AugmentedModel;
-import org.cryptimeleon.subzero.model.ModelHelper;
+import org.cryptimeleon.subzero.model.ModelUtils;
 import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Brackets;
@@ -191,14 +191,14 @@ class ProofGenerator {
 		if (operator2 === null) {
 			// Single comparison
 			
-			var boolean leftHasWitness = ModelHelper.containsWitnessVariable(leftNode);
+			var boolean leftHasWitness = ModelUtils.containsWitnessVariable(leftNode);
 			
 			// Normalize the direction of the inequality
-			if (!ModelHelper.isLessComparison(operator)) {
+			if (!ModelUtils.isLessComparison(operator)) {
 				var EObject tempNode = leftNode;
 				leftNode = rightNode;
 				rightNode = tempNode;
-				operator = ModelHelper.swapComparisonDirection(operator);
+				operator = ModelUtils.swapComparisonDirection(operator);
 				leftHasWitness = !leftHasWitness;
 			}
 			
@@ -227,14 +227,14 @@ class ProofGenerator {
 			// Double comparison
 			
 			// Normalize the direction of the inequality
-			if (!ModelHelper.isLessComparison(operator)) {
+			if (!ModelUtils.isLessComparison(operator)) {
 				var EObject tempNode = leftNode;
 				leftNode = rightNode;
 				rightNode = tempNode;
 				
 				val String temp = operator;
-				operator = ModelHelper.swapComparisonDirection(operator2);
-				operator2 = ModelHelper.swapComparisonDirection(temp);
+				operator = ModelUtils.swapComparisonDirection(operator2);
+				operator2 = ModelUtils.swapComparisonDirection(temp);
 			}
 			
 			lowerBound = leftNode;
@@ -243,7 +243,7 @@ class ProofGenerator {
 		}
 		
 		// Shift the lower bound up by 1 if the first inequality is strict
-		if (ModelHelper.isStrictComparison(operator)) {
+		if (ModelUtils.isStrictComparison(operator)) {
 			if (lowerBound instanceof NumberLiteral) {
 				val NumberLiteral literal = lowerBound;
 				literal.setValue(literal.getValue() + 1);
@@ -259,7 +259,7 @@ class ProofGenerator {
 		}
 		
 		// Shift the upper bound down by 1 if the second inequality is strict
-		if (ModelHelper.isStrictComparison(operator2)) {
+		if (ModelUtils.isStrictComparison(operator2)) {
 			if (upperBound instanceof NumberLiteral) {
 				val NumberLiteral literal = upperBound;
 				literal.setValue(literal.getValue() - 1);

@@ -146,14 +146,14 @@ class SizeInference {
 			}
 			
 			Argument: {
-				val String functionName = ModelHelper.getArgumentFunction(parent);
+				val String functionName = ModelUtils.getArgumentFunction(parent);
 				
 				sizes.put(parent, size);
 				
 				val FunctionDefinition function = userFunctionsMap.get(functionName);
 				if (function !== null) {
 					val EList<Parameter> parameters = function.getParameters();
-					val int index = ModelHelper.getArgumentIndex(parent);
+					val int index = ModelUtils.getArgumentIndex(parent);
 					
 					if (index < parameters.size()) {
 						fillSize(parameters.get(index), size);
@@ -241,7 +241,7 @@ class SizeInference {
 			}
 			
 			Parameter: {
-				val String functionName = ModelHelper.getParameterFunction(node);
+				val String functionName = ModelUtils.getParameterFunction(node);
 				val String parameterName = node.getName();
 
 				// For each local variable with the same name in the same function, perform backpropagation

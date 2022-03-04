@@ -2,7 +2,7 @@ package org.cryptimeleon.subzero.validation;
 
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.BranchState;
-import org.cryptimeleon.subzero.model.ModelHelper;
+import org.cryptimeleon.subzero.model.ModelUtils;
 import org.cryptimeleon.subzero.model.ModelMap;
 import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.subzero.Brackets;
@@ -98,11 +98,11 @@ public class GrammarValidation {
     }
 
     public void checkComparisonOperandWitnesses(Comparison comparison) {
-        boolean leftHasWitness = ModelHelper.containsWitnessVariable(comparison.getLeft());
-        boolean rightHasWitness = ModelHelper.containsWitnessVariable(comparison.getRight());
+        boolean leftHasWitness = ModelUtils.containsWitnessVariable(comparison.getLeft());
+        boolean rightHasWitness = ModelUtils.containsWitnessVariable(comparison.getRight());
 
         if (comparison.getOperation2() == null) {
-            if (ModelHelper.isInequalityComparison(comparison)) {
+            if (ModelUtils.isInequalityComparison(comparison)) {
                 if (!leftHasWitness && !rightHasWitness) {
                     logger.error(comparison, "One side of a comparison must be dependent on a witness variable");
                 }
@@ -113,7 +113,7 @@ public class GrammarValidation {
             }
 
         } else {
-            boolean centerHasWitness = ModelHelper.containsWitnessVariable(comparison.getCenter());
+            boolean centerHasWitness = ModelUtils.containsWitnessVariable(comparison.getCenter());
 
             if (!centerHasWitness) {
                 logger.error(comparison, "The middle of a double comparison must be dependent on a witness variable");

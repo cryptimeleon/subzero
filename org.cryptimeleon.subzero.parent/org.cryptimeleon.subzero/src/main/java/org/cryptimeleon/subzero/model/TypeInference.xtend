@@ -268,11 +268,11 @@ package class TypeInference {
 					types.put(node, childLabel);
 					
 					if (childLabel === Type.EXPONENT) {
-						val String functionName = ModelHelper.getArgumentFunction(node);
+						val String functionName = ModelUtils.getArgumentFunction(node);
 						
 						if (userFunctionsMap.containsKey(functionName)) {
 							val EList<Parameter> parameters = userFunctionsMap.get(functionName).getParameters();
-							val int index = ModelHelper.getArgumentIndex(node);
+							val int index = ModelUtils.getArgumentIndex(node);
 							
 							if (index < parameters.size()) {
 								fillExponent(parameters.get(index));
@@ -381,7 +381,7 @@ package class TypeInference {
 			}
 			
 			Parameter: {
-				val String functionName = ModelHelper.getParameterFunction(node);
+				val String functionName = ModelUtils.getParameterFunction(node);
 				val String parameterName = node.getName();
 				
 				// For each local variable with the same name in the same function, perform backpropagation

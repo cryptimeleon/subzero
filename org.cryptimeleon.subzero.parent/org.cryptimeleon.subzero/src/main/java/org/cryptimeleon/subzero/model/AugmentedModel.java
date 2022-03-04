@@ -207,7 +207,7 @@ public class AugmentedModel {
         checkedForRangeProof = true;
 
         // The model has a range proof if it contain any inequality comparison
-        containsRangeProof = ModelMap.preorderAny(model, ModelHelper::isInequalityComparison);
+        containsRangeProof = ModelMap.preorderAny(model, ModelUtils::isInequalityComparison);
 
         return containsRangeProof;
     }
@@ -303,7 +303,7 @@ public class AugmentedModel {
                         LocalVariable localVariable = SubzeroFactory.eINSTANCE.createLocalVariable();
                         localVariable.setName(var.getName());
                         localVariable.setFunction(function.getName());
-                        ModelHelper.replaceParentReferenceToSelf(var, localVariable);
+                        ModelUtils.replaceParentReferenceToSelf(var, localVariable);
                     } else {
                         variableRoleTransformationHelper(var, witnessNames, ppNames);
                     }
@@ -326,15 +326,15 @@ public class AugmentedModel {
         if (witnessNames.contains(name)) {
             WitnessVariable witnessVariable = SubzeroFactory.eINSTANCE.createWitnessVariable();
             witnessVariable.setName(name);
-            ModelHelper.replaceParentReferenceToSelf(variable, witnessVariable);
+            ModelUtils.replaceParentReferenceToSelf(variable, witnessVariable);
         } else if (ppNames.contains(name)) {
             PPVariable ppVariable = SubzeroFactory.eINSTANCE.createPPVariable();
             ppVariable.setName(name);
-            ModelHelper.replaceParentReferenceToSelf(variable, ppVariable);
+            ModelUtils.replaceParentReferenceToSelf(variable, ppVariable);
         } else {
             ConstantVariable constantVariable = SubzeroFactory.eINSTANCE.createConstantVariable();
             constantVariable.setName(name);
-            ModelHelper.replaceParentReferenceToSelf(variable, constantVariable);
+            ModelUtils.replaceParentReferenceToSelf(variable, constantVariable);
         }
     }
 
@@ -983,7 +983,7 @@ public class AugmentedModel {
                 builder.append(" (" + sizes.get(node).toString() + ")");
             }
 
-            String name = ModelHelper.getNodeName(node);
+            String name = ModelUtils.getNodeName(node);
             if (groups != null && groups.containsKey(name)) {
                 builder.append(" (" + groups.get(name).toString() + ")");
             }

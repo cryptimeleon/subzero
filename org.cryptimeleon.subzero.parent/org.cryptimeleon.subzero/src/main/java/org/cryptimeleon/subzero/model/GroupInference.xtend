@@ -17,7 +17,7 @@ import org.cryptimeleon.subzero.subzero.Witness
 import org.cryptimeleon.subzero.subzero.PublicParameter
 import org.cryptimeleon.subzero.subzero.WitnessVariable
 import org.cryptimeleon.subzero.subzero.PPVariable
-import org.cryptimeleon.subzero.model.ModelHelper
+import org.cryptimeleon.subzero.model.ModelUtils
 
 
 /*
@@ -55,7 +55,7 @@ class GroupInference {
 	def private void setGroup(EObject node, GroupType type) {
 		if (types.get(node) !== Type.GROUP_ELEMENT) return;
 
-		val String name = ModelHelper.getNodeName(node);
+		val String name = ModelUtils.getNodeName(node);
 		val GroupType existingType = groups.get(name);
 
 		if (existingType !== null && existingType !== type) {
@@ -117,7 +117,7 @@ class GroupInference {
 	}
 	
 	def private void setG1(EObject node) {
-		val String name = ModelHelper.getNodeName(node);
+		val String name = ModelUtils.getNodeName(node);
 
 		if (types.get(node) === Type.GROUP_ELEMENT && !groups.containsKey(name)) {
 			groups.put(name, GroupType.G1);
