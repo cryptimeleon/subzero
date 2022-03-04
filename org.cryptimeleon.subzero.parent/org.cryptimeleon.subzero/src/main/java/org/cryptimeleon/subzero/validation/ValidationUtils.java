@@ -112,7 +112,7 @@ public class ValidationUtils {
 
     // Returns the name of the type of node
     public static String getNodeName(EObject node) {
-        return nodeNames.get(node.getClass());
+        return nodeNames.get(node.getClass().getInterfaces()[0]);
     }
 
 
@@ -127,7 +127,7 @@ public class ValidationUtils {
 
     // Returns the name of the type of node, with the first letter capitalized
     public static String getCapitalizedNodeName(EObject node) {
-        return capitalizedNodeNames.get(node.getClass());
+        return capitalizedNodeNames.get(node.getClass().getInterfaces()[0]);
     }
 
     // Helper map for getDefaultFeature
@@ -157,7 +157,9 @@ public class ValidationUtils {
     );
 
     // Returns the default structural feature for a node
-    public static EStructuralFeature getDefaultFeature(EObject object) {
-        return nodeDefaultFeatures.get(object.getClass());
+    public static EStructuralFeature getDefaultFeature(EObject node) {
+        Class<?>[] nodeInterfaces = node.getClass().getInterfaces();
+        if (nodeInterfaces.length == 0) return null;
+        return nodeDefaultFeatures.get(nodeInterfaces[0]);
     }
 }
