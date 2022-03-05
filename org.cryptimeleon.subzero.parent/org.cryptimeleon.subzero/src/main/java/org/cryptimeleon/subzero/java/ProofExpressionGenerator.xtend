@@ -55,7 +55,7 @@ import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_SUBTRACT
 /**
  * Generates proof expressions
  */
-class ProofGenerator {
+class ProofExpressionGenerator {
 	static String STATEMENT = "statement";
 	
 	AugmentedModel augmentedModel;
