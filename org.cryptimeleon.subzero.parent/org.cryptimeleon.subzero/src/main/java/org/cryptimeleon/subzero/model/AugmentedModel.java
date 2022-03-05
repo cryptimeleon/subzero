@@ -3,7 +3,7 @@ package org.cryptimeleon.subzero.model;
 import org.cryptimeleon.math.structures.groups.Group;
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Comparison;
 import org.cryptimeleon.subzero.subzero.Conjunction;
@@ -815,7 +815,7 @@ public class AugmentedModel {
     public Map<String, List<FunctionCall>> getPredefinedFunctionCallNodes() {
         if (predefinedFunctionCalls != null) return predefinedFunctionCalls;
 
-        Map<String, FunctionSignature> predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+        Map<String, FunctionSignature> predefinedFunctionsMap = PredefinedUtils.getAllPredefinedFunctions();
 
         predefinedFunctionCalls = new HashMap<>();
 

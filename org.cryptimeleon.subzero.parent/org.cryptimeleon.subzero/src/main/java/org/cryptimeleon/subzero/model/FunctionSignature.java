@@ -5,6 +5,7 @@ import org.cryptimeleon.subzero.predefined.ReturnsTuple;
 import org.cryptimeleon.subzero.predefined.TupleParameters;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,16 +64,14 @@ public class FunctionSignature {
             parameterSizes = new ArrayList<>(Collections.nCopies(method.getParameterCount(), 1));
         }
 
-        parameterCount = method.getParameterTypes().length;
+        Parameter[] methodParameters = method.getParameters();
+        parameterCount = methodParameters.length;
         parameterNames = new ArrayList<>();
         parameterTypes = new ArrayList<>();
 
-        for (int i = 0; i < parameterCount; i++) {
-            parameterNames.add("arg" + (i+1));
-        }
-
-        for (Class<?> classObject : method.getParameterTypes()) {
-            parameterTypes.add(Type.toType(classObject));
+        for (Parameter parameter : methodParameters) {
+            parameterNames.add(parameter.getName());
+            parameterTypes.add(Type.toType(parameter.getType()));
         }
     }
 

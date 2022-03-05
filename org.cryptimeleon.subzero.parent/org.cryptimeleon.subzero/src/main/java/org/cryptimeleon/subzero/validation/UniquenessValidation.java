@@ -3,7 +3,7 @@ package org.cryptimeleon.subzero.validation;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
 import org.cryptimeleon.subzero.model.ModelMap;
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Comparison;
 import org.cryptimeleon.subzero.subzero.Constant;
 import org.cryptimeleon.subzero.subzero.FunctionDefinition;
@@ -30,7 +30,7 @@ public class UniquenessValidation {
 
     public UniquenessValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
-        predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+        predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
         witnessNames = augmentedModel.getWitnessNames();
         publicParameterNames = augmentedModel.getPublicParameterNames();
         declaredConstantNames = augmentedModel.getDeclaredConstantNames();

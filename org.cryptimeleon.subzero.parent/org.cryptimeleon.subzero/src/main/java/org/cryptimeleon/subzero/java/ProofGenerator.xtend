@@ -6,8 +6,10 @@ import org.cryptimeleon.craco.protocols.arguments.sigma.schnorr.setmembership.Tw
 import org.cryptimeleon.subzero.builder.ImportBuilder;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.model.AugmentedModel;
+import org.cryptimeleon.subzero.model.FunctionSignature;
 import org.cryptimeleon.subzero.model.ModelUtils;
 import org.cryptimeleon.subzero.model.Type;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Brackets;
 import org.cryptimeleon.subzero.subzero.Comparison;
@@ -35,6 +37,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -344,114 +348,147 @@ class ProofGenerator {
 	
 	def private dispatch String generateCode(FunctionCall call) {
 		var String name = call.getName();
-		
-		val boolean isInlineFunction = augmentedModel.isInlineFunctionName(name);
-		
-		if (name == "e") {
-			// Handle the special pairing function case
-			
-			val List<String> arguments = new ArrayList<String>();
-			
-			for (argument : call.getArguments()) {
-				var String argumentCode = generateCode(argument);
-				arguments.add(argumentCode);
-			}
-			
-			return '''e.applyExpr(«GenerationUtils.createCommaList(arguments)»)''';
-						
-		} else if (isInlineFunction) {
-			// Handle calls to inline user defined functions
-			
-			var String functionCode = inlineFunctionsCode.get(name);
-			val FunctionDefinition function = functions.get(name);
-			
-			if (functionCode === null) {
-				inInlineFunction = true;
-				functionCode = generateCode(function.getBody());
-				inInlineFunction = false;
-				inlineFunctionsCode.put(name, functionCode);
-			}
-			
-			val List<Parameter> parameters = function.getParameters();
-			val EList<Expression> arguments = call.getArguments();
-			var inlineCode = functionCode;
-			
-			for (var int i = 0; i < parameters.size(); i++) {
-				val String parameterName = parameters.get(i).getName();
-				val String argumentCode = generateCode(arguments.get(i));
-				inlineCode = inlineCode.replace(GenerationUtils.createLocalName(parameterName), argumentCode);
-			}
-			
-			return inlineCode;
-		
-		} else {
-			// Handle calls to regular user defined functions
-			
-			val Type functionType = types.get(call);
 
-			// Default when functionType == Type.GROUP_ELEMENT || functionType == Type.EXPONENT
-			var callStatement = [String functionName, List<String> args |
-				return '''«functionName»(«GenerationUtils.createCommaList(args)»)''';
-			];
-			
-			val List<String> arguments = new ArrayList<String>();
-			
-			if (functionType == Type.BOOLEAN) {
-				val EObject body = functions.get(call.getName()).getBody();
-				
-				if (body instanceof Conjunction) {
-					arguments.add("subprotocolSpecBuilder");
-					subprotocolCount++;
-					var String subprotocolName = STATEMENT + subprotocolCount;
-					arguments.add('''"«subprotocolName»"''');
-					callStatement = [String functionName, List<String> args |
-						return '''«functionName»(«GenerationUtils.createCommaList(args)»);''' + '\n';
-					];
-				} else if (body instanceof Comparison) {
-					subprotocolCount++;
-					val String subprotocolName = STATEMENT + subprotocolCount;
-					callStatement = [String functionName, List<String> args |
-						return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationUtils.createCommaList(args)»));''' + '\n';
-					];
+		val boolean isPredefinedFunction = PredefinedUtils.isPredefinedFunction(name);
+
+		if (isPredefinedFunction) {
+			val ImportBuilder predefinedImports = PredefinedUtils.getPredefinedFunctionImports(name);
+			if (predefinedImports !== null) {
+				importBuilder.merge(predefinedImports);
+			}
+
+			val boolean isInlineFunction = PredefinedUtils.isInlineFunction(name);
+
+			if (isInlineFunction) {
+				val String functionCode = PredefinedUtils.getFunctionBody(name);
+				val FunctionSignature signature = PredefinedUtils.getAllPredefinedFunctions().get(name);
+				val List<String> parameterNames = signature.getParameterNames();
+				val EList<Expression> arguments = call.getArguments();
+
+				var inlineCode = functionCode;
+
+				val List<String> descLengthParamNames = new ArrayList<String>(parameterNames);
+				Arrays.sort(descLengthParamNames, Comparator.comparingInt([String paramName | paramName.length()]).reversed());
+
+				// $var becomes #var#
+				// Must replace in order of descending name length to avoid issues with
+				// variables that are prefixes of other variables
+				for (String parameterName : descLengthParamNames) {
+					inlineCode = inlineCode.replace('$' + parameterName, GenerationUtils.createLocalName(parameterName));
 				}
-			}
-			
-			// If the function has a constant variable anywhere, add the CommonInput variable as an argument
-			if (augmentedModel.userFunctionHasConstant(name)) {
-				arguments.add(GenerationUtils.INPUT_VARIABLE);
-			}
-			
-			// If the function has witness variables anywhere, add each witness variable as an argument
-			val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames(name);
-			if (functionWitnesses !== null) {
-				for (String witnessName : functionWitnesses) {
-					arguments.add(witnessName);
+
+				for (var int i = 0; i < parameterNames.size(); i++) {
+					val String parameterName = parameterNames.get(i);
+					val String argumentCode = generateCode(arguments.get(i));
+					inlineCode = inlineCode.replace(GenerationUtils.createLocalName(parameterName), argumentCode);
 				}
+
+				return inlineCode;
+			
+			} else {
+				// TODO
+				// Implement non-inline predefined functions
+				throw new UnsupportedOperationException();
 			}
 			
-			// Add all user provided arguments to the function call
-			for (argument : call.getArguments()) {
-				var String argumentCode = generateCode(argument);
-				var EObject argumentExpr = (argument as Argument).getExpression();
+		} else { // User-defined function
+
+			val boolean isInlineFunction = augmentedModel.isInlineFunctionName(name);
+
+			if (isInlineFunction) {
+				// Handle calls to inline user defined functions
+
+				var String functionCode = inlineFunctionsCode.get(name);
+				val FunctionDefinition function = functions.get(name);
+
+				if (functionCode === null) {
+					inInlineFunction = true;
+					functionCode = generateCode(function.getBody());
+					inInlineFunction = false;
+					inlineFunctionsCode.put(name, functionCode);
+				}
+
+				val List<Parameter> parameters = function.getParameters();
+				val EList<Expression> arguments = call.getArguments();
+				var inlineCode = functionCode;
+
+				for (var int i = 0; i < parameters.size(); i++) {
+					val String parameterName = parameters.get(i).getName();
+					val String argumentCode = generateCode(arguments.get(i));
+					inlineCode = inlineCode.replace(GenerationUtils.createLocalName(parameterName), argumentCode);
+				}
+
+				return inlineCode;
+
+			} else {
+				// Handle calls to regular user defined functions
+
+				val Type functionType = types.get(call);
+
+				// Default when functionType == Type.GROUP_ELEMENT || functionType == Type.EXPONENT
+				var callStatement = [String functionName, List<String> args |
+					return '''«functionName»(«GenerationUtils.createCommaList(args)»)''';
+				];
+
+				val List<String> arguments = new ArrayList<String>();
 				
-				if (argumentExpr instanceof Variable && !(argumentExpr instanceof WitnessVariable)) {
-					var Type argumentType = types.get(argumentExpr);
-					if (argumentType == Type.GROUP_ELEMENT) {
-						// GroupElement does not implement GroupElementExpression, so .expr() is necessary
-						// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
-						argumentCode += ".expr()";
-					} else if (argumentType == Type.EXPONENT) {
-						// ZpElement does not implement ExponentExpr, so .asExponentExpression() is necessary
-						// SchnorrZnVariable does implement ExponentExpr, so .asExponentExpression() is not needed
-						argumentCode += ".asExponentExpression()";
+				if (functionType == Type.BOOLEAN) {
+					val EObject body = functions.get(call.getName()).getBody();
+
+					if (body instanceof Conjunction) {
+						arguments.add("subprotocolSpecBuilder");
+						subprotocolCount++;
+						var String subprotocolName = STATEMENT + subprotocolCount;
+						arguments.add('''"«subprotocolName»"''');
+						callStatement = [String functionName, List<String> args |
+							return '''«functionName»(«GenerationUtils.createCommaList(args)»);''' + '\n';
+						];
+					} else if (body instanceof Comparison) {
+						subprotocolCount++;
+						val String subprotocolName = STATEMENT + subprotocolCount;
+						callStatement = [String functionName, List<String> args |
+							return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationUtils.createCommaList(args)»));''' + '\n';
+						];
 					}
 				}
 
-				arguments.add(argumentCode);
+				// If the function has a constant variable anywhere, add the CommonInput variable as an argument
+				if (augmentedModel.userFunctionHasConstant(name)) {
+					arguments.add(GenerationUtils.INPUT_VARIABLE);
+				}
+
+				// If the function has witness variables anywhere, add each witness variable as an argument
+				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames(name);
+				if (functionWitnesses !== null) {
+					for (String witnessName : functionWitnesses) {
+						arguments.add(witnessName);
+					}
+				}
+
+				// Add all user provided arguments to the function call
+				for (argument : call.getArguments()) {
+					var String argumentCode = generateCode(argument);
+					var EObject argumentExpr = (argument as Argument).getExpression();
+
+					if (argumentExpr instanceof Variable && !(argumentExpr instanceof WitnessVariable)) {
+						var Type argumentType = types.get(argumentExpr);
+						if (argumentType == Type.GROUP_ELEMENT) {
+							// GroupElement does not implement GroupElementExpression, so .expr() is necessary
+							// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
+							argumentCode += ".expr()";
+						} else if (argumentType == Type.EXPONENT) {
+							// ZpElement does not implement ExponentExpr, so .asExponentExpression() is necessary
+							// SchnorrZnVariable does implement ExponentExpr, so .asExponentExpression() is not needed
+							argumentCode += ".asExponentExpression()";
+						}
+					}
+
+					arguments.add(argumentCode);
+				}
+
+				// Generate and return the function call statement
+				return callStatement.apply(name, arguments);
 			}
-			
-			// Generate and return the function call statement
-			return callStatement.apply(name, arguments);
 		}
 	}
 	

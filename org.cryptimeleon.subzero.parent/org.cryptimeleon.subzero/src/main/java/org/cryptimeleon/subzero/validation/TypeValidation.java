@@ -2,9 +2,8 @@ package org.cryptimeleon.subzero.validation;
 
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
-import org.cryptimeleon.subzero.model.ModelUtils;
 import org.cryptimeleon.subzero.model.Type;
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Comparison;
 import org.cryptimeleon.subzero.subzero.Conjunction;
 import org.cryptimeleon.subzero.subzero.Disjunction;
@@ -28,7 +27,7 @@ public class TypeValidation {
     public TypeValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
         types = augmentedModel.getTypes();
-        predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+        predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
     }
 
     public void checkDisjunctionOperandTypes(Disjunction disjunction) {

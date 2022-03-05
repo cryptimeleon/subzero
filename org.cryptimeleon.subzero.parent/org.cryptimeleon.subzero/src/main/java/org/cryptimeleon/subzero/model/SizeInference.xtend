@@ -1,6 +1,6 @@
 package org.cryptimeleon.subzero.model;
 
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Brackets;
 import org.cryptimeleon.subzero.subzero.Comparison;
@@ -66,7 +66,7 @@ class SizeInference {
 		this.types = augmentedModel.getTypes();
 		
 		// Get all maps needed to traverse the syntax tree easily
-		this.predefinedFunctionsMap = PredefinedFunctionsHelper.getAllPredefinedFunctions();	
+		this.predefinedFunctionsMap = PredefinedUtils.getAllPredefinedFunctions();
 		this.predefinedFunctionCallsMap = augmentedModel.getPredefinedFunctionCallNodes();
 		this.userFunctionsMap = augmentedModel.getUserFunctionNodes();
 		this.userFunctionCallsMap = augmentedModel.getUserFunctionCallNodes();

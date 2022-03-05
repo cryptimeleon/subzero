@@ -3,7 +3,7 @@ package org.cryptimeleon.subzero.validation;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
 import org.cryptimeleon.subzero.model.Type;
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Expression;
 import org.cryptimeleon.subzero.subzero.FunctionCall;
 import org.eclipse.emf.ecore.EObject;
@@ -27,7 +27,7 @@ public class FunctionCallValidation {
         types = augmentedModel.getTypes();
         sizes = augmentedModel.getSizes();
         userFunctions = augmentedModel.getUserFunctionSignatures();
-        predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+        predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
     }
 
     // Function calls must reference either a user defined function or a predefined function

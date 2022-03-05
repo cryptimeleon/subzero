@@ -6,7 +6,7 @@ import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
 import org.cryptimeleon.subzero.model.GroupType;
 import org.cryptimeleon.subzero.model.Type;
-import org.cryptimeleon.subzero.predefined.PredefinedFunctionsHelper;
+import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.FunctionCall;
 import org.cryptimeleon.subzero.subzero.LocalVariable;
 import org.cryptimeleon.subzero.subzero.Variable;
@@ -55,7 +55,7 @@ public class EnvironmentGenerator implements CodeGenerator {
             Map<String, List<FunctionCall>> functionCalls,
             Map<String, Map<String, List<LocalVariable>>> localVariables
     ) {
-        Map<String, FunctionSignature> predefinedFunctions = PredefinedFunctionsHelper.getAllPredefinedFunctions();
+        Map<String, FunctionSignature> predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
         buildFunctions(predefinedFunctions, functionCalls, localVariables, "built-in");
     }
 
