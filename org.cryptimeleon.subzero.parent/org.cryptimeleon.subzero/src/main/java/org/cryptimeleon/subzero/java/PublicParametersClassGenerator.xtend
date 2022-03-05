@@ -14,7 +14,7 @@ import org.cryptimeleon.subzero.builder.FieldBuilder;
 import org.cryptimeleon.subzero.builder.ImportBuilder;
 import org.cryptimeleon.subzero.builder.MethodBuilder;
 import org.cryptimeleon.subzero.builder.SourceBuilder;
-import org.cryptimeleon.subzero.generator.ClassGenerator;
+import org.cryptimeleon.subzero.java.ClassGenerator;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.Type;

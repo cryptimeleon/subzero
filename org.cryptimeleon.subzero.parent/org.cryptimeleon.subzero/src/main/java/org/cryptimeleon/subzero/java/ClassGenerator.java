@@ -1,4 +1,4 @@
-package org.cryptimeleon.subzero.generator;
+package org.cryptimeleon.subzero.java;
 
 import org.cryptimeleon.subzero.builder.SourceBuilder;
 
