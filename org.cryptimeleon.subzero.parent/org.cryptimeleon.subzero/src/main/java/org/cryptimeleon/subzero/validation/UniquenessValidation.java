@@ -2,7 +2,7 @@ package org.cryptimeleon.subzero.validation;
 
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.FunctionSignature;
-import org.cryptimeleon.subzero.model.ModelMap;
+import org.cryptimeleon.subzero.model.TreeTraversals;
 import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Comparison;
 import org.cryptimeleon.subzero.subzero.Constant;
@@ -54,7 +54,7 @@ public class UniquenessValidation {
     // Subprotocol names must be unique
     public void checkSubprotocolNamesAreUnique(Model model) {
         Set<String> subprotocolNames = new HashSet<>();
-        ModelMap.preorder(model.getProof(), (node) -> {
+        TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof Comparison) {
                 String subprotocolName = ((Comparison) node).getSubprotocolName();
                 if (subprotocolNames.contains(subprotocolName)) {

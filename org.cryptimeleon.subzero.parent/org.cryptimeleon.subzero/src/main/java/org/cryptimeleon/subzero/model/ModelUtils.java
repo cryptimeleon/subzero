@@ -73,7 +73,7 @@ public class ModelUtils {
             mapping.put(parameter, argument.getExpression());
         }
 
-        ModelMap.preorder(definition.getBody(), (bodyNode) -> {
+        TreeTraversals.preorderTraversal(definition.getBody(), (bodyNode) -> {
             if (bodyNode instanceof Variable) {
                 Expression expression = EcoreUtil.copy(mapping.get(((Variable) bodyNode).getName()));
                 if (expression != null) {
@@ -101,12 +101,12 @@ public class ModelUtils {
     }
 
     public static boolean containsWitnessVariable(EObject node) {
-        return ModelMap.preorderWithControl(node, (childNode, controller) -> {
+        return TreeTraversals.preorderTraversalWithControl(node, (childNode, controller) -> {
             if (childNode instanceof FunctionCall) {
-                controller.continueTraversal();
+                controller.skipBranch();
             } else if (childNode instanceof WitnessVariable) {
-                controller.returnTrue();
-                controller.breakMap();
+                controller.setReturnValue(true);
+                controller.endTraversal();
             }
         });
     }

@@ -35,7 +35,7 @@ import org.cryptimeleon.subzero.builder.SourceBuilder;
 import org.cryptimeleon.subzero.java.ClassGenerator;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
 import org.cryptimeleon.subzero.model.AugmentedModel;
-import org.cryptimeleon.subzero.model.ModelMap;
+import org.cryptimeleon.subzero.model.TreeTraversals;
 import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.subzero.Brackets;
 import org.cryptimeleon.subzero.subzero.Comparison;
@@ -578,11 +578,11 @@ class ProtocolClassGenerator implements ClassGenerator {
 			val EObject leftNode = node.getLeft();
 			val EObject rightNode = node.getRight();
 
-			val boolean leftContainsOr = ModelMap.preorderAny(leftNode, [EObject child |
+			val boolean leftContainsOr = TreeTraversals.anyInPreorderTraversal(leftNode, [EObject child |
 				return child instanceof Disjunction;
 			]);
 
-			val boolean rightContainsOr = ModelMap.preorderAny(rightNode, [EObject child |
+			val boolean rightContainsOr = TreeTraversals.anyInPreorderTraversal(rightNode, [EObject child |
 				return child instanceof Disjunction;
 			]);
 

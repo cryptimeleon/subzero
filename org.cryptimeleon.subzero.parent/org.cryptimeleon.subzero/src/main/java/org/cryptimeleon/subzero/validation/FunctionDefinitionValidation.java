@@ -2,7 +2,7 @@ package org.cryptimeleon.subzero.validation;
 
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.BranchState;
-import org.cryptimeleon.subzero.model.ModelMap;
+import org.cryptimeleon.subzero.model.TreeTraversals;
 import org.cryptimeleon.subzero.subzero.Disjunction;
 import org.cryptimeleon.subzero.subzero.FunctionCall;
 import org.cryptimeleon.subzero.subzero.FunctionDefinition;
@@ -56,7 +56,7 @@ public class FunctionDefinitionValidation {
 
     // User defined functions cannot currently contain a disjunction
     public void checkFunctionHasNoDisjunction(FunctionDefinition function) {
-        boolean hasDisjunction = ModelMap.postorderAny(function.getBody(), (node) -> node instanceof Disjunction);
+        boolean hasDisjunction = TreeTraversals.anyInPostorderTraversal(function.getBody(), (node) -> node instanceof Disjunction);
 
         if (hasDisjunction) {
             logger.error(function, "Disjunctions are currently not supported in user functions");

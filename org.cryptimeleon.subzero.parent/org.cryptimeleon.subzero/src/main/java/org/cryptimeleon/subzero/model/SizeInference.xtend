@@ -265,14 +265,14 @@ class SizeInference {
 	
 	// Labels all remaining nodes with size 1 (scalar)
 	def private void fillDefaultSize(Model model) {
-		ModelMap.preorder(model.getProof(), [EObject node |
+		TreeTraversals.preorderTraversal(model.getProof(), [EObject node |
 			sizes.putIfAbsent(node, 1);
 		]);
 		
 		for (FunctionDefinition function : model.getFunctions()) {
 			sizes.putIfAbsent(function, 1);
 			
-			ModelMap.preorder(function.getBody(), [EObject node |
+			TreeTraversals.preorderTraversal(function.getBody(), [EObject node |
 				sizes.putIfAbsent(node, 1);
 			]);
 			

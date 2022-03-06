@@ -3,7 +3,7 @@ package org.cryptimeleon.subzero.validation;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.BranchState;
 import org.cryptimeleon.subzero.model.ModelUtils;
-import org.cryptimeleon.subzero.model.ModelMap;
+import org.cryptimeleon.subzero.model.TreeTraversals;
 import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.subzero.Brackets;
 import org.cryptimeleon.subzero.subzero.Comparison;
@@ -169,7 +169,7 @@ public class GrammarValidation {
         EObject right = power.getRight();
 
         if (left instanceof WitnessVariable) {
-            ModelMap.preorder(right, (node) -> {
+            TreeTraversals.preorderTraversal(right, (node) -> {
                 if (node instanceof WitnessVariable) {
                     createWitnessIsNotInExponentOfWitnessError((WitnessVariable) node);
                 } else if (node instanceof FunctionCall) {
@@ -192,9 +192,9 @@ public class GrammarValidation {
     // A group element witness cannot be in both subtrees of a disjunction
     // that has a conjunction ancestor
     public void checkOrWithAndAncestorGroupElementWitnesses(Model model) {
-        ModelMap.preorderWithStateAndControl(model.getProof(), new BranchState(), (node, state, controller) -> {
+        TreeTraversals.preorderTraversalWithStateAndControl(model.getProof(), (node, state, controller) -> {
             if (node instanceof Disjunction && state.hasConjunctionAncestor()) {
-                controller.continueTraversal();
+                controller.skipBranch();
 
                 Map<String, List<WitnessVariable>> witnessNodes = new HashMap<>();
                 orTreeHelper(node, witnessNodes);

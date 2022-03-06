@@ -565,7 +565,7 @@ package class TypeInference {
 				setGroupElement(parameter);
 			}
 			
-			ModelMap.preorder(function.getBody(), [EObject node |
+			TreeTraversals.preorderTraversal(function.getBody(), [EObject node |
 				setGroupElement(node);
 			]);
 		}
@@ -578,7 +578,7 @@ package class TypeInference {
 			setGroupElement(publicParameter);
 		}
 		
-		ModelMap.preorder(model.getProof(), [EObject node |
+		TreeTraversals.preorderTraversal(model.getProof(), [EObject node |
 			setGroupElement(node);
 		]);
 	}

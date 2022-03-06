@@ -63,7 +63,7 @@ public class GroupInference {
 
     // Label all group elements within the second argument of an e call as G2 elements
     private void fillG2(EObject node) {
-        ModelMap.postorder(node, (childNode) -> {
+        TreeTraversals.postorderTraversal(node, (childNode) -> {
             if (childNode instanceof Variable && !(childNode instanceof LocalVariable) && types.get(childNode) == Type.GROUP_ELEMENT) {
                 setGroup(childNode, GroupType.G2);
             } else if (childNode instanceof FunctionCall) {
@@ -77,13 +77,13 @@ public class GroupInference {
 
     // Label all group elements within an equality that contains an e call as GT elements
     private void fillGT(EObject node) {
-        ModelMap.preorderWithControl(node, (childNode, controller) -> {
+        TreeTraversals.preorderTraversalWithControl(node, (childNode, controller) -> {
             if (childNode instanceof Variable && !(childNode instanceof LocalVariable) && types.get(childNode) == Type.GROUP_ELEMENT) {
                 setGroup(childNode, GroupType.GT);
             } else if (childNode instanceof FunctionCall) {
                 String functionName = ((FunctionCall) childNode).getName();
                 if (functionName.equals(PAIRING_FUNCTION)) {
-                    controller.continueTraversal();
+                    controller.skipBranch();
                 } else if (userFunctions.containsKey(functionName)) {
                     fillGT(userFunctions.get(functionName).getBody());
                     // Model map will also label all function arguments as GT
@@ -95,7 +95,7 @@ public class GroupInference {
 
     // Label all remaining unlabeled group elements as G1 elements
     private void fillG1(Model model) {
-        ModelMap.postorder(model, (node) -> {
+        TreeTraversals.postorderTraversal(model, (node) -> {
             if (node instanceof Variable && !(node instanceof LocalVariable)) {
                 setG1(node);
             }
@@ -121,22 +121,22 @@ public class GroupInference {
     private void inferGroups(AugmentedModel augmentedModel) {
         Model model = augmentedModel.getModel();
 
-        ModelMap.preorderWithControl(model, (node, controller) -> {
+        TreeTraversals.preorderTraversalWithControl(model, (node, controller) -> {
             if (node instanceof Comparison) {
                 String operation = ((Comparison) node).getOperation();
                 if (operation.equals(OPERATOR_EQUAL) || operation.equals(OPERATOR_INEQUAL)) {
 
-                    boolean containsECall = ModelMap.preorderWithControl(node, (newNode, newController) -> {
+                    boolean containsECall = TreeTraversals.preorderTraversalWithControl(node, (newNode, newController) -> {
                         if (newNode instanceof FunctionCall) {
                             FunctionCall call = (FunctionCall) newNode;
                             EList<Expression> arguments = call.getArguments();
 
                             if (call.getName().equals(PAIRING_FUNCTION) && arguments.size() == PAIRING_FUNCTION_ARGS) {
-                                newController.returnTrue();
+                                newController.setReturnValue(true);
                                 fillG2(arguments.get(1));
                             }
 
-                            newController.continueTraversal();
+                            newController.skipBranch();
                         }
                     });
 
@@ -145,7 +145,7 @@ public class GroupInference {
                     }
                 }
 
-                controller.continueTraversal();
+                controller.skipBranch();
             }
         });
 

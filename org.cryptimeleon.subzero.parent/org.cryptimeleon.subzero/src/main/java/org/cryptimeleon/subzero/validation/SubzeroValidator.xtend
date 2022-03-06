@@ -3,7 +3,7 @@ package org.cryptimeleon.subzero.validation;
 import org.cryptimeleon.subzero.environment.EnvironmentGenerator;
 import org.cryptimeleon.subzero.model.AugmentedModel;
 import org.cryptimeleon.subzero.model.BranchState;
-import org.cryptimeleon.subzero.model.ModelMap;
+import org.cryptimeleon.subzero.model.TreeTraversals;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Brackets;
 import org.cryptimeleon.subzero.subzero.Comparison;
@@ -88,7 +88,7 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		info(envGenerator.generate(), null, null);
 
 		// Iterate over the tree in a preorder traversal and perform validation on each node
-		ModelMap.preorderWithState(model, new BranchState(), [EObject node, BranchState state |
+		TreeTraversals.preorderTraversalWithState(model, [EObject node, BranchState state |
 			checkNode(node, state);
 		]);
 	}

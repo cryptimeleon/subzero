@@ -207,7 +207,7 @@ public class AugmentedModel {
         checkedForRangeProof = true;
 
         // The model has a range proof if it contain any inequality comparison
-        containsRangeProof = ModelMap.preorderAny(model, ModelUtils::isInequalityComparison);
+        containsRangeProof = TreeTraversals.anyInPreorderTraversal(model, ModelUtils::isInequalityComparison);
 
         return containsRangeProof;
     }
@@ -218,7 +218,7 @@ public class AugmentedModel {
         checkedForPairing = true;
 
         // The model has a pairing if it has a function call to the 'e' function
-        containsPairing = ModelMap.preorderAny(model, (node) -> {
+        containsPairing = TreeTraversals.anyInPreorderTraversal(model, (node) -> {
             if (node instanceof FunctionCall) {
                 return ((FunctionCall) node).getName().equals("e");
             }
@@ -235,7 +235,7 @@ public class AugmentedModel {
         checkedForOrProof = true;
 
         // The model has an OR proof if it contains a disjunction
-        containsOrProof = ModelMap.preorderAny(model, node -> node instanceof Disjunction);
+        containsOrProof = TreeTraversals.anyInPreorderTraversal(model, node -> node instanceof Disjunction);
 
         return containsOrProof;
     }
@@ -246,16 +246,16 @@ public class AugmentedModel {
         checkedForOrDescendantOfAnd = true;
 
         // The model has an OR descendant of an AND if it contains a disjunction nested within a conjunction
-        containsOrDescendantOfAnd = ModelMap.preorderWithControl(model, (node, controller) -> {
+        containsOrDescendantOfAnd = TreeTraversals.preorderTraversalWithControl(model, (node, controller) -> {
             if (node instanceof Conjunction) {
 
-                boolean hasDisjunction = ModelMap.preorderAny(node, (newNode) -> newNode instanceof Disjunction);
+                boolean hasDisjunction = TreeTraversals.anyInPreorderTraversal(node, (newNode) -> newNode instanceof Disjunction);
 
                 if (hasDisjunction) {
-                    controller.returnTrue();
+                    controller.setReturnValue(true);
                 }
 
-                controller.continueTraversal();
+                controller.skipBranch();
             }
         });
 
@@ -270,7 +270,7 @@ public class AugmentedModel {
     // Fixes single comparisons to have left and right subtrees, instead of left and center subtrees
     // This is needed due to how the grammar is written
     private void comparisonTransformation() {
-        ModelMap.postorder(model, (node) -> {
+        TreeTraversals.postorderTraversal(model, (node) -> {
             if (node instanceof Comparison) {
                 Comparison comparison = (Comparison) node;
                 if (comparison.getOperation2() == null && comparison.getRight() == null) {
@@ -296,7 +296,7 @@ public class AugmentedModel {
                 parameters.add(parameter.getName());
             }
 
-            ModelMap.preorder(function.getBody(), (node) -> {
+            TreeTraversals.preorderTraversal(function.getBody(), (node) -> {
                 if (node instanceof Variable) {
                     Variable var = (Variable) node;
                     if (parameters.contains(var.getName())) {
@@ -312,7 +312,7 @@ public class AugmentedModel {
             });
         }
 
-        ModelMap.preorder(model.getProof(), (node) -> {
+        TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof Variable) {
                 variableRoleTransformationHelper((Variable) node, witnessNames, ppNames);
             }
@@ -430,10 +430,10 @@ public class AugmentedModel {
     }
 
     private void getConstrainedWitnessNamesHelper(EObject root, Map<String, FunctionDefinition> userFunctions, Set<String> checkedFunctions) {
-        ModelMap.preorderWithControl(root, (node, controller) -> {
+        TreeTraversals.preorderTraversalWithControl(root, (node, controller) -> {
             if (node instanceof Power) {
                 // Witness variables in the exponent of a power expression are not constrained
-                controller.continueTraversal();
+                controller.skipBranch();
 
             } else if (node instanceof WitnessVariable) {
                 WitnessVariable witnessVar = (WitnessVariable) node;
@@ -449,7 +449,7 @@ public class AugmentedModel {
                     getConstrainedWitnessNamesHelper(function.getBody(), userFunctions, checkedFunctions);
                 }
 
-                // controller.continueTraversal() is NOT used here, because we want the witness names
+                // controller.skipBranch() is NOT used here, because we want the witness names
                 // in the function call arguments to also be added to the constrained set
             }
         });
@@ -609,10 +609,10 @@ public class AugmentedModel {
         variables = new HashMap<>();
 
         for (FunctionDefinition function : model.getFunctions()) {
-            ModelMap.preorder(function.getBody(), node -> getVariableNodesHelper(node, variables));
+            TreeTraversals.preorderTraversal(function.getBody(), node -> getVariableNodesHelper(node, variables));
         }
 
-        ModelMap.preorder(model.getProof(), node -> getVariableNodesHelper(node, variables));
+        TreeTraversals.preorderTraversal(model.getProof(), node -> getVariableNodesHelper(node, variables));
 
         return variables;
     }
@@ -662,7 +662,7 @@ public class AugmentedModel {
 
         userFunctionCalls = new HashMap<>();
 
-        ModelMap.preorder(model.getProof(), (node) -> {
+        TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof FunctionCall) {
                 FunctionCall functionCall = (FunctionCall) node;
                 String functionName = functionCall.getName();
@@ -725,7 +725,7 @@ public class AugmentedModel {
                 functionVariables.put(parameter.getName(), new ArrayList<>());
             }
 
-            ModelMap.preorder(function.getBody(), (node) -> {
+            TreeTraversals.preorderTraversal(function.getBody(), (node) -> {
                 if (node instanceof LocalVariable) {
                     LocalVariable localVar = (LocalVariable) node;
                     functionVariables.get(localVar.getName()).add(localVar);
@@ -743,7 +743,7 @@ public class AugmentedModel {
 
         userFunctionWithConstant = new HashSet<>();
         for (FunctionDefinition function : model.getFunctions()) {
-            boolean hasConstant = ModelMap.preorderAny(function.getBody(), node -> node instanceof ConstantVariable);
+            boolean hasConstant = TreeTraversals.anyInPreorderTraversal(function.getBody(), node -> node instanceof ConstantVariable);
 
             if (hasConstant) {
                 userFunctionWithConstant.add(function.getName());
@@ -779,7 +779,7 @@ public class AugmentedModel {
             Set<String> functionWitnessNames = new HashSet<>();
             List<WitnessVariable> functionWitnessNodes = new ArrayList<>();
 
-            ModelMap.preorder(function.getBody(), (node) -> {
+            TreeTraversals.preorderTraversal(function.getBody(), (node) -> {
                 if (node instanceof WitnessVariable) {
                     WitnessVariable witnessVar = (WitnessVariable) node;
                     functionWitnessNames.add(witnessVar.getName());
@@ -819,7 +819,7 @@ public class AugmentedModel {
 
         predefinedFunctionCalls = new HashMap<>();
 
-        ModelMap.preorder(model.getProof(), (node) -> {
+        TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof FunctionCall) {
                 FunctionCall functionCall = (FunctionCall) node;
                 String functionName = functionCall.getName();
@@ -886,7 +886,7 @@ public class AugmentedModel {
 
         }
 
-        ModelMap.preorder(model.getProof(), (node) -> {
+        TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof FunctionCall) {
                 FunctionCall functionCall = (FunctionCall) node;
                 String functionName = functionCall.getName();
@@ -925,21 +925,21 @@ public class AugmentedModel {
     }
 
     private void getTupleNodesHelper1(List<Tuple> tuples, EObject node) {
-        ModelMap.preorderWithControl(node, (child, controller) -> {
+        TreeTraversals.preorderTraversalWithControl(node, (child, controller) -> {
             if (child instanceof Tuple) {
                 Tuple tuple = (Tuple) child;
                 tuples.add(tuple);
                 getTupleNodesHelper2(tuples, child);
-                controller.continueTraversal();
+                controller.skipBranch();
             }
         });
     }
 
     private void getTupleNodesHelper2(List<Tuple> tuples, EObject node) {
-        ModelMap.preorderWithControl(node, (child, controller) -> {
+        TreeTraversals.preorderTraversalWithControl(node, (child, controller) -> {
             if (child instanceof FunctionCall) {
                 getTupleNodesHelper1(tuples, child);
-                controller.continueTraversal();
+                controller.skipBranch();
             }
         });
     }
@@ -955,7 +955,7 @@ public class AugmentedModel {
         Map<EObject, Integer> sizes = getSizes();
         Map<String, GroupType> groups = getGroups();
 
-        ModelMap.preorderWithState(model, new BranchState(), (node, state) -> {
+        TreeTraversals.preorderTraversalWithState(model, (node, state) -> {
             builder.append("---|".repeat(state.getDepth()));
 
             String className = node.getClass().getSimpleName();
