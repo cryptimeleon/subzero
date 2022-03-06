@@ -1,5 +1,6 @@
 package org.cryptimeleon.subzero.model;
 
+import com.google.common.base.Strings;
 import org.cryptimeleon.math.structures.groups.Group;
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
@@ -19,8 +20,10 @@ import org.cryptimeleon.subzero.subzero.NumberLiteral;
 import org.cryptimeleon.subzero.subzero.PPVariable;
 import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
+import org.cryptimeleon.subzero.subzero.Product;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
 import org.cryptimeleon.subzero.subzero.SubzeroFactory;
+import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.Variable;
 import org.cryptimeleon.subzero.subzero.Witness;
@@ -950,47 +953,125 @@ public class AugmentedModel {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-
         Map<EObject, Type> types = getTypes();
-        Map<EObject, Integer> sizes = getSizes();
         Map<String, GroupType> groups = getGroups();
 
-        TreeTraversals.preorderTraversalWithState(model, (node, state) -> {
-            builder.append("---|".repeat(state.getDepth()));
-
-            String className = node.getClass().getSimpleName();
-            builder.append(className);
-
-            if (node instanceof Witness) {
-                builder.append(" - " + ((Witness) node).getName());
-            } else if (node instanceof FunctionCall) {
-                builder.append(" - " + ((FunctionCall) node).getName());
-            } else if (node instanceof FunctionDefinition) {
-                builder.append(" - " + ((FunctionDefinition) node).getName());
-            } else if (node instanceof Parameter) {
-                builder.append(" - " + ((Parameter) node).getName());
-            } else if (node instanceof Variable) {
-                builder.append(" - " + ((Variable) node).getName());
-            } else if (node instanceof NumberLiteral) {
-                builder.append(" - " + ((NumberLiteral) node).getValue());
-            }
-
-            if (types != null && types.containsKey(node)) {
-                builder.append(" - " + types.get(node).toString());
-            }
-
-            if (sizes != null && sizes.containsKey(node)) {
-                builder.append(" (" + sizes.get(node).toString() + ")");
-            }
-
-            String name = ModelUtils.getNodeName(node);
-            if (groups != null && groups.containsKey(name)) {
-                builder.append(" (" + groups.get(name).toString() + ")");
-            }
-
-            builder.append("\n");
-        });
-
+        toStringHelper(model, "", "", types, groups, builder);
         return builder.toString();
+    }
+
+    private void toStringHelper(
+        EObject node, String indent, String childIndent,
+        Map<EObject, Type> types, Map<String, GroupType> groups, StringBuilder builder
+    ) {
+        String separator = " - ";
+        builder.append(indent);
+
+        // Print out the node class name
+        String className = node.getClass().getInterfaces()[0].getSimpleName();
+        if (node instanceof Witness || node instanceof WitnessVariable) {
+            className = Color.brightBlue(className);
+        } else if (node instanceof PublicParameter || node instanceof PPVariable) {
+            className = Color.brightBlue(className);
+        } else if (node instanceof Constant || node instanceof ConstantVariable) {
+            className = Color.brightGreen(className);
+        }
+        builder.append(className);
+
+        // Print out the protocol name, if applicable
+        if (node instanceof Model) {
+            String protocol = ((Model) node).getProtocolName();
+            if (!Strings.isNullOrEmpty(protocol)) {
+                builder.append(separator);
+                builder.append(Color.brightYellow(protocol));
+            }
+        }
+
+        // Print out the node's name, if applicable
+        String name = ModelUtils.getNodeName(node);
+        if (!Strings.isNullOrEmpty(name)) {
+            builder.append(separator);
+            builder.append(Color.brightCyan(name));
+        }
+
+        // Print out the node's value, if applicable
+        if (node instanceof NumberLiteral) {
+            String value = String.valueOf(((NumberLiteral) node).getValue());
+            builder.append(separator);
+            builder.append(Color.brightCyan(value));
+        }
+
+        // Print out the node's operation, if applicable
+        String operation = null;
+        if (node instanceof Comparison) {
+            Comparison comp = (Comparison) node;
+            operation = comp.getOperation();
+            String operation2 = comp.getOperation2();
+            if (!Strings.isNullOrEmpty(operation2)) {
+                operation += " " + operation2;
+            }
+        } else if (node instanceof Product) {
+            operation = ((Product) node).getOperation();
+        } else if (node instanceof Sum) {
+            operation = ((Sum) node).getOperation();
+        }
+
+        if (!Strings.isNullOrEmpty(operation)) {
+            builder.append(separator);
+            builder.append(Color.brightCyan(operation));
+        }
+
+        // Print out the subprotocol name, if applicable
+        if (node instanceof Comparison) {
+            String subprotocol = ((Comparison) node).getSubprotocolName();
+            if (!Strings.isNullOrEmpty(subprotocol)) {
+                builder.append(separator);
+                builder.append(Color.yellow(subprotocol));
+            }
+        }
+
+        // Print out if a function definition is an inline function
+        if (node instanceof FunctionDefinition) {
+            boolean inline = ((FunctionDefinition) node).isInline();
+            if (inline) {
+                builder.append(separator);
+                builder.append(Color.red("inline"));
+            }
+        }
+
+        // Print out the node type, including its group type for applicable group element nodes
+        Type type = types.get(node);
+        if (type != null) {
+            builder.append(separator);
+            String typeName = type.toString();
+
+            if (type == Type.GROUP_ELEMENT) {
+                GroupType group = groups.get(name);
+                if (group != null) {
+                    typeName += " (" + group + ")";
+                }
+
+                typeName = Color.magenta(typeName);
+            } else if (type == Type.EXPONENT) {
+                typeName = Color.green(typeName);
+            } else if (type == Type.BOOLEAN) {
+                typeName = Color.yellow(typeName);
+            }
+
+            builder.append(typeName);
+        }
+
+        builder.append('\n');
+
+        // Print out all child nodes
+        for (Iterator<EObject> iter = node.eContents().iterator(); iter.hasNext();) {
+            EObject child = iter.next();
+
+            if (iter.hasNext()) {
+                toStringHelper(child,  childIndent + "├── ", childIndent + "│   ", types, groups, builder);
+            } else {
+                toStringHelper(child, childIndent + "└── ", childIndent + "    ", types, groups, builder);
+            }
+        }
     }
 }
