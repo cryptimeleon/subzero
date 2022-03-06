@@ -26,215 +26,217 @@ import org.eclipse.emf.ecore.EObject;
  * Contains information about the current branch of the abstract syntax tree
  * and all ancestor nodes of the node which receives the BranchState object
  */
-class BranchState {
-	
-	int depth;
-	EObject parent;
-	
-	boolean inProof;
-	boolean inFunctionDefinition;
-	boolean inDisjunction;
-	boolean inConjunction;
-	boolean inComparison;
-	boolean inSum;
-	boolean inProduct;
-	boolean inPower;
-	boolean inNegative;
-	boolean inFunctionCall;
-	boolean inTuple;
-	
-	boolean logicalBeforeComparison;
-	boolean tupleBeforeFunctionCall;
-	
-	new() {
-		this.depth = 0;
-		this.parent = null;
-		
-		this.inProof = false;
-		this.inFunctionDefinition = false;
-		this.inDisjunction = false;
-		this.inConjunction = false;
-		this.inComparison = false;
-		this.inSum = false;
-		this.inProduct = false;
-		this.inPower = false;
-		this.inNegative = false;
-		this.inFunctionCall = false;
-		this.inTuple = false;
-		
-		this.logicalBeforeComparison = false;
-		this.tupleBeforeFunctionCall = false;
+public class BranchState {
+
+	private int depth = 0;
+	private EObject parent = null;
+
+	private boolean inProof = false;
+	private boolean inFunctionDefinition = false;
+	private boolean inDisjunction = false;
+	private boolean inConjunction = false;
+	private boolean inComparison = false;
+	private boolean inSum = false;
+	private boolean inProduct = false;
+	private boolean inPower = false;
+	private boolean inNegative = false;
+	private boolean inFunctionCall = false;
+	private boolean inTuple = false;
+
+	private boolean logicalBeforeComparison = false;
+	private boolean tupleBeforeFunctionCall = false;
+
+	public new() {
+		// Intentionally blank
 	}
 
-	
-	new(BranchState state) {
-		this.depth = state.depth;
-		this.parent = state.parent;
-		
-		this.inProof = state.inProof
-		this.inFunctionDefinition = state.inFunctionDefinition;
-		this.inDisjunction = state.inDisjunction;
-		this.inConjunction = state.inConjunction;
-		this.inComparison = state.inComparison;
-		this.inSum = state.inSum;
-		this.inProduct = state.inProduct;
-		this.inPower = state.inPower;
-		this.inNegative = state.inNegative;
-		this.inFunctionCall = state.inFunctionCall;
-		this.inTuple = state.inTuple;
-		
-		this.logicalBeforeComparison = state.logicalBeforeComparison;
-		this.tupleBeforeFunctionCall = state.tupleBeforeFunctionCall;
+	public new(BranchState state) {
+		depth = state.depth;
+		parent = state.parent;
+
+		inProof = state.inProof;
+		inFunctionDefinition = state.inFunctionDefinition;
+		inDisjunction = state.inDisjunction;
+		inConjunction = state.inConjunction;
+		inComparison = state.inComparison;
+		inSum = state.inSum;
+		inProduct = state.inProduct;
+		inPower = state.inPower;
+		inNegative = state.inNegative;
+		inFunctionCall = state.inFunctionCall;
+		inTuple = state.inTuple;
+
+		logicalBeforeComparison = state.logicalBeforeComparison;
+		tupleBeforeFunctionCall = state.tupleBeforeFunctionCall;
 	}
 
-    new(BranchState state, EObject node) {
-            this(state);
-            this.updateGeneral(node);
+    public new(BranchState parentState, EObject childNode) {
+		this(parentState);
+		updateState(childNode);
     }
-	
-	def int getDepth() {return depth;}
-	def void setDepth(int depth) {this.depth = depth;}
-	
-	def EObject getParent() {return parent;}
-	def void setParent(EObject parent) {this.parent = parent;}
-	
-	def boolean hasProofAncestor() {return this.inProof;}
-	def boolean hasFunctionDefinitionAncestor() {return this.inFunctionDefinition;}
-	def boolean hasDisjunctionAncestor() {return this.inDisjunction;}
-	def boolean hasConjunctionAncestor() {return this.inConjunction;}
-	def boolean hasComparisonAncestor() {return this.inComparison;}
-	def boolean hasSumAncestor() {return this.inSum;}
-	def boolean hasProductAncestor() {return this.inProduct;}
-	def boolean hasPowerAncestor() {return this.inPower;}
-	def boolean hasNegativeAncestor() {return this.inNegative;}
-	def boolean hasFunctionCallAncestor() {return this.inFunctionCall;}
-	def boolean hasTupleAncestor() {return this.inTuple;}
-	
-	def boolean hasLogicalBeforeComparison() {return this.logicalBeforeComparison;}
-	def boolean hasTupleBeforeFunctionCall() {return this.tupleBeforeFunctionCall;}
-	
-	def void setProofAncestor(boolean inProof) {this.inProof = inProof;}
-	def void setFunctionDefinitionAncestor(boolean inFunctionDefinition) {this.inFunctionDefinition = inFunctionDefinition;}
-	def void setDisjunctionAncestor(boolean inDisjunction) {this.inDisjunction = inDisjunction;}
-	def void setConjunctionAncestor(boolean inConjunction) {this.inConjunction = inConjunction;}
-	def void setComparisonAncestor(boolean inComparison) {this.inComparison = inComparison;}
-	def void setSumAncestor(boolean inSum) {this.inSum = inSum;}
-	def void setProductAncestor(boolean inProduct) {this.inProduct = inProduct;}
-	def void setPowerAncestor(boolean inPower) {this.inPower = inPower;}
-	def void setNegativeAncestor(boolean inNegative) {this.inNegative = inNegative;}
-	def void setFunctionCallAncestor(boolean inFunctionCall) {this.inFunctionCall = inFunctionCall;}
-	def void setTupleAncestor(boolean inTuple) {this.inTuple = inTuple;}
-	
-	def void setLogicalBeforeComparison(boolean logicalBeforeComparison) {this.logicalBeforeComparison = logicalBeforeComparison}
-	def void setTupleBeforeFunctionCall(boolean tupleBeforeFunctionCall) {this.tupleBeforeFunctionCall = tupleBeforeFunctionCall;}
-	
-	def void updateGeneral(EObject node) {
+
+	def public int getDepth() {
+		return depth;
+	}
+
+	def public EObject getParent() {
+		return parent;
+	}
+
+	def public boolean hasProofAncestor() {
+		return inProof;
+	}
+
+	def public boolean hasFunctionDefinitionAncestor() {
+		return inFunctionDefinition;
+	}
+
+	def public boolean hasDisjunctionAncestor() {
+		return inDisjunction;
+	}
+
+	def public boolean hasConjunctionAncestor() {
+		return inConjunction;
+	}
+
+	def public boolean hasComparisonAncestor() {
+		return inComparison;
+	}
+
+	def public boolean hasSumAncestor() {
+		return inSum;
+	}
+
+	def public boolean hasProductAncestor() {
+		return inProduct;
+	}
+
+	def public boolean hasPowerAncestor() {
+		return inPower;
+	}
+
+	def public boolean hasNegativeAncestor() {
+		return inNegative;
+	}
+
+	def public boolean hasFunctionCallAncestor() {
+		return inFunctionCall;
+	}
+
+	def public boolean hasTupleAncestor() {
+		return inTuple;
+	}
+
+	def public boolean hasLogicalBeforeComparison() {
+		return logicalBeforeComparison;
+	}
+
+	def public boolean hasTupleBeforeFunctionCall() {
+		return tupleBeforeFunctionCall;
+	}
+
+	def private void updateGeneral(EObject node) {
 		depth++;
 		parent = node;
 	}
-	
-	def dispatch void updateState(Model model) {
+
+	def private dispatch void updateState(Model model) {
 		updateGeneral(model);
 	}
-	
-	def dispatch void updateState(FunctionDefinition function) {
+
+	def private dispatch void updateState(FunctionDefinition function) {
 		updateGeneral(function);
-		setFunctionDefinitionAncestor(true);
-	}
-	
-	def dispatch void updateState(Parameter parameter) {
-		updateGeneral(parameter);
-	}
-	
-	def dispatch void updateState(PublicParameter publicParameter) {
-		updateGeneral(publicParameter);
-	}
-	
-	def dispatch void updateState(Constant constant) {
-		updateGeneral(constant);
-	}
-	
-	def dispatch void updateState(Witness witness) {
-		updateGeneral(witness);
-	}
-	
-	def dispatch void updateState(Disjunction disjunction) {
-		updateGeneral(disjunction);
-		setDisjunctionAncestor(true);
-		setLogicalBeforeComparison(true);
+		inFunctionDefinition = true;
 	}
 
-	def dispatch void updateState(Conjunction conjunction) {
+	def private dispatch void updateState(Parameter parameter) {
+		updateGeneral(parameter);
+	}
+
+	def private dispatch void updateState(PublicParameter publicParameter) {
+		updateGeneral(publicParameter);
+	}
+
+	def private dispatch void updateState(Constant constant) {
+		updateGeneral(constant);
+	}
+
+	def private dispatch void updateState(Witness witness) {
+		updateGeneral(witness);
+	}
+
+	def private dispatch void updateState(Disjunction disjunction) {
+		updateGeneral(disjunction);
+		inDisjunction = true;
+		logicalBeforeComparison = true;
+	}
+
+	def private dispatch void updateState(Conjunction conjunction) {
 		updateGeneral(conjunction);
-		setConjunctionAncestor(true);
-		setLogicalBeforeComparison(true);
-		
+		inConjunction = true;
+		logicalBeforeComparison = true;
 	}
-	
-	def dispatch void updateState(Comparison comparison) {
+
+	def private dispatch void updateState(Comparison comparison) {
 		updateGeneral(comparison);
-		setComparisonAncestor(true);
-		setLogicalBeforeComparison(false);
+		inComparison = true;
+		logicalBeforeComparison = false;
 	}
-	
-	def dispatch void updateState(Sum sum) {
+
+	def private dispatch void updateState(Sum sum) {
 		updateGeneral(sum);
-		setSumAncestor(true);
+		inSum = true;
 	}
-	
-	def dispatch void updateState(Product product) {
+
+	def private dispatch void updateState(Product product) {
 		updateGeneral(product);
-		setProductAncestor(true);
+		inProduct = true;
 	}
-	
-	def dispatch void updateState(Power power) {
+
+	def private dispatch void updateState(Power power) {
 		updateGeneral(power);
-		setPowerAncestor(true);
+		inPower = true;
  	}
-	
-	def dispatch void updateState(StringLiteral stringLiteral) {
+
+	def private dispatch void updateState(StringLiteral stringLiteral) {
 		updateGeneral(stringLiteral);
 	}
-	
-	def dispatch void updateState(Tuple tuple) {
+
+	def private dispatch void updateState(Tuple tuple) {
 		updateGeneral(tuple);
-		setTupleAncestor(true);
-		setTupleBeforeFunctionCall(true);
+		inTuple = true;
+		tupleBeforeFunctionCall = true;
 	}
-	
-	def dispatch void updateState(Negative negative) {
+
+	def private dispatch void updateState(Negative negative) {
 		updateGeneral(negative);
-		setNegativeAncestor(true);
+		inNegative = true;
 	}
-	
-	def dispatch void updateState(FunctionCall call) {
+
+	def private dispatch void updateState(FunctionCall call) {
 		updateGeneral(call);
-		setFunctionCallAncestor(true);
-		setTupleBeforeFunctionCall(false);
+		inFunctionCall = true;
+		tupleBeforeFunctionCall = false;
 	}
-	
-	def dispatch void updateState(Argument argument) {
+
+	def private dispatch void updateState(Argument argument) {
 		updateGeneral(argument);
 	}
-	
-	def dispatch void updateState(Variable variable) {
+
+	def private dispatch void updateState(Variable variable) {
 		updateGeneral(variable);
 	}
-	
-	def dispatch void updateState(NumberLiteral number) {
+
+	def private dispatch void updateState(NumberLiteral number) {
 		updateGeneral(number);
 	}
-	
-	def dispatch void updateState(Brackets brackets) {
+
+	def private dispatch void updateState(Brackets brackets) {
 		updateGeneral(brackets);
 	}
-	
-	def dispatch void updateState(EObject node) {
+
+	def private dispatch void updateState(EObject node) {
 		System.out.println("Error: unhandled node type in update branch state");
 	}
-	
-	def String getPackageLiteral() {
-		return this.packageLiteral;
-	}
-	
+
 }

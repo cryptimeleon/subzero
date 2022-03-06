@@ -113,24 +113,24 @@ public class TreeTraversals {
     // Helper method for all variations of preorder traversal
     private static void preorderTraversalHelper(EObject node, BranchState state, Controller controller, StatefulControllerNodeVisitor visitor) {
         // End model tree traversal if endTraversal was called in a function
-        if (controller != null && controller.traversalEnded) {
+        if (controller.traversalEnded) {
             return;
         }
 
         // Apply function
         visitor.visit(node, state, controller);
 
-        if (state != null) state.updateState(node);
-
         // End branch traversal if skipBranch was called in function
-        if (controller != null && controller.branchSkipped) {
+        if (controller.branchSkipped) {
             controller.branchSkipped = false;
             return;
         }
 
+        BranchState newState = new BranchState(state, node);
+
         // Recurse through child nodes
         for (EObject child : node.eContents()) {
-            preorderTraversalHelper(child, new BranchState(state), controller, visitor);
+            preorderTraversalHelper(child, newState, controller, visitor);
         }
     }
 
@@ -213,7 +213,7 @@ public class TreeTraversals {
     // Helper method for all variations of postorder traversal
     private static void postorderTraversalHelper(EObject node, BranchState state, Controller controller, StatefulControllerNodeVisitor visitor) {
         // End model tree traversal if endTraversal was called in a function
-        if (controller != null && controller.traversalEnded) {
+        if (controller.traversalEnded) {
             return;
         }
 
