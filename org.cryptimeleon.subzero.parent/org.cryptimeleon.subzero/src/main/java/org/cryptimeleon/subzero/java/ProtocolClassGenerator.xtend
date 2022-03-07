@@ -65,64 +65,65 @@ import static org.cryptimeleon.subzero.builder.Modifier.STATIC;
 /**
  * Generates the protocol class that specifies the protocol
  */
-class ProtocolClassGenerator implements ClassGenerator {
+public class ProtocolClassGenerator implements ClassGenerator {
 	
-	AugmentedModel augmentedModel;
-	boolean hasPairing;
-	boolean hasOrProof;
-	boolean hasOrDescendantOfAnd;
+	private AugmentedModel augmentedModel;
+	private ProofExpressionGenerator proofExprGenerator;
+	private boolean hasPairing;
+	private boolean hasOrProof;
+	private boolean hasOrDescendantOfAnd;
 	
 	// Declared as an extension variable to allow classObject.use() to be
 	// written instead of importBuilder.use(classObject);
-	extension ImportBuilder importBuilder;
+	private extension ImportBuilder importBuilder = new ImportBuilder();
 	
 	// ProtocolTree is a protected inner class of ProofOfPartialKnowledge so it cannot be imported here
-	// Uses a placeholder class instead for code generation purposes
+	// Uses this placeholder class instead for code generation purposes
 	private static class ProtocolTree {}
 	
-	new(AugmentedModel augmentedModel) {
+	public new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
+		proofExprGenerator = new ProofExpressionGenerator(augmentedModel);
 		hasPairing = augmentedModel.hasPairing();
 		hasOrProof = augmentedModel.hasOrProof();
 		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
-		importBuilder = new ImportBuilder();
 	}
 	
-	override SourceBuilder generate() {
-		val ProofExpressionGenerator proofExprGenerator = new ProofExpressionGenerator(augmentedModel);
+	override public SourceBuilder generate() {
 		if (hasOrProof) {
 			ProverSpec.prioritize();
 			ProverSpecBuilder.prioritize();
 		}
-		val ClassBuilder protocolClass = buildClass(proofExprGenerator);
-		val String packageName = augmentedModel.getPackageName();
 
+		val String packageName = augmentedModel.getPackageName();
+		val ClassBuilder protocolClass = buildClass();
 		importBuilder.merge(proofExprGenerator.getImports());
+
 		val SourceBuilder protocolSource = new SourceBuilder(packageName, protocolClass, importBuilder);
 
 		return protocolSource;
 	}
 
-	def private ClassBuilder buildClass(ProofExpressionGenerator proofExprGenerator) {
+	def private ClassBuilder buildClass() {
 		val String protocolClassName = augmentedModel.getProtocolName();
 		val String commonInputClassName = GenerationUtils.createCommonInputClassName(protocolClassName);
 		val String secretInputClassName = GenerationUtils.createSecretInputClassName(protocolClassName);
 		val String publicParametersClassName = GenerationUtils.createPublicParametersClassName(protocolClassName);
 
 		val EObject rootNode = augmentedModel.getModel().getProof();
-		val boolean requiresPublicParameterClass = augmentedModel.requiresPublicParametersClass()
+		val boolean requiresPublicParameterClass = augmentedModel.requiresPublicParametersClass();
 
 		val Map<EObject, Type> nodeTypes = augmentedModel.getTypes();
 
 		val List<String> witnessNames = augmentedModel.getDeclaredWitnessNames();
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 
-		val List<String> variableNames = augmentedModel.getSortedConstantNames();
-		val Map<String, Type> variableTypes = augmentedModel.getConstantTypes();
-
 		val List<String> sortedPublicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Set<String> publicParameterNames = augmentedModel.getPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
+
+		val List<String> constantNames = augmentedModel.getSortedConstantNames();
+		val Map<String, Type> constantTypes = augmentedModel.getConstantTypes();
 
 		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getUserFunctionCalls();
 
@@ -134,7 +135,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 			protocolClass = new ClassBuilder(PUBLIC, protocolClassName).extend(ProofOfPartialKnowledge.use());
 		} else {
 			protocolClass = buildSubprotocolClass(
-				protocolClassName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, proofExprGenerator, rootNode
+				protocolClassName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, rootNode
 			);
 		}
 
@@ -155,24 +156,26 @@ class ProtocolClassGenerator implements ClassGenerator {
 			protocolClass.addField(eField);
 		}
 
-		for (String publicParameterName : sortedPublicParameterNames) {
-			val Class<?> publicParameterTypeClass = publicParameterTypes.get(publicParameterName).getTypeClass();
-
-			val FieldBuilder ppField = new FieldBuilder(
-				PROTECTED, FINAL, publicParameterTypeClass.use(),
-				GenerationUtils.convertToJavaName(publicParameterName)
-			);
-			protocolClass.addField(ppField);
-		}
-
 		// Build constructor
 		val ConstructorBuilder constructor = new ConstructorBuilder(PUBLIC);
 		constructor.addParameter(groupClass.use(), groupName);
-		if (requiresPublicParameterClass) constructor.addParameter(publicParametersClassName, "pp");
+		if (requiresPublicParameterClass) {
+			constructor.addParameter(publicParametersClassName, "pp");
+		}
+
+		// Build public parameter fields, and also add them to constructor
+		val List<String> javaPublicParameterNames = new ArrayList<String>();
 		for (String publicParameterName : sortedPublicParameterNames) {
 			val String javaPublicParameterName = GenerationUtils.convertToJavaName(publicParameterName);
 			val Class<?> publicParameterTypeClass = publicParameterTypes.get(publicParameterName).getTypeClass();
+
+			val FieldBuilder ppField = new FieldBuilder(
+				PROTECTED, FINAL, publicParameterTypeClass.use(), javaPublicParameterName
+			);
+			protocolClass.addField(ppField);
+
 			constructor.addParameter(publicParameterTypeClass.use(), javaPublicParameterName);
+			javaPublicParameterNames.add(javaPublicParameterName);
 		}
 
 		val String constructorBody = '''
@@ -184,27 +187,26 @@ class ProtocolClassGenerator implements ClassGenerator {
 			«IF hasPairing»
 			this.e = «groupName».getBilinearMap();
 			«ENDIF»
-			«FOR String publicParameterName : sortedPublicParameterNames»
-			this.«GenerationUtils.convertToJavaName(publicParameterName)» = «GenerationUtils.convertToJavaName(publicParameterName)»;
+			«FOR String javaPublicParameterName : javaPublicParameterNames»
+			this.«javaPublicParameterName» = «javaPublicParameterName»;
 			«ENDFOR»
 		''';
 		constructor.addBody(constructorBody);
 		protocolClass.addConstructor(constructor);
 
 		// Build user defined functions
-		val List<MethodBuilder> userFunctions = buildUserFunctions(nodeTypes, witnessTypes, userFunctionCalls, commonInputClassName, proofExprGenerator);
+		val List<MethodBuilder> userFunctions = buildUserFunctions(nodeTypes, witnessTypes, userFunctionCalls, commonInputClassName);
 		for (MethodBuilder method : userFunctions) {
 			protocolClass.addMethod(method);
 		}
 
 		// Build common input class
-		val ClassBuilder commonInputClass = buildCommonInputClass(commonInputClassName, publicParameterNames, variableNames, variableTypes);
+		val ClassBuilder commonInputClass = buildCommonInputClass(commonInputClassName, publicParameterNames, constantNames, constantTypes);
 		protocolClass.addInnerClass(commonInputClass);
 
 		// Build secret input class
 		val ClassBuilder secretInputClass = buildSecretInputClass(secretInputClassName, witnessNames, witnessTypes);
 		protocolClass.addInnerClass(secretInputClass);
-
 
 		if (hasOrProof) {
 			val CodeBuilder protocolTreeBuilder = new CodeBuilder();
@@ -224,7 +226,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 				var EObject subtreeRootNode = subtreeRootNodes.get(i);
 
 				val ClassBuilder subprotocolClass = buildSubprotocolClass(
-					subprotocolName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, proofExprGenerator, subtreeRootNode
+					subprotocolName, commonInputClassName, secretInputClassName, groupClass, witnessNames, witnessTypes, subtreeRootNode
 				);
 
 				subprotocolClasses.addFirst(subprotocolClass);
@@ -262,7 +264,6 @@ class ProtocolClassGenerator implements ClassGenerator {
 		Class<?> groupClass,
 		List<String> witnessNames,
 		Map<String, Type> witnessTypes,
-		ProofExpressionGenerator proofExprGenerator,
 		EObject protocolRoot
 	) {
 		val ClassBuilder subprotocolClass = new ClassBuilder(PUBLIC, subprotocolClassName).extend(DelegateProtocol.use());
@@ -286,7 +287,12 @@ class ProtocolClassGenerator implements ClassGenerator {
 		return subprotocolClass;
 	}
 
-	def private MethodBuilder buildProvideProverSpecMethod(String secretInputClassName, List<String> subprotocolNames, List<String> witnessNames, Map<String, Type> witnessTypes) {
+	def private MethodBuilder buildProvideProverSpecMethod(
+		String secretInputClassName,
+		List<String> subprotocolNames,
+		List<String> witnessNames,
+		Map<String, Type> witnessTypes
+	) {
 		val MethodBuilder method = new MethodBuilder(PROTECTED, ProverSpec.use(), "provideProverSpec");
 		method.setOverride();
 
@@ -304,7 +310,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 			exponentWitnessArguments = GenerationUtils.createCommaList(exponentWitnessNames) + ", ";
 		}
 
-		val String secretInput = hasOrDescendantOfAnd ? "subprotocolSecret" : "secretInput"
+		val String secretInput = hasOrDescendantOfAnd ? "subprotocolSecret" : "secretInput";
 
 		val String methodBody = '''
 			«secretInputClassName» overallSecretInput = («secretInputClassName») secretInput;
@@ -337,7 +343,13 @@ class ProtocolClassGenerator implements ClassGenerator {
 		return method;
 	}
 
-	def private MethodBuilder buildProvideSubprotocolSpecMethod(String commonInputClassName, Class<?> groupClass, List<String> witnessNames, Map<String, Type> witnessTypes, String proof) {
+	def private MethodBuilder buildProvideSubprotocolSpecMethod(
+		String commonInputClassName,
+		Class<?> groupClass,
+		List<String> witnessNames,
+		Map<String, Type> witnessTypes,
+		String proof
+	) {
 		val MethodBuilder method = new MethodBuilder(PROTECTED, SubprotocolSpec.use(), "provideSubprotocolSpec");
 		method.setOverride();
 		method.addParameter(CommonInput.use(), "commonInput");
@@ -393,8 +405,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 	}
 
 	def private MethodBuilder buildProvideProverSpecWithNoSendFirstMethod(String secretInputClassName, List<String> witnessNames) {
-		var MethodBuilder method;
-		method = new MethodBuilder(PROTECTED, SendThenDelegateFragment.ProverSpec.use(), "provideProverSpecWithNoSendFirst");
+		val MethodBuilder method = new MethodBuilder(PROTECTED, SendThenDelegateFragment.ProverSpec.use(), "provideProverSpecWithNoSendFirst");
 		method.setOverride();
 		method.addParameter(CommonInput, "commonInput");
 		method.addParameter(SecretInput, "secretInput");
@@ -422,8 +433,8 @@ class ProtocolClassGenerator implements ClassGenerator {
 		return method;
 	}
 
-	def private MethodBuilder buildGetChallengeSpaceMethod(boolean znChallengeSpace) {
-		val Class<?> returnType = znChallengeSpace ? ZnChallengeSpace : ChallengeSpace;
+	def private MethodBuilder buildGetChallengeSpaceMethod(boolean useZnChallengeSpace) {
+		val Class<?> returnType = useZnChallengeSpace ? ZnChallengeSpace : ChallengeSpace;
 		val MethodBuilder method = new MethodBuilder(PUBLIC, returnType.use(), "getChallengeSpace");
 		method.setOverride();
 
@@ -434,21 +445,30 @@ class ProtocolClassGenerator implements ClassGenerator {
 		return method;
 	}
 
-	def private ClassBuilder buildCommonInputClass(String commonInputClassName, Set<String> publicParameterNames, List<String> variableNames, Map<String, Type> variableTypes) {
+	def private ClassBuilder buildCommonInputClass(
+		String commonInputClassName,
+		Set<String> publicParameterNames,
+		List<String> constantNames,
+		Map<String, Type> constantTypes
+	) {
 		val ClassBuilder commonInputClass = new ClassBuilder(PUBLIC, STATIC, commonInputClassName).implement(CommonInput.use());
 		commonInputClass.addBasicConstructor(PUBLIC);
 
-		for (String variableName : variableNames) {
-			val String javaVariableName = GenerationUtils.convertToJavaName(variableName);
-			val variableTypeClass = variableTypes.get(variableName).getTypeClass();
-			val FieldBuilder variableField = new FieldBuilder(PUBLIC, FINAL, variableTypeClass.use(), javaVariableName);
-			commonInputClass.addField(variableField);
+		for (String constantName : constantNames) {
+			val String javaConstantName = GenerationUtils.convertToJavaName(constantName);
+			val constantTypeClass = constantTypes.get(constantName).getTypeClass();
+			val FieldBuilder constantField = new FieldBuilder(PUBLIC, FINAL, constantTypeClass.use(), javaConstantName);
+			commonInputClass.addField(constantField);
 		}
 
 		return commonInputClass;
 	}
 
-	def ClassBuilder buildSecretInputClass(String secretInputClassName, List<String> witnessNames, Map<String, Type> witnessTypes) {
+	def private ClassBuilder buildSecretInputClass(
+		String secretInputClassName,
+		List<String> witnessNames,
+		Map<String, Type> witnessTypes
+	) {
 		val ClassBuilder secretInputClass = new ClassBuilder(PUBLIC, STATIC, secretInputClassName).implement(SecretInput.use());
 
 		for (String witnessName : witnessNames) {
@@ -523,7 +543,6 @@ class ProtocolClassGenerator implements ClassGenerator {
 			method.addStatement('''return «SendFirstValue.use()».EMPTY;''');
 		}
 
-
 		return method;
 	}
 
@@ -554,22 +573,17 @@ class ProtocolClassGenerator implements ClassGenerator {
 		return method;
 	}
 
-	def private void createProtocolTree(EObject root, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
-		createProtocolTreeHelper(root, builder, subtreeRootNodes, subprotocolNames);
-	}
-
-	// Returns true if the current subtree contains a disjunction
-	def private void createProtocolTreeHelper(EObject node, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
+	def private void createProtocolTree(EObject node, CodeBuilder builder, List<EObject> subtreeRootNodes, List<String> subprotocolNames) {
 
 		if (node instanceof Disjunction) {
 			builder.append("or");
 			builder.openParen();
 			builder.newLine();
 			builder.indent();
-			createProtocolTreeHelper(node.getLeft(), builder, subtreeRootNodes, subprotocolNames);
+			createProtocolTree(node.getLeft(), builder, subtreeRootNodes, subprotocolNames);
 			builder.append(",");
 			builder.newLine();
-			createProtocolTreeHelper(node.getRight(), builder, subtreeRootNodes, subprotocolNames);
+			createProtocolTree(node.getRight(), builder, subtreeRootNodes, subprotocolNames);
 			builder.outdent();
 			builder.newLine();
 			builder.closeParen();
@@ -577,15 +591,8 @@ class ProtocolClassGenerator implements ClassGenerator {
 		} else if (node instanceof Conjunction) {
 			val EObject leftNode = node.getLeft();
 			val EObject rightNode = node.getRight();
-
-			val boolean leftContainsOr = TreeTraversals.anyInPreorderTraversal(leftNode, [EObject child |
-				return child instanceof Disjunction;
-			]);
-
-			val boolean rightContainsOr = TreeTraversals.anyInPreorderTraversal(rightNode, [EObject child |
-				return child instanceof Disjunction;
-			]);
-
+			val boolean leftContainsOr = TreeTraversals.anyInPreorderTraversal(leftNode, [EObject child | child instanceof Disjunction]);
+			val boolean rightContainsOr = TreeTraversals.anyInPreorderTraversal(rightNode, [EObject child | child instanceof Disjunction]);
 
 			if (leftContainsOr || rightContainsOr) {
 				val leftBuilder = CodeBuilder.createWithSameIndent(builder);
@@ -593,8 +600,8 @@ class ProtocolClassGenerator implements ClassGenerator {
 				leftBuilder.indent();
 				rightBuilder.indent();
 
-				createProtocolTreeHelper(leftNode, leftBuilder, subtreeRootNodes, subprotocolNames);
-				createProtocolTreeHelper(rightNode, rightBuilder, subtreeRootNodes, subprotocolNames);
+				createProtocolTree(leftNode, leftBuilder, subtreeRootNodes, subprotocolNames);
+				createProtocolTree(rightNode, rightBuilder, subtreeRootNodes, subprotocolNames);
 
 				builder.append("and");
 				builder.openParen();
@@ -607,6 +614,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 				builder.newLine();
 				builder.outdent();
 				builder.closeParen();
+
 			} else {
 				val String subprotocolName = createProtocolLeaf(node, builder, subtreeRootNodes.size());
 				subtreeRootNodes.add(node);
@@ -614,7 +622,8 @@ class ProtocolClassGenerator implements ClassGenerator {
 			}
 
 		} else if (node instanceof Brackets) {
-			createProtocolTreeHelper(node.getContent(), builder, subtreeRootNodes, subprotocolNames);
+			createProtocolTree(node.getContent(), builder, subtreeRootNodes, subprotocolNames);
+
 		} else {
 			val String subprotocolName = createProtocolLeaf(node, builder, subtreeRootNodes.size());
 			subtreeRootNodes.add(node);
@@ -647,8 +656,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 		Map<EObject, Type> nodeTypes,
 		Map<String, Type> witnessTypes,
 		Map<String, List<FunctionCall>> userFunctionCalls,
-		String commonInputClassName,
-		ProofExpressionGenerator proofExprGenerator
+		String commonInputClassName
 	) {
 		val List<MethodBuilder> methods = new ArrayList<MethodBuilder>();
 
@@ -679,17 +687,21 @@ class ProtocolClassGenerator implements ClassGenerator {
 					}
 
 					method.addBody('''return «statement»;''');
+
 				} else if (returnType == Type.BOOLEAN) {
 					var String statement = proofExprGenerator.generate(function);
 					
 					if (body instanceof Conjunction) {
 						method = new MethodBuilder(PRIVATE, void, name);
+
 						method.addParameter(SubprotocolSpecBuilder, "subprotocolSpecBuilder");
 						method.addParameter(String, GenerationUtils.SUBPROTOCOL_VARIABLE);
-						
+
 						method.addBody(statement);
+
 					} else if (body instanceof Comparison) {
 						method = new MethodBuilder(PRIVATE, SchnorrFragment, name);
+
 						statement = statement.substring(statement.indexOf("new"), statement.indexOf("\n);"));
 						method.addBody('''return «statement»;''');
 					}
