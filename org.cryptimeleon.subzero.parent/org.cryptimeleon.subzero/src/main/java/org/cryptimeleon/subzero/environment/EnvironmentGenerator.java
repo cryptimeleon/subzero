@@ -35,12 +35,12 @@ public class EnvironmentGenerator implements CodeGenerator {
     }
 
     private void buildEnvironment() {
-        Map<String, List<FunctionCall>> functionCalls = augmentedModel.getUserFunctionCallNodes();
-        Map<String, Map<String, List<LocalVariable>>> localVariables = augmentedModel.getLocalVariableNodes();
+        Map<String, List<FunctionCall>> functionCalls = augmentedModel.getUserFunctionCalls();
+        Map<String, Map<String, List<LocalVariable>>> localVariables = augmentedModel.getLocalVariables();
         buildPredefinedFunctions(functionCalls, localVariables);
         buildUserFunctions(functionCalls, localVariables);
 
-        Map<String, List<Variable>> variables = augmentedModel.getVariableNodes();
+        Map<String, List<Variable>> variables = augmentedModel.getGlobalVariables();
         Map<String, GroupType> variableGroups = null;
         if (augmentedModel.hasPairing()) {
             variableGroups = augmentedModel.getGroups();
@@ -55,7 +55,7 @@ public class EnvironmentGenerator implements CodeGenerator {
             Map<String, List<FunctionCall>> functionCalls,
             Map<String, Map<String, List<LocalVariable>>> localVariables
     ) {
-        Map<String, FunctionSignature> predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
+        Map<String, FunctionSignature> predefinedFunctions = PredefinedUtils.getPredefinedFunctionSignatures();
         buildFunctions(predefinedFunctions, functionCalls, localVariables, "built-in");
     }
 
@@ -71,7 +71,7 @@ public class EnvironmentGenerator implements CodeGenerator {
             Map<String, List<Variable>> variables,
             Map<String, GroupType> variableGroups
     ) {
-        List<String> witnessNames = augmentedModel.getSortedWitnessNames();
+        List<String> witnessNames = augmentedModel.getDeclaredWitnessNames();
         Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
         buildVariables(witnessNames, witnessTypes, variableGroups, variables, "witness");
     }
@@ -89,8 +89,8 @@ public class EnvironmentGenerator implements CodeGenerator {
             Map<String, List<Variable>> variables,
             Map<String, GroupType> variableGroups
     ) {
-        List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
-        Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
+        List<String> constantNames = augmentedModel.getSortedConstantNames();
+        Map<String, Type> constantTypes = augmentedModel.getConstantTypes();
 
         if (augmentedModel.hasExplicitConstants()) {
             Set<String> declaredConstantNames = augmentedModel.getDeclaredConstantNames();

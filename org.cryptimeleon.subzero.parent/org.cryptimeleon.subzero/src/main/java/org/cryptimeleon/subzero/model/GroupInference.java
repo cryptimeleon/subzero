@@ -35,7 +35,7 @@ public class GroupInference {
         groups = new HashMap<>();
 
         types = augmentedModel.getTypes();
-        userFunctions = augmentedModel.getUserFunctionNodes();
+        userFunctions = augmentedModel.getUserFunctionDefinitions();
 
         inferGroups(augmentedModel);
     }

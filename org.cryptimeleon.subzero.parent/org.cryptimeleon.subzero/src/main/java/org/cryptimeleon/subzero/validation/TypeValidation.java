@@ -27,7 +27,7 @@ public class TypeValidation {
     public TypeValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
         types = augmentedModel.getTypes();
-        predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
+        predefinedFunctions = PredefinedUtils.getPredefinedFunctionSignatures();
     }
 
     public void checkDisjunctionOperandTypes(Disjunction disjunction) {

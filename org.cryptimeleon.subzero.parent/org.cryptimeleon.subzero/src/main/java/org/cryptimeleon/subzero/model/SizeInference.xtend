@@ -66,16 +66,16 @@ class SizeInference {
 		this.types = augmentedModel.getTypes();
 		
 		// Get all maps needed to traverse the syntax tree easily
-		this.predefinedFunctionsMap = PredefinedUtils.getAllPredefinedFunctions();
-		this.predefinedFunctionCallsMap = augmentedModel.getPredefinedFunctionCallNodes();
-		this.userFunctionsMap = augmentedModel.getUserFunctionNodes();
-		this.userFunctionCallsMap = augmentedModel.getUserFunctionCallNodes();
-		this.variablesMap = augmentedModel.getVariableNodes();
-		this.witnessesMap = augmentedModel.getWitnessNodes();
-		this.publicParametersMap = augmentedModel.getPublicParameterNodes();
-		this.localVariablesMap = augmentedModel.getLocalVariableNodes();
-		this.parametersMap = augmentedModel.getParameterNodes();
-		this.argumentsMap = augmentedModel.getArgumentNodes();
+		this.predefinedFunctionsMap = PredefinedUtils.getPredefinedFunctionSignatures();
+		this.predefinedFunctionCallsMap = augmentedModel.getPredefinedFunctionCalls();
+		this.userFunctionsMap = augmentedModel.getUserFunctionDefinitions();
+		this.userFunctionCallsMap = augmentedModel.getUserFunctionCalls();
+		this.variablesMap = augmentedModel.getGlobalVariables();
+		this.witnessesMap = augmentedModel.getWitnesses();
+		this.publicParametersMap = augmentedModel.getPublicParameters();
+		this.localVariablesMap = augmentedModel.getLocalVariables();
+		this.parametersMap = augmentedModel.getUserFunctionParameters();
+		this.argumentsMap = augmentedModel.getUserFunctionArguments();
 		
 		inferSizes(augmentedModel);
 	}

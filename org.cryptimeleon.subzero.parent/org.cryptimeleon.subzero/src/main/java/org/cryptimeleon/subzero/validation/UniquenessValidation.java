@@ -30,7 +30,7 @@ public class UniquenessValidation {
 
     public UniquenessValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
-        predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
+        predefinedFunctions = PredefinedUtils.getPredefinedFunctionSignatures();
         witnessNames = augmentedModel.getWitnessNames();
         publicParameterNames = augmentedModel.getPublicParameterNames();
         declaredConstantNames = augmentedModel.getDeclaredConstantNames();

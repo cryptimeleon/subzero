@@ -23,7 +23,7 @@ public class VariableValidation {
     public VariableValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
         declaredConstantNames = augmentedModel.getDeclaredConstantNames();
-        variables = augmentedModel.getVariableNodes();
+        variables = augmentedModel.getGlobalVariables();
         hasExplicitConstants = augmentedModel.hasExplicitConstants();
     }
 

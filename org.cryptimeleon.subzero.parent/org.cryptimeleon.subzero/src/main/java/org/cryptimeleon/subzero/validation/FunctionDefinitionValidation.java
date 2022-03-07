@@ -23,8 +23,8 @@ public class FunctionDefinitionValidation {
 
     public FunctionDefinitionValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
-        userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
-        localVariables = augmentedModel.getLocalVariableNodes();
+        userFunctionCalls = augmentedModel.getUserFunctionCalls();
+        localVariables = augmentedModel.getLocalVariables();
     }
 
     // Function definitions cannot contain function calls to other user functions

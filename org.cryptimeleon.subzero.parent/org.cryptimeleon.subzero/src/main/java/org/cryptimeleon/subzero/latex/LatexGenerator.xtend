@@ -104,7 +104,7 @@ class LatexGenerator implements CodeGenerator {
 		
 		this.augmentedModel = augmentedModel;
 		this.inInlineFunction = inInlineFunction;
-		functions = augmentedModel.getUserFunctionNodes();		
+		functions = augmentedModel.getUserFunctionDefinitions();
 		inlineFunctionsCode = new HashMap<String, String>();
 		openBraces = 0;
 	}
@@ -315,7 +315,7 @@ class LatexGenerator implements CodeGenerator {
 
 	def dispatch private void generateLatex(FunctionCall call) {
 		val String name = call.getName();
-		val boolean isInlineFunction = augmentedModel.isInlineFunctionName(name);
+		val boolean isInlineFunction = augmentedModel.isInlineUserFunctionName(name);
 		
 		if (isInlineFunction) {
 			// Handle calls to inline user defined functions

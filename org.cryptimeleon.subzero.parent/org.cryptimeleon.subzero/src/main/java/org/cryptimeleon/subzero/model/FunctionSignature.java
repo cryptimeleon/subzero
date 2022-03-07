@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Contains information about a function's name, return type, and parameters
+ * Contains information about a Subzero function's name, return type, and parameters
  */
 public class FunctionSignature {
 

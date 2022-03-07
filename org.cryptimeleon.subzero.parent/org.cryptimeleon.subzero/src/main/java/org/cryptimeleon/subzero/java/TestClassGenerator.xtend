@@ -74,15 +74,15 @@ class TestClassGenerator implements ClassGenerator {
 		
 		val Map<String, GroupType> groups = augmentedModel.getGroups();
 
-		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
+		val List<String> witnessNames = augmentedModel.getDeclaredWitnessNames();
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 		val Set<String> constrainedWitnessNames = augmentedModel.getConstrainedWitnessNames();
 		
 		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
 		
-		val List<String> constantNames = augmentedModel.getSortedConstantVariableNames();
-		val Map<String, Type> constantTypes = augmentedModel.getConstantVariableTypes();
+		val List<String> constantNames = augmentedModel.getSortedConstantNames();
+		val Map<String, Type> constantTypes = augmentedModel.getConstantTypes();
 		
 		// Code generation
 		val ClassBuilder testClass = new ClassBuilder(PUBLIC, "LibraryTest");

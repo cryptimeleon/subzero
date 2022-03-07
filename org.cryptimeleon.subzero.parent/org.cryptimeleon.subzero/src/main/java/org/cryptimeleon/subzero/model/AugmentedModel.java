@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * A wrapper class for the parse tree Model class.
@@ -51,66 +52,62 @@ import java.util.Set;
  */
 
 public class AugmentedModel {
+    // All fields (except for model) must be accessed through their getters as they are lazily instantiated
 
     private final Model model;
 
-    private boolean containsRangeProof = false;
-    private boolean containsPairing = false;
-    private boolean containsOrProof = false;
-    private boolean containsOrDescendantOfAnd = false;
+    private String protocolName = null;
 
-    private boolean checkedForRangeProof = false;
-    private boolean checkedForPairing = false;
-    private boolean checkedForOrProof = false;
-    private boolean checkedForOrDescendantOfAnd = false;
-
-    // Generated values
-    // Must be accessed through their getters, even within class methods (to ensure that they are generated)
-    private String protocolName;
+    // Using boxed type here so that we can check if they have been initialized
+    private Boolean containsRangeProof = null;
+    private Boolean containsPairing = null;
+    private Boolean containsOrProof = null;
+    private Boolean containsOrDescendantOfAnd = null;
 
     private TypeInference typeInference = null;
     private SizeInference sizeInference = null;
     private GroupInference groupInference = null;
 
-    private Map<String, Witness> witnessNodes = null;
+    private Map<String, Witness> witnesses = null;
     private Set<String> witnessNames = null;
+    private List<String> declaredWitnessNames = null;
     private List<String> sortedWitnessNames = null;
-    private Map<String, Type> witnessTypes = null;
     private Set<String> constrainedWitnessNames = null;
+    private Map<String, Type> witnessTypes = null;
 
     private Map<String, PublicParameter> publicParameters = null;
     private Set<String> publicParameterNames = null;
     private List<String> sortedPublicParameterNames = null;
     private Map<String, Type> publicParameterTypes = null;
-    private Map<String, GroupType> publicParameterGroups = null;
 
-    private Map<String, List<Variable>> variables = null;
     private Set<String> declaredConstantNames = null;
-    private Set<String> constantVariableNames = null;
-    private List<String> sortedConstantVariableNames = null;
-    private Map<String, Type> constantVariableTypes = null;
-    private Map<String, GroupType> constantVariableGroups = null;
+    private Set<String> constantNames = null;
+    private List<String> sortedConstantNames = null;
+    private Map<String, Type> constantTypes = null;
 
-    private Map<String, FunctionDefinition> userFunctions = null;
-    private Map<String, List<FunctionCall>> userFunctionCalls = null;
+    private Map<String, List<Variable>> globalVariables = null;
 
-    private Map<String, List<WitnessVariable>> userFunctionWitnessNodes = null;
-
-    private Map<String, Map<String, List<LocalVariable>>> localVariables = null;
-    private Map<String, Map<String, Parameter>> localParameters = null;
-    private List<Tuple> tuples = null;
-    private Map<String, Map<String, List<Argument>>> arguments = null;
-    private Map<String, List<FunctionCall>> predefinedFunctionCalls = null;
+    private Map<String, FunctionDefinition> userFunctionDefinitions = null;
+    private Set<String> userFunctionNames = null;
+    private Set<String> inlineUserFunctionNames = null;
     private Map<String, FunctionSignature> userFunctionSignatures = null;
     private Set<String> userFunctionWithConstant = null;
-    private Map<String, Set<String>> userFunctionWitnesses = null;
-    private Set<String> inlineFunctionNames = null;
+    private Map<String, Set<String>> userFunctionWitnessNames = null;
+    private Map<String, List<WitnessVariable>> userFunctionWitnessVariables = null;
+    private Map<String, Map<String, List<LocalVariable>>> localVariables = null;
+    private Map<String, List<FunctionCall>> userFunctionCalls = null;
+    private Map<String, Map<String, Parameter>> userFunctionParameters = null;
+    private Map<String, Map<String, List<Argument>>> userFunctionArguments = null;
 
-	public AugmentedModel(Model model) {
+    private Map<String, List<FunctionCall>> predefinedFunctionCalls = null;
+
+    private List<Tuple> tuples = null;
+
+
+    public AugmentedModel(Model model) {
         this.model = model;
 
         comparisonTransformation();
-//		removeBracketsTransformation(); // Likely unnecessary
         variableRoleTransformation();
     }
 
@@ -150,7 +147,7 @@ public class AugmentedModel {
         return GenerationUtils.DEFAULT_PACKAGE_NAME;
     }
 
-    // Returns the raw DSL code that produced the model
+    // Returns the Subzero code that produced the model
     public String getCode() {
         return ((XtextResource) model.eResource()).getParseResult().getRootNode().getText();
     }
@@ -167,7 +164,6 @@ public class AugmentedModel {
 
         return typeInference.getTypes();
     }
-
 
     public Map<EObject, Integer> getSizes() {
         if (sizeInference != null) return sizeInference.getSizes();
@@ -188,6 +184,7 @@ public class AugmentedModel {
     /*
      * Methods for getting high-level model structure information
      */
+
     public boolean hasExplicitConstants() {
         return model.getConstants().size() > 0;
     }
@@ -205,20 +202,16 @@ public class AugmentedModel {
     }
 
     public boolean hasRangeProof() {
-        if (checkedForRangeProof) return containsRangeProof;
+        if (containsRangeProof != null) return containsRangeProof;
 
-        checkedForRangeProof = true;
-
-        // The model has a range proof if it contain any inequality comparison
+        // The model has a range proof if it contains any inequality comparison
         containsRangeProof = TreeTraversals.anyInPreorderTraversal(model, ModelUtils::isInequalityComparison);
 
         return containsRangeProof;
     }
 
     public boolean hasPairing() {
-        if (checkedForPairing) return containsPairing;
-
-        checkedForPairing = true;
+        if (containsPairing != null) return containsPairing;
 
         // The model has a pairing if it has a function call to the 'e' function
         containsPairing = TreeTraversals.anyInPreorderTraversal(model, (node) -> {
@@ -233,9 +226,7 @@ public class AugmentedModel {
     }
 
     public boolean hasOrProof() {
-        if (checkedForOrProof) return containsOrProof;
-
-        checkedForOrProof = true;
+        if (containsOrProof != null) return containsOrProof;
 
         // The model has an OR proof if it contains a disjunction
         containsOrProof = TreeTraversals.anyInPreorderTraversal(model, node -> node instanceof Disjunction);
@@ -244,9 +235,7 @@ public class AugmentedModel {
     }
 
     public boolean hasOrDescendantOfAnd() {
-        if (checkedForOrDescendantOfAnd) return containsOrDescendantOfAnd;
-
-        checkedForOrDescendantOfAnd = true;
+        if (containsOrDescendantOfAnd != null) return containsOrDescendantOfAnd;
 
         // The model has an OR descendant of an AND if it contains a disjunction nested within a conjunction
         containsOrDescendantOfAnd = TreeTraversals.preorderTraversalWithControl(model, (node, controller) -> {
@@ -256,9 +245,10 @@ public class AugmentedModel {
 
                 if (hasDisjunction) {
                     controller.setReturnValue(true);
+                    controller.endTraversal();
+                } else {
+                    controller.skipBranch();
                 }
-
-                controller.skipBranch();
             }
         });
 
@@ -303,10 +293,10 @@ public class AugmentedModel {
                 if (node instanceof Variable) {
                     Variable var = (Variable) node;
                     if (parameters.contains(var.getName())) {
-                        LocalVariable localVariable = SubzeroFactory.eINSTANCE.createLocalVariable();
-                        localVariable.setName(var.getName());
-                        localVariable.setFunction(function.getName());
-                        ModelUtils.replaceParentReferenceToSelf(var, localVariable);
+                        LocalVariable localVar = SubzeroFactory.eINSTANCE.createLocalVariable();
+                        localVar.setName(var.getName());
+                        localVar.setFunction(function.getName());
+                        ModelUtils.replaceParentReferenceToSelf(var, localVar);
                     } else {
                         variableRoleTransformationHelper(var, witnessNames, ppNames);
                     }
@@ -323,45 +313,45 @@ public class AugmentedModel {
 
     }
 
-    private void variableRoleTransformationHelper(Variable variable, Set<String> witnessNames, Set<String> ppNames) {
-        String name = variable.getName();
+    private void variableRoleTransformationHelper(Variable var, Set<String> witnessNames, Set<String> ppNames) {
+        String name = var.getName();
 
         if (witnessNames.contains(name)) {
-            WitnessVariable witnessVariable = SubzeroFactory.eINSTANCE.createWitnessVariable();
-            witnessVariable.setName(name);
-            ModelUtils.replaceParentReferenceToSelf(variable, witnessVariable);
+            WitnessVariable witnessVar = SubzeroFactory.eINSTANCE.createWitnessVariable();
+            witnessVar.setName(name);
+            ModelUtils.replaceParentReferenceToSelf(var, witnessVar);
         } else if (ppNames.contains(name)) {
-            PPVariable ppVariable = SubzeroFactory.eINSTANCE.createPPVariable();
-            ppVariable.setName(name);
-            ModelUtils.replaceParentReferenceToSelf(variable, ppVariable);
+            PPVariable ppVar = SubzeroFactory.eINSTANCE.createPPVariable();
+            ppVar.setName(name);
+            ModelUtils.replaceParentReferenceToSelf(var, ppVar);
         } else {
-            ConstantVariable constantVariable = SubzeroFactory.eINSTANCE.createConstantVariable();
-            constantVariable.setName(name);
-            ModelUtils.replaceParentReferenceToSelf(variable, constantVariable);
+            ConstantVariable constantVar = SubzeroFactory.eINSTANCE.createConstantVariable();
+            constantVar.setName(name);
+            ModelUtils.replaceParentReferenceToSelf(var, constantVar);
         }
     }
 
-
     /*
-     * Witness variable information
+     * Witness information
      */
 
     // Returns a map from witness names to witness variable nodes
-    public Map<String, Witness> getWitnessNodes() {
-        if (witnessNodes != null) return witnessNodes;
+    public Map<String, Witness> getWitnesses() {
+        if (witnesses != null) return witnesses;
 
-        witnessNodes = new LinkedHashMap<>(); // Uses insertion order for iteration order
+        witnesses = new LinkedHashMap<>(); // Uses insertion order for iteration order
 
         for (Witness witness : model.getWitnesses()) {
-            witnessNodes.put(witness.getName(), witness);
+            witnesses.put(witness.getName(), witness);
         }
 
-        return witnessNodes;
+        witnesses = Collections.unmodifiableMap(witnesses);
+        return witnesses;
     }
 
     // Returns the witness node associated with a witness name
-    public Witness getWitnessNode(String witnessName) {
-        return getWitnessNodes().get(witnessName);
+    public Witness getWitness(String witnessName) {
+        return getWitnesses().get(witnessName);
     }
 
     // Returns the set of witness variable names
@@ -374,6 +364,7 @@ public class AugmentedModel {
             witnessNames.add(witness.getName());
         }
 
+        witnessNames = Collections.unmodifiableSet(witnessNames);
         return witnessNames;
     }
 
@@ -382,40 +373,28 @@ public class AugmentedModel {
         return getWitnessNames().contains(witnessName);
     }
 
+    // Returns a list of witness variable names, in declaration order
+    public List<String> getDeclaredWitnessNames() {
+        if (declaredWitnessNames != null) return declaredWitnessNames;
+
+        declaredWitnessNames = new ArrayList<>();
+        for (Witness witness : model.getWitnesses()) {
+            declaredWitnessNames.add(witness.getName());
+        }
+
+        declaredWitnessNames = Collections.unmodifiableList(declaredWitnessNames);
+        return declaredWitnessNames;
+    }
+
     // Returns a list of witness variable names, in sorted order
     public List<String> getSortedWitnessNames() {
         if (sortedWitnessNames != null) return sortedWitnessNames;
 
-        // TODO: change
-//		val Set<String> witnessNames = getWitnessNames();
-//		sortedWitnessNames = new ArrayList<String>(witnessNames);
-//		Collections.sort(sortedWitnessNames);
+		sortedWitnessNames = new ArrayList<>(getWitnessNames());
+		Collections.sort(sortedWitnessNames);
 
-        sortedWitnessNames = new ArrayList<>();
-        for (Witness witness : model.getWitnesses()) {
-            sortedWitnessNames.add(witness.getName());
-        }
-
+        sortedWitnessNames = Collections.unmodifiableList(sortedWitnessNames);
         return sortedWitnessNames;
-    }
-
-    // Returns a map from witness variable names to their type
-    public Map<String, Type> getWitnessTypes() {
-        if (witnessTypes != null) return witnessTypes;
-
-        witnessTypes = new HashMap<>();
-        Map<EObject, Type> types = getTypes();
-
-        for (Entry<String, Witness> entry : getWitnessNodes().entrySet()) {
-            witnessTypes.put(entry.getKey(), types.get(entry.getValue()));
-        }
-
-        return witnessTypes;
-    }
-
-    // Returns the type of a witness
-    public Type getWitnessType(String witnessName) {
-        return getWitnessTypes().get(witnessName);
     }
 
     // Returns a set containing the names of all witnesses that are constrained by a range or linear exponent constraint
@@ -424,11 +403,12 @@ public class AugmentedModel {
 
         constrainedWitnessNames = new HashSet<>();
 
-        Map<String, FunctionDefinition> userFunctions = getUserFunctionNodes();
+        Map<String, FunctionDefinition> userFunctions = getUserFunctionDefinitions();
         Set<String> checkedFunctions = new HashSet<>();
 
         getConstrainedWitnessNamesHelper(model.getProof(), userFunctions, checkedFunctions);
 
+        constrainedWitnessNames = Collections.unmodifiableSet(constrainedWitnessNames);
         return constrainedWitnessNames;
     }
 
@@ -447,9 +427,9 @@ public class AugmentedModel {
                 String functionName = functionCall.getName();
 
                 if (!checkedFunctions.contains(functionName) && userFunctions.containsKey(functionName)) {
-                    FunctionDefinition function = userFunctions.get(functionName);
+                    FunctionDefinition functionDef = userFunctions.get(functionName);
                     checkedFunctions.add(functionName);
-                    getConstrainedWitnessNamesHelper(function.getBody(), userFunctions, checkedFunctions);
+                    getConstrainedWitnessNamesHelper(functionDef.getBody(), userFunctions, checkedFunctions);
                 }
 
                 // controller.skipBranch() is NOT used here, because we want the witness names
@@ -463,12 +443,32 @@ public class AugmentedModel {
         return getConstrainedWitnessNames().contains(witnessName);
     }
 
+    // Returns a map from witness names to their type
+    public Map<String, Type> getWitnessTypes() {
+        if (witnessTypes != null) return witnessTypes;
+
+        witnessTypes = new HashMap<>();
+        Map<EObject, Type> types = getTypes();
+
+        for (Witness witness : model.getWitnesses()) {
+            witnessTypes.put(witness.getName(), types.get(witness));
+        }
+
+        witnessTypes = Collections.unmodifiableMap(witnessTypes);
+        return witnessTypes;
+    }
+
+    // Returns the type of a witness
+    public Type getWitnessType(String witnessName) {
+        return getWitnessTypes().get(witnessName);
+    }
+
     /*
      * Public parameter information
      */
 
-    // Returns a map from public parameter names to public parameter nodes
-    public Map<String, PublicParameter> getPublicParameterNodes() {
+    // Returns a map from public parameter names to public parameter declaration nodes
+    public Map<String, PublicParameter> getPublicParameters() {
         if (publicParameters != null) return publicParameters;
 
         publicParameters = new LinkedHashMap<>(); // Uses insertion order for iteration order
@@ -477,12 +477,13 @@ public class AugmentedModel {
             publicParameters.put(publicParameter.getName(), publicParameter);
         }
 
+        publicParameters = Collections.unmodifiableMap(publicParameters);
         return publicParameters;
     }
 
     // Returns the public parameter node associated with a witness name
-    public PublicParameter getPublicParameterNode(String ppName) {
-        return getPublicParameterNodes().get(ppName);
+    public PublicParameter getPublicParameter(String ppName) {
+        return getPublicParameters().get(ppName);
     }
 
     // Returns a set containing the names of all public parameters
@@ -495,6 +496,7 @@ public class AugmentedModel {
             publicParameterNames.add(publicParameter.getName());
         }
 
+        publicParameterNames = Collections.unmodifiableSet(publicParameterNames);
         return publicParameterNames;
     }
 
@@ -509,6 +511,7 @@ public class AugmentedModel {
         sortedPublicParameterNames = new ArrayList<>(getPublicParameterNames());
         Collections.sort(sortedPublicParameterNames);
 
+        sortedPublicParameterNames = Collections.unmodifiableList(sortedPublicParameterNames);
         return sortedPublicParameterNames;
     }
 
@@ -518,10 +521,11 @@ public class AugmentedModel {
         publicParameterTypes = new HashMap<>();
         Map<EObject, Type> types = getTypes();
 
-        for (Entry<String, PublicParameter> entry : getPublicParameterNodes().entrySet()) {
-            publicParameterTypes.put(entry.getKey(), types.get(entry.getValue()));
+        for (PublicParameter publicParameter : model.getPublicParameters()) {
+            publicParameterTypes.put(publicParameter.getName(), types.get(publicParameter));
         }
 
+        publicParameterTypes = Collections.unmodifiableMap(publicParameterTypes);
         return publicParameterTypes;
     }
 
@@ -530,8 +534,9 @@ public class AugmentedModel {
     }
 
     /*
-     * Constant variable information
+     * Constant information
      */
+
     public Set<String> getDeclaredConstantNames() {
         if (declaredConstantNames != null) return declaredConstantNames;
 
@@ -541,97 +546,105 @@ public class AugmentedModel {
             declaredConstantNames.add(constant.getName());
         }
 
+        declaredConstantNames = Collections.unmodifiableSet(declaredConstantNames);
         return declaredConstantNames;
     }
 
-    public Set<String> getConstantVariableNames() {
-        if (constantVariableNames != null) return constantVariableNames;
-        getConstantVariablesHelper();
-        return constantVariableNames;
+    public Set<String> getConstantNames() {
+        if (constantNames != null) return constantNames;
+
+        getConstantsHelper();
+
+        return constantNames;
     }
 
-    public boolean isConstantVariableName(String constantName) {
-        return getConstantVariableNames().contains(constantName);
+    public boolean isConstantName(String constantName) {
+        return getConstantNames().contains(constantName);
     }
 
-    public List<String> getSortedConstantVariableNames() {
-        if (sortedConstantVariableNames != null) return sortedConstantVariableNames;
-        getConstantVariablesHelper();
-        return sortedConstantVariableNames;
+    public List<String> getSortedConstantNames() {
+        if (sortedConstantNames != null) return sortedConstantNames;
+
+        getConstantsHelper();
+
+        return sortedConstantNames;
     }
 
-    public Map<String, Type> getConstantVariableTypes() {
-        if (constantVariableTypes != null) return constantVariableTypes;
-        getConstantVariablesHelper();
-        return constantVariableTypes;
+    public Map<String, Type> getConstantTypes() {
+        if (constantTypes != null) return constantTypes;
+
+        getConstantsHelper();
+
+        return constantTypes;
     }
 
-    public Type getConstantVariableType(String constantName) {
-        return getConstantVariableTypes().get(constantName);
+    public Type getConstantType(String constantName) {
+        return getConstantTypes().get(constantName);
     }
 
-    private void getConstantVariablesHelper() {
-        constantVariableNames = new HashSet<>();
-        sortedConstantVariableNames = new ArrayList<>();
-        constantVariableTypes = new HashMap<>();
+    private void getConstantsHelper() {
+        constantNames = new HashSet<>();
+        sortedConstantNames = new ArrayList<>();
+        constantTypes = new HashMap<>();
 
         Map<EObject, Type> types = getTypes();
 
-        for (Entry<String, List<Variable>> entry : getVariableNodes().entrySet()) {
-            Variable variable = entry.getValue().get(0);
-            String variableName = entry.getKey();
+        for (Entry<String, List<Variable>> entry : getGlobalVariables().entrySet()) {
+            Variable var = entry.getValue().get(0);
+            String varName = entry.getKey();
 
-            if (variable instanceof ConstantVariable && !constantVariableNames.contains(variableName)) {
-                constantVariableNames.add(variableName);
-                sortedConstantVariableNames.add(variableName);
-                constantVariableTypes.put(variableName, types.get(variable));
+            if (var instanceof ConstantVariable && !constantNames.contains(varName)) {
+                constantNames.add(varName);
+                sortedConstantNames.add(varName);
+                constantTypes.put(varName, types.get(var));
             }
         }
 
         // Sort first by variable type, and then by variable name
-        sortedConstantVariableNames.sort((arg1, arg2) -> {
-            Type argType1 = constantVariableTypes.get(arg1);
-            Type argType2 = constantVariableTypes.get(arg2);
+        sortedConstantNames.sort((arg1, arg2) -> {
+            Type argType1 = constantTypes.get(arg1);
+            Type argType2 = constantTypes.get(arg2);
 
             if (argType1 == argType2) {
                 return arg1.compareTo(arg2);
             }
             return argType1.compareTo(argType2);
         });
+
+        constantNames = Collections.unmodifiableSet(constantNames);
+        sortedConstantNames = Collections.unmodifiableList(sortedConstantNames);
+        constantTypes = Collections.unmodifiableMap(constantTypes);
     }
 
     /*
-     * General variable information (witness, public parameter, and constant variables)
+     * Global variable information (includes witness, public parameter, and constant variables)
      */
 
     // Returns a map from variable names to a list of variable nodes
     // This includes witness variables, pp variables, and constant variables
-    public Map<String, List<Variable>> getVariableNodes() {
-        if (variables != null) return variables;
+    public Map<String, List<Variable>> getGlobalVariables() {
+        if (globalVariables != null) return globalVariables;
 
-        variables = new HashMap<>();
+        globalVariables = new HashMap<>();
 
-        for (FunctionDefinition function : model.getFunctions()) {
-            TreeTraversals.preorderTraversal(function.getBody(), node -> getVariableNodesHelper(node, variables));
+        for (FunctionDefinition functionDef : model.getFunctions()) {
+            TreeTraversals.preorderTraversal(functionDef.getBody(), node -> getGlobalVariableNodesHelper(node, globalVariables));
         }
 
-        TreeTraversals.preorderTraversal(model.getProof(), node -> getVariableNodesHelper(node, variables));
+        TreeTraversals.preorderTraversal(model.getProof(), node -> getGlobalVariableNodesHelper(node, globalVariables));
 
-        return variables;
+        globalVariables.replaceAll((varName, varList) -> Collections.unmodifiableList(varList));
+        globalVariables = Collections.unmodifiableMap(globalVariables);
+        return globalVariables;
     }
 
-    private void getVariableNodesHelper(EObject node, Map<String, List<Variable>> variables) {
+    private void getGlobalVariableNodesHelper(EObject node, Map<String, List<Variable>> globalVariables) {
         if (node instanceof Variable) {
             if (node instanceof LocalVariable) return;
 
             Variable var = (Variable) node;
-            if (variables.containsKey(var.getName())) {
-                variables.get(var.getName()).add(var);
-            } else {
-                List<Variable> list = new ArrayList<>();
-                list.add(var);
-                variables.put(var.getName(), list);
-            }
+            List<Variable> vars = globalVariables.computeIfAbsent(var.getName(), k -> new ArrayList<>());
+            vars.add(var);
         }
     }
 
@@ -640,48 +653,57 @@ public class AugmentedModel {
      */
 
     // Returns a map from user function names to user function nodes
-    public Map<String, FunctionDefinition> getUserFunctionNodes() {
-        if (userFunctions != null) return userFunctions;
+    public Map<String, FunctionDefinition> getUserFunctionDefinitions() {
+        if (userFunctionDefinitions != null) return userFunctionDefinitions;
 
-        userFunctions = new HashMap<>();
+        userFunctionDefinitions = new HashMap<>();
 
-        for (FunctionDefinition function : model.getFunctions()) {
-            userFunctions.put(function.getName(), function);
+        for (FunctionDefinition functionDef : model.getFunctions()) {
+            userFunctionDefinitions.put(functionDef.getName(), functionDef);
         }
 
-        return userFunctions;
+        userFunctionDefinitions = Collections.unmodifiableMap(userFunctionDefinitions);
+        return userFunctionDefinitions;
     }
 
-    public FunctionDefinition getUserFunctionNode(String functionName) {
-        return getUserFunctionNodes().get(functionName);
+    public FunctionDefinition getUserFunctionDefinition(String functionName) {
+        return getUserFunctionDefinitions().get(functionName);
     }
 
-    // Returns a map from user function names to user function call nodes
-    // Unused function definitions will not be stored
-    public Map<String, List<FunctionCall>> getUserFunctionCallNodes() {
-        if (userFunctionCalls != null) return userFunctionCalls;
+    // Returns the set of user function names
+    public Set<String> getUserFunctionNames() {
+        if (userFunctionNames != null) return userFunctionNames;
 
-        Map<String, FunctionDefinition> userFunctionsMap = getUserFunctionNodes();
+        userFunctionNames = new HashSet<>();
 
-        userFunctionCalls = new HashMap<>();
+        for (FunctionDefinition functionDef : model.getFunctions()) {
+            userFunctionNames.add(functionDef.getName());
+        }
 
-        TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
-            if (node instanceof FunctionCall) {
-                FunctionCall functionCall = (FunctionCall) node;
-                String functionName = functionCall.getName();
-                if (userFunctionsMap.containsKey(functionName)) {
-                    if (userFunctionCalls.containsKey(functionName)) {
-                        userFunctionCalls.get(functionName).add(functionCall);
-                    } else {
-                        List<FunctionCall> list = new ArrayList<>();
-                        list.add(functionCall);
-                        userFunctionCalls.put(functionName, list);
-                    }
-                }
+        userFunctionNames = Collections.unmodifiableSet(userFunctionNames);
+        return userFunctionNames;
+    }
+
+    public boolean isUserFunctionName(String functionName) {
+        return getUserFunctionNames().contains(functionName);
+    }
+
+    public Set<String> getInlineUserFunctionNames() {
+        if (inlineUserFunctionNames != null) return inlineUserFunctionNames;
+
+        inlineUserFunctionNames = new HashSet<>();
+        for (FunctionDefinition function : model.getFunctions()) {
+            if (function.isInline()) {
+                inlineUserFunctionNames.add(function.getName());
             }
-        });
+        }
 
-        return userFunctionCalls;
+        inlineUserFunctionNames = Collections.unmodifiableSet(inlineUserFunctionNames);
+        return inlineUserFunctionNames;
+    }
+
+    public boolean isInlineUserFunctionName(String functionName) {
+        return getInlineUserFunctionNames().contains(functionName);
     }
 
     // Returns a map from user function names to function signatures
@@ -693,52 +715,31 @@ public class AugmentedModel {
 
         userFunctionSignatures = new HashMap<>();
 
-        for (FunctionDefinition function : model.getFunctions()) {
+        for (FunctionDefinition functionDef : model.getFunctions()) {
             List<String> parameterNames = new ArrayList<>();
             List<Type> parameterTypes = new ArrayList<>();
             List<Integer> parameterSizes = new ArrayList<>();
 
-            for (Parameter parameter : function.getParameters()) {
+            for (Parameter parameter : functionDef.getParameters()) {
                 parameterNames.add(parameter.getName());
                 parameterTypes.add(types.get(parameter));
                 parameterSizes.add(sizes.get(parameter));
             }
 
-            FunctionSignature signature = new FunctionSignature(function.getName(), types.get(function), sizes.get(function), parameterNames, parameterTypes, parameterSizes);
-            userFunctionSignatures.put(function.getName(), signature);
+            FunctionSignature signature = new FunctionSignature(
+                    functionDef.getName(), types.get(functionDef), sizes.get(functionDef),
+                    parameterNames, parameterTypes, parameterSizes
+            );
+
+            userFunctionSignatures.put(functionDef.getName(), signature);
         }
 
+        userFunctionSignatures = Collections.unmodifiableMap(userFunctionSignatures);
         return userFunctionSignatures;
     }
 
     public FunctionSignature getUserFunctionSignature(String functionName) {
         return getUserFunctionSignatures().get(functionName);
-    }
-
-    // Returns a map from user function names and local variable names to a list of local variable objects
-    public Map<String, Map<String, List<LocalVariable>>> getLocalVariableNodes() {
-        if (localVariables != null) return localVariables;
-
-        localVariables = new HashMap<>();
-
-        for (FunctionDefinition function : model.getFunctions()) {
-            Map<String, List<LocalVariable>> functionVariables = new HashMap<>();
-
-            for (Parameter parameter : function.getParameters()) {
-                functionVariables.put(parameter.getName(), new ArrayList<>());
-            }
-
-            TreeTraversals.preorderTraversal(function.getBody(), (node) -> {
-                if (node instanceof LocalVariable) {
-                    LocalVariable localVar = (LocalVariable) node;
-                    functionVariables.get(localVar.getName()).add(localVar);
-                }
-            });
-
-            localVariables.put(function.getName(), functionVariables);
-        }
-
-        return localVariables;
     }
 
     public Set<String> getUserFunctionsWithConstant() {
@@ -753,6 +754,7 @@ public class AugmentedModel {
             }
         }
 
+        userFunctionWithConstant = Collections.unmodifiableSet(userFunctionWithConstant);
         return userFunctionWithConstant;
     }
 
@@ -760,85 +762,103 @@ public class AugmentedModel {
         return getUserFunctionsWithConstant().contains(functionName);
     }
 
+    public Map<String, Set<String>> getUserFunctionWitnessNames() {
+        if (userFunctionWitnessNames != null) return userFunctionWitnessNames;
 
-    public Set<String> getUserFunctionWitnessNames(String functionName) {
-        if (userFunctionWitnesses != null) return userFunctionWitnesses.get(functionName);
         getUserFunctionWitnessesHelper();
-        return userFunctionWitnesses.get(functionName);
+
+        return userFunctionWitnessNames;
     }
 
-    public Map<String, List<WitnessVariable>> getUserFunctionWitnessNodes() {
-        if (userFunctionWitnessNodes != null) return userFunctionWitnessNodes;
+    public Map<String, List<WitnessVariable>> getUserFunctionWitnessVariables() {
+        if (userFunctionWitnessVariables != null) return userFunctionWitnessVariables;
+
         getUserFunctionWitnessesHelper();
-        return userFunctionWitnessNodes;
+
+        return userFunctionWitnessVariables;
     }
 
-    public void getUserFunctionWitnessesHelper() {
-        userFunctionWitnesses = new HashMap<>();
-        userFunctionWitnessNodes = new HashMap<>();
+    private void getUserFunctionWitnessesHelper() {
+        userFunctionWitnessNames = new HashMap<>();
+        userFunctionWitnessVariables = new HashMap<>();
 
         for (FunctionDefinition function : model.getFunctions()) {
             String functionName = function.getName();
             Set<String> functionWitnessNames = new HashSet<>();
-            List<WitnessVariable> functionWitnessNodes = new ArrayList<>();
+            List<WitnessVariable> functionWitnessVars = new ArrayList<>();
 
             TreeTraversals.preorderTraversal(function.getBody(), (node) -> {
                 if (node instanceof WitnessVariable) {
                     WitnessVariable witnessVar = (WitnessVariable) node;
                     functionWitnessNames.add(witnessVar.getName());
-                    functionWitnessNodes.add(witnessVar);
+                    functionWitnessVars.add(witnessVar);
                 }
             });
 
-            userFunctionWitnesses.put(functionName, functionWitnessNames);
-            userFunctionWitnessNodes.put(functionName, functionWitnessNodes);
-        }
-    }
-
-    public Set<String> getInlineFunctionNames() {
-        if (inlineFunctionNames != null) return inlineFunctionNames;
-
-        inlineFunctionNames = new HashSet<>();
-        for (FunctionDefinition function : model.getFunctions()) {
-            if (function.isInline()) inlineFunctionNames.add(function.getName());
+            userFunctionWitnessNames.put(functionName, Collections.unmodifiableSet(functionWitnessNames));
+            userFunctionWitnessVariables.put(functionName, Collections.unmodifiableList(functionWitnessVars));
         }
 
-        return inlineFunctionNames;
+        userFunctionWitnessNames = Collections.unmodifiableMap(userFunctionWitnessNames);
+        userFunctionWitnessVariables = Collections.unmodifiableMap(userFunctionWitnessVariables);
     }
 
-    public boolean isInlineFunctionName(String functionName) {
-        return getInlineFunctionNames().contains(functionName);
+    // Returns a map from user function names and local variable names to a list of local variable objects
+    public Map<String, Map<String, List<LocalVariable>>> getLocalVariables() {
+        if (localVariables != null) return localVariables;
+
+        localVariables = new HashMap<>();
+
+        for (FunctionDefinition functionDef : model.getFunctions()) {
+            Map<String, List<LocalVariable>> functionVariables = new HashMap<>();
+
+            for (Parameter parameter : functionDef.getParameters()) {
+                functionVariables.put(parameter.getName(), new ArrayList<>());
+            }
+
+            TreeTraversals.preorderTraversal(functionDef.getBody(), (node) -> {
+                if (node instanceof LocalVariable) {
+                    LocalVariable localVar = (LocalVariable) node;
+                    functionVariables.get(localVar.getName()).add(localVar);
+                }
+            });
+
+            functionVariables.replaceAll((varName, varList) -> Collections.unmodifiableList(varList));
+            localVariables.put(functionDef.getName(), functionVariables);
+        }
+
+        localVariables.replaceAll((functionName, localVarMap) -> Collections.unmodifiableMap(localVarMap));
+        localVariables = Collections.unmodifiableMap(localVariables);
+        return localVariables;
     }
 
-    /*
-     * Predefined function call nodes
-     */
+    // Returns a map from user function names to user function call nodes
+    // Unused function definitions will not be stored
+    public Map<String, List<FunctionCall>> getUserFunctionCalls() {
+        if (userFunctionCalls != null) return userFunctionCalls;
 
-    // Returns a map from predefined function names to predefined function call nodes
-    public Map<String, List<FunctionCall>> getPredefinedFunctionCallNodes() {
-        if (predefinedFunctionCalls != null) return predefinedFunctionCalls;
+        userFunctionCalls = getFunctionCallsHelper(this::isUserFunctionName);
 
-        Map<String, FunctionSignature> predefinedFunctionsMap = PredefinedUtils.getAllPredefinedFunctions();
+        return userFunctionCalls;
+    }
 
-        predefinedFunctionCalls = new HashMap<>();
+    private Map<String, List<FunctionCall>> getFunctionCallsHelper(Predicate<String> isFunctionCategory) {
+        final Map<String, List<FunctionCall>> functionCalls = new HashMap<>();
 
         TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof FunctionCall) {
-                FunctionCall functionCall = (FunctionCall) node;
-                String functionName = functionCall.getName();
-                if (predefinedFunctionsMap.containsKey(functionName)) {
-                    if (predefinedFunctionCalls.containsKey(functionName)) {
-                        predefinedFunctionCalls.get(functionName).add(functionCall);
-                    } else {
-                        List<FunctionCall> calls = new ArrayList<>();
-                        calls.add(functionCall);
-                        predefinedFunctionCalls.put(functionName, calls);
-                    }
+                FunctionCall call = (FunctionCall) node;
+                String functionName = call.getName();
+
+                if (isFunctionCategory.test(functionName)) {
+                    List<FunctionCall> calls = functionCalls.computeIfAbsent(functionName, k -> new ArrayList<>());
+                    calls.add(call);
                 }
             }
         });
 
-        return predefinedFunctionCalls;
+        functionCalls.replaceAll((functionName, callList) -> Collections.unmodifiableList(callList));
+        return Collections.unmodifiableMap(functionCalls);
     }
 
     /*
@@ -846,70 +866,85 @@ public class AugmentedModel {
      */
 
     // Returns a map from user function names and parameter names to parameter nodes
-    public Map<String, Map<String, Parameter>> getParameterNodes() {
-        if (localParameters != null) return localParameters;
+    public Map<String, Map<String, Parameter>> getUserFunctionParameters() {
+        if (userFunctionParameters != null) return userFunctionParameters;
 
-        localParameters = new HashMap<>();
+        userFunctionParameters = new HashMap<>();
 
-        for (FunctionDefinition function : model.getFunctions()) {
+        for (FunctionDefinition functionDef : model.getFunctions()) {
             Map<String, Parameter> parameters = new HashMap<>();
 
-            for (Parameter parameter : function.getParameters()) {
+            for (Parameter parameter : functionDef.getParameters()) {
                 parameters.put(parameter.getName(), parameter);
             }
 
-            localParameters.put(function.getName(), parameters);
+            userFunctionParameters.put(functionDef.getName(), Collections.unmodifiableMap(parameters));
         }
 
-        return localParameters;
+        userFunctionParameters = Collections.unmodifiableMap(userFunctionParameters);
+        return userFunctionParameters;
     }
 
     // Returns a map from user function names and parameter names to corresponding arguments in function calls
-    public Map<String, Map<String, List<Argument>>> getArgumentNodes() {
-        if (arguments != null) return arguments;
+    public Map<String, Map<String, List<Argument>>> getUserFunctionArguments() {
+        if (userFunctionArguments != null) return userFunctionArguments;
 
-
-        Map<String, FunctionDefinition> userFunctionsMap = this.getUserFunctionNodes();
-
-        arguments = new HashMap<>();
+        userFunctionArguments = new HashMap<>();
         Map<String, List<String>> functionParameters = new HashMap<>();
 
         for (FunctionDefinition function : model.getFunctions()) {
-            Map<String, List<Argument>> local = new HashMap<>();
-            List<String> parameters = new ArrayList<>();
+            Map<String, List<Argument>> functionArguments = new HashMap<>();
+            List<String> parameterNames = new ArrayList<>();
 
             for (Parameter parameter : function.getParameters()) {
-                List<Argument> list = new ArrayList<>();
-                local.put(parameter.getName(), list);
-                parameters.add(parameter.getName());
+                List<Argument> parameterArguments = new ArrayList<>();
+                functionArguments.put(parameter.getName(), parameterArguments);
+                parameterNames.add(parameter.getName());
             }
 
-            arguments.put(function.getName(), local);
-            functionParameters.put(function.getName(), parameters);
-
+            userFunctionArguments.put(function.getName(), functionArguments);
+            functionParameters.put(function.getName(), parameterNames);
         }
 
         TreeTraversals.preorderTraversal(model.getProof(), (node) -> {
             if (node instanceof FunctionCall) {
-                FunctionCall functionCall = (FunctionCall) node;
-                String functionName = functionCall.getName();
+                FunctionCall call = (FunctionCall) node;
+                String functionName = call.getName();
+                Map<String, List<Argument>> specificUserFunctionArguments = userFunctionArguments.get(functionName);
 
-                if (userFunctionsMap.containsKey(functionName)) {
-                    int index = 0;
-                    int length = functionParameters.get(functionName).size();
-                    Iterator<Expression> argumentIterator = functionCall.getArguments().iterator();
+                if (isUserFunctionName(functionName)) {
+                    List<String> parameterNames = functionParameters.get(functionName);
+                    Iterator<Expression> argumentIter = call.getArguments().iterator();
+                    Iterator<String> parameterIter = parameterNames.iterator();
 
-                    while (argumentIterator.hasNext() && index < length) {
-                        Argument argument = (Argument) argumentIterator.next();
-                        String parameterName = functionParameters.get(functionName).get(index);
-                        arguments.get(functionName).get(parameterName).add(argument);
-                        index++;
+                    while (argumentIter.hasNext() && parameterIter.hasNext()) {
+                        Argument argument = (Argument) argumentIter.next();
+                        String parameterName = parameterIter.next();
+                        specificUserFunctionArguments.get(parameterName).add(argument);
                     }
                 }
             }
         });
 
-        return arguments;
+        userFunctionArguments.replaceAll((functionName, parameterArgumentMap) -> {
+            parameterArgumentMap.replaceAll((parameterName, argumentList) -> Collections.unmodifiableList(argumentList));
+            return Collections.unmodifiableMap(parameterArgumentMap);
+        });
+        userFunctionArguments = Collections.unmodifiableMap(userFunctionArguments);
+        return userFunctionArguments;
+    }
+
+    /*
+     * Predefined function information
+     */
+
+    // Returns a map from predefined function names to predefined function call nodes
+    public Map<String, List<FunctionCall>> getPredefinedFunctionCalls() {
+        if (predefinedFunctionCalls != null) return predefinedFunctionCalls;
+
+        predefinedFunctionCalls = getFunctionCallsHelper(PredefinedUtils::isPredefinedFunction);
+
+        return predefinedFunctionCalls;
     }
 
     /*
@@ -924,6 +959,7 @@ public class AugmentedModel {
         tuples = new ArrayList<>();
         getTupleNodesHelper1(tuples, model);
 
+        tuples = Collections.unmodifiableList(tuples);
         return tuples;
     }
 
@@ -950,6 +986,7 @@ public class AugmentedModel {
     /*
      * String representation
      */
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

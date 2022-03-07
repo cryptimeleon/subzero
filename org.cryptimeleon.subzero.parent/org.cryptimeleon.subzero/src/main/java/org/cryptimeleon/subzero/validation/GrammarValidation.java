@@ -35,7 +35,7 @@ public class GrammarValidation {
     public GrammarValidation(AugmentedModel augmentedModel, ValidationLogger logger) {
         this.logger = logger;
         types = augmentedModel.getTypes();
-        userFunctionWitnessNodes = augmentedModel.getUserFunctionWitnessNodes();
+        userFunctionWitnessNodes = augmentedModel.getUserFunctionWitnessVariables();
     }
 
     // Protocol must have a proof expression

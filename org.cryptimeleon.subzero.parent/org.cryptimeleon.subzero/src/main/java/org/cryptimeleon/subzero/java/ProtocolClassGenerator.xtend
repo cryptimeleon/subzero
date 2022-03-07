@@ -114,17 +114,17 @@ class ProtocolClassGenerator implements ClassGenerator {
 
 		val Map<EObject, Type> nodeTypes = augmentedModel.getTypes();
 
-		val List<String> witnessNames = augmentedModel.getSortedWitnessNames();
+		val List<String> witnessNames = augmentedModel.getDeclaredWitnessNames();
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 
-		val List<String> variableNames = augmentedModel.getSortedConstantVariableNames();
-		val Map<String, Type> variableTypes = augmentedModel.getConstantVariableTypes();
+		val List<String> variableNames = augmentedModel.getSortedConstantNames();
+		val Map<String, Type> variableTypes = augmentedModel.getConstantTypes();
 
 		val List<String> sortedPublicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Set<String> publicParameterNames = augmentedModel.getPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
 
-		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getUserFunctionCallNodes();
+		val Map<String, List<FunctionCall>> userFunctionCalls = augmentedModel.getUserFunctionCalls();
 
 		val Class<?> groupClass = augmentedModel.getGroupClass();
 		val groupName = GenerationUtils.convertClassToVariableName(groupClass);
@@ -701,7 +701,7 @@ class ProtocolClassGenerator implements ClassGenerator {
 				}
 				
 				// If the function has witness variables anywhere, add each witness variable as a parameter
-				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames(name);
+				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames().get(name);
 				if (functionWitnesses !== null) {
 					for (String witnessName : functionWitnesses) {
 						val Class<?> parameterTypeClass = witnessTypes.get(witnessName).getTypeWitnessClass();

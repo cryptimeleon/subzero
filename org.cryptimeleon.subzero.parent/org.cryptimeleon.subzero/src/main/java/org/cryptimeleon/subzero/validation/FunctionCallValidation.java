@@ -27,7 +27,7 @@ public class FunctionCallValidation {
         types = augmentedModel.getTypes();
         sizes = augmentedModel.getSizes();
         userFunctions = augmentedModel.getUserFunctionSignatures();
-        predefinedFunctions = PredefinedUtils.getAllPredefinedFunctions();
+        predefinedFunctions = PredefinedUtils.getPredefinedFunctionSignatures();
     }
 
     // Function calls must reference either a user defined function or a predefined function

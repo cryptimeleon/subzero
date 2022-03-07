@@ -29,7 +29,7 @@ public class PredefinedUtils {
         }
     }
 
-    public static Map<String, FunctionSignature> getAllPredefinedFunctions() {
+    public static Map<String, FunctionSignature> getPredefinedFunctionSignatures() {
         return functions;
     }
 

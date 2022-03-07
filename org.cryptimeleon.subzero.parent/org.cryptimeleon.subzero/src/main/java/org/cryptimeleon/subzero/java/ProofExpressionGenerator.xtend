@@ -87,7 +87,7 @@ class ProofExpressionGenerator {
 		subprotocolCount = 0;
 		functionSubprotocolCount = 0;
 		types = augmentedModel.getTypes();
-		functions = augmentedModel.getUserFunctionNodes();
+		functions = augmentedModel.getUserFunctionDefinitions();
 		inFunctionBody = false;
 		inlineFunctionsCode = new HashMap<String, String>();
 		importBuilder = new ImportBuilder();
@@ -361,7 +361,7 @@ class ProofExpressionGenerator {
 
 			if (isInlineFunction) {
 				val String functionCode = PredefinedUtils.getFunctionBody(name);
-				val FunctionSignature signature = PredefinedUtils.getAllPredefinedFunctions().get(name);
+				val FunctionSignature signature = PredefinedUtils.getPredefinedFunctionSignatures().get(name);
 				val List<String> parameterNames = signature.getParameterNames();
 				val EList<Expression> arguments = call.getArguments();
 
@@ -393,7 +393,7 @@ class ProofExpressionGenerator {
 			
 		} else { // User-defined function
 
-			val boolean isInlineFunction = augmentedModel.isInlineFunctionName(name);
+			val boolean isInlineFunction = augmentedModel.isInlineUserFunctionName(name);
 
 			if (isInlineFunction) {
 				// Handle calls to inline user defined functions
@@ -458,7 +458,7 @@ class ProofExpressionGenerator {
 				}
 
 				// If the function has witness variables anywhere, add each witness variable as an argument
-				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames(name);
+				val Set<String> functionWitnesses = augmentedModel.getUserFunctionWitnessNames().get(name);
 				if (functionWitnesses !== null) {
 					for (String witnessName : functionWitnesses) {
 						arguments.add(witnessName);
