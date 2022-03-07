@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.cryptimeleon.subzero.generator.GenerationUtils.createCommaList;
 import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_ADDITION;
 import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_DIVISION;
 import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
@@ -55,64 +56,58 @@ import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_SUBTRACT
 /**
  * Generates proof expressions
  */
-class ProofExpressionGenerator {
-	static String STATEMENT = "statement";
+public class ProofExpressionGenerator {
+	private static final String STATEMENT = "statement";
 	
-	AugmentedModel augmentedModel;
+	private AugmentedModel augmentedModel;
 	
-	Map<EObject, Type> types;
-	Map<String, FunctionDefinition> functions;
+	private Map<EObject, Type> types;
+	private Map<String, FunctionDefinition> functions;
 	
 	// Used to create unique subprotocol names
-	int subprotocolCount;
-	int functionSubprotocolCount;
+	private int subprotocolCount = 0;
+	private int functionSubprotocolCount = 0;
 
 	// If a function body is currently being generated
-	boolean inFunctionBody;
+	private boolean inFunctionBody = false;
 	
 	 // If a call to an inline function is currently being generated
-	boolean inInlineFunction;
+	private boolean inInlineFunction = false;
 	
 	// Contains the expressions for all inline functions that are called at least once
 	// The expression has placeholders for the local variables, which are then replaced
 	// with the passed arguments when generating a function call
-	Map<String, String> inlineFunctionsCode; 
+	private Map<String, String> inlineFunctionsCode = new HashMap<String, String>();
 	
 	// Declared as an extension variable to allow classObject.use() to be
 	// written instead of importBuilder.use(classObject);
-	extension ImportBuilder importBuilder;
+	private extension ImportBuilder importBuilder = new ImportBuilder();
 	
-	new(AugmentedModel augmentedModel) {
+	public new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
-		subprotocolCount = 0;
-		functionSubprotocolCount = 0;
 		types = augmentedModel.getTypes();
 		functions = augmentedModel.getUserFunctionDefinitions();
-		inFunctionBody = false;
-		inlineFunctionsCode = new HashMap<String, String>();
-		importBuilder = new ImportBuilder();
 	}
 	
-	def ImportBuilder getImports() {
+	def public ImportBuilder getImports() {
 		return importBuilder;
 	}
 	
 	// If no node is provided, generate from the root
-	def String generate() {
+	def public String generate() {
 		return generateCode(augmentedModel.getModel());
 	}
 	
-	// Generates the body expression of a user defined function
-	def dispatch String generate(FunctionDefinition function) {
-		functionSubprotocolCount = 0;
-		inFunctionBody = true;
-		val String generatedCode = generateCode(function);
-		inFunctionBody = false;
-		return generatedCode;
-	}
-	
-	def dispatch String generate(EObject node) {
-		return generateCode(node);
+	def public String generate(EObject node) {
+		if (node instanceof FunctionDefinition) {
+			functionSubprotocolCount = 0;
+			inFunctionBody = true;
+			val String generatedCode = generateCode(node);
+			inFunctionBody = false;
+			return generatedCode;
+		} else {
+			return generateCode(node);
+		}
 	}
 	
 	// Generates the Java code for the main expression
@@ -162,8 +157,8 @@ class ProofExpressionGenerator {
 		
 		// Handle = and != cases
 		if (operator == OPERATOR_EQUAL || operator == OPERATOR_INEQUAL) {
-			var String left = generateCode(leftNode);
-			var String right = generateCode(rightNode);	
+			val String left = generateCode(leftNode);
+			val String right = generateCode(rightNode);
 			val String method = (operator == OPERATOR_EQUAL) ? "isEqualTo" : "isNotEqualTo"
 			var Class<?> fragmentClass;
 			
@@ -189,7 +184,7 @@ class ProofExpressionGenerator {
 		var EObject upperBound;
 		var EObject member;
 		
-		var EObject centerNode = comparison.getCenter();
+		val EObject centerNode = comparison.getCenter();
 		var String operator2 = comparison.getOperation2();
 		
 		if (operator2 === null) {
@@ -199,7 +194,7 @@ class ProofExpressionGenerator {
 			
 			// Normalize the direction of the inequality
 			if (!ModelUtils.isLessComparison(operator)) {
-				var EObject tempNode = leftNode;
+				val EObject tempNode = leftNode;
 				leftNode = rightNode;
 				rightNode = tempNode;
 				operator = ModelUtils.swapComparisonDirection(operator);
@@ -232,7 +227,7 @@ class ProofExpressionGenerator {
 			
 			// Normalize the direction of the inequality
 			if (!ModelUtils.isLessComparison(operator)) {
-				var EObject tempNode = leftNode;
+				val EObject tempNode = leftNode;
 				leftNode = rightNode;
 				rightNode = tempNode;
 				
@@ -347,8 +342,7 @@ class ProofExpressionGenerator {
 	}
 	
 	def private dispatch String generateCode(FunctionCall call) {
-		var String name = call.getName();
-
+		val String name = call.getName();
 		val boolean isPredefinedFunction = PredefinedUtils.isPredefinedFunction(name);
 
 		if (isPredefinedFunction) {
@@ -427,7 +421,7 @@ class ProofExpressionGenerator {
 
 				// Default when functionType == Type.GROUP_ELEMENT || functionType == Type.EXPONENT
 				var callStatement = [String functionName, List<String> args |
-					return '''«functionName»(«GenerationUtils.createCommaList(args)»)''';
+					return '''«functionName»(«createCommaList(args)»)''';
 				];
 
 				val List<String> arguments = new ArrayList<String>();
@@ -438,16 +432,16 @@ class ProofExpressionGenerator {
 					if (body instanceof Conjunction) {
 						arguments.add("subprotocolSpecBuilder");
 						subprotocolCount++;
-						var String subprotocolName = STATEMENT + subprotocolCount;
+						val String subprotocolName = STATEMENT + subprotocolCount;
 						arguments.add('''"«subprotocolName»"''');
 						callStatement = [String functionName, List<String> args |
-							return '''«functionName»(«GenerationUtils.createCommaList(args)»);''' + '\n';
+							return '''«functionName»(«createCommaList(args)»);''' + '\n';
 						];
 					} else if (body instanceof Comparison) {
 						subprotocolCount++;
 						val String subprotocolName = STATEMENT + subprotocolCount;
 						callStatement = [String functionName, List<String> args |
-							return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«GenerationUtils.createCommaList(args)»));''' + '\n';
+							return '''subprotocolSpecBuilder.addSubprotocol("«subprotocolName»", «functionName»(«createCommaList(args)»));''' + '\n';
 						];
 					}
 				}
@@ -468,10 +462,10 @@ class ProofExpressionGenerator {
 				// Add all user provided arguments to the function call
 				for (argument : call.getArguments()) {
 					var String argumentCode = generateCode(argument);
-					var EObject argumentExpr = (argument as Argument).getExpression();
+					val EObject argumentExpr = (argument as Argument).getExpression();
 
 					if (argumentExpr instanceof Variable && !(argumentExpr instanceof WitnessVariable)) {
-						var Type argumentType = types.get(argumentExpr);
+						val Type argumentType = types.get(argumentExpr);
 						if (argumentType == Type.GROUP_ELEMENT) {
 							// GroupElement does not implement GroupElementExpression, so .expr() is necessary
 							// SchnorrGroupElemVariable does implement GroupElementExpression, so .expr() is not needed
