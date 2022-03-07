@@ -29,27 +29,27 @@ import static org.cryptimeleon.subzero.builder.Modifier.STATIC;
 /**
  * Generates the public parameters class
  */
-class PublicParametersClassGenerator implements ClassGenerator {
+public class PublicParametersClassGenerator implements ClassGenerator {
 	
-	AugmentedModel augmentedModel;
-	boolean hasRangeProof;
-	boolean hasPairing;
-	boolean hasOrDescendantOfAnd;
+	private AugmentedModel augmentedModel;
+	private boolean hasRangeProof;
+	private boolean hasPairing;
+	private boolean hasOrDescendantOfAnd;
 	
 	// Declared as an extension variable to allow classObject.use() to be
 	// written instead of importBuilder.use(classObject);
-	extension ImportBuilder importBuilder;
+	private extension ImportBuilder importBuilder = new ImportBuilder();
 	
-	new(AugmentedModel augmentedModel) {
+	public new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 		hasRangeProof = augmentedModel.hasRangeProof();
 		hasPairing = augmentedModel.hasPairing();
 		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
-		importBuilder = new ImportBuilder();
 	}
 	
-	override SourceBuilder generate() {
+	override public SourceBuilder generate() {
 		val String packageName = augmentedModel.getPackageName();
+
 		val ClassBuilder publicParametersClass = buildClass();
 		val SourceBuilder publicParametersSource = new SourceBuilder(packageName, publicParametersClass, importBuilder);
 	
@@ -59,6 +59,7 @@ class PublicParametersClassGenerator implements ClassGenerator {
 	def private buildClass() {
 		val String protocolName = augmentedModel.getProtocolName();
 		val String className = GenerationUtils.createPublicParametersClassName(protocolName);
+
 		val ClassBuilder publicParametersClass = new ClassBuilder(PUBLIC, className).implement(StandaloneRepresentable.use());
 		
 		var Class<?> groupClass;
@@ -99,7 +100,6 @@ class PublicParametersClassGenerator implements ClassGenerator {
 		return publicParametersClass;
 	}
 	
-	
 	def private ConstructorBuilder buildConstructor(Class<?> groupClass, String groupName, String groupUsed) {
 		val ConstructorBuilder constructor = new ConstructorBuilder(PUBLIC);
 		constructor.addParameter(Representation.use(), "repr");
@@ -120,6 +120,7 @@ class PublicParametersClassGenerator implements ClassGenerator {
 	
 	def private MethodBuilder buildGenerateNewParametersMethod(String className, Class<?> groupClass, String groupName, String groupUsed) {
 		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
+
 		val MethodBuilder method = new MethodBuilder(PUBLIC, STATIC, className, "generateNewParameters");
 		method.addParameter(groupClass.use(), groupName);
 		
