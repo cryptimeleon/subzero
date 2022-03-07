@@ -31,32 +31,31 @@ import static org.cryptimeleon.subzero.builder.Modifier.PUBLIC;
 /**
  * Generates the LibraryTest class that will run the protocol
  */
-class TestClassGenerator implements ClassGenerator {
+public class TestClassGenerator implements ClassGenerator {
 	
-	AugmentedModel augmentedModel;
-	boolean hasRangeProof;
-	boolean hasPairing;
-	boolean hasOrDescendantOfAnd;
-	Class<?> groupClass;
+	private AugmentedModel augmentedModel;
+	private boolean hasRangeProof;
+	private boolean hasPairing;
+	private boolean hasOrDescendantOfAnd;
+	private Class<?> groupClass;
 	
 	// Declared as an extension variable to allow classObject.use() to be
 	// written instead of importBuilder.use(classObject);
-	extension ImportBuilder importBuilder;
+	private extension ImportBuilder importBuilder = new ImportBuilder();
 	
-	new(AugmentedModel augmentedModel) {
+	public new(AugmentedModel augmentedModel) {
 		this.augmentedModel = augmentedModel;
 		hasRangeProof = augmentedModel.hasRangeProof();
 		hasPairing = augmentedModel.hasPairing();
 		hasOrDescendantOfAnd = augmentedModel.hasOrDescendantOfAnd();
 		groupClass = augmentedModel.getGroupClass();
-		importBuilder = new ImportBuilder();
 	}
 	
-	override SourceBuilder generate() {
+	override public SourceBuilder generate() {
 		val String packageName = augmentedModel.getPackageName();
 		val ClassBuilder testClass = buildClass();
 		
-		// These classes cannot be imported in this class, so add them as a manually (by string) instead
+		// These classes cannot be imported in this class, so add them manually (by string) instead
 		"org.junit.Test".use();
 		"org.junit.Assert.assertTrue".useStatic();
 		
@@ -72,17 +71,17 @@ class TestClassGenerator implements ClassGenerator {
 		val String secretInputClassName = GenerationUtils.createSecretInputClassName(protocolClassName);
 		val String publicParametersClassName = GenerationUtils.createPublicParametersClassName(protocolClassName);
 		
-		val Map<String, GroupType> groups = augmentedModel.getGroups();
-
 		val List<String> witnessNames = augmentedModel.getDeclaredWitnessNames();
-		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
 		val Set<String> constrainedWitnessNames = augmentedModel.getConstrainedWitnessNames();
-		
+		val Map<String, Type> witnessTypes = augmentedModel.getWitnessTypes();
+
 		val List<String> publicParameterNames = augmentedModel.getSortedPublicParameterNames();
 		val Map<String, Type> publicParameterTypes = augmentedModel.getPublicParameterTypes();
 		
 		val List<String> constantNames = augmentedModel.getSortedConstantNames();
 		val Map<String, Type> constantTypes = augmentedModel.getConstantTypes();
+
+		val Map<String, GroupType> groups = augmentedModel.getGroups();
 		
 		// Code generation
 		val ClassBuilder testClass = new ClassBuilder(PUBLIC, "LibraryTest");
@@ -91,9 +90,9 @@ class TestClassGenerator implements ClassGenerator {
 		testMethod.setTest();
 		
 		val groupVariableName = GenerationUtils.convertClassToVariableName(groupClass);
+
 		var String groupInstance;
 		var String defaultGroup;
-		
 		if (groupClass == BilinearGroup) {
 			groupInstance = '''new «BarretoNaehrigBilinearGroup.use()»(80)''';
 			defaultGroup = "groupG1";
@@ -203,6 +202,7 @@ class TestClassGenerator implements ClassGenerator {
 		
 		testMethod.addBody(methodBody);
 		testClass.addMethod(testMethod);
+
 		return testClass;
 	}
 	
