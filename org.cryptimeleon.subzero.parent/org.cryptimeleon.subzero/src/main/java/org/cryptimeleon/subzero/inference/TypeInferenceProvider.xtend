@@ -1,5 +1,10 @@
-package org.cryptimeleon.subzero.model;
+package org.cryptimeleon.subzero.inference;
 
+import org.cryptimeleon.subzero.model.AugmentedModel;
+import org.cryptimeleon.subzero.model.FunctionSignature;
+import org.cryptimeleon.subzero.model.ModelUtils;
+import org.cryptimeleon.subzero.model.TreeTraversals;
+import org.cryptimeleon.subzero.model.Type;
 import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Brackets;
@@ -35,6 +40,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_INEQUAL;
+
 
 /**
  * Performs type inference on the parsed model tree
@@ -99,33 +108,79 @@ import java.util.Set;
  * - All unlabeled nodes after inference are labeled as GROUP_ELEMENT
 
  */
-package class TypeInference {
+public class TypeInferenceProvider implements InferenceProvider<EObject, Type> {
 	
 	// Stores the inferred Type for every node in the syntax tree that requires a type
-	Map<EObject, Type> types;
+	private Map<EObject, Type> types;
 	
 	// Stores whether a node has been visited (inference has been attempted)
 	// Used only during type inference
-	Set<EObject> visited;
+	private Set<EObject> visited;
 	
 	// Model information necessary for type inference
-	Map<String, FunctionSignature> predefinedFunctionsMap;
-	Map<String, List<FunctionCall>> predefinedFunctionCallsMap;
-	Map<String, FunctionDefinition> userFunctionsMap;
-	Map<String, List<FunctionCall>> userFunctionCallsMap;
-	Map<String, List<Variable>> variablesMap;
-	Map<String, Witness> witnessesMap;
-	Map<String, PublicParameter> publicParametersMap;
-	Map<String, Map<String, List<LocalVariable>>> localVariablesMap;
-	Map<String, Map<String, Parameter>> parametersMap;	
-	Map<String, Map<String, List<Argument>>> argumentsMap;
+	private Map<String, FunctionSignature> predefinedFunctionSignatures;
+	private Map<String, List<FunctionCall>> predefinedFunctionCalls;
+	private Map<String, FunctionDefinition> userFunctionDefinitions;
+	private Map<String, List<FunctionCall>> userFunctionCalls;
+	private Map<String, List<Variable>> variables;
+	private Map<String, Witness> witnesses;
+	private Map<String, PublicParameter> publicParameters;
+	private Map<String, Map<String, List<LocalVariable>>> localVariables;
+	private Map<String, Map<String, Parameter>> parameters;
+	private Map<String, Map<String, List<Argument>>> arguments;
 	
-	def Map<EObject, Type> getTypes() {
+	public new() {
+		// Intentionally blank
+	}
+
+	override public Map<EObject, Type> infer(AugmentedModel augmentedModel) {
+		types = new HashMap<EObject, Type>();
+		visited = new HashSet<EObject>();
+
+		// Get all maps needed to traverse the syntax tree easily
+		predefinedFunctionSignatures = PredefinedUtils.getPredefinedFunctionSignatures();
+		predefinedFunctionCalls = augmentedModel.getPredefinedFunctionCalls();
+		userFunctionDefinitions = augmentedModel.getUserFunctionDefinitions();
+		userFunctionCalls = augmentedModel.getUserFunctionCalls();
+		variables = augmentedModel.getGlobalVariables();
+		witnesses = augmentedModel.getWitnesses();
+		publicParameters = augmentedModel.getPublicParameters();
+		localVariables = augmentedModel.getLocalVariables();
+		parameters = augmentedModel.getUserFunctionParameters();
+		arguments = augmentedModel.getUserFunctionArguments();
+		
+		inferTypes(augmentedModel);
 		return types;
 	}
-	
-	def Type getNodeType(EObject node) {
-		return types.get(node);
+
+	// Perform type inference on the syntax tree
+	def private void inferTypes(AugmentedModel augmentedModel) {
+		val Model model = augmentedModel.getModel();
+		
+		// Perform topdown inference, labeling BOOLEAN and STRING nodes, and as many EXPONENT nodes as possible
+		topdownInference(model);
+		
+		// Perform topdown inference on any user functions which were not called anywhere in the proof expression
+		for (FunctionDefinition function : model.getFunctions()) {
+			topdownInference(function.getBody());
+		}
+		
+		// Backpropagate EXPONENT type from any function call to an exponent predefined function
+		for (Entry<String, FunctionSignature> entry : predefinedFunctionSignatures.entrySet()) {
+			val String functionName = entry.getKey();
+			val FunctionSignature signature = entry.getValue();
+			
+			if (signature.getReturnType() === Type.EXPONENT) {
+				for (FunctionCall call : predefinedFunctionCalls.get(functionName)) {
+					backpropagateExponent(call);
+				}
+			}
+		}
+
+		// Label all remaining nodes which require a type as GROUP_ELEMENT
+		fillGroupElement(model);
+		
+		return;
 	}
 	
 	// Labels nodes in the syntax tree in a topdown traversal
@@ -170,12 +225,13 @@ package class TypeInference {
 				types.put(node, label);
 				
 				val String operation = node.getOperation();
-				if (operation == "=" || operation == "!=") {
+				if (operation == OPERATOR_EQUAL || operation == OPERATOR_INEQUAL) {
 					val leftChildLabel = topdownInference(node.getLeft());
 					val centerChildLabel = topdownInference(node.getCenter());
 					val rightChildLabel = topdownInference(node.getRight());
 					
-					if (leftChildLabel === Type.EXPONENT ||
+					if (
+						leftChildLabel === Type.EXPONENT ||
 						centerChildLabel === Type.EXPONENT ||
 						rightChildLabel === Type.EXPONENT
 					) {
@@ -213,7 +269,9 @@ package class TypeInference {
 			Power: {
 				val Type leftChildLabel = topdownInference(node.getLeft());
 				label = leftChildLabel;
-				if (leftChildLabel !== Type.UNKNOWN) types.put(node, label);
+				if (leftChildLabel !== Type.UNKNOWN) {
+					types.put(node, label);
+				}
 				
 				fillExponent(node.getRight());
 			}
@@ -227,9 +285,10 @@ package class TypeInference {
 			Brackets: {
 				val Type childLabel = topdownInference(node.getContent());
 				label = childLabel;
-				if (childLabel !== Type.UNKNOWN) types.put(node, label);
+				if (childLabel !== Type.UNKNOWN) {
+					types.put(node, label);
+				}
 			}
-			
 			
 			NumberLiteral: {
 				label = Type.EXPONENT;
@@ -243,10 +302,10 @@ package class TypeInference {
 			
 			FunctionCall: {
 				val String functionName = node.getName();
-				
-				if (userFunctionsMap.containsKey(functionName)) {
-					val FunctionDefinition function = userFunctionsMap.get(functionName);
-					val Type bodyLabel = topdownInference(function);
+
+				val FunctionDefinition functionDef = userFunctionDefinitions.get(functionName);
+				if (functionDef !== null) {
+					val Type bodyLabel = topdownInference(functionDef);
 					if (bodyLabel !== Type.UNKNOWN) {
 						label = bodyLabel;
 						types.put(node, label);
@@ -255,7 +314,7 @@ package class TypeInference {
 					for (Expression argument : node.getArguments()) {
 						topdownInference(argument);
 					}
-				} else if (predefinedFunctionsMap.containsKey(functionName)) {
+				} else if (predefinedFunctionSignatures.containsKey(functionName)) {
 					labelPredefinedFunctionCall(node);
 				}
 			}
@@ -270,8 +329,9 @@ package class TypeInference {
 					if (childLabel === Type.EXPONENT) {
 						val String functionName = ModelUtils.getArgumentFunction(node);
 						
-						if (userFunctionsMap.containsKey(functionName)) {
-							val EList<Parameter> parameters = userFunctionsMap.get(functionName).getParameters();
+						val FunctionDefinition functionDef = userFunctionDefinitions.get(functionName);
+						if (functionDef !== null) {
+							val EList<Parameter> parameters = functionDef.getParameters();
 							val int index = ModelUtils.getArgumentIndex(node);
 							
 							if (index < parameters.size()) {
@@ -289,10 +349,10 @@ package class TypeInference {
 			
 			Tuple: {
 				var boolean hasExponentElement = false;
-				val Iterator<Expression> elementIterator = node.getElements().iterator();
+				val Iterator<Expression> elementIter = node.getElements().iterator();
 				
-				while (elementIterator.hasNext() && !hasExponentElement) {
-					val EObject nextElement = elementIterator.next();
+				while (elementIter.hasNext() && !hasExponentElement) {
+					val EObject nextElement = elementIter.next();
 					val Type elementLabel = topdownInference(nextElement);
 					
 					if (elementLabel === Type.EXPONENT) {
@@ -338,18 +398,18 @@ package class TypeInference {
 			WitnessVariable: {
 				// Invariant: if the witness node is labeled, then all corresponding witness variables have been labeled
 				// Thus if the witness node is already labeled, there is no need to try to label these
-				fillExponent(witnessesMap.get(node.getName()));
+				fillExponent(witnesses.get(node.getName()));
 			}
 			
 			PPVariable: {
 				// Invariant: if the public parameter node is labeled, then all corresponding public parameter variables have been labeled
 				// Thus if the public parameter node is already labeled, there is no need to try to label these
-				fillExponent(publicParametersMap.get(node.getName()));
+				fillExponent(publicParameters.get(node.getName()));
 			}
 			
 			ConstantVariable: {
 				// For every common input variable with the same name, perform backpropagation
-				for (Variable variable : variablesMap.get(node.getName())) {
+				for (Variable variable : variables.get(node.getName())) {
 					backpropagateExponent(variable);
 				}
 			}
@@ -357,7 +417,7 @@ package class TypeInference {
 			LocalVariable: {
 				val String functionName = node.getFunction();
 				val String localName = node.getName();
-				val Parameter parameter = parametersMap.get(functionName).get(localName);
+				val Parameter parameter = parameters.get(functionName).get(localName);
 				
 				// Invariant: if the parameter node is labeled, then all corresponding local variables have been labeled
 				// and all corresponding arguments in function calls have been labeled
@@ -368,14 +428,14 @@ package class TypeInference {
 			
 			Witness: {
 				// For every global variable with the same name, perform backpropagation
-				for (Variable variable: variablesMap.get(node.getName())) {
+				for (Variable variable: variables.get(node.getName())) {
 					backpropagateExponent(variable);
 				}
 			}
 			
 			PublicParameter: {
 				// For every global variable with the same name, perform backpropagation
-				for (Variable variable: variablesMap.get(node.getName())) {
+				for (Variable variable: variables.get(node.getName())) {
 					backpropagateExponent(variable);
 				}
 			}
@@ -385,29 +445,29 @@ package class TypeInference {
 				val String parameterName = node.getName();
 				
 				// For each local variable with the same name in the same function, perform backpropagation
-				for (LocalVariable localVariable : localVariablesMap.get(functionName).get(parameterName)) {
+				for (LocalVariable localVariable : localVariables.get(functionName).get(parameterName)) {
 					backpropagateExponent(localVariable);					
 				}
 				
 				// For each argument in a corresponding function call that becomes the corresponding parameter, perform fill exponent
-				for (EObject argument : argumentsMap.get(functionName).get(parameterName)) {
+				for (EObject argument : arguments.get(functionName).get(parameterName)) {
 					fillExponent(argument);
 				}
 			}
 			
 			FunctionCall: {
-				val FunctionDefinition function = userFunctionsMap.get(node.getName());
-				if (function !== null) {
+				val FunctionDefinition functionDef = userFunctionDefinitions.get(node.getName());
+				if (functionDef !== null) {
 					// The node is a function call to a user function
 					// Label the corresponding function definition
-					fillExponent(function);
+					fillExponent(functionDef);
 				}
 				// Else the node is a call to a predefined function, and the type is already known			
 			}
 			
 			FunctionDefinition: {
 				// For every function call to this function, perform backpropagation
-				val List<FunctionCall> functionCalls = userFunctionCallsMap.get(node.getName());
+				val List<FunctionCall> functionCalls = userFunctionCalls.get(node.getName());
 				if (functionCalls !== null) {
 					for (FunctionCall call : functionCalls) {
 						backpropagateExponent(call);
@@ -485,7 +545,7 @@ package class TypeInference {
 			}
 			
 			FunctionDefinition: {
-				val List<FunctionCall> functionCalls = userFunctionCallsMap.get(parent.getName());
+				val List<FunctionCall> functionCalls = userFunctionCalls.get(parent.getName());
 				if (functionCalls !== null) {
 					for (FunctionCall call : functionCalls) {
 						backpropagateExponent(call);
@@ -494,12 +554,11 @@ package class TypeInference {
 			}
 			
 			FunctionCall: {
-				if (userFunctionsMap.containsKey(parent.getName())) {
+				val FunctionDefinition functionDef = userFunctionDefinitions.get(parent.getName());
+				if (functionDef !== null) {
 					val int index = parent.getArguments().indexOf(node);
-					val FunctionDefinition function = userFunctionsMap.get(parent.getName());
-					
-					val EList<Parameter> parameters = function.getParameters();
-					if (parameters.size() > index) {
+					val EList<Parameter> parameters = functionDef.getParameters();
+					if (index < parameters.size()) {
 						fillExponent(parameters.get(index));
 					}
 				}
@@ -527,17 +586,17 @@ package class TypeInference {
 	// Precondition: function call references a predefined function
 	// Labels a predefined function call and all of its arguments
 	def private void labelPredefinedFunctionCall(FunctionCall call) {
-		val FunctionSignature signature = predefinedFunctionsMap.get(call.getName());
+		val FunctionSignature signature = predefinedFunctionSignatures.get(call.getName());
 		
 		visited.add(call);
 		types.put(call, signature.getReturnType());
 		
-		val Iterator<Type> parameterTypeIterator = signature.getParameterTypes().iterator();
-		val Iterator<Expression> argumentIterator = call.getArguments().iterator();
+		val Iterator<Type> parameterTypeIter = signature.getParameterTypes().iterator();
+		val Iterator<Expression> argumentIter = call.getArguments().iterator();
 		
-		while (parameterTypeIterator.hasNext() && argumentIterator.hasNext()) {
-			val Type parameterType= parameterTypeIterator.next();
-			val EObject argument = argumentIterator.next();
+		while (parameterTypeIter.hasNext() && argumentIter.hasNext()) {
+			val Type parameterType= parameterTypeIter.next();
+			val EObject argument = argumentIter.next();
 			
 			switch parameterType {
 				case Type.STRING: {
@@ -589,56 +648,6 @@ package class TypeInference {
 			visited.add(node);
 			types.put(node, Type.GROUP_ELEMENT);
 		}
-	}
-	
-	// Perform type inference on the syntax tree	
-	def private void inferTypes(AugmentedModel augmentedModel) {
-		val Model model = augmentedModel.getModel();
-		
-		// Perform topdown inference, labeling BOOLEAN and STRING nodes, and as many EXPONENT nodes as possible
-		topdownInference(model);
-		
-		// Perform topdown inference on any user functions which were not called anywhere in the proof expression
-		for (FunctionDefinition function : model.getFunctions()) {
-			topdownInference(function.getBody());
-		}
-		
-		// Backpropagate EXPONENT from any function call to an exponent predefined function
-		for (Entry<String, FunctionSignature> entry : predefinedFunctionsMap.entrySet()) {
-			val String functionName = entry.getKey();
-			val FunctionSignature signature = entry.getValue();
-			
-			if (signature.getReturnType === Type.EXPONENT) {
-				for (FunctionCall call : predefinedFunctionCallsMap.get(functionName)) {
-					backpropagateExponent(call);
-				}
-			}
-		}
-
-		// Label all remaining nodes which require a type as GROUP_ELEMENT
-		fillGroupElement(model);
-		
-		return;
-	}
-
-	
-	new(AugmentedModel augmentedModel) {
-		this.types = new HashMap<EObject, Type>();
-		this.visited = new HashSet<EObject>();
-
-		// Get all maps needed to traverse the syntax tree easily
-		this.predefinedFunctionsMap = PredefinedUtils.getPredefinedFunctionSignatures();
-		this.predefinedFunctionCallsMap = augmentedModel.getPredefinedFunctionCalls();
-		this.userFunctionsMap = augmentedModel.getUserFunctionDefinitions();
-		this.userFunctionCallsMap = augmentedModel.getUserFunctionCalls();
-		this.variablesMap = augmentedModel.getGlobalVariables();
-		this.witnessesMap = augmentedModel.getWitnesses();
-		this.publicParametersMap = augmentedModel.getPublicParameters();
-		this.localVariablesMap = augmentedModel.getLocalVariables();
-		this.parametersMap = augmentedModel.getUserFunctionParameters();
-		this.argumentsMap = augmentedModel.getUserFunctionArguments();
-		
-		inferTypes(augmentedModel);
 	}
 	
 }

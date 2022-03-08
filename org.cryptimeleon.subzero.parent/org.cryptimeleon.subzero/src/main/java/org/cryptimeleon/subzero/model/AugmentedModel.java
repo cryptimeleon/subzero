@@ -4,6 +4,9 @@ import com.google.common.base.Strings;
 import org.cryptimeleon.math.structures.groups.Group;
 import org.cryptimeleon.math.structures.groups.elliptic.BilinearGroup;
 import org.cryptimeleon.subzero.generator.GenerationUtils;
+import org.cryptimeleon.subzero.inference.GroupInferenceProvider;
+import org.cryptimeleon.subzero.inference.SizeInferenceProvider;
+import org.cryptimeleon.subzero.inference.TypeInferenceProvider;
 import org.cryptimeleon.subzero.predefined.PredefinedUtils;
 import org.cryptimeleon.subzero.subzero.Argument;
 import org.cryptimeleon.subzero.subzero.Comparison;
@@ -64,9 +67,9 @@ public class AugmentedModel {
     private Boolean containsOrProof = null;
     private Boolean containsOrDescendantOfAnd = null;
 
-    private TypeInference typeInference = null;
-    private SizeInference sizeInference = null;
-    private GroupInference groupInference = null;
+    private Map<EObject, Type> types = null;
+    private Map<EObject, Integer> sizes = null;
+    private Map<String, GroupType> groups = null;
 
     private Map<String, Witness> witnesses = null;
     private Set<String> witnessNames = null;
@@ -158,27 +161,30 @@ public class AugmentedModel {
      */
 
     public Map<EObject, Type> getTypes() {
-        if (typeInference != null) return typeInference.getTypes();
+        if (types != null) return types;
 
-        typeInference = new TypeInference(this);
+        types = new TypeInferenceProvider().infer(this);
 
-        return typeInference.getTypes();
+        types = Collections.unmodifiableMap(types);
+        return types;
     }
 
     public Map<EObject, Integer> getSizes() {
-        if (sizeInference != null) return sizeInference.getSizes();
+        if (sizes != null) return sizes;
 
-        sizeInference = new SizeInference(this);
+        sizes = new SizeInferenceProvider().infer(this);
 
-        return sizeInference.getSizes();
+        sizes = Collections.unmodifiableMap(sizes);
+        return sizes;
     }
 
     public Map<String, GroupType> getGroups() {
-        if (groupInference != null) return groupInference.getGroups();
+        if (groups != null) return groups;
 
-        groupInference = new GroupInference(this);
+        groups = new GroupInferenceProvider().infer(this);
 
-        return groupInference.getGroups();
+        groups = Collections.unmodifiableMap(groups);
+        return groups;
     }
 
     /*
@@ -953,31 +959,31 @@ public class AugmentedModel {
 
     // Returns a list of all tuple nodes in the model, except for tuples nested within
     // other tuples, unless they are first nested within a function call
-    public List<Tuple> getTupleNodes() {
+    public List<Tuple> getTuples() {
         if (tuples != null) return tuples;
 
         tuples = new ArrayList<>();
-        getTupleNodesHelper1(tuples, model);
+        getTuplesHelper1(tuples, model);
 
         tuples = Collections.unmodifiableList(tuples);
         return tuples;
     }
 
-    private void getTupleNodesHelper1(List<Tuple> tuples, EObject node) {
+    private void getTuplesHelper1(List<Tuple> tuples, EObject node) {
         TreeTraversals.preorderTraversalWithControl(node, (child, controller) -> {
             if (child instanceof Tuple) {
                 Tuple tuple = (Tuple) child;
                 tuples.add(tuple);
-                getTupleNodesHelper2(tuples, child);
+                getTuplesHelper2(tuples, child);
                 controller.skipBranch();
             }
         });
     }
 
-    private void getTupleNodesHelper2(List<Tuple> tuples, EObject node) {
+    private void getTuplesHelper2(List<Tuple> tuples, EObject node) {
         TreeTraversals.preorderTraversalWithControl(node, (child, controller) -> {
             if (child instanceof FunctionCall) {
-                getTupleNodesHelper1(tuples, child);
+                getTuplesHelper1(tuples, child);
                 controller.skipBranch();
             }
         });
