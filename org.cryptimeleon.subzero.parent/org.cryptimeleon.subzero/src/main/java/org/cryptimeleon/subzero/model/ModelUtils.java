@@ -31,6 +31,7 @@ public class ModelUtils {
     public static final String OPERATOR_SUBTRACTION = "-";
     public static final String OPERATOR_MULTIPLICATION = "*";
     public static final String OPERATOR_DIVISION = "/";
+    public static final String OPERATOR_EXPONENTIATION = "^";
     public static final String OPERATOR_EQUAL = "=";
     public static final String OPERATOR_INEQUAL = "!=";
     public static final String OPERATOR_LESS = "<";

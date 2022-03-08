@@ -45,13 +45,13 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.cryptimeleon.subzero.generator.GenerationUtils.createCommaList;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_ADDITION;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_DIVISION;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_INEQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_LESSEQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_MULTIPLICATION;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_SUBTRACTION;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_ADDITION;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_DIVISION;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_INEQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_LESSEQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_MULTIPLICATION;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_SUBTRACTION;
 
 /**
  * Generates proof expressions

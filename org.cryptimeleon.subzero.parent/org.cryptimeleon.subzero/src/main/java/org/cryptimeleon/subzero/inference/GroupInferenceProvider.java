@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.EObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_INEQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_INEQUAL;
 
 /*
  * Determines what group each group element is from.

@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_INEQUAL;
+
 public class GrammarValidation {
 
     private final ValidationLogger logger;
@@ -89,7 +92,12 @@ public class GrammarValidation {
         // Check if the comparison is a double comparison
         if (operation2 != null) {
 
-            if (operation1.equals("=") || operation1.equals("!=") || operation2.equals("=") || operation2.equals("!=")) {
+            if (
+                operation1.equals(OPERATOR_EQUAL) ||
+                operation1.equals(OPERATOR_INEQUAL) ||
+                operation2.equals(OPERATOR_EQUAL) ||
+                operation2.equals(OPERATOR_INEQUAL)
+            ) {
                 logger.error(comparison, "Cannot use = or != in a double comparison");
             } else if (operation1.charAt(0) != operation2.charAt(0)) {
                 logger.error(comparison, "Comparison operators in a double comparison must be in the same direction");

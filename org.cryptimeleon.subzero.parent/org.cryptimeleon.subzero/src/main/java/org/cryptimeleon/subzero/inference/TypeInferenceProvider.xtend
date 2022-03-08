@@ -41,8 +41,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_INEQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_INEQUAL;
 
 
 /**

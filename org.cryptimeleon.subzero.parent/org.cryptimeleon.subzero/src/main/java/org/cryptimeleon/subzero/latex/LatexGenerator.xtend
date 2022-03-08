@@ -33,14 +33,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_ADDITION;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_EQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_GREATER;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_GREATEREQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_INEQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_LESS;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_LESSEQUAL;
-import static org.cryptimeleon.subzero.model.LanguageConstants.OPERATOR_MULTIPLICATION;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_ADDITION;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_EQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_GREATER;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_GREATEREQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_INEQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_LESS;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_LESSEQUAL;
+import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_MULTIPLICATION;
 
 /**
  * Converts a syntax tree to valid LaTeX output
