@@ -592,7 +592,13 @@ The following section provides extra information about the language that is not 
 
 Implementation
 --------------
-The Subzero compiler is written in Java and [Xtend](https://www.eclipse.org/xtend/), using the [Xtext](https://www.eclipse.org/Xtext/) language development framework. The compiler website is built with [Svelte](https://svelte.dev/). It uses [Ace](https://ace.c9.io/) for the code editor, [MathJax](https://www.mathjax.org/) for the LaTeX preview, and [Carbon Design System](https://github.com/carbon-design-system/carbon) for the UI. 
+The Subzero compiler is written in Java and [Xtend](https://www.eclipse.org/xtend/), using the [Xtext](https://www.eclipse.org/Xtext/) language development framework. Some classes are written in Xtend to leverage language features convenient for code generation, including:
+- [Template strings](https://www.eclipse.org/xtend/documentation/203_xtend_expressions.html#templates)
+- [Switch with type guards](https://www.eclipse.org/xtend/documentation/203_xtend_expressions.html#switch-expression)
+- [Dispatch methods](https://www.eclipse.org/xtend/documentation/202_xtend_classes_members.html#polymorphic-dispatch)
+- [Extension methods](https://www.eclipse.org/xtend/documentation/202_xtend_classes_members.html#extension-methods)
+
+The compiler website is built with [Svelte](https://svelte.dev/). It uses [Ace](https://ace.c9.io/) for the code editor, [MathJax](https://www.mathjax.org/) for the LaTeX preview, and [Carbon Design System](https://github.com/carbon-design-system/carbon) for the UI. 
 
 Generated Java project
 ----------------------
