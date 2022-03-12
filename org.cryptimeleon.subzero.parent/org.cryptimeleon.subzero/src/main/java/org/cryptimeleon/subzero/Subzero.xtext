@@ -63,10 +63,7 @@ Power returns Expression:
   Construct ({Power.left = current} operation='^' right=Power)?;
 
 Construct returns Expression:
-  StringLiteral | Tuple | Negative;
-  
-StringLiteral returns StringLiteral:
-  value=STRING_LITERAL;
+  Tuple | Negative;
 
 Tuple returns Expression:
   =>({Tuple} '(' elements+=Disjunction ',') elements+=Disjunction (',' elements+=Disjunction)* ')';
@@ -128,9 +125,6 @@ terminal WHITESPACE:
 terminal IDENTIFIER:
   ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'~'|'\'')*;
 
-terminal STRING_LITERAL:
-  '"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"';
-  
 terminal COMPARISON_OPERATOR:
   '!=' | '=' | '<' | '<=' | '>' | '>=';
 

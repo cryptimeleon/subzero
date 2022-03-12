@@ -16,7 +16,6 @@ import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.Product;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.SubzeroPackage.Literals;
 import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
@@ -47,7 +46,6 @@ public class ValidationUtils {
         Sum.class,
         Product.class,
         Power.class,
-        StringLiteral.class,
         Tuple.class,
         Negative.class,
         FunctionCall.class,
@@ -144,7 +142,6 @@ public class ValidationUtils {
         Map.entry(Sum.class, Literals.SUM__OPERATION),
         Map.entry(Product.class, Literals.PRODUCT__OPERATION),
         Map.entry(Power.class, Literals.POWER__OPERATION),
-        Map.entry(StringLiteral.class, Literals.STRING_LITERAL__VALUE),
         Map.entry(Tuple.class, Literals.TUPLE__ELEMENTS),
         Map.entry(Negative.class, Literals.NEGATIVE__OPERATION),
         Map.entry(FunctionCall.class, Literals.FUNCTION_CALL__NAME),

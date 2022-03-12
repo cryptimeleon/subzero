@@ -19,7 +19,6 @@ import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.Product;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.Variable;
@@ -197,14 +196,6 @@ class SubzeroValidator extends AbstractSubzeroValidator {
 		
 		validateType.checkIsExponent(power.getRight());
 		validateType.checkPowerOperandTypes(power);
-	}
-
-	def private dispatch void checkNode(StringLiteral stringLiteral, BranchState state) {
-		validateGrammar.checkStringLiteralPositionIsValid(stringLiteral, state);
-		
-		validateSize.checkIsScalar(stringLiteral);
-
-		validateType.checkIsString(stringLiteral);
 	}
 
 	def private dispatch void checkNode(Tuple tuple, BranchState state) {

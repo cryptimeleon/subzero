@@ -24,7 +24,6 @@ import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.Product;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.Variable;
@@ -51,21 +50,19 @@ import static org.cryptimeleon.subzero.model.ModelUtils.OPERATOR_INEQUAL;
  
 /*
  * The type inference algorithm determines the type of every node in
- * the parse tree. It works by identifying all BOOLEAN and STRING nodes (trivially), and then using
+ * the parse tree. It works by identifying all BOOLEAN nodes (trivially), and then using
  * many inference rules to label nodes as EXPONENT based on the node's context. All remaining unlabeled
  * nodes after this are then labeled as GROUP_ELEMENT.
  * 
  * The following inference rules are used:
  * - All Disjunction, Conjunction, and Comparison nodes are labeled as BOOLEAN.
  * 
- * - All StringLiteral nodes are labeled as STRING.
-
  * - NumberLiteral nodes are EXPONENT.
  * 
  * - Negative nodes are EXPONENT, and all descendant nodes are EXPONENT.
  * 
  * - Sum nodes are EXPONENT, and all descendant nodes of left and right subtrees are EXPONENT.
-
+ *
  * - If one child of a Product node is EXPONENT, then all descendants of both subtrees, as well as
  *   the product node, are labeled as EXPONENT.
  * 
@@ -157,7 +154,7 @@ public class TypeInferenceProvider implements InferenceProvider<EObject, Type> {
 	def private void inferTypes(AugmentedModel augmentedModel) {
 		val Model model = augmentedModel.getModel();
 		
-		// Perform topdown inference, labeling BOOLEAN and STRING nodes, and as many EXPONENT nodes as possible
+		// Perform topdown inference, labeling BOOLEAN nodes, and as many EXPONENT nodes as possible
 		topdownInference(model);
 		
 		// Perform topdown inference on any user functions which were not called anywhere in the proof expression
@@ -292,11 +289,6 @@ public class TypeInferenceProvider implements InferenceProvider<EObject, Type> {
 			
 			NumberLiteral: {
 				label = Type.EXPONENT;
-				types.put(node, label);
-			}
-			
-			StringLiteral: {
-				label = Type.STRING;
 				types.put(node, label);
 			}
 			
@@ -599,10 +591,6 @@ public class TypeInferenceProvider implements InferenceProvider<EObject, Type> {
 			val EObject argument = argumentIter.next();
 			
 			switch parameterType {
-				case Type.STRING: {
-					visited.add(argument);
-					types.put(argument, Type.STRING);
-				}
 				case Type.EXPONENT: {
 					fillExponent(argument);
 				}

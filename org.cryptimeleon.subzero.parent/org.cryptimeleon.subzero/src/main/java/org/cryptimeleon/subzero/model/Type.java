@@ -34,15 +34,7 @@ public enum Type {
 		ExponentExpr.class,
 		SchnorrZnVariable.class
 	),
-	
-	// TODO: remove STRING
-	STRING(
-		"string",
-		String.class,
-		String.class,
-		null
-	),
-	
+
 	UNKNOWN(
 		"unknown",
 		void.class,

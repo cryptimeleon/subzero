@@ -133,10 +133,6 @@ public class TypeValidation {
         }
     }
 
-    public void checkIsString(EObject node) {
-        checkIsType(node, Type.STRING);
-    }
-
     private void checkIsType(EObject node, Type type) {
         String nodeName = ValidationUtils.getCapitalizedNodeName(node);
         if (!types.containsKey(node)) {

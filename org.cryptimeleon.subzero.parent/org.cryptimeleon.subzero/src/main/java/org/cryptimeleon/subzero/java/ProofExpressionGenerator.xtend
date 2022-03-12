@@ -27,7 +27,6 @@ import org.cryptimeleon.subzero.subzero.PPVariable;
 import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.Product;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.SubzeroFactory;
 import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
@@ -325,13 +324,7 @@ public class ProofExpressionGenerator {
 		
 		return '''«left».pow(«right»)''';		
 	}
-	
-	def private dispatch String generateCode(StringLiteral string) {
-		// Value includes double quotes
-		val String value = string.getValue();
-		return value;
-	}
-	
+
 	def private dispatch String generateCode(Tuple node) {
 		return '''«FOR element : node.getElements() SEPARATOR ', '»«generateCode(element)»«ENDFOR»'''
 	}

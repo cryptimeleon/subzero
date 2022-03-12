@@ -33,11 +33,7 @@ public class ModelAssertions {
 	public void assertIsGroupElement(EObject node) {
 		assertNodeType(node, Type.GROUP_ELEMENT);
 	}
-	
-	public void assertIsString(EObject node) {
-		assertNodeType(node, Type.STRING);
-	}
-	
+
 	public void assertNodeType(EObject node, Type type) {
 		Assertions.assertTrue(types.get(node) == type);
 	}

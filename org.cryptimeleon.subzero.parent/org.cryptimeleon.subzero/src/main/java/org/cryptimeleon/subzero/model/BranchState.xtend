@@ -15,7 +15,6 @@ import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.Product;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.Variable;
@@ -197,10 +196,6 @@ public class BranchState {
 		updateGeneral(power);
 		inPower = true;
  	}
-
-	def private dispatch void updateState(StringLiteral stringLiteral) {
-		updateGeneral(stringLiteral);
-	}
 
 	def private dispatch void updateState(Tuple tuple) {
 		updateGeneral(tuple);

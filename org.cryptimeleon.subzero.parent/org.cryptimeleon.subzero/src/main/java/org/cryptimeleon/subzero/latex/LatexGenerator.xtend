@@ -21,7 +21,6 @@ import org.cryptimeleon.subzero.subzero.Parameter;
 import org.cryptimeleon.subzero.subzero.Power;
 import org.cryptimeleon.subzero.subzero.Product;
 import org.cryptimeleon.subzero.subzero.PublicParameter;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.Sum;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.Witness;
@@ -295,10 +294,6 @@ class LatexGenerator implements CodeGenerator {
 				openBraces--;
 			}
 		}
-	}
-
-	def dispatch private void generateLatex(StringLiteral literal) {
-		builder.append(literal.getValue());
 	}
 
 	def dispatch private void generateLatex(Tuple tuple) {

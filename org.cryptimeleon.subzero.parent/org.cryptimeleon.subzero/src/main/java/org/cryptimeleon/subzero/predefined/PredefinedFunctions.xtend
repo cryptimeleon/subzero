@@ -12,7 +12,7 @@ import org.cryptimeleon.math.expressions.group.GroupElementExpression;
  *    Functions with GroupElementExpression return type will be treated as GROUP_ELEMENT functions.
  *    Functions with ExponentExpr return type will be treated as EXPONENT functions.
  *    Functions with boolean, SchnorrFragment, or void return types will be treated as BOOLEAN functions.
- *    Parameter types can be String, GroupElementExpression, or ExponentExpr (treated as STRING, GROUP_ELEMENT, or EXPONENT, respectively).
+ *    Parameter types can be GroupElementExpression or ExponentExpr (treated as GROUP_ELEMENT or EXPONENT, respectively).
  *    Void functions will also have a SubprotocolSpecBuilder object called 'subprotocolSpecBuilder' prepended as the first parameter.
  *    This parameter should NOT be added to the abstract method.
  *

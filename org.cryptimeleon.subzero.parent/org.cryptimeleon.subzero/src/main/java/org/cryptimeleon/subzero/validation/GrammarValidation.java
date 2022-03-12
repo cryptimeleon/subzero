@@ -14,7 +14,6 @@ import org.cryptimeleon.subzero.subzero.FunctionCall;
 import org.cryptimeleon.subzero.subzero.FunctionDefinition;
 import org.cryptimeleon.subzero.subzero.Model;
 import org.cryptimeleon.subzero.subzero.Power;
-import org.cryptimeleon.subzero.subzero.StringLiteral;
 import org.cryptimeleon.subzero.subzero.Tuple;
 import org.cryptimeleon.subzero.subzero.WitnessVariable;
 import org.eclipse.emf.ecore.EObject;
@@ -46,16 +45,6 @@ public class GrammarValidation {
         if (model.getProof() == null) {
             logger.error(model, "Must have a proof statement");
         }
-    }
-
-    // String literals must be directly nested within a tuple, a comparison, or a function call
-    public void checkStringLiteralPositionIsValid(StringLiteral stringLiteral, BranchState state) {
-        EObject parent = state.getParent();
-
-        if (!(parent instanceof FunctionCall)) {
-            logger.error(stringLiteral, "String literals can only be used as arguments in calls to predefined functions");
-        }
-
     }
 
     // Disjunctions cannot be nested within algebraic expressions or comparison expressions
