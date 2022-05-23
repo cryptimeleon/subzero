@@ -78,6 +78,14 @@ DLog equality
 -------------
 We begin with a simple first protocol that proves the equality of two discrete logarithms.
 
+$$
+\begin{align*}
+\mathrm{ZK} & \\{(k): \\
+& b = a ^ {k} \land h = g ^ {k} \\
+& \\}
+\end{align*}
+$$
+
 ```
 witness: k
 b = a^k & h = g^k
@@ -91,13 +99,23 @@ Every variable has an algebraic type, that is either `group element` or `exponen
 
 Pedersen commitment
 -------------------
+$$
+\begin{align*}
+pp & = (h_{1},h_{2},g); \\
+\\
+\mathrm{ZK} & \\{(m_{1},m_{2},r): \\
+& C_{1} = h_{1} ^ {m_{1}} \cdot h_{2} ^ {m_{2}} \cdot g ^ {r} \land 0 \leq m_{1} + m_{2} \leq 100 \\
+& \\}
+\end{align*}
+$$
+
 ```
 [Pedersen commitment with range proof]
 
 pp : h_1, h_2, g
 witness : m_1, m_2, r
 
-C_1 = h_1^m_1 * h_2^m_2 * g^r & 20 <= m_1 + m_2 <= 100
+C_1 = h_1^m_1 * h_2^m_2 * g^r & 0 <= m_1 + m_2 <= 100
 
 ```
 
@@ -105,10 +123,18 @@ This protocol introduces a few more concepts. First, we start the protocol with 
 
 Next, we have a new variable declaration list beginning with the keyword `pp`, which explicitly declares public parameter variables. Once again, witness variables are explicitly declared, and the remaining variables are implicitly declared common input variables.
 
-The protocol also has a double inequality expression `20 <= m_1 + m_2 <= 100`, which represents a range proof. Subzero supports both single and double inequalities with the usual relational operators (`<`, `>`, `<=`, `>=`). `*` and `+` are used for multiplication and addition expressions. `/` and `-` are used similarly for division and subtraction expressions.
+The protocol also has a double inequality expression `0 <= m_1 + m_2 <= 100`, which represents a range proof. Subzero supports both single and double inequalities with the usual relational operators (`<`, `>`, `<=`, `>=`). `*` and `+` are used for multiplication and addition expressions. `/` and `-` are used similarly for division and subtraction expressions.
 
 Basic proof of partial knowledge
 --------------------------------
+$$
+\begin{align*}
+\mathrm{ZK} & \\{(x,r): \\
+& g ^ {x} \cdot h ^ {r} = C \land (h ^ {r} = C_{2} \lor h ^ {x} = C_{2}) \\
+& \\}
+\end{align*}
+$$
+
 ```
 [Partial knowledge]
 
@@ -141,6 +167,14 @@ inline checkDLog(y) {
 
 Pointcheval Sanders credential
 ------------------------------
+$$
+\begin{align*}
+\mathrm{ZK} & \\{(age,pos,r): \\
+& e(\sigma_1',\tilde{X}) \cdot e(\sigma_1',\tilde{Y}_1 ^ {age} \cdot \tilde{Y}_2 ^ {pos}) \cdot e(\sigma_1',\tilde{g}) ^ {r} = e(\sigma_2',\tilde{g}) \land (age < 18 \lor pos = 17) \\
+& \\}
+\end{align*}
+$$
+
 ```
 [Pointcheval Sanders credential showing]
 
@@ -304,54 +338,140 @@ The identifier can contain special formatting fragments, which allow for formatt
 
 The variable can have any number of terminating single quotes, or terminating substrings `Prime`, to add prime symbols after a variable name.
 
+<table>   
+<tr>
+<td>
+
 ```
 x'
 x'''
-xPrime
 xPrimePrime
 ```
+</td>
+<td>
+   
+$$
+x',  x''',  x''
+$$
+</td>
+</tr>
+</table>
 
 The variable can have a terminating underscore, or terminating substring `Bar`, to add a bar over the variable name.
+<table>   
+<tr>
+<td>
+   
 ```
 x_
 xBar
 ```
+</td>
+<td>
+   
+$$
+\bar{x}
+$$
+</td>
+</tr>
+</table>
 
 The variable can have a terminating tilde, or terminating substring `Tilde`, to add a tilde over the variable name.
-
+<table>   
+<tr>
+<td>
+   
 ```
 x~
 xTilde
 ```
+</td>
+<td>
+   
+$$
+\tilde{x}
+$$
+</td>
+</tr>
+</table>
 
 The variable can have a terminating substring `Hat`, to add a hat over the variable name. Although intuitive, the caret cannot be used to add a hat as it is used as the exponentiation operator.
-
+<table>   
+<tr>
+<td>
+   
 ```
 xHat
 ```
+</td>
+<td>
+   
+$$
+\hat{x}
+$$
+</td>
+</tr>
+</table>
 
 The variable can have a nonstarting and nonterminating underscore, or a nonstarting and nonterminating substring `Sub`, to add the portion immediately after as a subscript.
+<table>   
+<tr>
+<td>
+   
 ```
 x_2
 x_new
-xSub2
+xSub1
 xSubA
 ```
+</td>
+<td>
+   
+$$
+x_2, x_{new}, x_1, x_A
+$$
+</td>
+</tr>
+</table>
 
 In the case where multiple of these features are used in an identifier, the fragments have a designated order. If symbols (`~`, `_`) are used for the tilde/bar, then the subscript fragment goes before the tilde/bar fragment, which goes before the prime fragment. Otherwise if the substrings (`Tilde`, `Bar`, `Hat`) are used, the tilde/bar/hat fragment goes before the subscript fragment, which goes before the prime fragment.
-
+<table>   
+<tr>
+<td>
+   
 ```
 x_1~'
 xTildeSub1Prime
 ```
+</td>
+<td>
+   
+$$
+\tilde{x}_1'
+$$
+</td>
+</tr>
+</table>
 
 If the name of a variable (excluding all other formatting fragments) is the name of a Greek letter in all lowercase letters, it will be displayed in the LaTeX preview as the Greek symbol. For uppercase Greek letters, simply capitalize the first letter of the name. Some shorthand names of Greek letters are also allowed.
-
+<table>   
+<tr>
+<td>
+   
 ```
 theta
 sigma_1'
 eps
 ```
+</td>
+<td>
+   
+$$
+\theta, \sigma_1', \epsilon
+$$
+</td>
+</tr>
+</table>
 
 <details>
 <summary>Click here to view all supported Greek letters</summary>
